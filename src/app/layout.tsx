@@ -1,14 +1,13 @@
+import { HeaderSection } from "@/components/sections/HeaderSection";
+import { Sidebar } from "@/components/ui/sidebar";
+import { Toaster as SonnerToaster } from '@/components/ui/sonner';
+import { Toaster } from "@/components/ui/toaster";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
@@ -24,8 +23,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
+      <body
+        className={`${inter.variable} antialiased`}>
+        <div className="min-h-screen bg-background">
+          <div className="flex flex-row">
+            <Sidebar />
+            {/* <NavigationSidebarSection /> */}
+            <main className="flex-1 transition-all duration-300">
+              <HeaderSection />
+              {children}
+            </main>
+          </div>
+        </div>
+        <Toaster />
+        <SonnerToaster />
       </body>
     </html>
   );
