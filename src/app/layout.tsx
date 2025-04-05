@@ -30,7 +30,7 @@ export default function RootLayout({
             <Sidebar />
             <main className="flex-1 transition-all duration-300 bg-[#f0f0f4]">
               <HeaderSection />
-              <div className="flex h-[calc(100%-64px)] overflow-y-scroll px-6 py-4 ">
+              <div className="flex h-[calc(100%-64px)] overflow-y-scroll">
                 {children}
               </div>
             </main>
