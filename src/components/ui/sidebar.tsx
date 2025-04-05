@@ -126,7 +126,7 @@ export function Sidebar({ className }: SidebarProps) {
   }, []);
 
   const changeStatut = (sectionIndex: number, itemIndex: number): void => {
-    let updatedSections = [...navigationSections];
+    const updatedSections = [...navigationSections];
     updatedSections.forEach((section, i) => {
       section.items.forEach((item, index) => {
         item.active = sectionIndex === i && itemIndex === index;
