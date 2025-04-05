@@ -1,10 +1,10 @@
-import { HeaderSection } from "@/components/sections/HeaderSection";
 import { Sidebar } from "@/components/ui/sidebar";
 import { Toaster as SonnerToaster } from '@/components/ui/sonner';
 import { Toaster } from "@/components/ui/toaster";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import HeaderSection from "@/components/sections/HeaderSection/HeaderSection";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -28,8 +28,7 @@ export default function RootLayout({
         <div className="min-h-screen bg-background">
           <div className="flex flex-row">
             <Sidebar />
-            {/* <NavigationSidebarSection /> */}
-            <main className="flex-1 transition-all duration-300">
+            <main className="flex-1 transition-all duration-300 bg-[#f0f0f4]">
               <HeaderSection />
               {children}
             </main>

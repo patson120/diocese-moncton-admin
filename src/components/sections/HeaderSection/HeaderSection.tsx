@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { BellIcon } from "lucide-react";
 import React, { JSX } from "react";
 
-export const HeaderSection = (): JSX.Element => {
+ const HeaderSection = (): JSX.Element => {
   return (
     <header className="w-full h-20 bg-white flex items-center justify-between px-9">
       <div className="flex items-center gap-2">
@@ -34,3 +34,5 @@ export const HeaderSection = (): JSX.Element => {
     </header>
   );
 };
+
+export default HeaderSection;
