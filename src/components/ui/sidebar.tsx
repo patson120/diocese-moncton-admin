@@ -18,7 +18,6 @@ import {
   X
 } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Button } from './button';
 import { ScrollArea } from './scroll-area';
@@ -30,7 +29,6 @@ interface SidebarProps {
 export function Sidebar({ className }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const pathname = usePathname();
 
   // Navigation menu data structure for better maintainability
   const [navigationSections, setNavigationSections] = useState([
@@ -115,6 +113,8 @@ export function Sidebar({ className }: SidebarProps) {
     const checkScreenSize = () => {
       setIsMobile(window.innerWidth < 768);
       setIsCollapsed(window.innerWidth < 768);
+      console.log(isMobile);
+      
     };
 
     checkScreenSize();
