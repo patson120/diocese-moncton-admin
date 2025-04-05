@@ -13,7 +13,6 @@ export default function HeaderSection (): JSX.Element  {
           <AvatarImage src="/assets/img/image.png" alt="Profile" />
           <AvatarFallback className="text-lg font-bold border border-gray-600 rounded-full">HG</AvatarFallback>
         </Avatar>
-
         <div className="flex flex-col justify-center items-start gap-0.5">
           <h3 className="font-body-3 text-start font-normal text-noir-dashboard text-sm leading-[14px]">
             Hadrien Gayap
@@ -23,7 +22,6 @@ export default function HeaderSection (): JSX.Element  {
           </p>
         </div>
       </div>
-
       <div className="flex items-center gap-6">
         <Link href={"https://diocese-de-moncton.vercel.app/"} target="_blank" >
           <Button
