@@ -64,7 +64,7 @@ export function Sidebar({ className }: SidebarProps) {
           icon: Puzzle,
           label: "Gestion du clergé",
           active: false,
-          href: "#" // "/clergy",
+          href: "/clergy",
         },
       ],
     },
@@ -169,7 +169,7 @@ export function Sidebar({ className }: SidebarProps) {
                   style={{ objectFit: 'contain' }}
                   priority
                 />
-                
+
               </div>
             </h1>
             <Button

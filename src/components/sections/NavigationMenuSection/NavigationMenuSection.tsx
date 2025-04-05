@@ -16,9 +16,9 @@ export const NavigationMenuSection = (): JSX.Element => {
     <header className="w-full bg-white pt-6 px-9">
       <div className="flex items-start justify-between">
         <div className="space-y-4">
-          <div className="font-legend text-xs text-gray tracking-[0] leading-normal ml-2.5">
+          <h3 className="font-legend text-xs text-gray tracking-[0] leading-normal ml-2.5">
             GESTION DES PAGES
-          </div>
+          </h3>
 
           <Tabs defaultValue="actualites" className="w-fit">
             <TabsList className="bg-transparent p-0 h-auto">

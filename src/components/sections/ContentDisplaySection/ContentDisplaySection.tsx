@@ -80,8 +80,7 @@ export const ContentDisplaySection = (): JSX.Element => {
   ];
 
   return (
-    <section className="">
-      <div className="bg-white rounded-2xl p-7 space-y-6">
+    <section className="bg-white rounded-2xl p-7 space-y-6">
         <Tabs defaultValue="published" className="w-full">
           <TabsList className="w-full justify-start h-10 p-0 bg-transparent border-b border-[#d9d9d9]">
             <TabsTrigger
@@ -133,7 +132,7 @@ export const ContentDisplaySection = (): JSX.Element => {
               </div>
             </div>
 
-            <div className="grid grid-cols-4 gap-x-4 gap-y-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8">
               {newsArticles.map((article) => (
                 <Card
                   key={article.id}
@@ -179,7 +178,6 @@ export const ContentDisplaySection = (): JSX.Element => {
             {/* Content for disabled tab */}
           </TabsContent>
         </Tabs>
-      </div>
     </section>
   );
 };
