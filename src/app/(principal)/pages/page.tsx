@@ -4,9 +4,9 @@ import React from 'react'
 
 export default function page() {
   return (
-    < div className="flex flex-col flex-1" >
+    <div className="flex flex-col flex-1" >
       <PageMenuSection />
-      <div className='px-6 py-6'>
+      <div className='p-6'>
         <ContentSection />
       </div>
     </div >
