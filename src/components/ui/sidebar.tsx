@@ -114,8 +114,6 @@ export function Sidebar({ className }: SidebarProps) {
     const checkScreenSize = () => {
       setIsMobile(window.innerWidth < 768);
       setIsCollapsed(window.innerWidth < 768);
-      console.log(isMobile);
-
     };
 
     checkScreenSize();
@@ -124,7 +122,7 @@ export function Sidebar({ className }: SidebarProps) {
     return () => {
       window.removeEventListener('resize', checkScreenSize);
     };
-  }, []);
+  }, [isMobile]);
 
   const changeStatut = (sectionIndex: number, itemIndex: number): void => {
     const updatedSections = [...navigationSections];
