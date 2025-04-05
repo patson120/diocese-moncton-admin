@@ -3,21 +3,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  CalendarIcon,
   ChevronDownIcon,
-  EyeIcon,
-  FileTextIcon,
-  GridIcon,
-  HelpCircleIcon,
-  ImageIcon,
-  LayoutDashboardIcon,
-  LogOutIcon,
   PlusIcon,
-  SearchIcon,
-  SettingsIcon,
-  UsersIcon,
+  SearchIcon
 } from "lucide-react";
-import React, { JSX } from "react";
+import { JSX } from "react";
 
 export const ClergPretres = (): JSX.Element => {
 
