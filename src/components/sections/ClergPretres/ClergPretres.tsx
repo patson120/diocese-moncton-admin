@@ -7,6 +7,7 @@ import {
   PlusIcon,
   SearchIcon
 } from "lucide-react";
+import Image from "next/image";
 import { JSX } from "react";
 
 export const ClergPretres = (): JSX.Element => {
@@ -141,8 +142,9 @@ export const ClergPretres = (): JSX.Element => {
                   >
                     <CardContent className="p-0 space-y-3">
                       <div className="relative self-stretch w-full h-[150px] bg-[#f0f0f0] rounded-xl flex items-center justify-center">
-                        <img
-                          className="w-[60px] h-[60px]"
+                        <Image
+                          width={60}
+                          height={60}
                           alt="Vector"
                           src="/vector.svg"
                         />
