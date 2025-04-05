@@ -21,6 +21,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { Button } from './button';
 import { ScrollArea } from './scroll-area';
+import Image from 'next/image';
 
 interface SidebarProps {
   className?: string;
@@ -114,7 +115,7 @@ export function Sidebar({ className }: SidebarProps) {
       setIsMobile(window.innerWidth < 768);
       setIsCollapsed(window.innerWidth < 768);
       console.log(isMobile);
-      
+
     };
 
     checkScreenSize();
@@ -162,11 +163,16 @@ export function Sidebar({ className }: SidebarProps) {
               )}
             >
               {/* Header with logo and collapse button */}
-              <img
-                className="w-[79px] h-12 object-cover"
-                alt="Photo"
-                src="/photo-2024-12-08-19-09-08-1.png"
-              />
+              <div className='relative shrink-0 w-[79px] h-12'>
+                <Image
+                  alt="Photo"
+                  src="/photo-2024-12-08-19-09-08-1.png"
+                  fill
+                  style={{ objectFit: 'contain' }}
+                  priority
+                />
+                
+              </div>
             </h1>
             <Button
               variant="ghost"
