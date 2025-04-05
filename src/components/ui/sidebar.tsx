@@ -1,29 +1,25 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import {
-  LayoutDashboard,
-  Users,
-  Settings,
-  FileText,
-  Menu, X,
-  ChevronRight,
-  FolderOpen,
-  ReceiptText,
-  BookCopy,
-  Images,
-  Puzzle,
-  CalendarDays,
-  Church,
-  LucideSettings,
   BadgeHelp,
-  Component as Components,
-  ChevronLeftIcon,
-  LogOut
+  BookCopy,
+  CalendarDays,
+  ChevronRight,
+  Church,
+  Images,
+  LayoutDashboard,
+  LogOut,
+  LucideSettings,
+  Menu,
+  Puzzle,
+  ReceiptText,
+  Users,
+  X
 } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { Button } from './button';
 import { ScrollArea } from './scroll-area';
 
