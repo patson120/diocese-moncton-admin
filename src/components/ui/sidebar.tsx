@@ -46,13 +46,13 @@ export function Sidebar({ className }: SidebarProps) {
           icon: ReceiptText,
           label: "Gestion de contenus",
           active: false,
-          href: "#" // "/pages/contents",
+          href: "/contents",
         },
         {
           icon: BookCopy,
           label: "Gestion des pages",
           active: false,
-          href: "#" // "/pages",
+          href: "/pages",
         },
         {
           icon: Images,
