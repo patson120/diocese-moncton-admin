@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PlusIcon } from "lucide-react";
+import Image from "next/image";
 import { JSX } from "react";
 
 export default function MediathequeImage(): JSX.Element {
@@ -16,7 +17,7 @@ export default function MediathequeImage(): JSX.Element {
   ];
 
   // Sample image grid data
-  const imageGrid = Array(8).fill({
+  const imageGrid = Array(20).fill({
     src: "/mask-group.png",
   });
 
@@ -50,16 +51,18 @@ export default function MediathequeImage(): JSX.Element {
       {/* Image grid */}
       <div className="flex-1 p-6">
         <div className=" bg-white rounded-2xl p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 gap-4">
             {imageGrid.map((image, index) => (
               <Card
                 key={index}
-                className="overflow-hidden rounded-lg border-none"
+                className="overflow-hidden rounded-lg border-none relative shrink-0 min-h-[150px] max-h-[200px]"
               >
-                <img
-                  src={`/image1.png`}
+                <Image
                   alt={`Image ${index + 1}`}
-                  className="w-full h-full object-cover aspect-square"
+                  src={`/image1.png`}
+                  style={{ objectFit: 'cover' }}
+                  fill
+                  priority
                 />
               </Card>
             ))}
