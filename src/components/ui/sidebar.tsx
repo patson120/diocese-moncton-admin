@@ -194,7 +194,7 @@ export function Sidebar({ className }: SidebarProps) {
               {navigationSections.map((section, sectionIndex) => (
                 <div key={sectionIndex} className="w-full cursor-pointer">
                   <div className={cn(
-                    'px-[18px] mb-3',
+                    'px-[18px] mb-1',
                     isCollapsed && 'md:hidden')} >
                     <span className="font-legend text-xs text-gray">
                       {section.title}
@@ -231,6 +231,7 @@ export function Sidebar({ className }: SidebarProps) {
                 </div>
               ))}
             </div>
+            <div className='h-10'></div>
           </ScrollArea>
           {/* Logout button */}
           <div className={cn("absolute h-10 bottom-[16px] left-2.5 bg-white",

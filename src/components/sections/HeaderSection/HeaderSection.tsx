@@ -5,7 +5,7 @@ import React, { JSX } from "react";
 
  const HeaderSection = (): JSX.Element => {
   return (
-    <header className="w-full h-20 bg-white flex items-center justify-between px-9">
+    <header className="w-full h-16 bg-white flex items-center justify-between px-9">
       <div className="flex items-center gap-2">
         <Avatar className="w-10 h-10 rounded-full overflow-hidden">
           <AvatarImage src="/assets/img/image.png" alt="Profile" />
