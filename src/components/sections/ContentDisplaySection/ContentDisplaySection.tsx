@@ -81,7 +81,7 @@ export const ContentDisplaySection = (): JSX.Element => {
 
   return (
     <section className="">
-      <div className="bg-white rounded-t-[16px] p-7 space-y-6">
+      <div className="bg-white rounded-2xl p-7 space-y-6">
         <Tabs defaultValue="published" className="w-full">
           <TabsList className="w-full justify-start h-10 p-0 bg-transparent border-b border-[#d9d9d9]">
             <TabsTrigger
