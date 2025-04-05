@@ -3,7 +3,7 @@ import QuickActionsSection from "@/components/sections/QuickActionsSection/Quick
 
 export default function Home() {
   return (
-    <main className="px-6 py-4">
+    <main className="p-6">
       <div className="flex-1 mt-4">
         <DashboardSection />
       </div>

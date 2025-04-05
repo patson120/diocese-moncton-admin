@@ -58,7 +58,7 @@ export function Sidebar({ className }: SidebarProps) {
           icon: Images,
           label: "Médiathèques",
           active: false,
-          href: "#" // "/pages/media",
+          href: "/mediatheque",
         },
         {
           icon: Puzzle,

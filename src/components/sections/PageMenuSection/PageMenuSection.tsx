@@ -13,7 +13,7 @@ export const PageMenuSection = (): JSX.Element => {
   ];
 
   return (
-    <section className="w-full h-m bg-white pt-6 px-9">
+    <section className="w-full bg-white pt-6 px-9">
       <div className="flex items-start justify-between">
         <div>
           <h3 className="text-xs text-gray mb-3 ml-2.5">
