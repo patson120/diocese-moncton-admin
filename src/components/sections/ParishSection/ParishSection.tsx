@@ -105,7 +105,7 @@ export default function ParishSection() {
                                 key={index}
                                 className="w-full border-none shadow-none"
                             >
-                                <CardContent className="p-0 space-y-3">
+                                <CardContent className="p-0 space-y-2">
                                     <div className="relative self-stretch w-full h-[150px] rounded-xl overflow-hidden">
                                         <Image
                                             fill
@@ -116,7 +116,7 @@ export default function ParishSection() {
                                         />
                                     </div>
 
-                                    <div className="relative self-stretch w-full flex-[0_0_auto] mt-3">
+                                    <div className="relative self-stretch w-full flex-[0_0_auto]">
                                         <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
                                             <span className="font-bold text-sm">
                                                 {priest.name}

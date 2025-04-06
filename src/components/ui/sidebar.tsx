@@ -169,7 +169,6 @@ export function Sidebar({ className }: SidebarProps) {
                   style={{ objectFit: 'contain' }}
                   priority
                 />
-
               </div>
             </h1>
             <Button
@@ -194,7 +193,7 @@ export function Sidebar({ className }: SidebarProps) {
               {navigationSections.map((section, sectionIndex) => (
                 <div key={sectionIndex} className="w-full cursor-pointer">
                   <div className={cn(
-                    'px-[18px] mb-1',
+                    'px-[18px] mb-3',
                     isCollapsed && 'md:hidden')} >
                     <span className="font-legend text-xs text-gray">
                       {section.title}
