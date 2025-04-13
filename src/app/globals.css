@@ -1,4 +1,4 @@
-/* @import url("https://fonts.googleapis.com/css?family=Inter:400,var(--body-3-font-weight),var(--legend-font-weight)|Manrope:500"); */
+@import url("https://fonts.googleapis.com/css?family=Inter:400,var(--body-3-font-weight),var(--legend-font-weight)|Manrope:500");
 
 @tailwind components;
 @tailwind utilities;
@@ -11,7 +11,7 @@
 }
 
 :root {
-  --blue: rgba(53, 52, 193, 1);
+  --blue: rgba(0, 44, 125, 1);
   --body-3-font-family: "Inter", Helvetica;
   --body-3-font-size: 14px;
   --body-3-font-style: normal;
@@ -112,4 +112,65 @@
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+}
+
+
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Styles pour l'éditeur */
+.ProseMirror {
+  min-height: 500px;
+  padding: 1rem;
+}
+
+.ProseMirror:focus {
+  outline: none;
+}
+
+.ProseMirror h1 {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+.ProseMirror h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+.ProseMirror h3 {
+  font-size: 1.17em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+.ProseMirror h4 {
+  font-size: 1.12em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+.ProseMirror ul {
+  list-style-type: disc;
+  padding-left: 1.5em;
+}
+
+.ProseMirror ol {
+  list-style-type: decimal;
+  padding-left: 1.5em;
+}
+
+.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  margin: 1em auto;
+  display: block;
+  border-radius: 0.5rem;
 }

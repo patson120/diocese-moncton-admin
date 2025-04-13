@@ -24,6 +24,7 @@ import TextAlign from '@tiptap/extension-text-align';
 import Placeholder from '@tiptap/extension-placeholder';
 import Highlight from '@tiptap/extension-highlight';
 import { Separator } from '../ui/separator';
+import { ImageDialog } from '../test/editor/image-dialog';
 
 const MenuBar = ({ editor }: { editor: any }) => {
   if (!editor) {
@@ -39,46 +40,6 @@ const MenuBar = ({ editor }: { editor: any }) => {
 
   return (
     <div className="flex items-center gap-2 p-2 border-b border-[#d9d9d9]">
-      {/* <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => editor.chain().focus().toggleBold().run()}
-        className={editor.isActive('bold') ? 'bg-slate-200' : ''}
-      >
-        <Bold className="h-4 w-4" />
-      </Button>
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => editor.chain().focus().toggleItalic().run()}
-        className={editor.isActive('italic') ? 'bg-slate-200' : ''}
-      >
-        <Italic className="h-4 w-4" />
-      </Button>
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => editor.chain().focus().toggleBulletList().run()}
-        className={editor.isActive('bulletList') ? 'bg-slate-200' : ''}
-      >
-        <List className="h-4 w-4" />
-      </Button>
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => editor.chain().focus().toggleOrderedList().run()}
-        className={editor.isActive('orderedList') ? 'bg-slate-200' : ''}
-      >
-        <ListOrdered className="h-4 w-4" />
-      </Button>
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={addImage}
-      >
-        <ImageIcon className="h-4 w-4" />
-      </Button> */}
-
 
       <Button
         variant="ghost"
@@ -181,7 +142,7 @@ const MenuBar = ({ editor }: { editor: any }) => {
         <LinkIcon className="h-4 w-4" />
       </Button>
 
-      <Button
+      {/* <Button
         variant="ghost"
         size="sm"
         onClick={() => {
@@ -192,7 +153,9 @@ const MenuBar = ({ editor }: { editor: any }) => {
         }}
       >
         <ImageIcon className="h-4 w-4" />
-      </Button>
+      </Button> */}
+
+      {/* <ImageDialog editor={editor} /> */}
 
       <Separator orientation="vertical" className="mx-1" />
 
@@ -212,8 +175,6 @@ const MenuBar = ({ editor }: { editor: any }) => {
         <option value="2">Titre 2</option>
         <option value="3">Titre 3</option>
         <option value="4">Titre 4</option>
-        <option value="5">Titre 5</option>
-        <option value="6">Titre 6</option>
       </select>
     </div>
   );
@@ -222,9 +183,10 @@ const MenuBar = ({ editor }: { editor: any }) => {
 interface RichTextEditorProps {
   value: string;
   onChange: (value: string) => void;
+  className?: string;
 }
 
-export const Editor = ({ value, onChange }: RichTextEditorProps) => {
+export const Editor = ({ value, onChange, className }: RichTextEditorProps) => {
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
@@ -241,7 +203,7 @@ export const Editor = ({ value, onChange }: RichTextEditorProps) => {
       }),
       Highlight,
       Placeholder.configure({
-        placeholder: 'Commencez à écrire ou tapez "/" pour plus d\'options...',
+        placeholder: 'Commencez à écrire ...',
       }),
     ],
     content: value,
@@ -250,13 +212,13 @@ export const Editor = ({ value, onChange }: RichTextEditorProps) => {
     },
     editorProps: {
       attributes: {
-        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none h-[100px] p-4',
+        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[100px] p-4',
       },
     },
   });
 
   return (
-    <div className="w-full border rounded-md">
+    <div className={`w-full border rounded-md ${className}`}>
       <MenuBar editor={editor} />
       <EditorContent editor={editor} />
     </div>

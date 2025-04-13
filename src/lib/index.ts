@@ -24,7 +24,7 @@ export const fetchAPI = async (url: string, method: string, headers: any, body: 
             res = await fetch(url, {
                 method: method,
                 headers: headers,
-                body: JSON.stringify(body),
+                body: body,
                 signal: controller.signal
             })
         }

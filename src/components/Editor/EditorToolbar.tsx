@@ -147,7 +147,7 @@ export const EditorToolbar = ({ editor }: EditorToolbarProps) => {
       <select
         className="h-8 px-2 rounded border bg-transparent text-sm"
         onChange={(event) => {
-          const level = parseInt(event.target.value);
+          const level = parseInt(event.target.value) as any;
           console.log({ level });
           
           if (level === 0) {
@@ -161,6 +161,7 @@ export const EditorToolbar = ({ editor }: EditorToolbarProps) => {
         <option value="1">Titre 1</option>
         <option value="2">Titre 2</option>
         <option value="3">Titre 3</option>
+        <option value="4">Titre 4</option>
       </select>
     </div>
   );

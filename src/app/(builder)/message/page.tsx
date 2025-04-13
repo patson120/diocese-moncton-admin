@@ -1,36 +1,61 @@
 "use client"
 import { Editor } from '@/components/Editor/Editor'
-import { RichTextEditor } from '@/components/Editor/rich-text-editor'
-import { Tiptap } from '@/components/Editor/Tiptap'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { createMessage } from '@/lib/data'
+import { TabsContent } from '@radix-ui/react-tabs'
 import { ArrowLeft, CopyIcon, ExternalLinkIcon } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
 export default function page() {
-  const [title, setTitle] = useState("")
-  const [content, setContent] = useState("")
 
-  const handleSave = async () => {
-    console.log({ title });
-    console.log({ content });
+  const router = useRouter()
+
+  const [title, setTitle] = useState({
+    french: '',
+    english: '',
+  })
+  const [content, setContent] = useState({
+    french: '',
+    english: '',
+  })
+
+  const handlePublish = async () => {
+    // console.log({ title });
+    // console.log({ content });
+
+    if (title.french.trim() == '' || title.french.trim()) {
+      toast.warning(
+        <div className='p-3 bg-red-500 text-white rounded-md'>
+          Veuillez renseigner les titres dans les deux langues
+        </div>
+      )
+      // toast.warning("Veuillez renseigner les titres dans les deux langues")
+      return;
+    }
+
+    if (content.french.trim() == '' || content.french.trim()) {
+      toast.warning("Veuillez renseigner les contenus dans les deux langues")
+      return;
+    }
+
     const response = await createMessage({
-      titre_fr: title,
-      titre_en: "Et voluptatem architecto corporis",
-      message_fr: content,
-      message_en: "Et voluptatem architecto corporis. Et sequi aut excepturi nisi earum neque. Voluptate aspernatur id dolores labore assumenda magnam iure. Maxime eius optio consequuntur id.",
+      titre_fr: title.french,
+      titre_en: title.english,
+      message_fr: content.french,
+      message_en: content.english,
       archeveque_id: 16,
-      etat: 0,
+      etat: 1,
       // message: "Aliquid eveniet ex et porro similique totam. Officia fugiat eos et iure. Aut minus fugiat ipsa illum. Ipsa voluptas vel ut. Possimus ex voluptatem similique pariatur autem assumenda. Maiores enim quo accusamus adipisci.",
     })
     if (response.titre_fr) {
       toast.success("Message enregistré avec succès !")
-      setTitle("")
-      setContent("")
+      setTitle({ french: '', english: '', })
+      setContent({ french: '', english: '', })
     }
     else {
       toast.success(JSON.stringify(response))
@@ -38,12 +63,13 @@ export default function page() {
 
   }
   return (
-    <div className="relative w-full h-[900px] bg-[#f0f0f4]">
+    <div className="relative w-full h-screen bg-[#f0f0f4] overflow-x-hidden">
 
       {/* Secondary navigation bar */}
       <div className="fixed w-full h-[70px] z-10 top-0 left-0 bg-white flex items-center justify-between px-[50px]">
         {/* Back to home button */}
         <Button
+          onClick={() => router.back()}
           variant="ghost"
           className="h-10 gap-2 px-3.5 py-0 bg-white rounded-[7px]"
         >
@@ -72,7 +98,7 @@ export default function page() {
             </span>
           </Button>
 
-          <Button className="h-10 px-3.5 py-0 bg-blue text-white rounded-[7px]">
+          <Button onClick={handlePublish} className="h-10 px-3.5 py-0 bg-blue text-white rounded-[7px]">
             <span className="font-body-3 whitespace-nowrap">
               Publier message
             </span>
@@ -80,13 +106,15 @@ export default function page() {
         </div>
       </div>
 
+      <div className='mt-[90px] bg-black'></div>
+
       {/* Main content area */}
-      <div className="max-w-4xl mt-[70px] mx-auto bg-transparent">
-        <div className="w-full bg-white rounded">
+      <div className="max-w-4xl  mx-auto bg-transparent">
+        <div className="w-full bg-transparent">
           {/* Language tabs */}
-          <div className="py-4">
-            <Tabs defaultValue="french" className="w-min">
-              <TabsList className="flex w-full bg-[#f8f8f8] rounded-[0px_12px_0px_0px] p-0">
+          <div className="my-4 rounded-lg overflow-hidden bg-white">
+            <Tabs defaultValue="french" className="w-full">
+              <TabsList className="flex justify-start w-full h-auto bg-[#f8f8f8] rounded-[0px_12px_0px_0px] p-0">
                 <TabsTrigger
                   value="french"
                   className="flex items-center gap-2 p-3 data-[state=active]:bg-noir-dashboard data-[state=active]:text-white data-[state=inactive]:bg-white rounded-[12px_12px_0px_0px]"
@@ -100,51 +128,58 @@ export default function page() {
 
                 <TabsTrigger
                   value="english"
-                  className="flex items-center gap-2 p-3 data-[state=active]:bg-noir-dashboard data-[state=active]:text-white data-[state=inactive]:bg-white rounded-[12px_12px_0px_0px]"
-                >
+                  className="flex items-center gap-2 p-3 data-[state=active]:bg-noir-dashboard data-[state=active]:text-white data-[state=inactive]:bg-white rounded-[12px_12px_0px_0px]">
                   <div className="relative w-3.5 h-3.5 rounded-[7px] border border-solid border-current" />
                   <span className="font-body-3 text-sm">Version anglaise</span>
                 </TabsTrigger>
               </TabsList>
+
+              <TabsContent value="french" className="w-full mt-6 p-0 border-none">
+                <div className="flex flex-col p-10 items-start gap-6">
+                  <div className='w-full z-0 '>
+                    <label htmlFor="titre" className='text-lg text-gray font-semibold mb-2'>Titre</label>
+                    <Editor
+                      value={title.french}
+                      onChange={(text: string) => setTitle(prev => ({ ...prev, french: text }))}
+                      className='h-48'
+                    />
+                  </div>
+                  <div className='w-full z-[5]'>
+                    <label htmlFor="titre" className='text-lg text-gray font-semibold mb-2'>Contenu</label>
+                    <Editor
+                      value={content.french}
+                      onChange={(text: string) => setContent(prev => ({ ...prev, french: text }))}
+                    />
+                  </div>
+                </div>
+              </TabsContent>
+              <TabsContent
+                value="english"
+                className="mt-6 p-0 border-none">
+                <div className="flex flex-col p-10 items-start gap-6">
+                  <div className='w-full z-0'>
+                    <label htmlFor="titre" className='text-lg text-gray font-semibold mb-2'>Title</label>
+                    <Editor
+                      value={title.english}
+                      onChange={(text: string) => setTitle(prev => ({ ...prev, english: text }))}
+                      className='h-48'
+                    />
+                  </div>
+                  <div className='w-full z-[5]'>
+                    <label htmlFor="titre" className='text-lg text-gray font-semibold mb-2'>Content</label>
+                    <Editor
+                      value={content.english}
+                      onChange={(text: string) => setContent(prev => ({ ...prev, english: text }))}
+                    />
+                  </div>
+                </div>
+              </TabsContent>
             </Tabs>
-          </div>
-
-          {/* Editor content */}
-          <div className="flex flex-col p-10 items-start gap-6">
-            <div className='w-full'>
-              <label htmlFor="titre" className='text-lg text-gray font-semibold mb-2'>Titre</label>
-              <Editor
-                value={title}
-                onChange={(text: string) => setTitle(text)}
-              />
-            </div>
-            <div className='w-full'>
-              <label htmlFor="titre" className='text-lg text-gray font-semibold mb-2'>Contenu</label>
-              <Editor
-                value={content}
-                onChange={(text: string) => setContent(text)}
-              />
-            </div>
-            {/* <Tiptap /> */}
-            {/* <RichTextEditor
-              // value={content}
-              // onChange={onChange}
-            /> */}
-
-            <div>
-              <Button
-                variant="default"
-                size="sm"
-                onClick={handleSave}>
-                Save
-              </Button>
-            </div>
           </div>
         </div>
       </div>
-
       {/* Floating action buttons */}
-      <div className="flex flex-col w-[244px] items-start gap-2 fixed top-[662px] left-[1038px]">
+      <div className="flex flex-col w-[244px] items-start gap-2 fixed bottom-[62px] right-[38px]">
         <Card className="shadow-[0px_4px_12px_#0000001a] rounded-lg">
           <CardContent className="flex items-start gap-1 p-3">
             <CopyIcon className="w-5 h-5" />
