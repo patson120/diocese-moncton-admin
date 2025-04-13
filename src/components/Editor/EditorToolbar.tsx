@@ -11,7 +11,7 @@ import {
   List,
   ListOrdered,
   Link,
-  Image,
+  Image as ImageIcon,
   Type,
 } from 'lucide-react';
 import { Button } from '../ui/button';
@@ -139,7 +139,7 @@ export const EditorToolbar = ({ editor }: EditorToolbarProps) => {
           }
         }}
       >
-        <Image className="h-4 w-4" />
+        <ImageIcon className="h-4 w-4" />
       </Button>
 
       <Separator orientation="vertical" className="mx-1" />

@@ -125,7 +125,7 @@ export function NewsEditor() {
           onChange={handleCoverImageChange}
           className="cursor-pointer"
         />
-        {coverImage && (
+        {/* {coverImage && (
           <div className="mt-2">
             <img
               src={coverImage}
@@ -133,7 +133,7 @@ export function NewsEditor() {
               className="max-h-48 rounded-lg"
             />
           </div>
-        )}
+        )} */}
       </div>
 
       <div className="space-y-2">
