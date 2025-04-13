@@ -4,10 +4,7 @@ import { useEffect, useState } from 'react';
 import { Actualite } from '../../../../types';
 
 export default function ActualiteContent({ is_brouillon }: { is_brouillon: number }) {
-    const [actualites, setActualites] = useState<Actualite[]>([])
-
-    console.log("test");
-    
+    const [actualites, setActualites] = useState<Actualite[]>([])    
     useEffect(() => {
         const getActualites = async () => {
             const response = await fetchActualites(`?paginate=20&is_brouillon=${is_brouillon}`)

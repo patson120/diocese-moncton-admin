@@ -8,6 +8,7 @@ export const fetchAPI = async (url: string, method: string, headers: any, body: 
         
         headers = {
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
             ...headers
         }
 
