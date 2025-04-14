@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Calendar1, MapPin } from "lucide-react";
+import { BookOpenText, Calendar1, CalendarPlus, Layers, MapPin } from "lucide-react";
 import Link from "next/link";
 import { JSX } from "react";
 
@@ -76,7 +76,9 @@ const QuickActionsSection = (): JSX.Element => {
             <CardContent className="flex px-4 py-4 justify-stretch items-center">
               <div className="flex items-center gap-3">
                 {/* Icon placeholder */}
-                <div className="w-12 h-12 shrink-0 bg-[#E6EAEF] rounded-xl" />
+                <div className="w-12 h-12 shrink-0 bg-yellow-light rounded-xl flex justify-center items-center" >
+                  <BookOpenText className="h-6 w-6" />
+                </div>
                 <div className="flex flex-col items-start gap-1">
                   <p className="font-semibold text-noir-dashboard leading-[25px] line-clamp-1">
                     Créer message de l'archevêque
@@ -94,7 +96,9 @@ const QuickActionsSection = (): JSX.Element => {
           <CardContent className="flex px-4 py-4 justify-stretch items-center">
             <div className="flex items-center gap-3">
               {/* Icon placeholder */}
-              <div className="w-12 h-12 shrink-0 bg-[#E6EAEF] rounded-xl" />
+              <div className="w-12 h-12 shrink-0 bg-red-light rounded-xl flex justify-center items-center">
+                <CalendarPlus className="h-6 w-6" />
+              </div>
               <div className="flex flex-col items-start gap-1">
                 <p className="font-semibold text-noir-dashboard leading-[25px] line-clamp-1">
                   Créer un évènement
@@ -111,7 +115,9 @@ const QuickActionsSection = (): JSX.Element => {
           <CardContent className="flex px-4 py-4 justify-stretch items-center">
             <div className="flex items-center gap-3">
               {/* Icon placeholder */}
-              <div className="w-12 h-12 shrink-0 bg-[#E6EAEF] rounded-xl" />
+              <div className="w-12 h-12 shrink-0 bg-green-light rounded-xl flex justify-center items-center">
+                <Layers className="h-6 w-6" />
+              </div>
               <div className="flex flex-col items-start gap-1">
                 <p className="font-semibold text-noir-dashboard leading-[25px] line-clamp-1">
                   Créer une page
