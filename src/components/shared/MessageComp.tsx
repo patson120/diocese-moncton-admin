@@ -6,7 +6,7 @@ import Text from "./Text"
 
 const MessageComp = ({ message }: { message: Message }) => {
     return (
-        <div className='border border-[#E5E5E5] rounded-xl flex flex-col justify-between gap-[10px] px-5 py-6'>
+        <div className='bg-[#F9F9F0] rounded-xl flex flex-col justify-between gap-[10px] px-5 py-6'>
 
             <div className="">
                 <div className='body-1 font-bold text-black line-clamp-2'>

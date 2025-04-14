@@ -12,6 +12,9 @@
 
 :root {
   --blue: rgba(0, 44, 125, 1);
+  --yellow-light: rgba(241, 241, 218, 1);
+  --red-light: rgba(237, 222, 237, 1);
+  --green-light: rgba(224, 228, 235, 1);
   --body-3-font-family: "Inter", Helvetica;
   --body-3-font-size: 14px;
   --body-3-font-style: normal;

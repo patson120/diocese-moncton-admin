@@ -11,9 +11,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        tata: "var(--blue)",
         blue: "var(--blue)",
         gray: "var(--gray)",
+        "red-light": "var(--red-light)",
+        "green-light": "var(--green-light)",
+        "yellow-light": "var(--yellow-light)",
         "noir-dashboard": "var(--noir-dashboard)",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

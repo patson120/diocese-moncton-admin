@@ -4,11 +4,7 @@ import { Message } from '../../../../types';
 import MessageComp from '@/components/shared/MessageComp';
 
 export default function MessageContent({ etat }: { etat: number }) {
-
     const [messages, setMessages] = useState<Message[]>([])
-
-
-
     useEffect(() => {
         const getMessages = async () => {
             const response = await fetchMessages(`?paginate=20&etat=${etat}`)
