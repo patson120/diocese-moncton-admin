@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ChevronDownIcon, PlusIcon, SearchIcon } from 'lucide-react';
+import { ChevronDownIcon, Church, PlusIcon, SearchIcon } from 'lucide-react';
 import Image from 'next/image';
 import React from 'react'
 
@@ -99,28 +99,23 @@ export default function ParishSection() {
                     </div>
 
                     {/* Priests grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                         {priestsData.map((priest, index) => (
                             <Card
                                 key={index}
-                                className="w-full border-none shadow-none"
-                            >
-                                <CardContent className="p-0 space-y-2">
-                                    <div className="relative self-stretch w-full h-[150px] rounded-xl overflow-hidden">
-                                        <Image
-                                            fill
-                                            priority
-                                            style={{ objectFit: "cover" }}
-                                            alt="Paroisse"
-                                            src="/paroisse-1.png"
-                                        />
-                                    </div>
-
-                                    <div className="relative self-stretch w-full flex-[0_0_auto]">
-                                        <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
-                                            <span className="font-bold text-sm">
-                                                {priest.name}
-                                            </span>
+                                className="w-full border-none shadow-none">
+                                <CardContent className="p-0 space-y-2 bg-[#F9F9F0] rounded-xl flex flex-col justify-between gap-[10px] px-5 py-6">
+                                    <div className="">
+                                        <div className='h-6 w-6 mb-2'>
+                                            <Church className='h-5 w-5' />
+                                        </div>
+                                        <div className='body-1 font-bold text-black line-clamp-2'>
+                                            {/* <Text labelFr={message.titre_fr} labelEn={message.titre_en} /> */}
+                                            <h1 className='text-lg font-bold'>Immaculée-Conception</h1>
+                                        </div>
+                                        <div className='body-2 line-clamp-2 text-[#575757]'>
+                                            {/* <Text labelFr={message.message_fr} labelEn={message.message_en} /> */}
+                                            <p className='text-gray'>Unité pastorale Saint-Benoît</p>
                                         </div>
                                     </div>
                                 </CardContent>

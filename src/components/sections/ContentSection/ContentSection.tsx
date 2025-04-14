@@ -71,7 +71,7 @@ export const ContentSection = (): JSX.Element => {
             {pages.map((page, index) => (
               <Card
                 key={index}
-                className="bg-[#f0f0f4] rounded-xl border-none"
+                className="bg-[#F9F9F0] rounded-xl border-none"
               >
                 <CardContent className="p-2 flex justify-start items-center">
 

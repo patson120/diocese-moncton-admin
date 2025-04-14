@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ChevronDownIcon, PlusIcon, SearchIcon } from "lucide-react";
@@ -9,6 +9,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import MessageContent from "../MessageContent/MessageContent";
 import ActualiteContent from "../ActualiteContent/ActualiteContent";
+import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Label } from "@/components/ui/label";
 
 export default function ContentDisplaySection() {
 
@@ -264,6 +266,40 @@ export default function ContentDisplaySection() {
                 {/* Content for disabled tab */}
                 <MessageContent etat={-1} />
               </TabsContent>
+
+              {/* Sheet */}
+              <Card>
+                {/* <CardHeader>
+                  <CardTitle>Panneau latéral</CardTitle>
+                  <CardDescription>Menu coulissant</CardDescription>
+                </CardHeader> */}
+                <CardContent>
+                  <Sheet >
+                    <SheetTrigger asChild>
+                      <Button variant="outline">Ouvrir le panneau</Button>
+                    </SheetTrigger>
+                    <SheetContent className="w-1/2 ">
+                      <SheetHeader>
+                        <SheetTitle>Éditer le profil</SheetTitle>
+                        <SheetDescription>
+                          Modifiez vos informations de profil ici.
+                        </SheetDescription>
+                      </SheetHeader>
+                      <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="name" className="text-right">
+                            Nom
+                          </Label>
+                          <Input id="name" value="John Doe" onChange={() => {}} className="col-span-3" />
+                        </div>
+                      </div>
+                      <SheetFooter>
+                        <Button type="submit">Sauvegarder</Button>
+                      </SheetFooter>
+                    </SheetContent>
+                  </Sheet>
+                </CardContent>
+              </Card>
             </Tabs>
 
             {/* <div className="flex items-center justify-center h-[400px]">
