@@ -106,7 +106,7 @@ export default function ContentDisplaySection() {
         <div className="flex items-start justify-between">
           <div className="space-y-4">
             <h3 className="font-legend text-xs text-gray tracking-[0] leading-normal ml-2.5">
-              GESTION DES PAGES
+              GESTION DES CONTENUS
             </h3>
             <div className="w-fit">
               <TabsList className="bg-transparent p-0 h-auto">

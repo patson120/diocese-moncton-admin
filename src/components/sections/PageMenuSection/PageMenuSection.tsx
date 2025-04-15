@@ -15,8 +15,8 @@ export const PageMenuSection = (): JSX.Element => {
   return (
     <section className="w-full bg-white pt-6 px-9">
       <div className="flex items-start justify-between">
-        <div>
-          <h3 className="text-xs text-gray mb-3 ml-2.5">
+        <div className="space-y-4">
+          <h3 className="font-legend text-xs text-gray tracking-[0] leading-normal ml-2.5">
             GESTION DES PAGES
           </h3>
           <Tabs defaultValue="active" className="w-full">
@@ -25,7 +25,7 @@ export const PageMenuSection = (): JSX.Element => {
                 <TabsTrigger
                   key={tab.id}
                   value={tab.id}
-                  className="p-2.5 rounded-none data-[state=active]:border-b-2 data-[state=active]:border-[#11112e] data-[state=active]:shadow-none data-[state=active]:text-noir-dashboard data-[state=inactive]:text-gray h-auto">
+                  className="p-2.5 rounded-none font-body-3 text-sm data-[state=active]:border-b-[3px] data-[state=active]:border-blue data-[state=active]:text-blue data-[state=active]:shadow-none data-[state=inactive]:text-gray data-[state=inactive]:bg-transparent">
                   <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
                     {tab.label}
                   </span>

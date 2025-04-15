@@ -88,7 +88,7 @@ export const VideoContentSection = (): JSX.Element => {
   return (
     <section className="w-full flex-1 p-6">
       <div className="flex flex-col bg-white w-full items-start gap-6 rounded-2xl p-6">
-        <div className="flex w-full items-start gap-2.5 border border-red-600">
+        <div className="flex w-full items-start gap-2.5">
           <div className="flex items-center gap-2">
             <div className="relative w-[256px]">
               <Input

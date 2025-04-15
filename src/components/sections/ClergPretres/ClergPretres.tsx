@@ -64,8 +64,7 @@ export const ClergPretres = (): JSX.Element => {
                   <TabsTrigger
                     key={item.value}
                     value={item.value}
-                    className={`p-2.5 rounded-none font-body-3 text-sm data-[state=active]:border-b-2 data-[state=active]:border-[#11112e] data-[state=active]:text-noir-dashboard data-[state=active]:shadow-none data-[state=inactive]:text-gray data-[state=inactive]:bg-transparent`}
-                  >
+                    className="p-2.5 rounded-none font-body-3 text-sm data-[state=active]:border-b-[3px] data-[state=active]:border-blue data-[state=active]:text-blue data-[state=active]:shadow-none data-[state=inactive]:text-gray data-[state=inactive]:bg-transparent">
                     {item.label}
                   </TabsTrigger>
                 ))}

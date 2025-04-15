@@ -96,7 +96,7 @@ export const UserListSection = (): JSX.Element => {
                   value={filter.value}
                   className={`px-3 py-2 rounded-lg ${
                     filter.value === selectedRole
-                      ? "!bg-noir-dashboard !text-white"
+                      ? "!bg-noir-dashboard !text-white !font-bold"
                       : "bg-white text-gray border border-solid border-[#d9d9d9]"
                   }`}
                 >

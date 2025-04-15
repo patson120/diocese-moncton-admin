@@ -27,16 +27,17 @@ export default function MediathequeImage(): JSX.Element {
     <Tabs defaultValue="images" className="w-full bg-[#f0f0f4]">
       {/* Tab navigation */}
       <div className="bg-white px-9 pt-6 flex items-center justify-between">
-        <div className="flex flex-col gap-2">
-          <span className="text-xs text-gray">GESTION DES PAGES</span>
+        <div className="flex flex-col space-y-4">
+          <h3 className="font-legend text-xs text-gray tracking-[0] leading-normal ml-2.5">
+            GESTION DES MEDIA
+          </h3>
           <div className="w-full">
             <TabsList className="bg-transparent p-0 h-auto gap-0">
               {mediaTabs.map((tab) => (
                 <TabsTrigger
                   key={tab.value}
                   value={tab.value}
-                  className={`rounded-none px-2.5 py-2.5 data-[state=active]:border-b-2 data-[state=active]:border-[#11112e] data-[state=active]:shadow-none data-[state=active]:text-noir-dashboard data-[state=inactive]:text-gray data-[state=inactive]:bg-transparent`}
-                >
+                  className="p-2.5 rounded-none font-body-3 text-sm data-[state=active]:border-b-[3px] data-[state=active]:border-blue data-[state=active]:text-blue data-[state=active]:shadow-none data-[state=inactive]:text-gray data-[state=inactive]:bg-transparent">
                   {tab.label}
                 </TabsTrigger>
               ))}
