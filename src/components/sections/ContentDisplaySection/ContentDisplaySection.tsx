@@ -204,17 +204,17 @@ export default function ContentDisplaySection() {
 
           <TabsContent value="messages" className="mt-6 p-0 border-none">
             <Tabs defaultValue="published" className="w-full">
-              <TabsList className="w-full justify-start h-10 p-0 bg-transparent border-b border-[#d9d9d9]">
+              <TabsList className="justify-start h-12 p-0 bg-[#F1F3F6] rounded-md px-3 py-2">
                 <TabsTrigger
                   value="published"
-                  className="px-2.5 py-2.5 rounded-none data-[state=active]:border-b data-[state=active]:border-[#11112e] data-[state=active]:shadow-none data-[state=active]:text-noir-dashboard data-[state=inactive]:text-gray">
+                  className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
                   <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
                     Publiés
                   </span>
                 </TabsTrigger>
                 <TabsTrigger
                   value="pending"
-                  className="px-2.5 py-2.5 rounded-none data-[state=active]:border-b data-[state=active]:border-[#11112e] data-[state=active]:shadow-none data-[state=active]:text-noir-dashboard data-[state=inactive]:text-gray"
+                  className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray"
                 >
                   <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
                     En attente
@@ -222,7 +222,7 @@ export default function ContentDisplaySection() {
                 </TabsTrigger>
                 <TabsTrigger
                   value="disabled"
-                  className="px-2.5 py-2.5 rounded-none data-[state=active]:border-b data-[state=active]:border-[#11112e] data-[state=active]:shadow-none data-[state=active]:text-noir-dashboard data-[state=inactive]:text-gray"
+                  className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray"
                 >
                   <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
                     Désactivés
@@ -267,39 +267,6 @@ export default function ContentDisplaySection() {
                 <MessageContent etat={-1} />
               </TabsContent>
 
-              {/* Sheet */}
-              <Card>
-                {/* <CardHeader>
-                  <CardTitle>Panneau latéral</CardTitle>
-                  <CardDescription>Menu coulissant</CardDescription>
-                </CardHeader> */}
-                <CardContent>
-                  <Sheet >
-                    <SheetTrigger asChild>
-                      <Button variant="outline">Ouvrir le panneau</Button>
-                    </SheetTrigger>
-                    <SheetContent className="w-1/2 ">
-                      <SheetHeader>
-                        <SheetTitle>Éditer le profil</SheetTitle>
-                        <SheetDescription>
-                          Modifiez vos informations de profil ici.
-                        </SheetDescription>
-                      </SheetHeader>
-                      <div className="grid gap-4 py-4">
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="name" className="text-right">
-                            Nom
-                          </Label>
-                          <Input id="name" value="John Doe" onChange={() => {}} className="col-span-3" />
-                        </div>
-                      </div>
-                      <SheetFooter>
-                        <Button type="submit">Sauvegarder</Button>
-                      </SheetFooter>
-                    </SheetContent>
-                  </Sheet>
-                </CardContent>
-              </Card>
             </Tabs>
 
             {/* <div className="flex items-center justify-center h-[400px]">

@@ -1,12 +1,11 @@
 
-import { Calendar } from "lucide-react"
-import { Message } from "../../../types"
 import { formatDateToLocal } from "@/lib/utils"
+import { Message } from "../../../types"
 import Text from "./Text"
 
-const MessageComp = ({ message }: { message: Message }) => {
+const MessageComp = ({ message, onClick }: { message: Message, onClick?: (e: any) => void }) => {
     return (
-        <div className='bg-[#F9F9F0] rounded-xl flex flex-col justify-between gap-[10px] px-5 py-6'>
+        <div onClick={onClick} className='bg-[#F9F9F0] cursor-pointer rounded-xl flex flex-col justify-between gap-[10px] px-5 py-6'>
             <div className="">
                 <div className='body-1 font-bold text-black line-clamp-2'>
                     <Text labelFr={message.titre_fr} labelEn={message.titre_en} />

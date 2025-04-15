@@ -73,7 +73,7 @@ export function Sidebar({ className }: SidebarProps) {
       items: [
         {
           icon: CalendarDays,
-          label: "Calendrier",
+          label: "Evènements",
           active: false,
           href: "#" // "/calendar",
         },

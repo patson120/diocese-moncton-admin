@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PlusIcon } from "lucide-react";
 import Image from "next/image";
 import { JSX } from "react";
+import { VideoContentSection } from "./VideoContentSection";
+import { AudioContentSection } from "./AudioContentSection";
 
 export default function MediathequeImage(): JSX.Element {
 
@@ -22,12 +24,12 @@ export default function MediathequeImage(): JSX.Element {
   });
 
   return (
-    <div className="bg-[#f0f0f4]">
+    <Tabs defaultValue="images" className="w-full bg-[#f0f0f4]">
       {/* Tab navigation */}
       <div className="bg-white px-9 pt-6 flex items-center justify-between">
         <div className="flex flex-col gap-2">
           <span className="text-xs text-gray">GESTION DES PAGES</span>
-          <Tabs defaultValue="images" className="w-full">
+          <div className="w-full">
             <TabsList className="bg-transparent p-0 h-auto gap-0">
               {mediaTabs.map((tab) => (
                 <TabsTrigger
@@ -39,7 +41,7 @@ export default function MediathequeImage(): JSX.Element {
                 </TabsTrigger>
               ))}
             </TabsList>
-          </Tabs>
+          </div>
         </div>
 
         <Button className="bg-blue hover:bg-blue/90 text-white gap-2">
@@ -48,27 +50,43 @@ export default function MediathequeImage(): JSX.Element {
         </Button>
       </div>
 
-      {/* Image grid */}
-      <div className="flex-1 p-6">
-        <div className=" bg-white rounded-2xl p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 gap-4">
-            {imageGrid.map((image, index) => (
-              <Card
-                key={index}
-                className="overflow-hidden rounded-lg border-none relative shrink-0 min-h-[150px] max-h-[200px]"
-              >
-                <Image
-                  alt={`Image ${index + 1}`}
-                  src={`/image1.png`}
-                  style={{ objectFit: 'cover' }}
-                  fill
-                  priority
-                />
-              </Card>
-            ))}
+      <TabsContent
+        value="images"
+        className="border-none">
+        {/* Image grid */}
+        <div className="flex-1 p-6">
+          <div className=" bg-white rounded-2xl p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 gap-4">
+              {imageGrid.map((image, index) => (
+                <Card
+                  key={index}
+                  className="overflow-hidden rounded-lg border-none relative shrink-0 min-h-[150px] max-h-[200px]"
+                >
+                  <Image
+                    alt={`Image ${index + 1}`}
+                    src={`/image1.png`}
+                    style={{ objectFit: 'cover' }}
+                    fill
+                    priority
+                  />
+                </Card>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </TabsContent>
+      <TabsContent
+        value="videos"
+        className="border-none">
+        {/* Video grid */}
+        <VideoContentSection />
+      </TabsContent>
+      <TabsContent
+        value="audio"
+        className="border-none">
+        {/* Audio grid */}
+        <AudioContentSection />
+      </TabsContent>
+    </Tabs>
   );
 };
