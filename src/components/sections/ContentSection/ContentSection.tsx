@@ -4,6 +4,8 @@ import { Input } from "@/components/ui/input";
 import {
   ChevronDownIcon,
   FileTextIcon,
+  LayoutGridIcon,
+  ListFilter,
   MoreVerticalIcon,
   SearchIcon,
 } from "lucide-react";
@@ -38,36 +40,36 @@ export const ContentSection = (): JSX.Element => {
     <section className="w-full mx-auto">
       <Card className="bg-white w-full rounded-2xl">
         <CardContent className="p-4 lg:p-7">
-          <div className="flex justify-between items-center mb-8">
-            <div className="flex items-center gap-3">
-              <div className="relative w-[256px]">
-                <Input
-                  className="pl-9 h-9 bg-neutral-100 rounded-lg"
-                  placeholder="Rechercher une page"
-                />
-                <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
-              </div>
-
-              <Button
-                variant="ghost"
-                className="flex items-center gap-1 text-noir-dashboard"
-              >
-                <span className="text-sm">
-                  <span className="leading-[19.6px] font-normal">Trier par ordre </span>
-                  <span className="font-semibold leading-[var(--body-3-line-height)] font-body-3 [font-style:var(--body-3-font-style)] tracking-[var(--body-3-letter-spacing)] text-[length:var(--body-3-font-size)]">
-                    alphabétique
+          <div className="flex justify-between items-center">
+            <div></div>
+            <div className="flex items-start gap-2.5">
+              <div className="flex items-center gap-2">
+                <div className="relative w-[256px]">
+                  <Input
+                    className="h-10 bg-neutral-100 border-none pl-9"
+                    placeholder="Rechercher une actualité"
+                  />
+                  <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
+                </div>
+                <Button
+                  variant="outline"
+                  className="h-11 flex items-center gap-2.5 border border-[#d9d9d9] rounded-lg">
+                  <ListFilter className="w-5 h-5" />
+                  <span className="font-body-3 text-noir-dashboard">
+                    Trier par...
                   </span>
-                </span>
-                <ChevronDownIcon className="w-[16px] h-[16px]" />
-              </Button>
-            </div>
+                </Button>
 
-            <div className="font-body-3 font-[number:var(--body-3-font-weight)] text-noir-dashboard text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
-              Affichage en liste
+                <Button
+                  variant="outline"
+                  className="w-11 h-11 p-0 flex items-center justify-center border border-[#d9d9d9] rounded-lg">
+                  <LayoutGridIcon className="w-5 h-5" />
+                </Button>
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {pages.map((page, index) => (
               <Card
                 key={index}

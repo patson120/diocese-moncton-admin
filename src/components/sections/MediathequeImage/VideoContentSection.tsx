@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   CopyIcon,
@@ -87,17 +88,15 @@ export const VideoContentSection = (): JSX.Element => {
   return (
     <section className="w-full flex-1 p-6">
       <div className="flex flex-col bg-white w-full items-start gap-6 rounded-2xl p-6">
-        <div className="flex w-full items-start gap-2.5">
+        <div className="flex w-full items-start gap-2.5 border border-red-600">
           <div className="flex items-center gap-2">
-            <div className="relative w-[232px]">
-              <div className="relative w-full h-11 bg-neutral-100 rounded-lg flex items-center">
-                <SearchIcon className="w-[18px] h-[18px] ml-[13px] text-gray" />
-                <span className="absolute left-[42px] font-body-3 text-gray">
-                  Rechercher une actualité
-                </span>
-              </div>
+            <div className="relative w-[256px]">
+              <Input
+                className="h-9 bg-neutral-100 border-none pl-9"
+                placeholder="Rechercher une vidéo"
+              />
+              <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
             </div>
-
             <Button
               variant="outline"
               className="h-11 flex items-center gap-2.5 border border-[#d9d9d9] rounded-lg">

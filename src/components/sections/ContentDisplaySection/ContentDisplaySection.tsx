@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ChevronDownIcon, PlusIcon, SearchIcon } from "lucide-react";
+import { ChevronDownIcon, LayoutGridIcon, ListFilter, PlusIcon, SearchIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import MessageContent from "../MessageContent/MessageContent";
@@ -137,55 +137,59 @@ export default function ContentDisplaySection() {
             value="actualites"
             className="border-none">
             <Tabs defaultValue="published" className="w-full">
-              <TabsList className="justify-start h-12 p-0 bg-[#F1F3F6] rounded-md px-3 py-2">
-                <TabsTrigger
-                  value="published"
-                  className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
-                  <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                    Publiés
-                  </span>
-                </TabsTrigger>
-                <TabsTrigger
-                  value="pending"
-                  className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray"
-                >
-                  <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                    En attente
-                  </span>
-                </TabsTrigger>
-                <TabsTrigger
-                  value="disabled"
-                  className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray"
-                >
-                  <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                    Désactivés
-                  </span>
-                </TabsTrigger>
-              </TabsList>
-
-              <div className="flex items-center justify-between w-full mt-6">
-                <div className="flex items-center gap-4">
-                  <div className="relative w-[256px]">
-                    <Input
-                      className="h-9 bg-neutral-100 border-none pl-9"
-                      placeholder="Rechercher une actualité"
-                    />
-                    <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
-                  </div>
-
-                  <div className="flex items-center gap-1">
-                    <div className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] text-noir-dashboard">
-                      Trier par ordre <span className="font-semibold">alphabétique</span>
+              <div className="flex justify-between items-center">
+                <TabsList className="justify-start h-12 p-0 bg-[#F1F3F6] rounded-md px-3 py-2">
+                  <TabsTrigger
+                    value="published"
+                    className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
+                    <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
+                      Publiés
+                    </span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="pending"
+                    className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray"
+                  >
+                    <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
+                      En attente
+                    </span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="disabled"
+                    className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray"
+                  >
+                    <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
+                      Désactivés
+                    </span>
+                  </TabsTrigger>
+                </TabsList>
+                <div className="flex items-start gap-2.5">
+                  <div className="flex items-center gap-2">
+                    <div className="relative w-[256px]">
+                      <Input
+                        className="h-10 bg-neutral-100 border-none pl-9"
+                        placeholder="Rechercher une actualité"
+                      />
+                      <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
                     </div>
-                    <ChevronDownIcon className="w-[16px] h-[16px]" />
-                  </div>
-                </div>
+                    <Button
+                      variant="outline"
+                      className="h-11 flex items-center gap-2.5 border border-[#d9d9d9] rounded-lg">
+                      <ListFilter className="w-5 h-5" />
+                      <span className="font-body-3 text-noir-dashboard">
+                        Trier par...
+                      </span>
+                    </Button>
 
-                <div className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] text-noir-dashboard whitespace-nowrap">
-                  Affichage en liste
+                    <Button
+                      variant="outline"
+                      className="w-11 h-11 p-0 flex items-center justify-center border border-[#d9d9d9] rounded-lg"
+                    >
+                      <LayoutGridIcon className="w-5 h-5" />
+                    </Button>
+                  </div>
                 </div>
               </div>
-
               <TabsContent value="published" className="mt-6 space-y-6">
                 <ActualiteContent is_brouillon={1} />
               </TabsContent>
@@ -202,53 +206,59 @@ export default function ContentDisplaySection() {
             </Tabs>
           </TabsContent>
 
-          <TabsContent value="messages" className="mt-6 p-0 border-none">
+          <TabsContent value="messages" className="p-0 border-none">
             <Tabs defaultValue="published" className="w-full">
-              <TabsList className="justify-start h-12 p-0 bg-[#F1F3F6] rounded-md px-3 py-2">
-                <TabsTrigger
-                  value="published"
-                  className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
-                  <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                    Publiés
-                  </span>
-                </TabsTrigger>
-                <TabsTrigger
-                  value="pending"
-                  className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray"
-                >
-                  <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                    En attente
-                  </span>
-                </TabsTrigger>
-                <TabsTrigger
-                  value="disabled"
-                  className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray"
-                >
-                  <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                    Désactivés
-                  </span>
-                </TabsTrigger>
-              </TabsList>
-              <div className="flex items-center justify-between w-full mt-6">
-                <div className="flex items-center gap-4">
-                  <div className="relative w-[256px]">
-                    <Input
-                      className="h-9 bg-neutral-100 border-none pl-9"
-                      placeholder="Rechercher une actualité"
-                    />
-                    <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
-                  </div>
-
-                  <div className="flex items-center gap-1">
-                    <div className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] text-noir-dashboard">
-                      Trier par ordre <span className="font-semibold">alphabétique</span>
+              <div className="flex justify-between items-center">
+                <TabsList className="justify-start h-12 p-0 bg-[#F1F3F6] rounded-md px-3 py-2">
+                  <TabsTrigger
+                    value="published"
+                    className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
+                    <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
+                      Publiés
+                    </span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="pending"
+                    className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray"
+                  >
+                    <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
+                      En attente
+                    </span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="disabled"
+                    className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray"
+                  >
+                    <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
+                      Désactivés
+                    </span>
+                  </TabsTrigger>
+                </TabsList>
+                <div className="flex items-start gap-2.5">
+                  <div className="flex items-center gap-2">
+                    <div className="relative w-[256px]">
+                      <Input
+                        className="h-10 bg-neutral-100 border-none pl-9"
+                        placeholder="Rechercher un message"
+                      />
+                      <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
                     </div>
-                    <ChevronDownIcon className="w-[16px] h-[16px]" />
-                  </div>
-                </div>
+                    <Button
+                      variant="outline"
+                      className="h-11 flex items-center gap-2.5 border border-[#d9d9d9] rounded-lg">
+                      <ListFilter className="w-5 h-5" />
+                      <span className="font-body-3 text-noir-dashboard">
+                        Trier par...
+                      </span>
+                    </Button>
 
-                <div className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] text-noir-dashboard whitespace-nowrap">
-                  Affichage en liste
+                    <Button
+                      variant="outline"
+                      className="w-11 h-11 p-0 flex items-center justify-center border border-[#d9d9d9] rounded-lg"
+                    >
+                      <LayoutGridIcon className="w-5 h-5" />
+                    </Button>
+                  </div>
                 </div>
               </div>
 
