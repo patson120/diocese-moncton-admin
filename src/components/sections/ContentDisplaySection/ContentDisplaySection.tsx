@@ -11,6 +11,7 @@ import MessageContent from "../MessageContent/MessageContent";
 import ActualiteContent from "../ActualiteContent/ActualiteContent";
 import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
+import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu";
 
 export default function ContentDisplaySection() {
 

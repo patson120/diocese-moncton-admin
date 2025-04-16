@@ -52,3 +52,44 @@ export type Actualite = {
     categorie: Category;
     motcles: string[]
 }
+
+export type Paroisse = {
+    id: number;
+    type_paroisse_id: number;
+    nom: string;
+    adresse: string;
+    telephone: string;
+    email: string;
+    site_web: string;
+    code_postal: string;
+    horaires: string;
+    lien_youtube: string;
+    pretre_responsable: string;
+    gps: string;
+    histoire: string;
+    created_at: string;
+    updated_at: string;
+    galerie: any[];
+    type: TypeParoisse;
+    horaireparoisses: Horaire[];
+    etabli_le: number | null,
+    ordonne_le: number | null,
+    premier_cure: number | null,
+}
+
+export type TypeParoisse = {
+    id: number;
+    intitule_fr: string;
+    intitule_en: string;
+    couleur: string;
+    created_at: string;
+    updated_at: string;
+}
+export type Horaire = {
+    id: number;
+    paroisse_id: number;
+    jour: string;
+    heure: string;
+    created_at: string;
+    updated_at: string;
+}

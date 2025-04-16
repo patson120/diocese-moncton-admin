@@ -1,10 +1,21 @@
+"use client"
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ChevronDownIcon, Church, LayoutGridIcon, ListFilter, PlusIcon, SearchIcon } from 'lucide-react';
+import { Church, LayoutGridIcon, ListFilter, MailIcon, MapPinIcon, PhoneIcon, PlusIcon, SearchIcon } from 'lucide-react';
+import { useState } from 'react';
+import { Paroisse } from '../../../../types';
+import { Badge } from '@/components/ui/badge';
 
 export default function ParishSection() {
+
+    const [openModal, setOpenModal] = useState(false)
+    const [selecteParish, setSelectedParish] = useState<Paroisse | undefined>()
+
     // parish tabs data
     const clergyTabs = [
         { value: "paroisses", label: "Paroisses", active: true },
@@ -44,6 +55,25 @@ export default function ParishSection() {
             name: "Paroisse Immaculée-Conception / Acadieville",
         },
     ];
+
+    // Parish data
+    const parishData = {
+        name: "Immaculée-Conception",
+        unit: "Unité pastorale Saint-Benoît",
+        established: "1871",
+        ordained: "1871",
+        firstPriest: "1871",
+        history:
+            "L'histoire d'Acadieville est étroitement liée à celle de Rogersville. Les premiers colons (vers 1871) étaient pour la plupart des constructeurs du chemin de fer « Intercolonial ». Ces premiers déchifreurs avaient obtenu des lots de terre du gouvernement par l'entremise du député de Kent, M. Urbain Johnson.",
+        address: "4049, Route 480 Acadieville NB E4Y 1Z3",
+        phone: "(506) 775-2421",
+        email: "paracadi@live.ca",
+        massSchedule: [
+            { day: "Mardi", times: ["12h:00", "12h:00"] },
+            { day: "Mercredi", times: ["12h:00"] },
+            { day: "Dimanche", times: ["08h:00", "12h:00", "17h:00"] },
+        ],
+    };
 
     return (
         <main>
@@ -127,7 +157,11 @@ export default function ParishSection() {
                                     {priestsData.map((priest, index) => (
                                         <Card
                                             key={index}
-                                            className="w-full border-none shadow-none">
+                                            className="w-full border-none shadow-none cursor-pointer"
+                                            onClick={() => {
+                                                setOpenModal(true)
+                                                // setSelectedParish(priest)
+                                            }}>
                                             <CardContent className="p-0 space-y-2 bg-[#F9F9F0] rounded-xl flex flex-col justify-between gap-[10px] px-5 py-6">
                                                 <div className="">
                                                     <div className='h-6 w-6 mb-2'>
@@ -173,6 +207,178 @@ export default function ParishSection() {
                     </section>
                 </div>
             </Tabs>
+
+            {/* Sheet */}
+            <Sheet open={openModal} >
+                <SheetContent className="max-w-3xl min-w-3xl">
+                    <SheetHeader >
+                        <SheetTitle hidden>Détails de la paroissse</SheetTitle>
+                    </SheetHeader>
+                    <div className='absolute top-0 left-0 right-0 z-[1] bg-white'>
+                        {/* Header with action buttons */}
+                        <header className="w-full h-20 border-b border-[#d9d9d9] flex items-center justify-between px-12">
+                            <Button variant="outline" className="h-10"
+                                onClick={() => setOpenModal(false)}>
+                                Fermer
+                            </Button>
+                            <div className="flex gap-4">
+                                <Button variant="outline" className="h-10">
+                                    Désactiver
+                                </Button>
+                                <Button className="h-10 bg-blue text-white hover:bg-blue/90">
+                                    Modifier
+                                </Button>
+                            </div>
+                        </header>
+                    </div>
+
+                    {/* Scrollable content area */}
+                    <div className="h-[calc(100%-80px)] mt-24 px-7 v-scroll overflow-y-scroll">
+                        <div className="flex flex-col gap-[34px]">
+                            {/* Parish header with image and basic info */}
+                            <section className="w-full flex items-center gap-6">
+                                <img
+                                    className="w-[250px] h-[200px] object-cover"
+                                    alt="Église Immaculée-Conception"
+                                    src="/rectangle-2492.svg"
+                                />
+
+                                <div className="flex flex-col gap-5">
+                                    <div className="flex flex-col gap-1">
+                                        <h1 className="font-body-2 text-noir-dashboard text-base leading-4">
+                                            {parishData.name}
+                                        </h1>
+                                        <p className="font-body-3 text-gray">{parishData.unit}</p>
+                                    </div>
+
+                                    <div className="w-auto border-t border-b border-neutral-200 py-3.5">
+                                        <div className="flex flex-wrap gap-[16px_35px]">
+                                            <p className="font-body-3 whitespace-nowrap">
+                                                <span className="text-[#575757] whitespace-nowrap">Établi en</span>
+                                                <span className="text-[#1c0004]">
+                                                    &nbsp;{parishData.established}
+                                                </span>
+                                            </p>
+                                            <p className="font-body-3 whitespace-nowrap">
+                                                <span className="text-[#575757] whitespace-nowrap">Ordonné en</span>
+                                                <span className="text-[#1c0004]">
+                                                    &nbsp;{parishData.ordained}
+                                                </span>
+                                            </p>
+                                            <p className="font-body-3 whitespace-nowrap">
+                                                <span className="text-[#575757] whitespace-nowrap">Premier curé</span>
+                                                <span className="text-[#1c0004]">
+                                                    &nbsp;{parishData.firstPriest}
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                            {/* History section */}
+                            <section className="flex flex-col gap-2 ">
+                                <h2 className="font-heading-5 text-noir-dashboard">Histoire</h2>
+                                <p className="text-gray leading-[26px]">
+                                    {parishData.history}{" "}
+                                    <span className="font-body-3 text-[#11112e] cursor-pointer">
+                                        voir plus
+                                    </span>
+                                </p>
+                            </section>
+
+                            {/* Mass schedule section */}
+                            <section className="flex flex-col gap-2 w-full">
+                                <h2 className="font-heading-5 text-[#1c0004]">
+                                    Heure des messes
+                                </h2>
+                                <div className="flex flex-wrap gap-[12px_16px]">
+                                    {parishData.massSchedule.map((schedule, index) => (
+                                        <Card
+                                            key={index}
+                                            className="border border-[#e5e5e580] rounded-xl"
+                                        >
+                                            <CardContent className="flex items-center gap-3 p-1.5 px-2">
+                                                <span className="font-normal text-[#1c0004] text-base leading-4">
+                                                    {schedule.day}
+                                                </span>
+                                                <div className="flex items-center gap-1">
+                                                    {schedule.times.map((time, timeIndex) => (
+                                                        <Badge
+                                                            key={timeIndex}
+                                                            variant="secondary"
+                                                            className="bg-[#f9f4f5] text-gray font-body-3 rounded-lg"
+                                                        >
+                                                            {time}
+                                                        </Badge>
+                                                    ))}
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    ))}
+                                </div>
+                            </section>
+
+                            {/* Parish office contact info */}
+                            <section className="flex flex-col gap-4">
+                                <h2 className="font-heading-5 text-[#1c0004]">
+                                    Secrétariat paroissial
+                                </h2>
+                                <div className="flex flex-col gap-1.5 w-full">
+                                    <div className="flex items-start gap-2.5 w-full">
+                                        <MapPinIcon className="w-5 h-5" />
+                                        <p className="flex-1 font-body-2 text-gray">
+                                            {parishData.address}
+                                        </p>
+                                    </div>
+                                    <div className="flex items-center gap-2.5 w-full">
+                                        <PhoneIcon className="w-5 h-5" />
+                                        <p className="flex-1 font-body-2 text-gray">
+                                            {parishData.phone}
+                                        </p>
+                                    </div>
+                                    <div className="flex items-center gap-2.5 w-full">
+                                        <MailIcon className="w-5 h-5" />
+                                        <p className="flex-1 font-body-2 text-gray">
+                                            {parishData.email}
+                                        </p>
+                                    </div>
+                                </div>
+                            </section>
+
+                            {/* Map section */}
+                            <section className="w-full">
+                                <h2 className="font-heading-5 text-[#1c0004] mb-4">
+                                    Sur la carte
+                                </h2>
+                                <div className="w-full h-[350px] bg-neutral-100 rounded-3xl overflow-hidden">
+                                    <div className="h-[350px] rounded-[18px] overflow-scroll v-scroll relative">
+                                        <div className="relative w-[2100px] h-[1200px] top-[-520px] left-[-473px]">
+                                            <img
+                                                className="absolute w-[700px] h-[400px] top-[520px] left-[473px] object-cover"
+                                                alt="Map detail view"
+                                                src="/rectangle-42-1.svg"
+                                            />
+                                            <img
+                                                className="absolute w-[2100px] h-[1200px] top-0 left-0 object-cover"
+                                                alt="Map overview"
+                                                src="/rectangle-42.png"
+                                            />
+                                            <div className="absolute w-[74px] h-[74px] top-[633px] left-[741px] bg-[#8b22361a] rounded-[37px] flex items-center justify-center">
+                                                <img
+                                                    className="w-8 h-8"
+                                                    alt="Location marker"
+                                                    src="/frame-2.svg"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </SheetContent>
+            </Sheet>
         </main>
     );
 
