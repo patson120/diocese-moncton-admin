@@ -11,12 +11,14 @@ import { Church, LayoutGridIcon, ListFilter, MailIcon, MapPinIcon, PhoneIcon, Pl
 import { useEffect, useState } from 'react';
 import { Paroisse } from '../../../../types';
 import Text from '@/components/shared/Text';
+import Image from 'next/image';
 
-export default function ParishSection({ statut }: { statut: number }) {
+export default function ParishSection() {
 
     const [openModal, setOpenModal] = useState(false)
     const [selecteParish, setSelectedParish] = useState<Paroisse | undefined>()
     const [parishes, setParishes] = useState<Paroisse[]>([])
+    const [statut, setStatut] = useState(1)
 
     // parish tabs data
     const clergyTabs = [
@@ -79,7 +81,7 @@ export default function ParishSection({ statut }: { statut: number }) {
 
     useEffect(() => {
         const getActualites = async () => {
-            const response = await fetchParoisses(`?paginate=20&statuts=${statut}`)
+            const response = await fetchParoisses(`?paginate=20&statut=${statut}`)
             setParishes(response.data)
         }
         getActualites()
@@ -119,6 +121,7 @@ export default function ParishSection({ statut }: { statut: number }) {
                             <div className="flex justify-between items-center">
                                 <TabsList className="justify-start h-12 p-0 bg-[#F1F3F6] rounded-md px-3 py-2">
                                     <TabsTrigger
+                                        onClick={() => setStatut(1)}
                                         value="paroisses-actives"
                                         className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
                                         <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
@@ -126,6 +129,7 @@ export default function ParishSection({ statut }: { statut: number }) {
                                         </span>
                                     </TabsTrigger>
                                     <TabsTrigger
+                                        onClick={() => setStatut(0)}
                                         value="paroisses-fermees"
                                         className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
                                         <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
@@ -194,17 +198,19 @@ export default function ParishSection({ statut }: { statut: number }) {
                             <TabsContent value="paroisses-fermees" className="mt-6">
                                 {/* Priests grid */}
                                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                                    {priestsData.slice(2, 8).map((priest, index) => (
+                                    {parishes.map((parish, index) => (
                                         <Card
                                             key={index}
-                                            className="w-full border-none shadow-none">
+                                            className="w-full border-none shadow-none"
+                                            onClick={() => {
+                                                setOpenModal(true)
+                                                setSelectedParish(parish)
+                                            }}>
                                             <CardContent className="bg-[#F9F9F0] rounded-xl px-5 py-6">
                                                 <div className='body-1 font-bold text-black line-clamp-2'>
-                                                    {/* <Text labelFr={message.titre_fr} labelEn={message.titre_en} /> */}
-                                                    <h1 className='text-lg font-bold'>Immaculée-Conception</h1>
+                                                    <Text className='text-sm font-bold' labelFr={parish.nom} labelEn={parish.nom_en} />
                                                 </div>
                                                 <div className='body-2 line-clamp-2 text-[#575757]'>
-                                                    {/* <Text labelFr={message.message_fr} labelEn={message.message_en} /> */}
                                                     <p className='text-gray'>Paroisse fermée</p>
                                                 </div>
                                             </CardContent>
@@ -246,11 +252,15 @@ export default function ParishSection({ statut }: { statut: number }) {
                         <div className="flex flex-col gap-[34px]">
                             {/* Parish header with image and basic info */}
                             <section className="w-full flex items-center gap-6">
-                                <img
-                                    className="w-[250px] h-[200px] object-cover"
-                                    alt="Église Immaculée-Conception"
-                                    src="/rectangle-2492.svg"
-                                />
+                                <div className='relative w-[250px] h-[200px] overflow-hidden'>
+                                    <Image
+                                        fill
+                                        priority
+                                        className="object-cover"
+                                        alt="Église Immaculée-Conception"
+                                        src="/rectangle-2492.svg"
+                                    />
+                                </div>
 
                                 <div className="flex flex-col gap-5">
                                     <div className="flex flex-col gap-1">
