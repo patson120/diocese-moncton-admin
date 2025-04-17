@@ -1,20 +1,22 @@
 "use client"
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { fetchParoisses } from '@/lib/data';
 import { Church, LayoutGridIcon, ListFilter, MailIcon, MapPinIcon, PhoneIcon, PlusIcon, SearchIcon } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Paroisse } from '../../../../types';
-import { Badge } from '@/components/ui/badge';
+import Text from '@/components/shared/Text';
 
-export default function ParishSection() {
+export default function ParishSection({ statut }: { statut: number }) {
 
     const [openModal, setOpenModal] = useState(false)
     const [selecteParish, setSelectedParish] = useState<Paroisse | undefined>()
+    const [parishes, setParishes] = useState<Paroisse[]>([])
 
     // parish tabs data
     const clergyTabs = [
@@ -74,6 +76,14 @@ export default function ParishSection() {
             { day: "Dimanche", times: ["08h:00", "12h:00", "17h:00"] },
         ],
     };
+
+    useEffect(() => {
+        const getActualites = async () => {
+            const response = await fetchParoisses(`?paginate=20&statuts=${statut}`)
+            setParishes(response.data)
+        }
+        getActualites()
+    }, [statut])
 
     return (
         <main>
@@ -152,28 +162,27 @@ export default function ParishSection() {
                             </div>
 
                             <TabsContent value="paroisses-actives" className="mt-6">
-                                {/* Priests grid */}
+                                {/* Parish grid */}
                                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                                    {priestsData.map((priest, index) => (
+                                    {parishes.map((parish, index) => (
                                         <Card
                                             key={index}
                                             className="w-full border-none shadow-none cursor-pointer"
                                             onClick={() => {
                                                 setOpenModal(true)
-                                                // setSelectedParish(priest)
+                                                setSelectedParish(parish)
                                             }}>
-                                            <CardContent className="p-0 space-y-2 bg-[#F9F9F0] rounded-xl flex flex-col justify-between gap-[10px] px-5 py-6">
+                                            <CardContent className="p-0 w-full h-full space-y-2 bg-[#F9F9F0] rounded-xl flex flex-col justify-between gap-[10px] px-5 py-6">
                                                 <div className="">
                                                     <div className='h-6 w-6 mb-2'>
                                                         <Church className='h-5 w-5' />
                                                     </div>
                                                     <div className='body-1 font-bold text-black line-clamp-2'>
-                                                        {/* <Text labelFr={message.titre_fr} labelEn={message.titre_en} /> */}
-                                                        <h1 className='text-lg font-bold'>Immaculée-Conception</h1>
+                                                        <Text className='text-sm font-bold' labelFr={parish.nom} labelEn={parish.nom_en} />
+                                                        {/* <h1 className='text-lg font-bold'>{parish.nom}</h1> */}
                                                     </div>
-                                                    <div className='body-2 line-clamp-2 text-[#575757]'>
-                                                        {/* <Text labelFr={message.message_fr} labelEn={message.message_en} /> */}
-                                                        <p className='text-gray'>Unité pastorale Saint-Benoît</p>
+                                                    <div className='body-2 mt-2 line-clamp-2 text-[#575757]'>
+                                                        <p className='text-sm'>{parish.adresse}</p>
                                                     </div>
                                                 </div>
                                             </CardContent>
@@ -245,9 +254,9 @@ export default function ParishSection() {
 
                                 <div className="flex flex-col gap-5">
                                     <div className="flex flex-col gap-1">
-                                        <h1 className="font-body-2 text-noir-dashboard text-base leading-4">
-                                            {parishData.name}
-                                        </h1>
+                                        <div className="font-body-2 text-noir-dashboard text-base leading-4">
+                                            <Text className='text-sm font-bold' labelFr={selecteParish?.nom} labelEn={selecteParish?.nom_en} />
+                                        </div>
                                         <p className="font-body-3 text-gray">{parishData.unit}</p>
                                     </div>
 
@@ -256,19 +265,19 @@ export default function ParishSection() {
                                             <p className="font-body-3 whitespace-nowrap">
                                                 <span className="text-[#575757] whitespace-nowrap">Établi en</span>
                                                 <span className="text-[#1c0004]">
-                                                    &nbsp;{parishData.established}
+                                                    &nbsp;{selecteParish?.etabli_le}
                                                 </span>
                                             </p>
                                             <p className="font-body-3 whitespace-nowrap">
                                                 <span className="text-[#575757] whitespace-nowrap">Ordonné en</span>
                                                 <span className="text-[#1c0004]">
-                                                    &nbsp;{parishData.ordained}
+                                                    &nbsp;{selecteParish?.ordonne_le}
                                                 </span>
                                             </p>
                                             <p className="font-body-3 whitespace-nowrap">
                                                 <span className="text-[#575757] whitespace-nowrap">Premier curé</span>
                                                 <span className="text-[#1c0004]">
-                                                    &nbsp;{parishData.firstPriest}
+                                                    &nbsp;{selecteParish?.premier_cure}
                                                 </span>
                                             </p>
                                         </div>
@@ -280,10 +289,10 @@ export default function ParishSection() {
                             <section className="flex flex-col gap-2 ">
                                 <h2 className="font-heading-5 text-noir-dashboard">Histoire</h2>
                                 <p className="text-gray leading-[26px]">
-                                    {parishData.history}{" "}
-                                    <span className="font-body-3 text-[#11112e] cursor-pointer">
+                                    {selecteParish?.histoire}{" "}
+                                    {/* <span className="font-body-3 text-[#11112e] cursor-pointer">
                                         voir plus
-                                    </span>
+                                    </span> */}
                                 </p>
                             </section>
 
@@ -293,17 +302,17 @@ export default function ParishSection() {
                                     Heure des messes
                                 </h2>
                                 <div className="flex flex-wrap gap-[12px_16px]">
-                                    {parishData.massSchedule.map((schedule, index) => (
+                                    {selecteParish?.horaireparoisses.map((schedule, index) => (
                                         <Card
                                             key={index}
                                             className="border border-[#e5e5e580] rounded-xl"
                                         >
                                             <CardContent className="flex items-center gap-3 p-1.5 px-2">
                                                 <span className="font-normal text-[#1c0004] text-base leading-4">
-                                                    {schedule.day}
+                                                    {schedule.jour}
                                                 </span>
                                                 <div className="flex items-center gap-1">
-                                                    {schedule.times.map((time, timeIndex) => (
+                                                    {schedule.heure.split(";").map((time, timeIndex) => (
                                                         <Badge
                                                             key={timeIndex}
                                                             variant="secondary"
@@ -328,19 +337,19 @@ export default function ParishSection() {
                                     <div className="flex items-start gap-2.5 w-full">
                                         <MapPinIcon className="w-5 h-5" />
                                         <p className="flex-1 font-body-2 text-gray">
-                                            {parishData.address}
+                                            {selecteParish?.adresse}
                                         </p>
                                     </div>
                                     <div className="flex items-center gap-2.5 w-full">
                                         <PhoneIcon className="w-5 h-5" />
                                         <p className="flex-1 font-body-2 text-gray">
-                                            {parishData.phone}
+                                            {selecteParish?.telephone}
                                         </p>
                                     </div>
                                     <div className="flex items-center gap-2.5 w-full">
                                         <MailIcon className="w-5 h-5" />
                                         <p className="flex-1 font-body-2 text-gray">
-                                            {parishData.email}
+                                            {selecteParish?.email}
                                         </p>
                                     </div>
                                 </div>

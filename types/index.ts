@@ -57,6 +57,7 @@ export type Paroisse = {
     id: number;
     type_paroisse_id: number;
     nom: string;
+    nom_en: string;
     adresse: string;
     telephone: string;
     email: string;
