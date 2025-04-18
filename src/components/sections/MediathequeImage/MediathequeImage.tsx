@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PlusIcon } from "lucide-react";
-import Image from "next/image";
 import { JSX } from "react";
-import { VideoContentSection } from "./VideoContentSection";
 import { AudioContentSection } from "./AudioContentSection";
+import { DocumentContentSection } from "./DocumentContentSection";
+import ImageContentSection from "./ImageContentSection";
+import { VideoContentSection } from "./VideoContentSection";
 
 export default function MediathequeImage(): JSX.Element {
 
@@ -17,11 +17,6 @@ export default function MediathequeImage(): JSX.Element {
     { value: "videos", label: "Vidéos", active: false },
     { value: "audio", label: "Audio", active: false },
   ];
-
-  // Sample image grid data
-  const imageGrid = Array(20).fill({
-    src: "/mask-group.png",
-  });
 
   return (
     <Tabs defaultValue="images" className="w-full bg-[#f0f0f4]">
@@ -54,27 +49,13 @@ export default function MediathequeImage(): JSX.Element {
       <TabsContent
         value="images"
         className="border-none">
-        {/* Image grid */}
-        <div className="flex-1 p-6">
-          <div className=" bg-white rounded-2xl p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 gap-4">
-              {imageGrid.map((image, index) => (
-                <Card
-                  key={index}
-                  className="overflow-hidden rounded-lg border-none relative shrink-0 min-h-[150px] max-h-[200px]"
-                >
-                  <Image
-                    alt={`Image ${index + 1}`}
-                    src={`/image1.png`}
-                    style={{ objectFit: 'cover' }}
-                    fill
-                    priority
-                  />
-                </Card>
-              ))}
-            </div>
-          </div>
-        </div>
+        <ImageContentSection />
+      </TabsContent>
+      <TabsContent
+        value="documents"
+        className="border-none">
+        {/* Documents grid */}
+        <DocumentContentSection />
       </TabsContent>
       <TabsContent
         value="videos"

@@ -8,14 +8,13 @@ import {
   LayoutGridIcon,
   ListFilter,
   MoreHorizontalIcon,
-  SearchIcon,
-  TvMinimalPlay
+  SearchIcon
 } from "lucide-react";
 import { JSX } from "react";
 
 export const AudioContentSection = (): JSX.Element => {
   // Data for video cards
-  const videoCards = [
+  const audioCards = [
     {
       title: "L'Évangile du dimanche expliqué",
       url: "https://dfjlijgjfglj...",
@@ -118,7 +117,7 @@ export const AudioContentSection = (): JSX.Element => {
 
         <ScrollArea className="w-full h-[500px]">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 gap-3">
-            {videoCards.map((card, index) => (
+            {audioCards.map((card, index) => (
               <Card
                 key={index}
                 className="h-[170px] bg-[#f9f9f0] rounded-2xl relative border-none"
