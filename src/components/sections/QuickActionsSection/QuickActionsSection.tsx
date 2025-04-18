@@ -142,8 +142,8 @@ const QuickActionsSection = (): JSX.Element => {
             {
               calendarEvents.map((event, index) => (
                 <div key={index} className="bg-[#F1F3F64D]/30 p-4 rounded-lg border border-gray/20 flex flex-col justify-evenly">
-                  <div className="h-10 w-10 rounded-xl flex justify-center items-center mb-3">
-                    <Calendar1 className="h-6 w-6 text-blue" />
+                  <div className="h-8 w-8 rounded-xl flex justify-center items-center mb-3">
+                    <Calendar1 className="h-5 w-5 text-blue" />
                   </div>
                   <div>
                     <h1 className="font-bold">{formatDateToLocal(new Date(event.created_at!).toISOString())} - {event.heure_event.toString().slice(0, 5)} </h1>
