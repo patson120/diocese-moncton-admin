@@ -1,2 +1,2 @@
 
-export const BASE_URL = "http://diocese.wds-project.com/api"
+export const BASE_URL = "https://diocese.wds-project.com/api"
