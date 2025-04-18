@@ -26,39 +26,6 @@ export default function ParishSection() {
         { value: "unites-paroissiales", label: "Unités paroissiales", active: false },
     ];
 
-    // Priest data
-    const priestsData = [
-        {
-            name: "Paroisse Immaculée-Conception / Acadieville",
-        },
-        {
-            name: "Notre Dame de Fatima",
-        },
-        {
-            name: "Saint François-de-sales",
-        },
-        {
-            name: "Paroisse Immaculée-Conception / Acadieville",
-        },
-        {
-            name: "Notre Dame de Fatima",
-        },
-        {
-            name: "Saint François-de-sales",
-        },
-        {
-            name: "Paroisse Immaculée-Conception / Acadieville",
-        },
-        {
-            name: "Notre Dame de Fatima",
-        },
-        {
-            name: "Saint François-de-sales",
-        },
-        {
-            name: "Paroisse Immaculée-Conception / Acadieville",
-        },
-    ];
 
     // Parish data
     const parishData = {

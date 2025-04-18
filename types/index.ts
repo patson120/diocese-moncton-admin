@@ -94,3 +94,24 @@ export type Horaire = {
     created_at: string;
     updated_at: string;
 }
+
+export type Event = {
+    id: number;
+    paroisse_id: number;
+    categorie_id: number;
+    titre_fr: string;
+    titre_en: string;
+    heure_event: string;
+    date_event: string;
+    prevId: number | null;
+    nextId: number | null;
+    lieu: string;
+    gps: string;
+    contact: string;
+    description_fr: string;
+    description_en: string;
+    created_at: string;
+    updated_at: string;
+    paroisse: Paroisse;
+    categorie: Category;
+}

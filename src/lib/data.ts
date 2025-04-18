@@ -88,3 +88,16 @@ export async function fetchParoisses(params: string = "") {
         throw new Error('Failed to fetch paroisses data.');
     }
 }
+
+export async function fetchEvenements(params: string = "") {
+    try {
+        let url = `${BASE_URL}/evenements${params}`;
+        let body = {}
+        const headers = {}
+        return await fetchAPI(url, 'GET', headers, body);
+
+    } catch (error) {
+        console.error('Database Error:', error);
+        throw new Error('Failed to fetch evenements data.');
+    }
+}

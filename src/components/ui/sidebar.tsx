@@ -75,7 +75,7 @@ export function Sidebar({ className }: SidebarProps) {
           icon: CalendarDays,
           label: "Evènements",
           active: false,
-          href: "#" // "/calendar",
+          href: "/events",
         },
         {
           icon: Church,

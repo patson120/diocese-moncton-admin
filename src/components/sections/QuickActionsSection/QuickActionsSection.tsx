@@ -1,71 +1,59 @@
+"use client"
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { fetchEvenements } from "@/lib/data";
 import { BookOpenText, Calendar1, CalendarPlus, Layers, MapPin } from "lucide-react";
 import Link from "next/link";
-import { JSX } from "react";
+import { JSX, useEffect, useState } from "react";
+import { Event } from "../../../../types";
+import Text from "@/components/shared/Text";
+import { formatDateToLocal } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 const QuickActionsSection = (): JSX.Element => {
-  // Quick action data
-  const quickActions = [
-    {
-      title: "Créer message de l'archevêque",
-      description: "Lorem ipsum dolor sit amet",
-    },
-    {
-      title: "Créer un évènement",
-      description: "Lorem ipsum dolor sit amet",
-    },
-    {
-      title: "Créer une page",
-      description: "Lorem ipsum dolor sit amet",
-    },
-  ];
+
+  const router = useRouter()
+
+  const [calendarEvents, setCalendarEvents] = useState<Event[]>([])
 
   // Calendar events data
-  const calendarEvents = [
-    {
-      date: "Lun 10 Avril - 18h30",
-      title: "Cheminer ensemble durant le carême 2025",
-      lieu: "Église Notre-Dame ..."
-    },
-    {
-      date: "Dim 12 avril - 14h00",
-      title: "Prière d'espérance pour la paix.",
-      lieu: "Église Notre-Dame ..."
-    },
-    {
-      date: "Jeu 14 avril - 10h30",
-      title: "Seniors Connect",
-      lieu: "Église Notre-Dame ..."
-    },
-    {
-      date: "17 Avril à 18h30",
-      title: "Cheminer ensemble durant le carême 2025",
-      lieu: "Église Notre-Dame ..."
-    },
-    {
-      date: "22 Avril à 18h30",
-      title: "Cheminer ensemble durant le carême 2025",
-      lieu: "Église Notre-Dame ..."
-    },
+  // const calendarEvents = [
+  //   {
+  //     date: "Lun 10 Avril - 18h30",
+  //     title: "Cheminer ensemble durant le carême 2025",
+  //     lieu: "Église Notre-Dame ..."
+  //   },
+  //   {
+  //     date: "Dim 12 avril - 14h00",
+  //     title: "Prière d'espérance pour la paix.",
+  //     lieu: "Église Notre-Dame ..."
+  //   },
+  //   {
+  //     date: "Jeu 14 avril - 10h30",
+  //     title: "Seniors Connect",
+  //     lieu: "Église Notre-Dame ..."
+  //   },
+  //   {
+  //     date: "17 Avril à 18h30",
+  //     title: "Cheminer ensemble durant le carême 2025",
+  //     lieu: "Église Notre-Dame ..."
+  //   },
+  //   {
+  //     date: "22 Avril à 18h30",
+  //     title: "Cheminer ensemble durant le carême 2025",
+  //     lieu: "Église Notre-Dame ..."
+  //   },
 
-  ];
+  // ];
 
-  // Parishes data
-  const parishesVisited = [
-    {
-      name: "Saint-anne",
-      visits: "98 visites",
-    },
-    {
-      name: "Saint-anne",
-      visits: "98 visites",
-    },
-    {
-      name: "Saint-anne",
-      visits: "98 visites",
-    },
-  ];
+  useEffect(() => {
+    const getEvenements = async () => {
+      const response = await fetchEvenements(`?paginate=5`)
+      setCalendarEvents(response.data)
+    }
+    getEvenements()
+  }, [])
 
   return (
     <div>
@@ -139,9 +127,10 @@ const QuickActionsSection = (): JSX.Element => {
               <h2 className="font-heading-5 font-[number:var(--heading-5-font-weight)] text-blue text-[length:var(--heading-5-font-size)] tracking-[var(--heading-5-letter-spacing)] leading-[var(--heading-5-line-height)]">
                 Evènements
               </h2>
-              <p className="text-gray font-normal text-sm">Les 7 évènements iminents</p>
+              <p className="text-gray font-normal text-sm">Les 5 évènements iminents</p>
             </div>
             <Button
+              onClick={() => router.push("/events")}
               variant="link"
               className="p-0 h-auto font-body-3 font-semibold text-noir-dashboard text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]"
             >
@@ -149,7 +138,7 @@ const QuickActionsSection = (): JSX.Element => {
             </Button>
           </div>
 
-          <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {
               calendarEvents.map((event, index) => (
                 <div key={index} className="bg-[#F1F3F64D]/30 p-4 rounded-lg border border-gray/20 flex flex-col justify-evenly">
@@ -157,8 +146,10 @@ const QuickActionsSection = (): JSX.Element => {
                     <Calendar1 className="h-6 w-6 text-blue" />
                   </div>
                   <div>
-                    <h1 className="text-lg font-bold">{event.date}</h1>
-                    <p className="text-gray line-clamp-2 my-3 py-2 border-y border-dashed border-y-gray/20">{event.title}</p>
+                    <h1 className="font-bold">{formatDateToLocal(new Date(event.created_at!).toISOString())} - {event.heure_event.toString().slice(0, 5)} </h1>
+                    <div className="my-3 py-2 border-y border-dashed border-y-gray/20">
+                      <Text className="text-gray line-clamp-2" labelEn={event.titre_en} labelFr={event.titre_fr} />
+                    </div>
                   </div>
                   <div className="flex space-x-2">
                     <MapPin className="h-5 w-5 text-gray" />
