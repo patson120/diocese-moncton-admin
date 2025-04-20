@@ -3,18 +3,18 @@
 import { Editor } from '@/components/Editor/Editor'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { Loader } from '@/components/ui/loader'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { createActualite, } from '@/lib/data'
 import { TabsContent } from '@radix-ui/react-tabs'
 import { ArrowLeft, CopyIcon, ExternalLinkIcon, } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { Actualite } from '../../../../types'
 import ActuDialog from './ActuDialog'
-import { Loader } from '@/components/ui/loader'
-import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { createActualite } from '@/lib/data'
 import { toast } from 'sonner'
 
 export default function CreateActutalite() {
@@ -41,13 +41,17 @@ export default function CreateActutalite() {
     setIsLoading(true)
 
     // const formdata = new FormData();
+
+    // formdata.append("path", fileImage!);
     // formdata.append("label", "actualite");
-    // formdata.append("value", "6");
-    // formdata.append("path", fileImage!, "/C:/Users/Patri/Downloads/cnps.png");
+    // formdata.append("value", "7");
+    // formdata.append("fichier", fileImage!);
 
     // const response = await createGalerie(formdata)
+    // const response = await apiClient.post('/api/galeries', formdata);
 
-    // console.log(fileImage!)
+    // console.log(fileImage!.name)
+    // console.log(response)
 
     const response = await createActualite({
       ...data,
@@ -55,7 +59,7 @@ export default function CreateActutalite() {
       titre_en: title.english,
       description_fr: content.french,
       description_en: content.english,
-      is_brouillon: 1,
+      is_brouillon: -1,
     })
 
     if (response.id) {
@@ -105,7 +109,6 @@ export default function CreateActutalite() {
     // else {
     //   toast.success(JSON.stringify(response))
     // }
-
   }
 
   const handleCoverImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -152,7 +155,6 @@ export default function CreateActutalite() {
 
   return (
     <div className="relative w-full h-screen bg-[#f0f0f4] overflow-x-hidden">
-
       {/* Secondary navigation bar */}
       <div className="fixed w-full h-[70px] z-10 top-0 left-0 bg-white flex items-center justify-between px-[50px]">
         {/* Back to home button */}
@@ -380,8 +382,6 @@ export default function CreateActutalite() {
           </CardContent>
         </Card>
       </div>
-
-
 
       <Dialog open={isEnglishVersion}>
         <DialogContent aria-describedby={undefined} className="max-w-sm p-10 text-center rounded-2xl">

@@ -55,9 +55,10 @@ export async function fetchActualites(params: string = "") {
 export async function createGalerie(body: any) {
     try {
         let url = `${BASE_URL}/galeries`;
-        const headers = {}
+        const headers = {
+            'Accept': 'application/json',
+        }
         return await fetchAPI(url, 'POST', headers, body);
-
     } catch (error) {
         throw new Error('Failed to create message data.');
     }

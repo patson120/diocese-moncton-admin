@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { JSX } from "react";
+import { AddMemberFormSection } from "../AddMemberFormSection";
 
 export const ClergPretres = (): JSX.Element => {
 
@@ -73,10 +74,12 @@ export const ClergPretres = (): JSX.Element => {
               </TabsList>
             </div>
 
-            <Button className="h-10 gap-2 px-3.5 py-0 bg-blue rounded-[7px] text-white">
+            {/* <Button className="h-10 gap-2 px-3.5 py-0 bg-blue rounded-[7px] text-white">
               <PlusIcon className="w-5 h-5" />
               <span className="font-body-3 text-sm">Ajouter un membre</span>
-            </Button>
+            </Button> */}
+
+            <AddMemberFormSection />
           </div>
         </header>
 
