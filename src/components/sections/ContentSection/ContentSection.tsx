@@ -3,12 +3,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  ChevronDownIcon,
   FileTextIcon,
   LayoutGridIcon,
   ListFilter,
   MoreVerticalIcon,
-  SearchIcon,
+  SearchIcon
 } from "lucide-react";
 import { JSX } from "react";
 
