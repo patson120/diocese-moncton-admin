@@ -1,3 +1,5 @@
+'use client'
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,11 +10,14 @@ import {
   SearchIcon
 } from "lucide-react";
 import Image from "next/image";
-import { JSX } from "react";
+import { JSX, useState } from "react";
 import { AddMemberFormSection } from "../AddMemberFormSection";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 export const ClergPretres = (): JSX.Element => {
+
+  const [openModal, setOpenModal] = useState(false)
 
   // Clergy tabs data
   const clergyTabs = [
@@ -46,11 +51,6 @@ export const ClergPretres = (): JSX.Element => {
       parish: "Unité pastorale Saint-Jean XXIII",
     },
   ];
-
-  // Sample image grid data
-  const imageGrid = Array(5).fill({
-    src: "/clerge-1.png",
-  });
 
   return (
     <main>
@@ -96,8 +96,9 @@ export const ClergPretres = (): JSX.Element => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
                   {priestsData.map((priest, index) => (
                     <Card
+                      onClick={() => setOpenModal(true)}
                       key={index}
-                      className="w-full border-none shadow-none"
+                      className="w-full border-none shadow-none cursor-pointer"
                     >
                       <CardContent className="p-0 space-y-3">
                         <div className="relative w-full h-[150px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
@@ -189,8 +190,9 @@ export const ClergPretres = (): JSX.Element => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
                       {priestsData.map((priest, index) => (
                         <Card
+                          onClick={() => setOpenModal(true)}
                           key={index}
-                          className="w-full border-none shadow-none"
+                          className="w-full border-none shadow-none cursor-pointer"
                         >
                           <CardContent className="p-0 space-y-3">
                             <div className="relative self-stretch w-full h-[150px] bg-[#f0f0f0] rounded-xl flex items-center justify-center">
@@ -297,8 +299,9 @@ export const ClergPretres = (): JSX.Element => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
                       {priestsData.map((priest, index) => (
                         <Card
+                        onClick={() => setOpenModal(true)}
                           key={index}
-                          className="w-full border-none shadow-none"
+                          className="w-full border-none shadow-none cursor-pointer"
                         >
                           <CardContent className="p-0 space-y-3">
                             <div className="relative w-full h-[150px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
@@ -406,8 +409,9 @@ export const ClergPretres = (): JSX.Element => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
                       {[...priestsData, ...priestsData].map((priest, index) => (
                         <Card
+                        onClick={() => setOpenModal(true)}
                           key={index}
-                          className="w-full border-none shadow-none"
+                          className="w-full border-none shadow-none cursor-pointer"
                         >
                           <CardContent className="p-0 space-y-3">
                             <div className="relative w-full h-[150px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
@@ -464,6 +468,73 @@ export const ClergPretres = (): JSX.Element => {
           </section>
         </div>
       </Tabs>
+
+      {/* Sheet */}
+      <Sheet open={openModal} >
+        {/* <SheetTrigger asChild>
+                            <Button variant="outline">Ouvrir le panneau</Button>
+                        </SheetTrigger> */}
+        <SheetContent className="max-w-2xl min-w-2xl">
+          <SheetHeader className='relative'>
+            <SheetTitle hidden>Détails du membre</SheetTitle>
+          </SheetHeader>
+          <div className='absolute top-0 left-0 right-0 z-[1] bg-white'>
+            {/* Header with action buttons */}
+            <header className="w-full h-20 border-b border-[#d9d9d9] flex items-center justify-between px-12">
+              <Button variant="outline" className="h-10"
+                onClick={() => setOpenModal(false)}
+              >
+                Fermer
+              </Button>
+              <div className="flex gap-4">
+                <Button variant="outline" className="h-10">
+                  Désactiver
+                </Button>
+                <Button className="h-10 bg-blue text-white hover:bg-blue/90">
+                  Modifier
+                </Button>
+              </div>
+            </header>
+          </div>
+
+          {/* Scrollable content area */}
+          <ScrollArea className="w-full h-[calc(100%-80px)] mt-24 px-7">
+            <div className='flex flex-col gap-6'>
+              <div className="flex gap-4">
+                <div className="h-48  w-48 relative self-stretch rounded-xl borderborder-gray bg-[#f0f0f0] flex items-center justify-center">
+                  <Image
+                    fill
+                    priority
+                    className="object-cover"
+                    alt="Vector"
+                    src="/clerge-1.png"
+                  />
+                </div>
+                <div className="flex flex-col space-y-3">
+                  <div>
+                    <h4 className="text-lg font-bold">P. Denis Belliveau</h4>
+                    <p className="text-gray">En activité</p>
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-bold">Coordonnées</h4>
+                    <p className="text-gray">-</p>
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-bold">Fonctions</h4>
+                    <p className="text-gray">-</p>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <h1 className="text-blue text-lg font-bold">Biographie</h1>
+                <p className="text-gray mt-2">Né le 12 avril 1966 à Moncton ; fils d’Ernest Belliveau et Louina LeBlanc.
+                  Études : Collège Dominicain, Ottawa, Bruxelles.
+                  Ordination : le 13 octobre 1992 à Memramcook par Mgr Donat Chiasson.  Ministère : vicaire : Shédiac (1992) ; curé : Pointe-Sapin (1994-1998), Ste-Marie et St-Norbert (1998-2000), Rogersville (2000-2004), Études à Bruxelles (2004-2005), Aumônier assistant aux hôpitaux de Moncton et prêtre assistant aux paroisses St. Bernard et St. Augustin (2006-2007), Aumônier des hôpitaux de Moncton et du Foyer pour les vétérans (2007-).</p>
+              </div>
+            </div>
+          </ScrollArea>
+        </SheetContent>
+      </Sheet>
     </main>
   );
 };

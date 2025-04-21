@@ -1,13 +1,12 @@
 import MessageComp from '@/components/shared/MessageComp';
+import Text from '@/components/shared/Text';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { fetchMessages } from '@/lib/data';
+import { formatDateToLocal } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import { Message } from '../../../../types';
-import Text from '@/components/shared/Text';
-import { formatDateToLocal } from '@/lib/utils';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function MessageContent({ etat }: { etat: number }) {
     const [messages, setMessages] = useState<Message[]>([])

@@ -2,6 +2,7 @@ import { PlusIcon } from "lucide-react";
 import React, { JSX } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AddUserFormSection } from "@/components/sections/AddUserFormSection";
 
 export const PageMenuSection = (): JSX.Element => {
   // Data for tabs
@@ -35,12 +36,7 @@ export const PageMenuSection = (): JSX.Element => {
           </Tabs>
         </div>
 
-        <Button className="bg-blue rounded-[7px] h-10 gap-2 px-3.5 py-0">
-          <PlusIcon className="w-5 h-5" />
-          <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-            Ajouter un utilisateur
-          </span>
-        </Button>
+        <AddUserFormSection />
       </div>
     </header>
   );
