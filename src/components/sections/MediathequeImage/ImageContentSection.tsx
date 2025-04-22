@@ -7,17 +7,8 @@ import Image from 'next/image';
 import { Image as ImageType } from '../../../../types';
 
 export default async function ImageContentSection() {
-    // const [images, setImages] = useState<ImageType[]>([])
     const response: ImageType[] = await apiClient.get('/api/galeries');
     const images = response.filter(item => !item.path.toString().includes("https"))
-
-    // useEffect(() => {
-    //     (async () => {
-    //         const response: ImageType[] = await apiClient.get('/api/galeries');
-    //         setImages(response.filter(item => !item.path.toString().includes("https")))
-    //     })()
-    // }, [])
-
 
     return (
         <section className="w-full flex-1 p-6">
