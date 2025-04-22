@@ -31,17 +31,11 @@ export default async function ImageContentSection() {
                                 className="overflow-hidden rounded-lg border-none relative shrink-0 min-h-[150px] max-h-[200px]">
                                 <Image
                                     alt={`Image ${index + 1}`}
-                                    src={`https://diocese.wds-project.com/${image.path!}`}
+                                    src={`${process.env.NEXT_PUBLIC_API_URL}/${image.path!}`}
                                     style={{ objectFit: 'cover' }}
                                     fill
                                     priority
                                 />
-                                {/* <img
-                                    className='h-full w-full'
-                                    alt={`Image ${index + 1}`}
-                                    src={`https://diocese.wds-project.com/${image.path}`}
-                                    style={{ objectFit: 'cover' }}
-                                /> */}
                             </Card>
                         ))}
                     </div>
