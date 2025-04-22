@@ -4,9 +4,10 @@ import { apiClient } from '@/lib/axios';
 import { Image as ImageType } from '../../../../types';
 
 export default async function ImageContentSection() {
-    // const response: ImageType[] = await apiClient.get('/api/galeries');
-    // const images = response.filter(item => !item.path.toString().includes("https"))
-
+    const response: ImageType[] = await apiClient.get('/api/galeries');
+    const images = response.filter(item => !item.path.toString().includes("https"))
+    console.log(images);
+    
     return (
         <section className="w-full flex-1 p-6">
             <div className="flex flex-col bg-white w-full items-start gap-6 rounded-2xl p-6">
