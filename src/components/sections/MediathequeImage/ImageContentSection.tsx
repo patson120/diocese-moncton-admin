@@ -1,4 +1,3 @@
-import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { apiClient } from '@/lib/axios';
 import { Image as ImageType } from '../../../../types';
@@ -6,7 +5,7 @@ import { Image as ImageType } from '../../../../types';
 export default async function ImageContentSection() {
     const response: ImageType[] = await apiClient.get('/api/galeries');
     const images = response.filter(item => !item.path.toString().includes("https"))
-    console.log(images);
+    // console.log(images);
     
     return (
         <section className="w-full flex-1 p-6">
