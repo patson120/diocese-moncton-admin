@@ -4,7 +4,6 @@ import { PlusIcon } from "lucide-react";
 import { JSX } from "react";
 import { AudioContentSection } from "./AudioContentSection";
 import { DocumentContentSection } from "./DocumentContentSection";
-import ImageContentSection from "./ImageContentSection";
 import { VideoContentSection } from "./VideoContentSection";
 
 export default function MediathequeImage(): JSX.Element {
@@ -49,7 +48,7 @@ export default function MediathequeImage(): JSX.Element {
       <TabsContent
         value="images"
         className="border-none">
-        <ImageContentSection />
+        {/* <ImageContentSection /> */}
       </TabsContent>
       <TabsContent
         value="documents"

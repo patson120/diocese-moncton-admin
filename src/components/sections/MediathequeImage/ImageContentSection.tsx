@@ -24,12 +24,12 @@ export default async function ImageContentSection() {
                                     fill
                                     priority
                                 /> */}
-                                {/* <img
+                                <img
                                     className='h-full w-full'
                                     alt={`Image ${index + 1}`}
                                     src={`https://diocese.wds-project.com/${image.path}`}
                                     style={{ objectFit: 'cover' }}
-                                /> */}
+                                />
 
                                 
                             </Card>
