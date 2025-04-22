@@ -1,10 +1,11 @@
 'use client'
 
+import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { apiClient } from '@/lib/axios';
-import { Image, Image as ImageType } from '../../../../types';
-import { Card } from '@/components/ui/card';
 import { useEffect, useState } from 'react';
+import { Image as ImageType } from '../../../../types';
+import Image from 'next/image';
 
 export default function ImageContentSection() {
     const [images, setImages] = useState<ImageType[]>([])
@@ -27,21 +28,19 @@ export default function ImageContentSection() {
                             <Card
                                 key={index}
                                 className="overflow-hidden rounded-lg border-none relative shrink-0 min-h-[150px] max-h-[200px]">
-                                {/* <Image
+                                <Image
                                     alt={`Image ${index + 1}`}
-                                    src={`${process.env.NEXT_PUBLIC_API_URL}/${image.path!}`}
+                                    src={`https://diocese.wds-project.com/${image.path!}`}
                                     style={{ objectFit: 'cover' }}
                                     fill
                                     priority
-                                /> */}
-                                <img
+                                />
+                                {/* <img
                                     className='h-full w-full'
                                     alt={`Image ${index + 1}`}
                                     src={`https://diocese.wds-project.com/${image.path}`}
                                     style={{ objectFit: 'cover' }}
-                                />
-
-
+                                /> */}
                             </Card>
                         ))}
                     </div>
