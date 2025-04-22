@@ -1,21 +1,22 @@
-'use client'
+// 'use client'
 
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { apiClient } from '@/lib/axios';
-import { useEffect, useState } from 'react';
-import { Image as ImageType } from '../../../../types';
 import Image from 'next/image';
+import { Image as ImageType } from '../../../../types';
 
-export default function ImageContentSection() {
-    const [images, setImages] = useState<ImageType[]>([])
+export default async function ImageContentSection() {
+    // const [images, setImages] = useState<ImageType[]>([])
+    const response: ImageType[] = await apiClient.get('/api/galeries');
+    const images = response.filter(item => !item.path.toString().includes("https"))
 
-    useEffect(() => {
-        (async () => {
-            const response: ImageType[] = await apiClient.get('/api/galeries');
-            setImages(response.filter(item => !item.path.toString().includes("https")))
-        })()
-    }, [])
+    // useEffect(() => {
+    //     (async () => {
+    //         const response: ImageType[] = await apiClient.get('/api/galeries');
+    //         setImages(response.filter(item => !item.path.toString().includes("https")))
+    //     })()
+    // }, [])
 
 
     return (
