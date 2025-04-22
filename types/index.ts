@@ -115,3 +115,14 @@ export type Event = {
     paroisse: Paroisse;
     categorie: Category;
 }
+
+export type Image = {
+    id: number;
+    path: string;
+    path_en: string | null;
+    label: string;
+    value: number;
+    comment: string;
+    created_at: string;
+    updated_at: string;
+}

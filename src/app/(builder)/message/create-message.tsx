@@ -25,10 +25,7 @@ export default function CreateMessage() {
   })
 
   const handlePublish = async () => {
-    // console.log({ title });
-    // console.log({ content });
-
-    if (title.french.trim() == '' || title.french.trim()) {
+    if (title.french.trim() == '' || title.english.trim() == '') {
       toast.warning(
         <div className='p-3 bg-red-500 text-white rounded-md'>
           Veuillez renseigner les titres dans les deux langues
@@ -38,7 +35,7 @@ export default function CreateMessage() {
       return;
     }
 
-    if (content.french.trim() == '' || content.french.trim()) {
+    if (content.french.trim() == '' || content.english.trim() == '') {
       toast.warning("Veuillez renseigner les contenus dans les deux langues")
       return;
     }
