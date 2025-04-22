@@ -5,6 +5,7 @@ import { JSX } from "react";
 import { AudioContentSection } from "./AudioContentSection";
 import { DocumentContentSection } from "./DocumentContentSection";
 import { VideoContentSection } from "./VideoContentSection";
+import ImageContentSection from "./ImageContentSection";
 
 export default function MediathequeImage(): JSX.Element {
 
@@ -48,7 +49,7 @@ export default function MediathequeImage(): JSX.Element {
       <TabsContent
         value="images"
         className="border-none">
-        {/* <ImageContentSection /> */}
+        <ImageContentSection />
       </TabsContent>
       <TabsContent
         value="documents"
