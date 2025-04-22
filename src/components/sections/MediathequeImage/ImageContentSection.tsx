@@ -27,7 +27,7 @@ export default async function ImageContentSection() {
                                 <img
                                     className='h-full w-full'
                                     alt={`Image ${index + 1}`}
-                                    src={`${process.env.NEXT_PUBLIC_API_URL}/${image.path}`}
+                                    src={`https://diocese.wds-project.com/${image.path}`}
                                     style={{ objectFit: 'cover' }}
                                 />
 
