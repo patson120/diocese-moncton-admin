@@ -192,17 +192,17 @@ export default function ContentDisplaySection() {
                 </div>
               </div>
               <TabsContent value="published" className="mt-6 space-y-6">
-                <ActualiteContent is_brouillon={1} />
+                <ActualiteContent is_actif={1} />
               </TabsContent>
 
               <TabsContent value="pending" className="mt-6 space-y-6">
                 {/* Content for pending tab */}
-                <ActualiteContent is_brouillon={0} />
+                <ActualiteContent is_actif={0} />
               </TabsContent>
 
               <TabsContent value="disabled" className="mt-6 space-y-6">
                 {/* Content for disabled tab */}
-                <ActualiteContent is_brouillon={-1} />
+                <ActualiteContent is_actif={-1} />
               </TabsContent>
             </Tabs>
           </TabsContent>

@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react';
 import { Paroisse } from '../../../../types';
 import Text from '@/components/shared/Text';
 import Image from 'next/image';
+import { AddParishFormSection } from '../AddParishFormSection';
 
 export default function ParishSection() {
 
@@ -75,10 +76,7 @@ export default function ParishSection() {
                             </TabsList>
                         </div>
 
-                        <Button className="h-10 gap-2 px-3.5 py-0 bg-blue rounded-[7px] text-white">
-                            <PlusIcon className="w-5 h-5" />
-                            <span className="font-body-3 text-sm">Ajouter une paroisse</span>
-                        </Button>
+                        <AddParishFormSection />
                     </div>
                 </header>
 

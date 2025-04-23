@@ -48,36 +48,40 @@ export default function CreateActutalite() {
       titre_en: title.english,
       description_fr: content.french,
       description_en: content.english,
-      is_brouillon: 1,
+      is_brouillon: 0,
     })
 
     if (response.id) {
+      setTitle({french: '',english: '',})
+      setContent({french: '',english: '',})
       setOpenPublishModal(false)
       setIsSave(1)
       setAlertModal("")
-      toast.success("Message enregistré avec succès !")
+      toast.success("Actualité enregistré avec succès !")
 
       // Creer l'image de couverture
-      const formdata = new FormData();
-      formdata.append("path", fileImage!);
-      formdata.append("label", "actualite");
-      formdata.append("value", `${response.id}`);
-      formdata.append("fichier", fileImage!);
+      // const formdata = new FormData();
+      // formdata.append("path", fileImage!);
+      // formdata.append("label", "actualite");
+      // formdata.append("value", `${response.id}`);
+      // formdata.append("fichier", fileImage!);
+      
 
-      const result: any = await apiClient.post('/api/galeries', formdata, {
-        'Content-Type': 'multipart/form-data'
-      });
+      // const result: any = await apiClient.post('/api/galeries', formdata, {
+      //   'Content-Type': 'multipart/form-data'
+      // });
 
-      if (result.id) {
-        toast.success("Données enregistrées avec succès !")
-      }
-      else {
-        toast.warning(
-          <div className='p-3 bg-red-500 text-white rounded-md'>
-            {JSON.stringify(result)}
-          </div>
-        )
-      }
+      // if (result.id) {
+      //  toast.success("Données enregistrées avec succès !")
+      // }
+      // else {
+      //  toast.warning(
+      //    <div className='p-3 bg-red-500 text-white rounded-md'>
+      //      {JSON.stringify(result)}
+      //    </div>
+      //  )
+      // }
+      
     }
     else {
       toast.warning(

@@ -7,7 +7,7 @@ import { formatDateToLocal } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import { Actualite } from '../../../../types';
 
-export default function ActualiteContent({ is_brouillon }: { is_brouillon: number }) {
+export default function ActualiteContent({ is_actif }: { is_actif: number }) {
 
     const [actualites, setActualites] = useState<Actualite[]>([])
     const [selectedActualite, setSelectedActualite] = useState<Actualite>()
@@ -15,11 +15,11 @@ export default function ActualiteContent({ is_brouillon }: { is_brouillon: numbe
 
     useEffect(() => {
         const getActualites = async () => {
-            const response = await fetchActualites(`?paginate=20&is_brouillon=${is_brouillon}`)
+            const response = await fetchActualites(`?paginate=200&is_actif=${is_actif}`)
             setActualites(response.data)
         }
         getActualites()
-    }, [is_brouillon])
+    }, [is_actif])
 
     const handelOpenDetailsSheet = (actualite: Actualite) => {
         setSelectedActualite(actualite)
@@ -53,19 +53,19 @@ export default function ActualiteContent({ is_brouillon }: { is_brouillon: numbe
                                             </p>
                                         )}
                                         {
-                                            is_brouillon === 0 &&
+                                            is_actif === 0 &&
                                             <p className='text-xs text-yellow-400 font-medium'>
                                                 En attente; {formatDateToLocal((new Date(article.created_at)).toISOString())}
                                             </p>
                                         }
                                         {
-                                            is_brouillon === 1 &&
+                                            is_actif === 1 &&
                                             <p className='text-xs text-gray font-medium'>
                                                 {formatDateToLocal((new Date(article.created_at)).toISOString())}
                                             </p>
                                         }
                                         {
-                                            is_brouillon === -1 &&
+                                            is_actif === -1 &&
                                             <p className='text-xs text-red-600 font-medium'>
                                                 Désactivé
                                             </p>
@@ -127,19 +127,19 @@ export default function ActualiteContent({ is_brouillon }: { is_brouillon: numbe
                                             <div>
                                                 {/* <span className="text-gray">{formatDateToLocal((new Date(selectedActualite?.date_publication!)).toISOString())}</span> */}
                                                 {
-                                                    is_brouillon === 0 &&
+                                                    is_actif === 0 &&
                                                     <p className='text-xs text-yellow-400 font-medium'>
                                                         En attente; {formatDateToLocal((new Date(selectedActualite.created_at)).toISOString())}
                                                     </p>
                                                 }
                                                 {
-                                                    is_brouillon === 1 &&
+                                                    is_actif === 1 &&
                                                     <p className='text-xs text-gray font-medium'>
                                                         {formatDateToLocal((new Date(selectedActualite.date_publication)).toISOString())}
                                                     </p>
                                                 }
                                                 {
-                                                    is_brouillon === -1 &&
+                                                    is_actif === -1 &&
                                                     <p className='text-xs text-red-600 font-medium'>
                                                         Désactivé
                                                     </p>

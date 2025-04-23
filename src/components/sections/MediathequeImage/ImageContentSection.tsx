@@ -7,6 +7,8 @@ import Image from 'next/image';
 import { Image as ImageType } from '../../../../types';
 
 export default async function ImageContentSection() {
+    console.log(process.env.NEXT_PUBLIC_API_URL);
+    
     const response: ImageType[] = await apiClient.get('/api/galeries');
     const images = response.filter(item => !item.path.toString().includes("https"))
 
