@@ -10,41 +10,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { PlusIcon } from "lucide-react";
-import Image from "next/image";
-import React, { JSX, useState } from "react";
+import { JSX, useState } from "react";
 
 export const AddParishFormSection = (): JSX.Element => {
-  // Status options data
-  const statusOptions = [
-    { value: "active", label: "Actif" },
-    { value: "retired", label: "En retraite" },
-    { value: "deceased", label: "Décédé" },
-  ];
-
-  const [coverImage, setCoverImage] = useState('')
-  const [fonction, setFonction] = useState("")
   const [step, setStep] = useState(1)
-  const [status, setStatus] = useState("active")
-
-  const handleCoverImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const imageUrl = await handleImageUpload(file);
-      // setFileImage(file)
-      setCoverImage(imageUrl);
-    }
-  };
-
-  const handleImageUpload = (file: File): Promise<string> => {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        resolve(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    });
-  };
-
 
   return (
     <Dialog>
@@ -54,7 +23,7 @@ export const AddParishFormSection = (): JSX.Element => {
           <span className="font-body-3 text-sm">Ajouter une paroisse</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[500px] p-0 gap-0 rounded-2xl overflow-hidden">
+      <DialogContent aria-describedby={undefined} className="w-[500px] p-0 gap-0 rounded-2xl overflow-hidden">
         <DialogHeader className="border-b border-neutral-200 p-4 rounded-t-2xl">
           <DialogTitle className="text-lg font-bold leading-7">
             Créer une paroisse
