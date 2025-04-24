@@ -1,17 +1,13 @@
 'use client'
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ChevronDownIcon, LayoutGridIcon, ListFilter, PlusIcon, SearchIcon } from "lucide-react";
+import { LayoutGridIcon, ListFilter, PlusIcon, SearchIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import MessageContent from "../MessageContent/MessageContent";
 import ActualiteContent from "../ActualiteContent/ActualiteContent";
-import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Label } from "@/components/ui/label";
-import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "@/components/ui/context-menu";
+import MessageContent from "../MessageContent/MessageContent";
 
 export default function ContentDisplaySection() {
 
@@ -27,79 +23,6 @@ export default function ContentDisplaySection() {
 
   const [selectedItem, setSelectedItem] = useState(navItems[0])
 
-  // Data for news articles
-  const newsArticles = [
-    {
-      id: 1,
-      image: "/image-6.png",
-      category: "Diocèse",
-      title: "Quel est le problème avec l'aide...",
-      description: "Lorem ipsum dolor sit amet, conse...",
-    },
-    {
-      id: 2,
-      image: "/image-1.png",
-      category: "Diocèse",
-      title: "Lorem ipsum dolor sit amet, co...",
-      description: "Lorem ipsum dolor sit amet, conse...",
-    },
-    {
-      id: 3,
-      image: "/image-2.png",
-      category: "Diocèse",
-      title: "Lorem ipsum dolor sit amet, co...",
-      description: "Lorem ipsum dolor sit amet, conse...",
-    },
-    {
-      id: 4,
-      image: "/image-3.png",
-      category: "Diocèse",
-      title: "Lorem ipsum dolor sit amet, co...",
-      description: "Lorem ipsum dolor sit amet, conse...",
-    },
-    {
-      id: 5,
-      image: "/image-4.png",
-      category: "Diocèse",
-      title: "Lorem ipsum dolor sit amet, co...",
-      description: "Lorem ipsum dolor sit amet, conse...",
-    },
-    {
-      id: 6,
-      image: "/image-5.png",
-      category: "Diocèse",
-      title: "Lorem ipsum dolor sit amet, co...",
-      description: "Lorem ipsum dolor sit amet, conse...",
-    },
-    {
-      id: 7,
-      image: "/image-6.png",
-      category: "Diocèse",
-      title: "Lorem ipsum dolor sit amet, co...",
-      description: "Lorem ipsum dolor sit amet, conse...",
-    },
-    {
-      id: 8,
-      image: "/image-7.png",
-      category: "Diocèse",
-      title: "Lorem ipsum dolor sit amet, co...",
-      description: "Lorem ipsum dolor sit amet, conse...",
-    },
-    {
-      id: 9,
-      image: "",
-      category: "",
-      title: "Lorem ipsum dolor sit amet, co...",
-      description: "ArchidiocLorem ipsum dolor sito...",
-    },
-    {
-      id: 10,
-      image: "",
-      category: "",
-      title: "Lorem ipsum dolor sit amet, co...",
-      description: "ArchidiocLorem ipsum dolor sito...",
-    },
-  ];
 
   return (
     <Tabs defaultValue="actualites" className="w-full">

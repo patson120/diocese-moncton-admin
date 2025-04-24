@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { cn } from "@/lib/utils";
+import { cn, handleImageUpload } from "@/lib/utils";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { PlusIcon } from "lucide-react";
 import Image from "next/image";
@@ -35,16 +35,6 @@ export const AddMemberFormSection = (): JSX.Element => {
       // setFileImage(file)
       setCoverImage(imageUrl);
     }
-  };
-
-  const handleImageUpload = (file: File): Promise<string> => {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        resolve(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    });
   };
 
 
@@ -142,7 +132,7 @@ export const AddMemberFormSection = (): JSX.Element => {
           <div className="flex flex-col w-full p-10 pt-6 space-y-6">
             <div className="relative flex justify-start items-center gap-4">
               <Input accept="image/*" onChange={handleCoverImageChange} type="file" className="absolute opacity-0 h-full z-[2] cursor-pointer" />
-              <div className="h-24 w-24 relative self-stretch rounded-xl borderborder-gray bg-[#f0f0f0] flex items-center justify-center">
+              <div className="h-24 w-24 relative self-stretch rounded-xl bg-[#f0f0f0] flex items-center justify-center">
                 {
                   coverImage ?
                     <Image

@@ -1,14 +1,16 @@
+'use client'
+
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PlusIcon } from "lucide-react";
-import { JSX } from "react";
+import { JSX, useState } from "react";
 import { AudioContentSection } from "./AudioContentSection";
 import { DocumentContentSection } from "./DocumentContentSection";
 import { VideoContentSection } from "./VideoContentSection";
 import ImageContentSection from "./ImageContentSection";
+import { AddImageFormSection } from "../AddImageFormSection";
 
 export default function MediathequeImage(): JSX.Element {
-
 
   // Media tabs data
   const mediaTabs = [
@@ -17,6 +19,8 @@ export default function MediathequeImage(): JSX.Element {
     { value: "videos", label: "Vidéos", active: false },
     { value: "audio", label: "Audio", active: false },
   ];
+
+  const [selectedItem, setSelectedItem] = useState(mediaTabs[0])
 
   return (
     <Tabs defaultValue="images" className="w-full bg-[#f0f0f4]">
@@ -32,6 +36,7 @@ export default function MediathequeImage(): JSX.Element {
                 <TabsTrigger
                   key={tab.value}
                   value={tab.value}
+                  onClick={() => setSelectedItem(tab)}
                   className="p-2.5 rounded-none font-body-3 text-sm data-[state=active]:border-b-[3px] data-[state=active]:border-blue data-[state=active]:text-blue data-[state=active]:shadow-none data-[state=inactive]:text-gray data-[state=inactive]:bg-transparent">
                   {tab.label}
                 </TabsTrigger>
@@ -40,10 +45,8 @@ export default function MediathequeImage(): JSX.Element {
           </div>
         </div>
 
-        <Button className="bg-blue hover:bg-blue/90 text-white gap-2">
-          <PlusIcon className="w-5 h-5" />
-          Ajouter une image
-        </Button>
+        {selectedItem.value === 'images' &&  <AddImageFormSection /> }
+
       </div>
 
       <TabsContent

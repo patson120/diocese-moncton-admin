@@ -1,16 +1,27 @@
-// 'use client'
+'use client'
 
 import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { apiClient } from '@/lib/axios';
 import Image from 'next/image';
 import { Image as ImageType } from '../../../../types';
+import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { useEffect, useState } from 'react';
+import { InfoIcon } from 'lucide-react';
 
-export default async function ImageContentSection() {
-    console.log(process.env.NEXT_PUBLIC_API_URL);
+export default function ImageContentSection() {
     
-    const response: ImageType[] = await apiClient.get('/api/galeries');
-    const images = response.filter(item => !item.path.toString().includes("https"))
+   const [images, setImages] = useState<ImageType[]>([])
+   const [selectedImage, setSelectedImage] = useState<ImageType | undefined>()
+
+    useEffect(() => {
+     ( async () => {
+        const response: ImageType[] = await apiClient.get('/api/galeries');
+        setImages(response.filter(item => !item.path.toString().includes("https")))
+     }) ()
+    }, [])
+    
 
     return (
         <section className="w-full flex-1 p-6">
@@ -21,7 +32,8 @@ export default async function ImageContentSection() {
                         {images.map((image, index) => (
                             <Card
                                 key={index}
-                                className="overflow-hidden rounded-lg border-none relative shrink-0 min-h-[150px] max-h-[200px]">
+                                onClick={() => {setSelectedImage(image)}}
+                                className="overflow-hidden rounded-lg border-none relative cursor-pointer shrink-0 min-h-[150px] max-h-[200px]">
                                 <Image
                                     alt={`Image ${index + 1}`}
                                     src={`${process.env.NEXT_PUBLIC_API_URL}/${image.path!}`}
@@ -34,6 +46,48 @@ export default async function ImageContentSection() {
                     </div>
                 </ScrollArea>
             </div>
+
+            <Dialog open={selectedImage != undefined}>
+                <DialogContent aria-describedby={undefined} className="max-w-4xl p-3 rounded-2xl">
+                  <DialogClose onClick={() => setSelectedImage(undefined)} className="absolute border-none w-5 h-5 top-[14px] right-[14px]">
+                  </DialogClose>
+                  <DialogHeader className='hidden'>
+                      <DialogTitle></DialogTitle>
+                  </DialogHeader>
+                  
+                  <div className='w-full h-[calc(70vh)] relative rounded-xl overflow-hidden'>
+                    <Image
+                      alt={`Image details`}
+                      src={`${process.env.NEXT_PUBLIC_API_URL}/${selectedImage?.path!}`}
+                      style={{ objectFit: 'cover' }}
+                      fill
+                      priority
+                    />
+                  </div>
+                  
+                  <div className='flex justify-between items-center gap-3'>
+                    <div className='flex gap-3'>
+                      <Button onClick={() => setSelectedImage(undefined)} className="px-3.5 py-0 bg-blue text-white rounded-[7px]">
+                        <span className="font-body-3 whitespace-nowrap">
+                            Fermer
+                        </span>
+                      </Button>
+                      <Button
+                        onClick={() => {}}
+                        variant="outline"
+                        className=" p-3.5 bg-white rounded-lg border border-solid border-[#d9d9d9]">
+                        <span className="font-body-3 text-noir-dashboard whitespace-nowrap">
+                            Supprimer
+                        </span>
+                      </Button>
+                    </div>
+                    <div className='flex items-center gap-1'>
+                      <InfoIcon className='h-5 w-5' />
+                      <p className='text-gray'>{selectedImage?.path.split('/')[selectedImage?.path.split('/').length - 1]}</p>
+                    </div>
+                  </div>
+                </DialogContent>
+            </Dialog>
         </section>
     )
 }
