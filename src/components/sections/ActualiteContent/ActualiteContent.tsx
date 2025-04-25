@@ -15,7 +15,7 @@ export default function ActualiteContent({ is_actif }: { is_actif: number }) {
 
     useEffect(() => {
         const getActualites = async () => {
-            const response = await fetchActualites(`?paginate=200&is_actif=${is_actif}`)
+            const response = await fetchActualites(`?paginate=20&is_actif=${is_actif}`)
             setActualites(response.data)
         }
         getActualites()

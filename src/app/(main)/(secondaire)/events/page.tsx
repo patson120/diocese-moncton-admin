@@ -1,7 +1,10 @@
+import EventSection from '@/components/sections/EventSection/Eventsection'
 import React from 'react'
 
 export default function page() {
   return (
-    <div>Events</div>
+    <>
+      <EventSection />
+    </>
   )
 }
