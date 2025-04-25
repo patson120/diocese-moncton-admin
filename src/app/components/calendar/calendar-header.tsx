@@ -70,7 +70,7 @@ export function CalendarHeader({ currentDate, view, onDateChange, onViewChange }
             <SelectItem value="month">Mois</SelectItem>
           </SelectContent>
         </Select>
-        <Button onClick={() => onDateChange(new Date())}>Aujourd'hui</Button>
+        <Button className="bg-blue" onClick={() => onDateChange(new Date())}>Aujourd'hui</Button>
       </div>
     </div>
   );

@@ -82,34 +82,9 @@ export default function EventSection(): JSX.Element {
                     </span>
                   </TabsTrigger>
                 </TabsList>
-                <div className="flex items-start gap-2.5">
-                  <div className="flex items-center gap-2">
-                    <div className="relative w-[256px]">
-                      <Input
-                        className="h-10 bg-neutral-100 border-none pl-9"
-                        placeholder="Rechercher une actualité"
-                      />
-                      <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
-                    </div>
-                    <Button
-                      variant="outline"
-                      className="h-11 flex items-center gap-2.5 border border-[#d9d9d9] rounded-lg">
-                      <ListFilter className="w-5 h-5" />
-                      <span className="font-body-3 text-noir-dashboard">
-                        Trier par...
-                      </span>
-                    </Button>
-
-                    <Button
-                      variant="outline"
-                      className="w-11 h-11 p-0 flex items-center justify-center border border-[#d9d9d9] rounded-lg"
-                    >
-                      <LayoutGridIcon className="w-5 h-5" />
-                    </Button>
-                  </div>
-                </div>
+                
               </div>
-              <TabsContent value="published" className="mt-6 space-y-6">
+              <TabsContent value="mois" className="mt-6 space-y-6">
                 <div>
                   <CalendarHeader
                     currentDate={currentDate}
