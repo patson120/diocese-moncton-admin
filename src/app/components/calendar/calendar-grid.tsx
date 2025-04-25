@@ -159,7 +159,7 @@ export function CalendarGrid({ currentDate, events, view }: CalendarGridProps) {
               </div>
             ))}
 
-            {hours.map((hour) => (
+            {hours.map((hour, index) => (
               <>
                 <div key={`hour-${hour}`} className="p-2 text-sm text-muted-foreground border-b">
                   {format(setHours(setMinutes(new Date(), 0), hour), "HH:mm")}
@@ -173,7 +173,7 @@ export function CalendarGrid({ currentDate, events, view }: CalendarGridProps) {
                   return (
                     <div key={`${day.toISOString()}-${hour}`} className="border-b border-r p-1">
                       {dayEvents.map((event) => (
-                        <div
+                          <div
                           key={event.id}
                           className={cn("text-xs p-1 truncate", getEventStyle(event))}
                           onClick={() => handleEventClick(event)}

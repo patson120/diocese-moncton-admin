@@ -7,6 +7,9 @@ import { LayoutGridIcon, ListFilter, SearchIcon } from "lucide-react";
 import { JSX, useState } from "react";
 import ActualiteContent from "../ActualiteContent/ActualiteContent";
 import { AddEventFormSection } from "../AddEventFormSection ";
+import { CalendarHeader } from "@/app/components/calendar/calendar-header";
+import { CalendarGrid } from "@/app/components/calendar/calendar-grid";
+import { useEvents } from "@/app/hooks/use-events";
 
 export default function EventSection(): JSX.Element {
 
@@ -16,6 +19,11 @@ export default function EventSection(): JSX.Element {
   ];
 
   const [selectedItem, setSelectedItem] = useState(mediaTabs[0])
+
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [view, setView] = useState<"day" | "week" | "month">("month");
+  const { events, addEvent } = useEvents();
+    
 
   return (
     <Tabs defaultValue="evenements" className="w-full bg-[#f0f0f4]">
@@ -102,17 +110,25 @@ export default function EventSection(): JSX.Element {
                 </div>
               </div>
               <TabsContent value="published" className="mt-6 space-y-6">
-                <ActualiteContent is_actif={1} />
+                <div>
+                  <CalendarHeader
+                    currentDate={currentDate}
+                    view={view}
+                    onDateChange={setCurrentDate}
+                    onViewChange={setView}
+                  />
+                  <div className="mt-6">
+                    <CalendarGrid currentDate={currentDate} events={events} view={view} />
+                  </div>
+                </div>
               </TabsContent>
 
               <TabsContent value="pending" className="mt-6 space-y-6">
                 {/* Content for pending tab */}
-                <ActualiteContent is_actif={0} />
               </TabsContent>
 
               <TabsContent value="disabled" className="mt-6 space-y-6">
                 {/* Content for disabled tab */}
-                <ActualiteContent is_actif={-1} />
               </TabsContent>
             </Tabs>
           </TabsContent>
