@@ -55,30 +55,30 @@ export default function EventSection(): JSX.Element {
           <TabsContent
             value="evenements"
             className="border-none">
-            <Tabs defaultValue="published" className="w-full">
+            <Tabs defaultValue="mois" className="w-full">
               <div className="flex justify-between items-center">
                 <TabsList className="justify-start h-12 p-0 bg-[#F1F3F6] rounded-md px-3 py-2">
                   <TabsTrigger
-                    value="published"
+                    value="jours"
                     className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
                     <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                      Publiés
+                      Jours
                     </span>
                   </TabsTrigger>
                   <TabsTrigger
-                    value="pending"
+                    value="semaines"
                     className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray"
                   >
                     <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                      En attente
+                      Semaines
                     </span>
                   </TabsTrigger>
                   <TabsTrigger
-                    value="disabled"
+                    value="mois"
                     className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray"
                   >
                     <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                      Désactivés
+                      Mois
                     </span>
                   </TabsTrigger>
                 </TabsList>
