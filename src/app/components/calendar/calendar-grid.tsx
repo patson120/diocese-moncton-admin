@@ -1,35 +1,28 @@
 "use client";
 
-import { EventDetailsDialog } from "@/app/components/event-details-dialog";
+import EventDetailsDialog  from "@/app/components/event-details-dialog";
 import { holidays } from "@/app/lib/holidays";
 import { Event, eventTypeColors } from "@/app/types/event";
 import { cn } from "@/lib/utils";
 import {
-  daysToWeeks,
   differenceInDays,
   eachDayOfInterval,
   endOfMonth,
   endOfWeek,
   format,
-  getDaysInMonth,
   getHours,
-  isFirstDayOfMonth,
-  isFriday,
   isSameDay,
   isSameMonth,
-  isSaturday,
   isToday,
   isWithinInterval,
   parseISO,
   setHours,
   setMinutes,
   startOfMonth,
-  startOfWeek,
-  weeksToDays
+  startOfWeek
 } from "date-fns";
 import { fr } from "date-fns/locale";
 import { useState } from "react";
-import { WeekNumber } from "react-day-picker";
 
 interface CalendarGridProps {
   currentDate: Date;
@@ -40,14 +33,12 @@ interface CalendarGridProps {
 export function CalendarGrid({ currentDate, events, view }: CalendarGridProps) {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [blankDays, setblankDays] = useState<number>(0)
     
 
   const days = (() => {
     if (view === "month") {
       const start = startOfMonth(currentDate);
       const end = endOfMonth(currentDate);
-      // const startDay = isSaturday(new Date(currentDate))
       return eachDayOfInterval({ start, end });
     } else if (view === "week") {
       const start = startOfWeek(currentDate, { weekStartsOn: 1 });
@@ -271,11 +262,11 @@ export function CalendarGrid({ currentDate, events, view }: CalendarGridProps) {
           );
         })}
       </div>
-      <EventDetailsDialog
-        event={selectedEvent}
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-      />
+       <EventDetailsDialog
+         event={selectedEvent}
+         open={dialogOpen}
+         onOpenChange={setDialogOpen}
+       />      
     </>
   );
 }
