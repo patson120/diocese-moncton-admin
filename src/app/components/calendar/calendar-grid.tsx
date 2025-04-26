@@ -1,30 +1,35 @@
 "use client";
 
-import { useState } from "react";
-import { Event } from "@/app/types/event";
-import { eventTypeColors } from "@/app/types/event";
 import { EventDetailsDialog } from "@/app/components/event-details-dialog";
+import { holidays } from "@/app/lib/holidays";
+import { Event, eventTypeColors } from "@/app/types/event";
+import { cn } from "@/lib/utils";
 import {
-  format,
-  startOfMonth,
-  endOfMonth,
+  daysToWeeks,
+  differenceInDays,
   eachDayOfInterval,
-  isSameDay,
-  startOfWeek,
+  endOfMonth,
   endOfWeek,
-  isToday,
-  parseISO,
-  isSameMonth,
+  format,
+  getDaysInMonth,
   getHours,
+  isFirstDayOfMonth,
+  isFriday,
+  isSameDay,
+  isSameMonth,
+  isSaturday,
+  isToday,
+  isWithinInterval,
+  parseISO,
   setHours,
   setMinutes,
-  differenceInDays,
-  isWithinInterval,
-  addDays
+  startOfMonth,
+  startOfWeek,
+  weeksToDays
 } from "date-fns";
 import { fr } from "date-fns/locale";
-import { holidays } from "@/app/lib/holidays";
-import { cn } from "@/lib/utils";
+import { useState } from "react";
+import { WeekNumber } from "react-day-picker";
 
 interface CalendarGridProps {
   currentDate: Date;
@@ -35,11 +40,14 @@ interface CalendarGridProps {
 export function CalendarGrid({ currentDate, events, view }: CalendarGridProps) {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [blankDays, setblankDays] = useState<number>(0)
+    
 
   const days = (() => {
     if (view === "month") {
       const start = startOfMonth(currentDate);
       const end = endOfMonth(currentDate);
+      // const startDay = isSaturday(new Date(currentDate))
       return eachDayOfInterval({ start, end });
     } else if (view === "week") {
       const start = startOfWeek(currentDate, { weekStartsOn: 1 });
@@ -204,14 +212,21 @@ export function CalendarGrid({ currentDate, events, view }: CalendarGridProps) {
 
   return (
     <>
-      <div className="grid grid-cols-7 gap-1">
+      <div className="grid grid-cols-7">
         {["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"].map((day) => (
           <div key={day} className="p-2 text-center font-semibold bg-muted">
             {day}
           </div>
         ))}
-        
-        {days.map((day) => {
+
+        { 
+          Array.from({length: (new Date(days[0])).getDay() - 1}).map((_, i) =>  (
+            <div key={i} className="p-2 border transition-colors bg-[#f7f7f8]"></div>
+          ))
+        }
+
+        {
+          days.map((day) => {
           const dayEvents = getDayEvents(day);
           const holiday = isHoliday(day);
           const holidayName = getHolidayName(day);
@@ -220,8 +235,8 @@ export function CalendarGrid({ currentDate, events, view }: CalendarGridProps) {
             <div
               key={day.toISOString()}
               className={cn(
-                "min-h-[120px] p-2 border rounded-lg transition-colors",
-                isToday(day) && "bg-blue-50 dark:bg-blue-900/20",
+                "min-h-[120px] p-2 border border-[#F1F3F6] transition-colors",
+                isToday(day) && "bg-teal-100/40 dark:bg-green-900/20",
                 !isSameMonth(day, currentDate) && "opacity-50",
                 holiday && "bg-red-50 dark:bg-red-900/20"
               )}
@@ -229,16 +244,16 @@ export function CalendarGrid({ currentDate, events, view }: CalendarGridProps) {
               <div className="font-medium flex items-center justify-between">
                 <span>{format(day, "d", { locale: fr })}</span>
                 {holiday && (
-                  <span className="text-xs text-red-600 dark:text-red-400">
-                    {holidayName}
-                  </span>
+                <span className="text-xs text-red-600 dark:text-red-400">
+                  {holidayName}
+                </span>
                 )}
               </div>
               <div className="mt-1 space-y-1">
                 {dayEvents.map((event) => (
                   <div
                     key={event.id}
-                    className={cn("text-xs p-1.5", getEventStyle(event))}
+                    className={cn("text-xs p-1.5 h-max", getEventStyle(event))}
                     onClick={() => handleEventClick(event)}
                   >
                     <div className="flex justify-between items-center">
