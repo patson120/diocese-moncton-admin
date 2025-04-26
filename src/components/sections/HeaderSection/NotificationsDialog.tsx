@@ -53,7 +53,7 @@ export default function NotificationsDialog() {
         </SheetHeader>
         <div className='absolute top-0 left-0 right-0 z-[1] bg-white'>
           {/* Header with action buttons */}
-          <header className="w-full py-2 border-b border-[#d9d9d9] flex items-center justify-between px-7">
+          <header className="w-full py-2 flex items-center justify-between px-7">
             <h1 className='text-xl font-bold'>Notifications</h1>
             <Button onClick={() => onChange(false)} size={'sm'} variant="ghost" className='border-none focus:border-none hover:border-none' >
               Fermer
