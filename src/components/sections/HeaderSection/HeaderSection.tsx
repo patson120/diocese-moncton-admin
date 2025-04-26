@@ -1,9 +1,9 @@
 
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { BellIcon } from "lucide-react";
 import Link from "next/link";
 import { JSX } from "react";
+import NotificationsDialog from "./NotificationsDialog";
 
 export default function HeaderSection (): JSX.Element  {
   return (
@@ -26,11 +26,11 @@ export default function HeaderSection (): JSX.Element  {
         <Link href={"https://diocese-de-moncton.vercel.app/"} target="_blank" >
           <Button
             variant="outline"
-            className="h-10 text-noir-dashboard font-body-3 font-normal"
-          >
+            className="h-10 text-noir-dashboard font-body-3 font-normal">
             Voir le site internet
-          </Button></Link>
-        <BellIcon className="w-6 h-6 text-noir-dashboard" />
+          </Button>
+        </Link>
+        <NotificationsDialog />
       </div>
     </header>
   );

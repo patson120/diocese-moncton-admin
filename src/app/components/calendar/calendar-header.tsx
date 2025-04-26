@@ -84,7 +84,7 @@ export function CalendarHeader({ currentDate, view, onDateChange, onViewChange }
         {format(currentDate, "MMMM yyyy", { locale: fr })}
       </h2>
       <div className="flex items-center gap-2">
-        <Button className="bg-blue" onClick={() => {
+        <Button variant={'outline'} className="" onClick={() => {
           onViewChange('day')
           onDateChange(new Date())
         }}>Aujourd'hui</Button>
