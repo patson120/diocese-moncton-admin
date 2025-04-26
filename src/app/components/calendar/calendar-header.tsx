@@ -1,10 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface CalendarHeaderProps {
   currentDate: Date;
@@ -47,31 +47,54 @@ export function CalendarHeader({ currentDate, view, onDateChange, onViewChange }
   };
 
   return (
-    <div className="flex items-center justify-between p-4 border-b">
+    <Tabs value={view} className="flex items-center justify-between">
+      <div className="flex justify-between items-center">
+        <TabsList className="justify-start h-12 p-0 bg-[#F1F3F6] rounded-md px-3 py-2">
+          <TabsTrigger
+            value="day"
+            onClick={() => {
+              onViewChange('day')
+            }}
+            className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
+            <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
+              Jours
+            </span>
+          </TabsTrigger>
+          <TabsTrigger
+            value="week"
+            onClick={() => onViewChange('week')}
+            className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray"
+          >
+            <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
+              Semaines
+            </span>
+          </TabsTrigger>
+          <TabsTrigger
+            value="month"
+            onClick={() => onViewChange('month')}
+            className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray"
+          >
+            <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
+              Mois
+            </span>
+          </TabsTrigger>
+        </TabsList>
+      </div>
+      <h2 className="text-xl font-semibold text-blue">
+        {format(currentDate, "MMMM yyyy", { locale: fr })}
+      </h2>
       <div className="flex items-center gap-2">
+        <Button className="bg-blue" onClick={() => {
+          onViewChange('day')
+          onDateChange(new Date())
+        }}>Aujourd'hui</Button>
         <Button variant="outline" size="icon" onClick={handlePrevious}>
           <ChevronLeft className="h-4 w-4" />
         </Button>
         <Button variant="outline" size="icon" onClick={handleNext}>
           <ChevronRight className="h-4 w-4" />
         </Button>
-        <h2 className="text-xl font-semibold ml-4">
-          {format(currentDate, "MMMM yyyy", { locale: fr })}
-        </h2>
       </div>
-      <div className="flex items-center gap-4">
-        <Select value={view} onValueChange={(value: "day" | "week" | "month") => onViewChange(value)}>
-          <SelectTrigger className="w-32">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="day">Jour</SelectItem>
-            <SelectItem value="week">Semaine</SelectItem>
-            <SelectItem value="month">Mois</SelectItem>
-          </SelectContent>
-        </Select>
-        <Button className="bg-blue" onClick={() => onDateChange(new Date())}>Aujourd'hui</Button>
-      </div>
-    </div>
+    </Tabs>
   );
 }

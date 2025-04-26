@@ -24,7 +24,6 @@ export default function EventSection(): JSX.Element {
   const [view, setView] = useState<"day" | "week" | "month">("month");
   const { events, addEvent } = useEvents();
     
-
   return (
     <Tabs defaultValue="evenements" className="w-full bg-[#f0f0f4]">
       {/* Tab navigation */}
@@ -54,58 +53,18 @@ export default function EventSection(): JSX.Element {
         <section className="bg-white rounded-2xl p-7 space-y-6">
           <TabsContent
             value="evenements"
-            className="border-none">
-            <Tabs defaultValue="mois" className="w-full">
-              <div className="flex justify-between items-center">
-                <TabsList className="justify-start h-12 p-0 bg-[#F1F3F6] rounded-md px-3 py-2">
-                  <TabsTrigger
-                    value="jours"
-                    className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
-                    <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                      Jours
-                    </span>
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="semaines"
-                    className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray"
-                  >
-                    <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                      Semaines
-                    </span>
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="mois"
-                    className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray"
-                  >
-                    <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                      Mois
-                    </span>
-                  </TabsTrigger>
-                </TabsList>
-                
+            className="border-none space-y-6">
+            <div>
+              <CalendarHeader
+                currentDate={currentDate}
+                view={view}
+                onDateChange={setCurrentDate}
+                onViewChange={setView}
+              />
+              <div className="mt-6">
+                <CalendarGrid currentDate={currentDate} events={events} view={view} />
               </div>
-              <TabsContent value="mois" className="mt-6 space-y-6">
-                <div>
-                  <CalendarHeader
-                    currentDate={currentDate}
-                    view={view}
-                    onDateChange={setCurrentDate}
-                    onViewChange={setView}
-                  />
-                  <div className="mt-6">
-                    <CalendarGrid currentDate={currentDate} events={events} view={view} />
-                  </div>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="pending" className="mt-6 space-y-6">
-                {/* Content for pending tab */}
-              </TabsContent>
-
-              <TabsContent value="disabled" className="mt-6 space-y-6">
-                {/* Content for disabled tab */}
-              </TabsContent>
-            </Tabs>
+            </div>
           </TabsContent>
         </section>
       </div>
