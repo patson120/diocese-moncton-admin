@@ -22,7 +22,7 @@ import {
   startOfWeek
 } from "date-fns";
 import { fr } from "date-fns/locale";
-import { useState } from "react";
+import React, { useState } from "react";
 
 interface CalendarGridProps {
   currentDate: Date;
@@ -159,7 +159,7 @@ export function CalendarGrid({ currentDate, events, view }: CalendarGridProps) {
             ))}
 
             {hours.map((hour, index) => (
-              <>
+              <React.Fragment key={index}>
                 <div key={`hour-${hour}`} className="p-2 text-sm text-muted-foreground border-b">
                   {format(setHours(setMinutes(new Date(), 0), hour), "HH:mm")}
                 </div>
@@ -188,7 +188,7 @@ export function CalendarGrid({ currentDate, events, view }: CalendarGridProps) {
                     </div>
                   );
                 })}
-              </>
+              </React.Fragment>
             ))}
           </div>
         </div>
