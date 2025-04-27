@@ -126,3 +126,17 @@ export type Image = {
     created_at: string;
     updated_at: string;
 }
+
+export type Member = {
+    id: number;
+    categorie_id: number;
+    image: string;
+    nom: string;
+    prenom: string;
+    poste: string;
+    coordonnees: string;
+    etat: number;
+    created_at: string;
+    updated_at: string;
+    categorie: Category;
+}

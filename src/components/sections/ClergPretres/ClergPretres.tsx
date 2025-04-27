@@ -10,14 +10,18 @@ import {
   SearchIcon
 } from "lucide-react";
 import Image from "next/image";
-import { JSX, useState } from "react";
+import { JSX, useEffect, useState } from "react";
 import { AddMemberFormSection } from "../AddMemberFormSection";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Member } from "../../../../types";
+import { apiClient } from "@/lib/axios";
 
 export const ClergPretres = (): JSX.Element => {
 
   const [openModal, setOpenModal] = useState(false)
+
+  const [members, setMembers] = useState<Member[]>([])
 
   // Clergy tabs data
   const clergyTabs = [
@@ -52,6 +56,13 @@ export const ClergPretres = (): JSX.Element => {
     },
   ];
 
+  useEffect(() => {
+      ( async () => {
+        const response: Member[] = await apiClient.get('/api/membres')
+        setMembers(response)
+      })()
+  }, [])
+  
   return (
     <main>
       <Tabs defaultValue="archeveque" className="w-full">
@@ -91,17 +102,16 @@ export const ClergPretres = (): JSX.Element => {
                   <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
                 </div>
               </div>
-              <ScrollArea className="w-full h-[500px] mt-6">
+              <ScrollArea className="w-full h-[calc(80vh)] mt-6">
                 {/* Archevêque grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
-                  {priestsData.map((priest, index) => (
+                  {members.map((member, index) => (
                     <Card
                       onClick={() => setOpenModal(true)}
                       key={index}
-                      className="w-full border-none shadow-none cursor-pointer"
-                    >
+                      className="w-full border-none shadow-none cursor-pointer">
                       <CardContent className="p-0 space-y-3">
-                        <div className="relative w-full h-[150px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
+                        <div className="relative w-full h-[250px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
                           <Image
                             fill
                             priority
@@ -114,11 +124,11 @@ export const ClergPretres = (): JSX.Element => {
                         <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
                           <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
                             <span className="font-bold text-sm">
-                              {priest.name}
+                              {member.nom} {member.prenom}
                             </span>
                           </div>
                           <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
-                            {priest.parish}
+                            {member.poste}
                           </p>
                         </div>
                       </CardContent>
@@ -185,7 +195,7 @@ export const ClergPretres = (): JSX.Element => {
                 </div>
 
                 <TabsContent value="pretres-redemptoristes" className="mt-6 space-y-6">
-                  <ScrollArea className="w-full h-[500px]">
+                  <ScrollArea className="w-full h-[calc(80vh)] ">
                     {/* Priests grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
                       {priestsData.map((priest, index) => (
@@ -195,7 +205,7 @@ export const ClergPretres = (): JSX.Element => {
                           className="w-full border-none shadow-none cursor-pointer"
                         >
                           <CardContent className="p-0 space-y-3">
-                            <div className="relative self-stretch w-full h-[150px] bg-[#f0f0f0] rounded-xl flex items-center justify-center">
+                            <div className="relative self-stretch w-full h-[250px] bg-[#f0f0f0] rounded-xl flex items-center justify-center">
                               <Image
                                 width={60}
                                 height={60}
@@ -294,7 +304,7 @@ export const ClergPretres = (): JSX.Element => {
                 </div>
 
                 <TabsContent value="actif" className="mt-6 space-y-6">
-                  <ScrollArea className="w-full h-[500px] mt-6">
+                  <ScrollArea className="w-full h-[calc(80vh)] mt-6">
                     {/* Archevêque grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
                       {priestsData.map((priest, index) => (
@@ -304,7 +314,7 @@ export const ClergPretres = (): JSX.Element => {
                           className="w-full border-none shadow-none cursor-pointer"
                         >
                           <CardContent className="p-0 space-y-3">
-                            <div className="relative w-full h-[150px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
+                            <div className="relative w-full h-[250px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
                               <Image
                                 fill
                                 priority
@@ -404,7 +414,7 @@ export const ClergPretres = (): JSX.Element => {
                 </div>
 
                 <TabsContent value="actif" className="mt-6 space-y-6">
-                  <ScrollArea className="w-full h-[500px] mt-6">
+                  <ScrollArea className="w-full h-[calc(80vh)] mt-6">
                     {/* Prêtres grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
                       {[...priestsData, ...priestsData].map((priest, index) => (
@@ -414,7 +424,7 @@ export const ClergPretres = (): JSX.Element => {
                           className="w-full border-none shadow-none cursor-pointer"
                         >
                           <CardContent className="p-0 space-y-3">
-                            <div className="relative w-full h-[150px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
+                            <div className="relative w-full h-[250px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
                               <Image
                                 fill
                                 priority
@@ -470,10 +480,7 @@ export const ClergPretres = (): JSX.Element => {
       </Tabs>
 
       {/* Sheet */}
-      <Sheet open={openModal} >
-        {/* <SheetTrigger asChild>
-                            <Button variant="outline">Ouvrir le panneau</Button>
-                        </SheetTrigger> */}
+      <Sheet open={openModal}>
         <SheetContent className="max-w-2xl min-w-2xl">
           <SheetHeader className='relative'>
             <SheetTitle hidden>Détails du membre</SheetTitle>
