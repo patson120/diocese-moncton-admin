@@ -1,8 +1,8 @@
 "use client";
 
-import EventDetailsDialog  from "@/app/components/event-details-dialog";
+import EventDetailsDialog from "@/app/components/event-details-dialog";
 import { holidays } from "@/app/lib/holidays";
-import { Event, eventTypeColors } from "@/app/types/event";
+import { eventTypeColors } from "@/app/types/event";
 import { cn } from "@/lib/utils";
 import {
   differenceInDays,
@@ -23,6 +23,7 @@ import {
 } from "date-fns";
 import { fr } from "date-fns/locale";
 import React, { useState } from "react";
+import { Event } from "../../../../types";
 
 interface CalendarGridProps {
   currentDate: Date;
@@ -33,7 +34,6 @@ interface CalendarGridProps {
 export function CalendarGrid({ currentDate, events, view }: CalendarGridProps) {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
-    
 
   const days = (() => {
     if (view === "month") {
@@ -57,7 +57,7 @@ export function CalendarGrid({ currentDate, events, view }: CalendarGridProps) {
   };
 
   const getEventStyle = (event: Event) => {
-    const colors = eventTypeColors[event.type];
+    const colors = eventTypeColors["default"];
     return cn(
       "rounded-md shadow-sm cursor-pointer transition-colors",
       "bg-gradient-to-r",
@@ -69,18 +69,21 @@ export function CalendarGrid({ currentDate, events, view }: CalendarGridProps) {
   };
 
   const isMultiDayEvent = (event: Event) => {
-    return differenceInDays(new Date(event.endDate), new Date(event.startDate)) > 0;
+    return differenceInDays(new Date(event.date_event), new Date(event.date_event)) > 0;
   };
 
   const getEventDurationLabel = (event: Event) => {
-    const days = differenceInDays(new Date(event.endDate), new Date(event.startDate)) + 1;
+    const days = differenceInDays(new Date(event.date_event), new Date(event.date_event)) + 1;
     return days > 1 ? `(${days} jours)` : '';
   };
 
   const getDayEvents = (date: Date) => {
     return events.filter(event => {
-      const start = new Date(event.startDate);
-      const end = new Date(event.endDate);
+      // let start = new Date(`${event.date_event!}T00:00:00.000Z`);
+      // const end = new Date(`${event.date_event!}T13:59:59.000Z`);
+      let start = new Date(event.date_event);
+      const end = new Date(event.date_event);
+      start.setDate(start.getDate() - 1)
       return isWithinInterval(date, { start, end });
     });
   };
@@ -100,7 +103,7 @@ export function CalendarGrid({ currentDate, events, view }: CalendarGridProps) {
           <div className="grid grid-cols-1 gap-1">
             {hours.map((hour) => {
               const currentHourEvents = events.filter(event => {
-                const eventDate = new Date(event.startDate);
+                const eventDate = new Date(event.date_event);
                 return isSameDay(eventDate, currentDate) && getHours(eventDate) === hour;
               });
 
@@ -116,8 +119,11 @@ export function CalendarGrid({ currentDate, events, view }: CalendarGridProps) {
                         className={cn("text-sm p-2 mb-1", getEventStyle(event))}
                         onClick={() => handleEventClick(event)}
                       >
-                        <div className="flex justify-between items-center">
-                          <span>{event.title}</span>
+                        <div className="flex flex-col items-center">
+                          <p className="w-full overflow-hidden truncate">
+                            <span className="truncate text-base">{event.titre_fr}</span> <br />
+                            <span className="truncate text-base font-bold">{event.heure_event}</span>
+                          </p>
                           {isMultiDayEvent(event) && (
                             <span className="text-xs opacity-75">{getEventDurationLabel(event)}</span>
                           )}
@@ -165,7 +171,7 @@ export function CalendarGrid({ currentDate, events, view }: CalendarGridProps) {
                 </div>
                 {days.map((day) => {
                   const dayEvents = events.filter(event => {
-                    const eventDate = new Date(event.startDate);
+                    const eventDate = new Date(event.date_event);
                     return isSameDay(eventDate, day) && getHours(eventDate) === hour;
                   });
 
@@ -177,8 +183,11 @@ export function CalendarGrid({ currentDate, events, view }: CalendarGridProps) {
                           className={cn("text-xs p-1 truncate", getEventStyle(event))}
                           onClick={() => handleEventClick(event)}
                         >
-                          <div className="flex justify-between items-center">
-                            <span>{event.title}</span>
+                          <div className="flex flex-col items-center">
+                            <p className="w-full overflow-hidden truncate">
+                              <span className="truncate text-base">{event.titre_fr}</span> <br />
+                              <span className="truncate text-base font-bold">{event.heure_event}</span>
+                            </p>
                             {isMultiDayEvent(event) && (
                               <span className="text-xs opacity-75">{getEventDurationLabel(event)}</span>
                             )}
@@ -244,11 +253,14 @@ export function CalendarGrid({ currentDate, events, view }: CalendarGridProps) {
                 {dayEvents.map((event) => (
                   <div
                     key={event.id}
-                    className={cn("text-xs p-1.5 h-max", getEventStyle(event))}
+                    className={cn("text-xs p-1.5 min-h-[80px]", getEventStyle(event))}
                     onClick={() => handleEventClick(event)}
                   >
-                    <div className="flex justify-between items-center">
-                      <span className="truncate">{event.title}</span>
+                    <div className="flex flex-col items-center">
+                      <p className="w-full overflow-hidden truncate">
+                        <span className="truncate text-base">{event.titre_fr}</span> <br />
+                        <span className="truncate text-base font-bold">{event.heure_event}</span>
+                      </p>
                       {isMultiDayEvent(event) && (
                         <span className="text-xs opacity-75 ml-1 shrink-0">
                           {getEventDurationLabel(event)}

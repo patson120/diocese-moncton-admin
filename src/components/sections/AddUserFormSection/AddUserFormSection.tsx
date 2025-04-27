@@ -6,13 +6,23 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { apiClient } from "@/lib/axios";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { PlusIcon } from "lucide-react";
-import { JSX, useState } from "react";
+import { JSX, useEffect, useState } from "react";
 
 export const AddUserFormSection = (): JSX.Element => {
  
   const [role, setRole] = useState("")
+
+    const getRoles = async () => {
+      const response = await apiClient.get("/api/roles")
+      console.log("Rôles",response);
+    }
+  
+    useEffect(() => {
+      getRoles()
+    }, [])
 
   return (
     <Dialog>

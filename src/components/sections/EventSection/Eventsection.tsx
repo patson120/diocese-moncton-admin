@@ -1,15 +1,13 @@
 'use client'
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LayoutGridIcon, ListFilter, SearchIcon } from "lucide-react";
-import { JSX, useState } from "react";
-import ActualiteContent from "../ActualiteContent/ActualiteContent";
-import { AddEventFormSection } from "../AddEventFormSection ";
-import { CalendarHeader } from "@/app/components/calendar/calendar-header";
 import { CalendarGrid } from "@/app/components/calendar/calendar-grid";
+import { CalendarHeader } from "@/app/components/calendar/calendar-header";
 import { useEvents } from "@/app/hooks/use-events";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { apiClient } from "@/lib/axios";
+import { JSX, useEffect, useState } from "react";
+import { Event } from "../../../../types";
+import { AddEventFormSection } from "../AddEventFormSection ";
 
 export default function EventSection(): JSX.Element {
 
@@ -19,10 +17,22 @@ export default function EventSection(): JSX.Element {
   ];
 
   const [selectedItem, setSelectedItem] = useState(mediaTabs[0])
+  const [evenements, setEvenements] = useState<Event[]>([])
 
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState<"day" | "week" | "month">("month");
   const { events, addEvent } = useEvents();
+
+  const getEvents = async () => {
+    const response: any = await apiClient.get("/api/evenements?paginate=200")
+    // console.log("Events",response.data);
+    setEvenements(response.data)
+  }
+
+  useEffect(() => {
+    getEvents()
+  }, [])
+  
     
   return (
     <Tabs defaultValue="evenements" className="w-full bg-[#f0f0f4]">
@@ -34,7 +44,8 @@ export default function EventSection(): JSX.Element {
           </h3>
           <div className="w-full">
             <TabsList className="bg-transparent p-0 h-auto gap-0">
-              {mediaTabs.map((tab) => (
+              {
+               mediaTabs.map((tab) => (
                 <TabsTrigger
                   key={tab.value}
                   value={tab.value}
@@ -62,7 +73,7 @@ export default function EventSection(): JSX.Element {
                 onViewChange={setView}
               />
               <div className="mt-6">
-                <CalendarGrid currentDate={currentDate} events={events} view={view} />
+                <CalendarGrid currentDate={currentDate} events={evenements} view={view} />
               </div>
             </div>
           </TabsContent>

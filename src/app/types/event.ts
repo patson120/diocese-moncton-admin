@@ -45,4 +45,10 @@ export const eventTypeColors = {
     hover: 'hover:from-orange-200 hover:to-orange-100',
     darkHover: 'dark:hover:from-orange-800 dark:hover:to-orange-800/50',
   },
+  default: {
+    light: 'bg-[#F1F1DA]',
+    dark: 'dark:from-orange-900 dark:to-orange-900/50',
+    hover: 'hover:from-orange-200 hover:to-orange-100',
+    darkHover: 'dark:hover:from-orange-800 dark:hover:to-orange-800/50',
+  }
 };

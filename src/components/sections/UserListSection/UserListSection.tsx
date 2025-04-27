@@ -1,6 +1,6 @@
 "use client"
 
-import React, { JSX, useState } from "react";
+import React, { JSX, useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,6 +15,7 @@ import {
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Pencil, Trash2, XIcon } from "lucide-react";
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { apiClient } from "@/lib/axios";
 
 
 export const UserListSection = (): JSX.Element => {
@@ -76,6 +77,15 @@ export const UserListSection = (): JSX.Element => {
     { value: "editor", label: "Éditeur" },
     { value: "viewer", label: "Viewer" },
   ];
+
+  const getUsers = async () => {
+    const response = await apiClient.get("/api/administrateurs")
+    console.log(response);
+  }
+
+  useEffect(() => {
+    getUsers()
+  }, [])
 
   return (
     <>

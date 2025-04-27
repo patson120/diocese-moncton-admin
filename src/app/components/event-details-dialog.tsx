@@ -1,10 +1,7 @@
-
-
-import { Event } from '@/app/types/event';
-import { Button } from '@/components/ui/button'
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-import { formatDateToLocal } from '@/lib/utils'
-import React from 'react'
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { formatDateToLocal } from '@/lib/utils';
+import { Event } from '../../../types';
 
 interface EventDetailsDialogProps {
   event: Event | null;
@@ -14,16 +11,12 @@ interface EventDetailsDialogProps {
 
 export default function EventDetailsDialog({ event, open, onOpenChange }: EventDetailsDialogProps) {
   if (!event) return null;
-  const categories = [
-    "Fomation",
-    "Célébration",
-    "Communautaire"
-  ]
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange} >
-      <SheetContent className="max-w-3xl min-w-3xl">
+      <SheetContent aria-describedby={undefined} className="max-w-3xl min-w-[620px]">
         <SheetHeader>
-          <SheetTitle hidden>Détails de l'évènement</SheetTitle>
+          <SheetTitle hidden>Détails de l'évènement - {event.titre_fr} </SheetTitle>
         </SheetHeader>
         <div className='absolute top-0 left-0 right-0 z-[1] bg-white'>
           {/* Header with action buttons */}
@@ -54,25 +47,26 @@ export default function EventDetailsDialog({ event, open, onOpenChange }: EventD
               <section className="flex flex-col gap-2 ">
                 <div className='flex justify-between items-center'>
                     <p className='text-gray font-medium'>
-                      {formatDateToLocal((new Date()).toISOString())}
+                      {formatDateToLocal((new Date(event.date_event)).toISOString())} | <span>{event.heure_event}</span>
                     </p>
                 </div>
                 <div className='flex flex-col space-y-7'>
                   <div className='flex flex-col space-y-3'>
-                    <h3 className='text-3xl font-bold'>Cheminer ensemble durant le carême 2025</h3>
-                    <p className='text-gray'>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </p>
+                    <h3 className='text-3xl font-bold'>{event.titre_fr}</h3>
+                    <p className='text-gray'>{event.description_fr}</p>
                   </div>
                   <div className='flex justify-start items-center gap-3'>
                     <h3 className='font-bold'>Type évènement</h3>
-                    {
+                    <span className='px-4 py-2 border border-black/20 rounded-xl text-gray'>{event.categorie.intitule_fr}</span>
+                    {/*
                       categories.map((cat, index) =>(
                         <span key={index} className='px-4 py-2 border border-black/20 rounded-xl text-gray'>{cat}</span>
                       ))
-                    }
+                    */}
                   </div>
                   <div className='flex flex-col space-y-2'>
                     <h3 className='font-bold text-2xl'>Lieu</h3>
-                    <p className='text-gray'>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                    <p className='text-gray'>{event.lieu}</p>
                   </div>
                   <div className='flex flex-col space-y-3'>
                     <h3 className='font-bold text-2xl'>Sur la carte</h3>

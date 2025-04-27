@@ -81,7 +81,7 @@ export function CalendarHeader({ currentDate, view, onDateChange, onViewChange }
         </TabsList>
       </div>
       <h2 className="text-xl font-semibold text-blue">
-        {format(currentDate, "MMMM yyyy", { locale: fr })}
+        {format(currentDate, "dd MMMM yyyy", { locale: fr })}
       </h2>
       <div className="flex items-center gap-2">
         <Button variant={'outline'} className="" onClick={() => {
