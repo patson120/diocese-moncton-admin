@@ -25,7 +25,6 @@ export default function EventSection(): JSX.Element {
 
   const getEvents = async () => {
     const response: any = await apiClient.get("/api/evenements?paginate=200")
-    // console.log("Events",response.data);
     setEvenements(response.data)
   }
 

@@ -5,52 +5,40 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Loader } from "@/components/ui/loader";
 import { Textarea } from "@/components/ui/textarea";
+import { apiClient } from "@/lib/axios";
 import { cn, handleImageUpload } from "@/lib/utils";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { PlusIcon } from "lucide-react";
 import Image from "next/image";
-import { JSX, useState } from "react";
+import { JSX, useEffect, useState } from "react";
+import { toast } from "sonner";
+import { Category } from "../../../../types";
 
 export const AddEventFormSection = (): JSX.Element => {
  
+  const [isLoading, setIsloading] = useState(false)
   const [step, setStep] = useState(1)
   const [coverImage, setCoverImage] = useState('')
-  const [categories, setCategories] = useState([
-    {
-      id: '1',
-      title: 'Formation'
-    },
-    {
-      id: '2',
-      title: 'Communautaire'
-    },
-    {
-      id: '3',
-      title: 'Célébration'
-    },
-    {
-      id: '4',
-      title: 'Information'
-    },
-    {
-      id: '5',
-      title: 'Pastorale'
-    },
-    {
-      id: '6',
-      title: 'Concert'
-    },
-    {
-      id: '7',
-      title: 'Ressourcement'
-    },
-    {
-      id: '8',
-      title: 'Centre diocésain'
-    },
-  ])
+  const [categories, setCategories] = useState<Category[]>([])
+  const [selectedCategory, setSelectedCategory] = useState<Category>()
+
+  const [event, setEvent] = useState({
+    paroisse_id: 1,
+    categorie_id: 1,
+    titre_fr: '',
+    titre_en: '',
+    heure_event: '',
+    date_event: '',
+    lieu: 'Moncton',
+    gps: '48.8566;2.3522',
+    contact: '670000065',
+    is_planifier: 0,
+    date_planification: '',
+    description_fr: '',
+    description_en: '',
+  })
 
   const handleCoverImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -61,7 +49,35 @@ export const AddEventFormSection = (): JSX.Element => {
     }
   };
 
+  const getCategories = async () => {
+    const response: Category[] = await apiClient.get(`/api/categories?menu=event`)
+    setSelectedCategory(response[0])
+    setCategories(response)
+  }
 
+  useEffect(() => {
+    getCategories()
+  }, [])
+
+  const handleCreateEvent = async () => {
+    if (isLoading) return
+    setIsloading(true)
+
+    const response: any = await apiClient.post('/api/evenements', {...event, categorie_id: selectedCategory?.id})
+    if (response.id) {
+      toast.success("Evènement enregistré avec succès !")
+    }
+    else {
+      toast.warning(
+        <div className='p-3 bg-red-500 text-white rounded-md'>
+          {JSON.stringify(response)}
+        </div>
+      )
+    }
+
+    setIsloading(false)
+  }
+  
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -103,6 +119,8 @@ export const AddEventFormSection = (): JSX.Element => {
             <div className="flex flex-col space-y-2">
               <Label htmlFor="titre_fr">Titre évènement</Label>
               <Input
+                value={event.titre_fr}
+                onChange={(e) => setEvent(prev => ({ ...prev, titre_fr: e.target.value })) }
                 className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200"
                 placeholder="Entrez le nom de la paroisse"
               />
@@ -111,6 +129,8 @@ export const AddEventFormSection = (): JSX.Element => {
               <Label htmlFor="description_fr">Description de l'évènement</Label>
               <Textarea 
                 rows={5}
+                value={event.description_fr}
+                onChange={(e) => setEvent(prev => ({ ...prev, description_fr: e.target.value })) }
                 className="px-3 py-3.5 rounded-lg border border-neutral-200"
                 placeholder="Parlez du but de l'évènement"
                />
@@ -128,6 +148,8 @@ export const AddEventFormSection = (): JSX.Element => {
             <div className="flex flex-col space-y-2">
               <Label htmlFor="titre_en">Event title</Label>
               <Input
+                value={event.titre_en}
+                onChange={(e) => setEvent(prev => ({ ...prev, titre_en: e.target.value })) }
                 className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200"
                 placeholder="Enter the title of event"
               />
@@ -136,6 +158,8 @@ export const AddEventFormSection = (): JSX.Element => {
               <Label htmlFor="description_en">Event description</Label>
               <Textarea 
                 rows={5}
+                value={event.description_en}
+                onChange={(e) => setEvent(prev => ({ ...prev, description_en: e.target.value })) }
                 className="px-3 py-3.5 rounded-lg border border-neutral-200"
                 placeholder="Talk about the goal of event..."
                />
@@ -158,8 +182,8 @@ export const AddEventFormSection = (): JSX.Element => {
                 <div className="gap-2 self-stretch !w-full">
                     <Label htmlFor="role">Jour</Label>
                     <Input
-                      // value={''}
-                      // onChange={handleSelectedDate}
+                      value={event.date_event}
+                      onChange={(e) => setEvent(prev => ({ ...prev, date_event: e.target.value }))}
                       className="h-11 inline-block bg-white rounded-xl border border-solid border-[#d9d9d9]"
                       type='date'
                     />
@@ -167,8 +191,8 @@ export const AddEventFormSection = (): JSX.Element => {
                 <div className="gap-2 self-stretch !w-full">
                     <Label htmlFor="role">Heure</Label>
                     <Input
-                      // value={''}
-                      // onChange={handleSelectedHour}
+                      value={event.heure_event}
+                      onChange={(e) => setEvent(prev => ({ ...prev, heure_event: e.target.value }))}
                       className="inline-block h-11 bg-white rounded-xl border border-solid border-[#d9d9d9]"
                       type='time'
                     />
@@ -180,7 +204,13 @@ export const AddEventFormSection = (): JSX.Element => {
               <div className="flex flex-wrap gap-3">
                 {
                   categories.map( item => (
-                    <div key={item.id} className="px-5 py-2 border border-gray/10 rounded-full">{item.title}</div>
+                    <div 
+                      onClick={() => setSelectedCategory(item)}
+                      key={item.id} 
+                      className={cn(
+                        'px-5 py-2 border border-gray/10 rounded-full cursor-pointer',
+                        item.id === selectedCategory?.id && 'bg-blue text-white border-none'
+                      )}>{item.intitule_fr}</div>
                   ))
                 }
               </div>
@@ -221,6 +251,15 @@ export const AddEventFormSection = (): JSX.Element => {
         {
           step === 4 &&
           <div className="flex flex-col w-full p-10 pt-6 space-y-4">
+            <div className="flex flex-col space-y-2">
+              <Label htmlFor="contact_evenement">Contact</Label>
+              <Input
+                value={event.contact}
+                onChange={(e) => setEvent(prev => ({ ...prev, contact: e.target.value })) }
+                className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200"
+                placeholder="Entrez un contact"
+              />
+            </div>
             <h1 className="font-bold">Emplacement sur la map</h1>
             <div className="h-80 w-full bg-black/5 rounded-lg"></div>
             <div className="flex flex-col space-y-2">
@@ -232,8 +271,8 @@ export const AddEventFormSection = (): JSX.Element => {
               <Button variant={'outline'} onClick={() => setStep(3)} className="w-min px-8 mt-8 h-12 rounded-lg">
                 Retour
               </Button>
-              <Button onClick={() => {setStep(1)
-              }} className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
+              <Button onClick={handleCreateEvent} className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
+                { isLoading && <Loader className='text-white mr-2' /> }
                 Ajouter l'évènement
               </Button>
             </div>
