@@ -16,6 +16,22 @@ import { JSX, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Category } from "../../../../types";
 
+const defaultEvent = {
+  paroisse_id: 1,
+  categorie_id: 1,
+  titre_fr: '',
+  titre_en: '',
+  heure_event: '',
+  date_event: '',
+  lieu: 'Moncton',
+  gps: '48.8566;2.3522',
+  contact: '',
+  is_planifier: 0,
+  date_planification: '',
+  description_fr: '',
+  description_en: '',
+}
+
 export const AddEventFormSection = (): JSX.Element => {
  
   const [isLoading, setIsloading] = useState(false)
@@ -24,21 +40,7 @@ export const AddEventFormSection = (): JSX.Element => {
   const [categories, setCategories] = useState<Category[]>([])
   const [selectedCategory, setSelectedCategory] = useState<Category>()
 
-  const [event, setEvent] = useState({
-    paroisse_id: 1,
-    categorie_id: 1,
-    titre_fr: '',
-    titre_en: '',
-    heure_event: '',
-    date_event: '',
-    lieu: 'Moncton',
-    gps: '48.8566;2.3522',
-    contact: '670000065',
-    is_planifier: 0,
-    date_planification: '',
-    description_fr: '',
-    description_en: '',
-  })
+  const [event, setEvent] = useState(defaultEvent)
 
   const handleCoverImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -66,6 +68,7 @@ export const AddEventFormSection = (): JSX.Element => {
     const response: any = await apiClient.post('/api/evenements', {...event, categorie_id: selectedCategory?.id})
     if (response.id) {
       toast.success("Evènement enregistré avec succès !")
+      setEvent(defaultEvent)
     }
     else {
       toast.warning(
