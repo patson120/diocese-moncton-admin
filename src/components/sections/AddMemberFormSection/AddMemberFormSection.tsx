@@ -5,38 +5,111 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Loader } from "@/components/ui/loader";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { apiClient } from "@/lib/axios";
 import { cn, handleImageUpload } from "@/lib/utils";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { PlusIcon } from "lucide-react";
 import Image from "next/image";
 import React, { JSX, useState } from "react";
+import { toast } from "sonner";
+
+const defaultMember = {
+  nom: '',
+  poste: '',
+  coordonnees: '',
+  fonction: '',
+  etablissement: '',
+  description_en: '',
+  description_fr: '',
+}
 
 export const AddMemberFormSection = (): JSX.Element => {
   // Status options data
   const statusOptions = [
-    { value: "active", label: "Actif" },
-    { value: "retired", label: "En retraite" },
-    { value: "deceased", label: "Décédé" },
+    { value: "1", label: "Actif" },
+    { value: "0", label: "En retraite" },
+    { value: "-1", label: "Décédé" },
   ];
 
+  const [fileImage, setFileImage] = useState<File | undefined>();
   const [coverImage, setCoverImage] = useState('')
-  const [fonction, setFonction] = useState("")
+  const [isLoading, setIsloading] = useState(false)
   const [step, setStep] = useState(1)
-  const [status, setStatus] = useState("active")
+  const [status, setStatus] = useState("1")
 
   const handleCoverImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      console.log(file);
-
       const imageUrl = await handleImageUpload(file);
-      // setFileImage(file)
+      setFileImage(file)
       setCoverImage(imageUrl);
     }
   };
 
+  const [member, setMember] = useState(defaultMember);
+
+  const handleSubmitForm =  async () => {
+    if (isLoading) return
+    setIsloading(true)
+
+    // const formdata = new FormData();
+    // formdata.append("categorie_id", '1');
+    // formdata.append("nom", `${member.nom}`);
+    // formdata.append("prenom", ``);
+    // formdata.append("poste", `${member.fonction}`);
+    // formdata.append("coordonnees", `${member.etablissement}`);
+    // formdata.append("etat", `${status}`);
+    // formdata.append("image", fileImage!);
+
+    // // Champs absents pour le requête
+    // formdata.append("description_fr", `${member.description_fr}`);
+    // formdata.append("description_en", `${member.description_en}`);
+
+    // // champs supplémentaires à revoir
+    // formdata.append("fichier", fileImage!);
+    // formdata.append("label", 'membre');
+    // formdata.append("value", '2');
+
+    // const response: any = await apiClient.post('/api/membres', formdata, {
+    //   'Content-Type': 'multipart/form-data'
+    // });
+
+    const body = {
+      categorie_id: 1,
+      nom: member.nom,
+      prenom: 'prenom',
+      poste: member.fonction,
+      coordonnees: member.etablissement,
+      etat: status,
+      // Champs absents pour le requête
+      description_fr: member.description_fr,
+      description_en: member.description_en,
+    }
+
+    const response: any = await apiClient.post('/api/membres', body);
+    if (response.id ) {
+      setIsloading(false)
+      setStep(1)
+      setMember(defaultMember)
+      setCoverImage('')
+      toast.success('Membre ajouté avec succès');
+    }
+    else  {
+      setIsloading(false)
+      toast.error('Une erreur est survenue lors de l\'ajout du membre');
+    }
+  }
+
+  // comment: ""
+  // created_at: "2025-04-28T04:03:00.000000Z"
+  // id: 31
+  // label: "membre"
+  // path : "images/membre/membre1745812980.png"
+  // updated_at: "2025-04-28T04:03:00.000000Z"
+  // value: "2"
 
   return (
     <Dialog>
@@ -46,12 +119,11 @@ export const AddMemberFormSection = (): JSX.Element => {
           <span className="font-body-3 text-sm">Ajouter un membre</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[500px] p-0 rounded-2xl">
+      <DialogContent aria-describedby={undefined} className="w-[500px] p-0 rounded-2xl">
         <DialogHeader className="border-b border-neutral-200 p-4 rounded-t-2xl">
           <DialogTitle className="text-lg font-bold leading-7">
             Ajouter un membre
           </DialogTitle>
-          {/* <XIcon className="h-5 w-5 absolute right-4 top-4 cursor-pointer" /> */}
         </DialogHeader>
 
         {
@@ -62,6 +134,8 @@ export const AddMemberFormSection = (): JSX.Element => {
                 Nom complets
               </label>
               <Input
+                value={member.nom}
+                onChange={(e) => setMember(prev => ({...prev, nom: e.target.value }))}
                 className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200"
                 placeholder="Entrez le nom complet"
               />
@@ -69,7 +143,7 @@ export const AddMemberFormSection = (): JSX.Element => {
 
             <div className="flex flex-col space-y-2">
               <Label htmlFor="category">Fonction</Label>
-              <Select value={fonction} onValueChange={setFonction}>
+              <Select value={member.fonction} onValueChange={(text) =>setMember(prev => ({...prev, fonction: text}))}>
                 <SelectTrigger className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200 text-[#454545]">
                   <SelectValue placeholder="Sélectionnez sa/ses fonction(s)" />
                 </SelectTrigger>
@@ -78,6 +152,7 @@ export const AddMemberFormSection = (): JSX.Element => {
                   <SelectItem value="archeveque">Archevêque</SelectItem>
                   <SelectItem value="pretre">Prêtre</SelectItem>
                   <SelectItem value="diacre">Diacre</SelectItem>
+                  <SelectItem value="religieux">Réligieux</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -86,7 +161,7 @@ export const AddMemberFormSection = (): JSX.Element => {
               <label className="text-sm font-body-3 leading-[var(--body-3-line-height)] tracking-[var(--body-3-letter-spacing)]">
                 Établissement lié
               </label>
-              <Select>
+              <Select value={member.etablissement} onValueChange={(text) => setMember(prev => ({ ...prev, etablissement: text}))}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Sélectionnez un établissement" />
                 </SelectTrigger>
@@ -132,7 +207,7 @@ export const AddMemberFormSection = (): JSX.Element => {
           <div className="flex flex-col w-full p-10 pt-6 space-y-6">
             <div className="relative flex justify-start items-center gap-4">
               <Input accept="image/*" onChange={handleCoverImageChange} type="file" className="absolute opacity-0 h-full z-[2] cursor-pointer" />
-              <div className="h-24 w-24 relative self-stretch rounded-xl bg-[#f0f0f0] flex items-center justify-center">
+              <div className="h-24 w-24 relative self-stretch overflow-hidden rounded-xl bg-[#f0f0f0] flex items-center justify-center">
                 {
                   coverImage ?
                     <Image
@@ -162,6 +237,8 @@ export const AddMemberFormSection = (): JSX.Element => {
             <div className="flex flex-col space-y-2">
               <Label htmlFor="description">Description(français)</Label>
               <Textarea
+                value={member.description_fr}
+                onChange={(e) => setMember(prev => ({...prev, description_fr: e.target.value }))}
                 placeholder="Une description du membre..."
                 className="min-h-20"
               />
@@ -171,6 +248,8 @@ export const AddMemberFormSection = (): JSX.Element => {
             <div className="flex flex-col space-y-2">
               <Label htmlFor="description">Description(anglais)</Label>
               <Textarea
+                value={member.description_en}
+                onChange={(e) => setMember(prev => ({...prev, description_en: e.target.value }))}
                 placeholder="Une description du membre..."
                 className="min-h-20"
               />
@@ -180,7 +259,8 @@ export const AddMemberFormSection = (): JSX.Element => {
               <Button variant={'outline'} onClick={() => setStep(1)} className="w-1/3 mt-8 h-12 rounded-lg">
                 Retour
               </Button>
-              <Button onClick={() => setStep(2)} className="w-2/3 h-12 mt-8 bg-blue text-white rounded-lg">
+              <Button onClick={handleSubmitForm} className="w-2/3 h-12 mt-8 bg-blue text-white rounded-lg">
+                { isLoading && <Loader className='text-white mr-2' /> }
                 Ajouter ce membre
               </Button>
             </div>
