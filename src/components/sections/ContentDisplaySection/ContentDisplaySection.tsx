@@ -4,15 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LayoutGridIcon, ListFilter, PlusIcon, SearchIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { ChangeEvent, useState } from "react";
 import ActualiteContent from "../ActualiteContent/ActualiteContent";
 import MessageContent from "../MessageContent/MessageContent";
+import { useDebouncedCallback } from "use-debounce";
 
 export default function ContentDisplaySection() {
-
   const router = useRouter()
-
+  
   // Navigation menu items data
   const navItems = [
     { id: "actualites", label: "Actualités", route: "actualite", labelRouter: "une actualité", active: true },
@@ -20,8 +20,25 @@ export default function ContentDisplaySection() {
     { id: "communautes", label: "Communautés", route: "#", labelRouter: "un ...", active: false },
     { id: "mouvements", label: "Mouvements", route: "#", labelRouter: "un mouvement", active: false },
   ];
-
   const [selectedItem, setSelectedItem] = useState(navItems[0])
+
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+
+  const handleSearch = useDebouncedCallback((event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value
+    const params = new URLSearchParams(searchParams)
+    // params.set('page', '1');
+
+    if (value) {
+        params.set('query', value)
+    }
+    else {
+        params.delete('query')
+    }
+    router.replace(`${pathname}?${params.toString()}`)
+  }, 800)
+
 
 
   return (
@@ -93,6 +110,8 @@ export default function ContentDisplaySection() {
                       <Input
                         className="h-10 bg-neutral-100 border-none pl-9"
                         placeholder="Rechercher une actualité"
+                        onChange={handleSearch}
+                        defaultValue={searchParams.get('query')?.toString()}
                       />
                       <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
                     </div>
