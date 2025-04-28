@@ -10,7 +10,7 @@ export default  async function page(props: {
   }>
 })  {
 
-  const searchParams = await props.searchParams;
+  // const searchParams = await props.searchParams;
   // const query = searchParams?.query || '';
   // const categorie_id = searchParams?.categorie_id || '';
   // const currentPage = searchParams?.page || 1;

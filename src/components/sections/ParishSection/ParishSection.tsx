@@ -8,18 +8,26 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { fetchParoisses } from '@/lib/data';
 import { Church, LayoutGridIcon, ListFilter, MailIcon, MapPinIcon, PhoneIcon, PlusIcon, SearchIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { Paroisse } from '../../../../types';
 import Text from '@/components/shared/Text';
 import Image from 'next/image';
 import { AddParishFormSection } from '../AddParishFormSection';
+import { useDebouncedCallback } from 'use-debounce';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 export default function ParishSection() {
+    const router = useRouter()
 
     const [openModal, setOpenModal] = useState(false)
     const [selecteParish, setSelectedParish] = useState<Paroisse | undefined>()
     const [parishes, setParishes] = useState<Paroisse[]>([])
     const [statut, setStatut] = useState(1)
+
+    const [query, setQuery] = useState('')
+    
+    const searchParams = useSearchParams()
+    const pathname = usePathname()
 
     // parish tabs data
     const clergyTabs = [
@@ -49,11 +57,29 @@ export default function ParishSection() {
 
     useEffect(() => {
         const getActualites = async () => {
-            const response = await fetchParoisses(`?paginate=20&statut=${statut}`)
+            const response = await fetchParoisses(`?paginate=200&statut=${statut}&nom=${query}`)
             setParishes(response.data)
         }
         getActualites()
-    }, [statut])
+    }, [statut, query])
+
+
+    const handleSearch = useDebouncedCallback((event: ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value
+        const params = new URLSearchParams(searchParams)
+        // params.set('page', '1');
+    
+        setQuery(value)
+        // If the value is empty, remove the query parameter
+        if (value) {
+            params.set('query', value)
+        }
+        else {
+            params.delete('query')
+        }
+        router.replace(`${pathname}?${params.toString()}`)
+    }, 800)
+    
 
     return (
         <main>
@@ -111,6 +137,8 @@ export default function ParishSection() {
                                                 <Input
                                                     className="h-10 bg-neutral-100 border-none pl-9"
                                                     placeholder="Rechercher une paroisse"
+                                                    onChange={handleSearch}
+                                                    defaultValue={searchParams.get('query')?.toString()}
                                                 />
                                                 <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
                                             </div>
@@ -225,7 +253,7 @@ export default function ParishSection() {
             </Tabs>
 
             {/* Sheet */}
-            <Sheet open={openModal} >
+            <Sheet open={openModal} onOpenChange={setOpenModal} >
                 <SheetContent className="max-w-3xl min-w-3xl">
                     <SheetHeader >
                         <SheetTitle hidden>Détails de la paroissse</SheetTitle>
