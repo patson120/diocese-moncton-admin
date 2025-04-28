@@ -7,11 +7,14 @@ import { formatDateToLocal } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import { Actualite } from '../../../../types';
 
-export default function ActualiteContent({ is_actif, query }: { is_actif: number, query: string }) {
+export default function ActualiteContent(
+    { is_actif, query , displayMode}: 
+    { is_actif: number, query: string, displayMode: 'list' | 'grid' }) {
 
     const [actualites, setActualites] = useState<Actualite[]>([])
     const [selectedActualite, setSelectedActualite] = useState<Actualite>()
-    const [openModal, setOpenModal] = useState(false)  
+    const [openModal, setOpenModal] = useState(false) 
+    const [dislayMode, setDislayMode] = useState<'list' | 'grid'>('grid') 
 
     useEffect(() => {
         const getActualites = async () => {

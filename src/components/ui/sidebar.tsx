@@ -56,7 +56,7 @@ export function Sidebar({ className }: SidebarProps) {
         },
         {
           icon: Images,
-          label: "Médiathèques",
+          label: "Gestion des média",
           active: false,
           href: "/mediatheque",
         },

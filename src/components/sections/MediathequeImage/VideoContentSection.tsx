@@ -115,7 +115,7 @@ export const VideoContentSection = (): JSX.Element => {
           </div>
         </div>
 
-        <ScrollArea className="w-full h-[500px]">
+        <ScrollArea className="w-full h-[calc(80vh)]">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 gap-3">
             {videoCards.map((card, index) => (
               <Card

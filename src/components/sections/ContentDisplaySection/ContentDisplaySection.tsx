@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LayoutGridIcon, ListFilter, PlusIcon, SearchIcon } from "lucide-react";
+import { LayoutGridIcon, ListFilter, ListOrdered, PlusIcon, SearchIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChangeEvent, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
@@ -11,6 +11,8 @@ import ActualiteContent from "../ActualiteContent/ActualiteContent";
 import MessageContent from "../MessageContent/MessageContent";
 
 export default function ContentDisplaySection() {
+  const [dislayMode, setDislayMode] = useState<'list' | 'grid'>('grid')
+
   const router = useRouter()
   
   // Navigation menu items data
@@ -41,6 +43,11 @@ export default function ContentDisplaySection() {
     }
     router.replace(`${pathname}?${params.toString()}`)
   }, 800)
+
+  const toggleDisplayMode = () => {
+    if (dislayMode === 'list') setDislayMode("grid") 
+    else setDislayMode("list")
+  }
 
   return (
     <Tabs defaultValue="actualites" className="w-full">
@@ -129,23 +136,27 @@ export default function ContentDisplaySection() {
                       variant="outline"
                       className="w-11 h-11 p-0 flex items-center justify-center border border-[#d9d9d9] rounded-lg"
                     >
-                      <LayoutGridIcon className="w-5 h-5" />
+                      {
+                        (dislayMode === 'list') ?
+                        <LayoutGridIcon className="w-5 h-5" /> :
+                        <ListOrdered className="w-5 h-5" />
+                      }
                     </Button>
                   </div>
                 </div>
               </div>
               <TabsContent value="published" className="mt-6 space-y-6">
-                <ActualiteContent is_actif={1} query={query} />
+                <ActualiteContent is_actif={1} query={query} displayMode={dislayMode} />
               </TabsContent>
 
               <TabsContent value="pending" className="mt-6 space-y-6">
                 {/* Content for pending tab */}
-                <ActualiteContent is_actif={0} query={query} />
+                <ActualiteContent is_actif={0} query={query} displayMode={dislayMode} />
               </TabsContent>
 
               <TabsContent value="disabled" className="mt-6 space-y-6">
                 {/* Content for disabled tab */}
-                <ActualiteContent is_actif={-1} query={query} />
+                <ActualiteContent is_actif={-1} query={query} displayMode={dislayMode} />
               </TabsContent>
             </Tabs>
           </TabsContent>
