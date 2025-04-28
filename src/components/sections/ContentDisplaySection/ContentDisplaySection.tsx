@@ -11,7 +11,7 @@ import ActualiteContent from "../ActualiteContent/ActualiteContent";
 import MessageContent from "../MessageContent/MessageContent";
 
 export default function ContentDisplaySection() {
-  const [dislayMode, setDislayMode] = useState<'list' | 'grid'>('grid')
+  const [displayMode, setDisplayMode] = useState<'list' | 'grid'>('grid')
 
   const router = useRouter()
   
@@ -45,8 +45,8 @@ export default function ContentDisplaySection() {
   }, 800)
 
   const toggleDisplayMode = () => {
-    if (dislayMode === 'list') setDislayMode("grid") 
-    else setDislayMode("list")
+    if (displayMode === 'list') {setDisplayMode("grid") }
+    else {setDisplayMode("list")}
   }
 
   return (
@@ -134,10 +134,11 @@ export default function ContentDisplaySection() {
 
                     <Button
                       variant="outline"
+                      onClick={() => toggleDisplayMode()}
                       className="w-11 h-11 p-0 flex items-center justify-center border border-[#d9d9d9] rounded-lg"
                     >
                       {
-                        (dislayMode === 'list') ?
+                        ( displayMode === 'list') ?
                         <LayoutGridIcon className="w-5 h-5" /> :
                         <ListOrdered className="w-5 h-5" />
                       }
@@ -146,17 +147,17 @@ export default function ContentDisplaySection() {
                 </div>
               </div>
               <TabsContent value="published" className="mt-6 space-y-6">
-                <ActualiteContent is_actif={1} query={query} displayMode={dislayMode} />
+                <ActualiteContent is_actif={1} query={query} displayMode={displayMode} />
               </TabsContent>
 
               <TabsContent value="pending" className="mt-6 space-y-6">
                 {/* Content for pending tab */}
-                <ActualiteContent is_actif={0} query={query} displayMode={dislayMode} />
+                <ActualiteContent is_actif={0} query={query} displayMode={displayMode} />
               </TabsContent>
 
               <TabsContent value="disabled" className="mt-6 space-y-6">
                 {/* Content for disabled tab */}
-                <ActualiteContent is_actif={-1} query={query} displayMode={dislayMode} />
+                <ActualiteContent is_actif={-1} query={query} displayMode={displayMode} />
               </TabsContent>
             </Tabs>
           </TabsContent>

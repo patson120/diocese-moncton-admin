@@ -10,7 +10,6 @@ import {
   EyeIcon,
   LayoutGridIcon,
   ListFilter,
-  ListMinusIcon,
   ListOrdered,
   MoreHorizontalIcon,
   SearchIcon,

@@ -6,6 +6,8 @@ import { apiClient } from '@/lib/axios';
 import { formatDateToLocal } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import { Actualite } from '../../../../types';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { EyeIcon, Trash2Icon } from 'lucide-react';
 
 export default function ActualiteContent(
     { is_actif, query , displayMode}: 
@@ -14,7 +16,6 @@ export default function ActualiteContent(
     const [actualites, setActualites] = useState<Actualite[]>([])
     const [selectedActualite, setSelectedActualite] = useState<Actualite>()
     const [openModal, setOpenModal] = useState(false) 
-    const [dislayMode, setDislayMode] = useState<'list' | 'grid'>('grid') 
 
     useEffect(() => {
         const getActualites = async () => {
@@ -29,8 +30,116 @@ export default function ActualiteContent(
         setOpenModal(true)
     }
 
+    // Document data for mapping
+    const documents = [
+        {
+        name: "Bulletin diocésain mensuel",
+        format: "PDF",
+        date: "12/03/2025",
+        },
+        {
+        name: "Calendrier des pèlerinages organisés",
+        format: "EXCEL",
+        date: "12/03/2025",
+        },
+        {
+        name: "Lettre pastorale de l'évêque",
+        format: "PDF",
+        date: "12/03/2025",
+        },
+        {
+        name: "Fiches de catéchèse pour jeunes et adultes",
+        format: "WORD",
+        date: "12/03/2025",
+        },
+        {
+        name: "Catalogue des formations diocésaines",
+        format: "PDF",
+        date: "12/03/2025",
+        },
+        {
+        name: "Guide de la vie paroissiale",
+        format: "PDF",
+        date: "12/03/2025",
+        },
+        {
+        name: "Document de réflexion synodale",
+        format: "PDF",
+        date: "12/03/2025",
+        },
+        {
+        name: "Charte de bénévolat dans le diocèse",
+        format: "WORD",
+        date: "12/03/2025",
+        },
+    ];
+
     return (
         <>
+        {
+            ( displayMode === 'list') ?
+            <Card className="w-full rounded-2xl bg-white">
+              <CardContent className="p-0">
+                <div className="flex flex-col w-full items-start gap-4">
+                  <Table>
+                    <TableHeader className="bg-[#f9f9f0] rounded-lg">
+                      <TableRow className="border-none">
+                        <TableHead className="font-body-3 text-noir-dashboard text-sm">
+                          Titre
+                        </TableHead>
+                        <TableHead className="font-body-3 text-noir-dashboard text-sm">
+                          Catégorie
+                        </TableHead>
+                        <TableHead className="font-body-3 text-noir-dashboard text-sm">
+                          Ajouté le
+                        </TableHead>
+                        <TableHead className="font-body-3 text-noir-dashboard text-sm">
+                          Actions
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      { actualites.map((article, index) => (
+                        <TableRow key={index} className="border-b border-[#d9d9d9]">
+                          <TableCell className="font-body-3 text-noir-dashboard py-3.5">
+                            {article?.titre_fr}
+                          </TableCell>
+                          <TableCell className="font-body-3 text-gray py-3.5">
+                            {article?.categorie?.intitule_fr}
+                          </TableCell>
+                          <TableCell className="font-body-3 text-noir-dashboard py-3.5">
+                            { formatDateToLocal((new Date(article?.date_publication)).toISOString()) }
+                          </TableCell>
+                          <TableCell className="py-3.5">
+                            <div className="flex items-center gap-[17px]">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-auto p-0 flex items-center gap-1">
+                                <EyeIcon className="w-[18px] h-[18px]" />
+                                <span className="font-body-3 text-noir-dashboard">
+                                  Voir
+                                </span>
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-auto p-0 flex items-center gap-1">
+                                <Trash2Icon className="w-4 h-4" />
+                                <span className="font-body-3 text-noir-dashboard">
+                                  Supprimer
+                                </span>
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card> :
+        
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8">
                 {
                     actualites.map((article) => (
@@ -87,6 +196,7 @@ export default function ActualiteContent(
                         </Card>
                     ))}
             </div>
+            }
 
             {/* Sheet */}
             <Sheet open={openModal} onOpenChange={setOpenModal} >

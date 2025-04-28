@@ -1,14 +1,12 @@
 'use client'
 
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { PlusIcon } from "lucide-react";
 import { JSX, useState } from "react";
+import { AddImageFormSection } from "../AddImageFormSection";
 import { AudioContentSection } from "./AudioContentSection";
 import { DocumentContentSection } from "./DocumentContentSection";
-import { VideoContentSection } from "./VideoContentSection";
 import ImageContentSection from "./ImageContentSection";
-import { AddImageFormSection } from "../AddImageFormSection";
+import { VideoContentSection } from "./VideoContentSection";
 
 export default function MediathequeImage(): JSX.Element {
 
