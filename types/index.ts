@@ -13,7 +13,6 @@ export type Message = {
     message: string;
     archeveque: Archeveque;
 }
-
 export type Archeveque = {
     id: number;
     name: string;
@@ -21,7 +20,6 @@ export type Archeveque = {
     created_at: string;
     updated_at: string;
 }
-
 export type Category = {
     id: number;
     parent_id: number;
@@ -31,9 +29,6 @@ export type Category = {
     created_at: string;
     updated_at: string;
 }
-
-
-
 export type Actualite = {
     id: number;
     categorie_id: number;
@@ -52,7 +47,6 @@ export type Actualite = {
     categorie: Category;
     motcles: string[]
 }
-
 export type Paroisse = {
     id: number;
     type_paroisse_id: number;
@@ -77,7 +71,6 @@ export type Paroisse = {
     ordonne_le: number | null,
     premier_cure: number | null,
 }
-
 export type TypeParoisse = {
     id: number;
     intitule_fr: string;
@@ -94,7 +87,6 @@ export type Horaire = {
     created_at: string;
     updated_at: string;
 }
-
 export type Event = {
     id: number;
     paroisse_id: number;
@@ -115,7 +107,6 @@ export type Event = {
     paroisse: Paroisse;
     categorie: Category;
 }
-
 export type Image = {
     id: number;
     path: string;
@@ -126,7 +117,6 @@ export type Image = {
     created_at: string;
     updated_at: string;
 }
-
 export type Member = {
     id: number;
     categorie_id: number;
