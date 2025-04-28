@@ -6,9 +6,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LayoutGridIcon, ListFilter, PlusIcon, SearchIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChangeEvent, useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
 import ActualiteContent from "../ActualiteContent/ActualiteContent";
 import MessageContent from "../MessageContent/MessageContent";
-import { useDebouncedCallback } from "use-debounce";
 
 export default function ContentDisplaySection() {
   const router = useRouter()
@@ -21,6 +21,7 @@ export default function ContentDisplaySection() {
     { id: "mouvements", label: "Mouvements", route: "#", labelRouter: "un mouvement", active: false },
   ];
   const [selectedItem, setSelectedItem] = useState(navItems[0])
+  const [query, setQuery] = useState('')
 
   const searchParams = useSearchParams()
   const pathname = usePathname()
@@ -30,6 +31,8 @@ export default function ContentDisplaySection() {
     const params = new URLSearchParams(searchParams)
     // params.set('page', '1');
 
+    setQuery(value)
+    // If the value is empty, remove the query parameter
     if (value) {
         params.set('query', value)
     }
@@ -38,8 +41,6 @@ export default function ContentDisplaySection() {
     }
     router.replace(`${pathname}?${params.toString()}`)
   }, 800)
-
-
 
   return (
     <Tabs defaultValue="actualites" className="w-full">
@@ -134,17 +135,17 @@ export default function ContentDisplaySection() {
                 </div>
               </div>
               <TabsContent value="published" className="mt-6 space-y-6">
-                <ActualiteContent is_actif={1} />
+                <ActualiteContent is_actif={1} query={query} />
               </TabsContent>
 
               <TabsContent value="pending" className="mt-6 space-y-6">
                 {/* Content for pending tab */}
-                <ActualiteContent is_actif={0} />
+                <ActualiteContent is_actif={0} query={query} />
               </TabsContent>
 
               <TabsContent value="disabled" className="mt-6 space-y-6">
                 {/* Content for disabled tab */}
-                <ActualiteContent is_actif={-1} />
+                <ActualiteContent is_actif={-1} query={query} />
               </TabsContent>
             </Tabs>
           </TabsContent>

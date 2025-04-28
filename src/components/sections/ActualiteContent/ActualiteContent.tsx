@@ -2,24 +2,24 @@ import Text from '@/components/shared/Text';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { fetchActualites } from '@/lib/data';
+import { apiClient } from '@/lib/axios';
 import { formatDateToLocal } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import { Actualite } from '../../../../types';
 
-export default function ActualiteContent({ is_actif }: { is_actif: number }) {
+export default function ActualiteContent({ is_actif, query }: { is_actif: number, query: string }) {
 
     const [actualites, setActualites] = useState<Actualite[]>([])
     const [selectedActualite, setSelectedActualite] = useState<Actualite>()
-    const [openModal, setOpenModal] = useState(false)
+    const [openModal, setOpenModal] = useState(false)  
 
     useEffect(() => {
         const getActualites = async () => {
-            const response = await fetchActualites(`?paginate=2000&is_actif=${is_actif}`)
+            const response: any = await apiClient.get(`/api/actualites?paginate=200&is_actif=${is_actif}&intitule=${query}`)
             setActualites(response.data)
         }
         getActualites()
-    }, [is_actif])
+    }, [is_actif, query])
 
     const handelOpenDetailsSheet = (actualite: Actualite) => {
         setSelectedActualite(actualite)
@@ -37,13 +37,13 @@ export default function ActualiteContent({ is_actif }: { is_actif: number }) {
                             className="w-full border-none shadow-none cursor-pointer">
                             <CardContent className="p-0 space-y-3">
                                 {/* {article.image ? ( */}
-                                <div
-                                    className="w-full h-[150px] rounded-xl bg-cover bg-center"
-                                    style={{ backgroundImage: `url("/image-5.png")` }}
-                                />
-                                {/* ) : (
-                                <div className="w-full h-[150px] bg-[#f8f8f8] rounded-[11px]" />
-                            )} */}
+                                    <div
+                                        className="w-full h-[150px] rounded-xl bg-cover bg-center"
+                                        style={{ backgroundImage: `url("/image-5.png")` }}
+                                    />
+                                    {/* ) : (
+                                    <div className="w-full h-[150px] bg-[#f8f8f8] rounded-[11px]" />
+                                )} */}
 
                                 <div className="flex flex-col gap-2">
                                     <div className='flex flex-row justify-between items-center'>
@@ -86,7 +86,7 @@ export default function ActualiteContent({ is_actif }: { is_actif: number }) {
             </div>
 
             {/* Sheet */}
-            <Sheet open={openModal} >
+            <Sheet open={openModal} onOpenChange={setOpenModal} >
                 <SheetContent className="max-w-3xl min-w-3xl">
                     <SheetHeader>
                         <SheetTitle hidden>Détails de l'actualité</SheetTitle>
