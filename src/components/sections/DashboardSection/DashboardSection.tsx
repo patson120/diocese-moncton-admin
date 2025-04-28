@@ -1,8 +1,23 @@
+'use client';
+import { useEffect, useState } from "react";
+import { apiClient } from "@/lib/axios";
+
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { CalendarDays, Coins, Users } from "lucide-react";
 import { JSX } from "react";
+import Link from "next/link";
 
 export const DashboardSection = (): JSX.Element => {
+
+  const [totalEvent, setTotalEvent] = useState(0)
+
+  useEffect(() => {
+    ( async () => {
+      const response: any = await apiClient.get('/api/evenements?paginate=1')
+      setTotalEvent(response.total);
+    })()
+  }, [])
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       <Card className="h-[200px] rounded-2xl overflow-hidden bg-yellow-light relative">
@@ -16,7 +31,7 @@ export const DashboardSection = (): JSX.Element => {
           <div className="flex flex-col items-start gap-0.5 mt-9 ml-5">
             <div className="text-gray text-xs">Événements à venir</div>
             <div className="font-heading-5 font-bold text-noir-dashboard text-xl leading-[28.6px]">
-              12 évènements
+              {totalEvent} évènements
             </div>
           </div>
         </CardContent>
@@ -27,9 +42,11 @@ export const DashboardSection = (): JSX.Element => {
             <div className="font-normal text-gray text-xs">
               Durant février
             </div>
-            <div className="font-normal text-noir-dashboard text-xs text-right cursor-pointer">
-              <span className="font-bold">Voir plus</span>
-            </div>
+            <Link href={"/events"}>
+              <div className="font-normal text-noir-dashboard text-xs text-right cursor-pointer">
+                <span className="font-bold">Voir plus</span>
+              </div>
+            </Link>
           </div>
         </CardFooter>
       </Card>

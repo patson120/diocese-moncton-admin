@@ -10,42 +10,13 @@ import { Event } from "../../../../types";
 import Text from "@/components/shared/Text";
 import { formatDateToLocal } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { AddEventFormSection } from "../AddEventFormSection ";
 
 const QuickActionsSection = (): JSX.Element => {
 
   const router = useRouter()
 
   const [calendarEvents, setCalendarEvents] = useState<Event[]>([])
-
-  // Calendar events data
-  // const calendarEvents = [
-  //   {
-  //     date: "Lun 10 Avril - 18h30",
-  //     title: "Cheminer ensemble durant le carême 2025",
-  //     lieu: "Église Notre-Dame ..."
-  //   },
-  //   {
-  //     date: "Dim 12 avril - 14h00",
-  //     title: "Prière d'espérance pour la paix.",
-  //     lieu: "Église Notre-Dame ..."
-  //   },
-  //   {
-  //     date: "Jeu 14 avril - 10h30",
-  //     title: "Seniors Connect",
-  //     lieu: "Église Notre-Dame ..."
-  //   },
-  //   {
-  //     date: "17 Avril à 18h30",
-  //     title: "Cheminer ensemble durant le carême 2025",
-  //     lieu: "Église Notre-Dame ..."
-  //   },
-  //   {
-  //     date: "22 Avril à 18h30",
-  //     title: "Cheminer ensemble durant le carême 2025",
-  //     lieu: "Église Notre-Dame ..."
-  //   },
-
-  // ];
 
   useEffect(() => {
     const getEvenements = async () => {
@@ -87,13 +58,16 @@ const QuickActionsSection = (): JSX.Element => {
               <div className="w-12 h-12 shrink-0 bg-red-light rounded-xl flex justify-center items-center">
                 <CalendarPlus className="h-6 w-6" />
               </div>
-              <div className="flex flex-col items-start gap-1">
+              <div className="relative flex flex-col items-start gap-1">
                 <p className="font-semibold text-noir-dashboard leading-[25px] line-clamp-1">
                   Créer un évènement
                 </p>
                 <p className="font-legend -mt-1 font-[number:var(--legend-font-weight)] text-gray text-xs tracking-[var(--legend-letter-spacing)] leading-[var(--legend-line-height)] [font-style:var(--legend-font-style)] line-clamp-1">
                   Lorem ipsum dolor sit amet
                 </p>
+                <div className="w-full h-full absolute opacity-0">
+                  <AddEventFormSection />
+                </div>
               </div>
             </div>
           </CardContent>

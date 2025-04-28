@@ -22,6 +22,7 @@ export const ClergPretres = (): JSX.Element => {
   const [openModal, setOpenModal] = useState(false)
 
   const [members, setMembers] = useState<Member[]>([])
+  const [membersCopy, setMembersCopy] = useState<Member[]>([])
 
   // Clergy tabs data
   const clergyTabs = [
@@ -60,6 +61,7 @@ export const ClergPretres = (): JSX.Element => {
       ( async () => {
         const response: Member[] = await apiClient.get('/api/membres')
         setMembers(response)
+        setMembersCopy(response)
       })()
   }, [])
   
