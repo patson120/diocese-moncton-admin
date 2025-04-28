@@ -109,7 +109,7 @@ export default function ContentDisplaySection() {
                     <div className="relative w-[256px]">
                       <Input
                         className="h-10 bg-neutral-100 border-none pl-9"
-                        placeholder="Rechercher une actualité..."
+                        placeholder="Rechercher une actualité.."
                         onChange={handleSearch}
                         defaultValue={searchParams.get('query')?.toString()}
                       />
