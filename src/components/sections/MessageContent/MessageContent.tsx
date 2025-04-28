@@ -3,7 +3,7 @@ import Text from '@/components/shared/Text';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { fetchMessages } from '@/lib/data';
+import { apiClient } from '@/lib/axios';
 import { formatDateToLocal } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import { Message } from '../../../../types';
@@ -14,14 +14,11 @@ export default function MessageContent({ etat }: { etat: number }) {
     const [openModal, setOpenModal] = useState(false)
     useEffect(() => {
         const getMessages = async () => {
-            const response = await fetchMessages(`?paginate=20&etat=${etat}`)
+            const response: any = await apiClient.get(`/api/mot_archeve?paginate=200&etat=${etat}`)
             setMessages(response.data)
         }
         getMessages()
     }, [etat])
-
-
-    
 
     return (
         <div>
