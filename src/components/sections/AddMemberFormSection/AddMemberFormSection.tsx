@@ -40,7 +40,6 @@ const defaultMember = {
   nom: '',
   poste: '',
   coordonnees: '',
-  fonction: '',
   etablissement: '',
   description_en: '',
   description_fr: '',
@@ -78,7 +77,6 @@ export const AddMemberFormSection = (): JSX.Element => {
     { value: "-1", label: "Décédé" },
   ];
 
-
   const [coverImage, setCoverImage] = useState('')
   const [isLoading, setIsloading] = useState(false)
   const [step, setStep] = useState(1)
@@ -95,89 +93,62 @@ export const AddMemberFormSection = (): JSX.Element => {
 
   const [member, setMember] = useState(defaultMember);
 
-  const handleSubmitForm =  async () => {
+  const handleSubmitForm =  async (data: any) => {
     if (isLoading) return
     setIsloading(true)
 
-    // const formdata = new FormData();
-    // formdata.append("categorie_id", '1');
-    // formdata.append("nom", `${member.nom}`);
-    // formdata.append("prenom", ``);
-    // formdata.append("poste", `${member.fonction}`);
-    // formdata.append("coordonnees", `${member.etablissement}`);
-    // formdata.append("etat", `${status}`);
-    // formdata.append("image", fileImage!);
+    const formdata = new FormData();
+    formdata.append("categorie_id", '1');
+    formdata.append("nom", `${data.nom}`);
+    formdata.append("prenom", ``);
+    formdata.append("poste", `${data.poste}`);
+    formdata.append("coordonnees", `${data.etablissement}`);
+    formdata.append("etat", `${status}`);
+    formdata.append("image", fileImage!);
+    formdata.append("description_fr", `${data.description_fr}`);
+    formdata.append("description_en", `${data.description_en}`);
 
-    // // Champs absents pour le requête
-    // formdata.append("description_fr", `${member.description_fr}`);
-    // formdata.append("description_en", `${member.description_en}`);
+    const response: any = await apiClient.post('/api/membres', formdata, {
+      'Content-Type': 'multipart/form-data'
+    });
 
-    // // champs supplémentaires à revoir
-    // formdata.append("fichier", fileImage!);
-    // formdata.append("label", 'membre');
-    // formdata.append("value", '2');
-
-    // const response: any = await apiClient.post('/api/membres', formdata, {
-    //   'Content-Type': 'multipart/form-data'
-    // });
-
-    const body = {
-      categorie_id: 1,
-      nom: member.nom,
-      prenom: 'prenom',
-      poste: member.fonction,
-      coordonnees: member.etablissement,
-      etat: status,
-      // Champs absents pour le requête
-      description_fr: member.description_fr,
-      description_en: member.description_en,
-    }
-
-    const response: any = await apiClient.post('/api/membres', body);
     if (response.id ) {
-      setIsloading(false)
       setStep(1)
       setMember(defaultMember)
       setCoverImage('')
       toast.success('Membre ajouté avec succès');
+      setFileImage(undefined)
+      formOne.reset();
+      formTwo.reset();
     }
     else  {
-      setIsloading(false)
       toast.error('Une erreur est survenue lors de l\'ajout du membre');
     }
+    setIsloading(false)
   }
 
-  
-
   const onSubmitFirst = async (values: z.infer<typeof formSchemaOne>) => {
-    setMember(prev => ({
-      ...prev,
+    const newMember = {
+      ...member,
       nom: values.nom,
-      // poste: values.poste,
-      fonction: values.fonction,
+      poste: values.fonction,
       etablissement: values.etablissement,
-      // description_fr: values.description_fr,
-      // description_en: values.description_en,
-    }))
+      statut: status,
+    }
+    setMember(newMember)
     setStep(2)
-    setStatus(values.statut)
-
-    // Log data
-    console.log(member);
-    
   }
 
   const onSubmitSecond = async (values: z.infer<typeof formSchemaTwo>) => {
-    setMember(prev => ({
-      ...prev,
-      // poste: values.poste,
+    const newMember = {
+      ...member,
+      coordonnees: "13 Rue de la Paix, Moncton",
       description_fr: values.description_fr,
       description_en: values.description_en,
-      image: values.image,
-    }))
-    // Log data
-    console.log(member);
-    
+      image: fileImage,
+    }
+    setMember(newMember)
+    await handleSubmitForm(newMember)
   }
 
   return (
@@ -215,7 +186,6 @@ export const AddMemberFormSection = (): JSX.Element => {
                     </FormItem>
                   )}
                 />
-
                 <FormField
                   control={formOne.control}
                   name="fonction"
@@ -242,7 +212,6 @@ export const AddMemberFormSection = (): JSX.Element => {
                     </FormItem>
                   )}
                 />
-
                 <FormField
                   control={formOne.control}
                   name="etablissement"
@@ -267,7 +236,6 @@ export const AddMemberFormSection = (): JSX.Element => {
                     </FormItem>
                   )}
                 />
-
                 <div className="flex flex-col space-y-2">
                   <label className="text-sm font-body-3 leading-[var(--body-3-line-height)] tracking-[var(--body-3-letter-spacing)]">
                     Statut
@@ -288,13 +256,11 @@ export const AddMemberFormSection = (): JSX.Element => {
                     ))}
                   </div>
                 </div>
-
                 <div>
                   <Button type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
                     Suivant
                   </Button>
                 </div>
-
               </form>
             </Form>
           </div>
@@ -304,27 +270,6 @@ export const AddMemberFormSection = (): JSX.Element => {
           <div className="flex flex-col w-full p-10 pt-6 space-y-6">
             <Form {...formTwo}>
               <form onSubmit={formTwo.handleSubmit(onSubmitSecond)} className="space-y-4">
-                <FormField
-                  control={formTwo.control}
-                  name="image"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Image</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            field.onChange(file); // Update the form state with the selected file
-                          }}
-                          className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
                 <div className="relative flex justify-start items-center gap-4">
                   <Input accept="image/*" onChange={handleCoverImageChange} type="file" className="absolute opacity-0 h-full z-[2] cursor-pointer" />
                   <div className="h-24 w-24 relative self-stretch overflow-hidden rounded-xl bg-[#f0f0f0] flex items-center justify-center">
@@ -352,7 +297,6 @@ export const AddMemberFormSection = (): JSX.Element => {
                   </div>
 
                 </div>
-
                 <FormField
                   control={formTwo.control}
                   name="description_fr"
@@ -400,10 +344,8 @@ export const AddMemberFormSection = (): JSX.Element => {
                 </div>
               </form>
             </Form>
-
           </div>
         }
-
       </DialogContent>
     </Dialog>
   );
