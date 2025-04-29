@@ -15,6 +15,26 @@ import { PlusIcon } from "lucide-react";
 import Image from "next/image";
 import React, { JSX, useState } from "react";
 import { toast } from "sonner";
+import * as z from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+
+
+const formSchemaOne = z.object({
+  nom: z.string().min(1, "Le nom est requis"),
+  fonction: z.string().min(1, "La fonction est requise"),
+  etablissement: z.enum(["paroisse", "diocese"]),
+  statut: z.enum(["actif", "inactif"]),
+  coordonnees: z.string().optional(), // z.string().min(1, "Les coordonnées sont requises"),
+});
+
+const formSchemaTwo = z.object({
+  description_en: z.string().min(1, "La description en anglais est requise"),
+  description_fr: z.string().min(1, "La description en français est requise"),
+  image: z.instanceof(File).optional(),
+});
+
 
 const defaultMember = {
   nom: '',
@@ -27,6 +47,30 @@ const defaultMember = {
 }
 
 export const AddMemberFormSection = (): JSX.Element => {
+
+  const [fileImage, setFileImage] = useState<File | undefined>();
+
+  const formOne = useForm<z.infer<typeof formSchemaOne>>({
+    resolver: zodResolver(formSchemaOne),
+    defaultValues: {
+      nom: "",
+      coordonnees: "Moncton",
+      fonction: "archeveque",
+      etablissement: "paroisse",
+      statut: 'actif',
+    },
+  });
+
+  const formTwo = useForm<z.infer<typeof formSchemaTwo>>({
+    resolver: zodResolver(formSchemaTwo),
+    defaultValues: {
+      description_en: "",
+      description_fr: "",
+      image: fileImage!,
+    },
+  });
+
+
   // Status options data
   const statusOptions = [
     { value: "1", label: "Actif" },
@@ -34,11 +78,11 @@ export const AddMemberFormSection = (): JSX.Element => {
     { value: "-1", label: "Décédé" },
   ];
 
-  const [fileImage, setFileImage] = useState<File | undefined>();
+
   const [coverImage, setCoverImage] = useState('')
   const [isLoading, setIsloading] = useState(false)
   const [step, setStep] = useState(1)
-  const [status, setStatus] = useState("1")
+  const [status, setStatus] = useState('1')
 
   const handleCoverImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -103,13 +147,38 @@ export const AddMemberFormSection = (): JSX.Element => {
     }
   }
 
-  // comment: ""
-  // created_at: "2025-04-28T04:03:00.000000Z"
-  // id: 31
-  // label: "membre"
-  // path : "images/membre/membre1745812980.png"
-  // updated_at: "2025-04-28T04:03:00.000000Z"
-  // value: "2"
+  
+
+  const onSubmitFirst = async (values: z.infer<typeof formSchemaOne>) => {
+    setMember(prev => ({
+      ...prev,
+      nom: values.nom,
+      // poste: values.poste,
+      fonction: values.fonction,
+      etablissement: values.etablissement,
+      // description_fr: values.description_fr,
+      // description_en: values.description_en,
+    }))
+    setStep(2)
+    setStatus(values.statut)
+
+    // Log data
+    console.log(member);
+    
+  }
+
+  const onSubmitSecond = async (values: z.infer<typeof formSchemaTwo>) => {
+    setMember(prev => ({
+      ...prev,
+      // poste: values.poste,
+      description_fr: values.description_fr,
+      description_en: values.description_en,
+      image: values.image,
+    }))
+    // Log data
+    console.log(member);
+    
+  }
 
   return (
     <Dialog>
@@ -129,144 +198,211 @@ export const AddMemberFormSection = (): JSX.Element => {
         {
           step === 1 &&
           <div className="flex flex-col w-full p-10 pt-6 space-y-4">
-            <div className="flex flex-col space-y-2">
-              <label className="text-sm font-body-3 leading-[var(--body-3-line-height)] tracking-[var(--body-3-letter-spacing)]">
-                Nom complets
-              </label>
-              <Input
-                value={member.nom}
-                onChange={(e) => setMember(prev => ({...prev, nom: e.target.value }))}
-                className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200"
-                placeholder="Entrez le nom complet"
-              />
-            </div>
+            <Form {...formOne}>
+              <form onSubmit={formOne.handleSubmit(onSubmitFirst)} className="space-y-4">
+                <FormField
+                  control={formOne.control}
+                  name="nom"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Nom complet</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Entrez le nom complet" {...field}
+                          className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <div className="flex flex-col space-y-2">
-              <Label htmlFor="category">Fonction</Label>
-              <Select value={member.fonction} onValueChange={(text) =>setMember(prev => ({...prev, fonction: text}))}>
-                <SelectTrigger className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200 text-[#454545]">
-                  <SelectValue placeholder="Sélectionnez sa/ses fonction(s)" />
-                </SelectTrigger>
-                <SelectContent>
-                  {/* Function options would go here */}
-                  <SelectItem value="archeveque">Archevêque</SelectItem>
-                  <SelectItem value="pretre">Prêtre</SelectItem>
-                  <SelectItem value="diacre">Diacre</SelectItem>
-                  <SelectItem value="religieux">Réligieux</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+                <FormField
+                  control={formOne.control}
+                  name="fonction"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Fonction</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}>
+                        <FormControl className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200">
+                          <SelectTrigger className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200 text-[#454545]">
+                            <SelectValue placeholder="Sélectionnez sa/ses fonction(s)" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {/* Function options would go here */}
+                          <SelectItem value="archeveque">Archevêque</SelectItem>
+                          <SelectItem value="pretre">Prêtre</SelectItem>
+                          <SelectItem value="diacre">Diacre</SelectItem>
+                          <SelectItem value="religieux">Réligieux</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <div className="flex flex-col space-y-2">
-              <label className="text-sm font-body-3 leading-[var(--body-3-line-height)] tracking-[var(--body-3-letter-spacing)]">
-                Établissement lié
-              </label>
-              <Select value={member.etablissement} onValueChange={(text) => setMember(prev => ({ ...prev, etablissement: text}))}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Sélectionnez un établissement" />
-                </SelectTrigger>
-                <SelectContent>
-                  {/* Establishment options would go here */}
-                  <SelectItem value="paroisse">Paroisse</SelectItem>
-                  <SelectItem value="diocese">Diocèse</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+                <FormField
+                  control={formOne.control}
+                  name="etablissement"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Établissement lié</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}>
+                        <FormControl className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200">
+                          <SelectTrigger className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200 text-[#454545]">
+                            <SelectValue placeholder="Sélectionnez un établissement" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {/* Establishment options would go here */}
+                          <SelectItem value="paroisse">Paroisse</SelectItem>
+                          <SelectItem value="diocese">Diocèse</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <div className="flex flex-col space-y-2">
-              <label className="text-sm font-body-3 leading-[var(--body-3-line-height)] tracking-[var(--body-3-letter-spacing)]">
-                Statut
-              </label>
-              <div className="flex gap-2">
-                {statusOptions.map((opt) => (
-                  <Button
-                    onClick={() => setStatus(opt.value)}
-                    key={opt.value}
-                    variant="outline"
-                    className={
-                      cn("rounded-[20px] hover:bg-blue hover:text-white px-3 py-2 h-auto  font-body-3 font-[number:var(--body-3-font-weight)] text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]",
-                        status === opt.value ? 'text-white bg-blue' : 'text-[#454545]'
-                      )
-                    }
-                  >
-                    {opt.label}
+                <div className="flex flex-col space-y-2">
+                  <label className="text-sm font-body-3 leading-[var(--body-3-line-height)] tracking-[var(--body-3-letter-spacing)]">
+                    Statut
+                  </label>
+                  <div className="flex gap-2">
+                    {statusOptions.map((opt) => (
+                      <Button
+                        onClick={() => setStatus(opt.value)}
+                        key={opt.value}
+                        variant="outline"
+                        className={
+                          cn("rounded-[20px] hover:bg-blue hover:text-white px-3 py-2 h-auto  font-body-3 font-[number:var(--body-3-font-weight)] text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]",
+                            status === opt.value ? 'text-white bg-blue' : 'text-[#454545]'
+                          )
+                        }>
+                        {opt.label}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <Button type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
+                    Suivant
                   </Button>
-                ))}
-              </div>
-            </div>
+                </div>
 
-            <div>
-              <Button onClick={() => setStep(2)} className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
-                Suivant
-              </Button>
-            </div>
+              </form>
+            </Form>
           </div>
         }
         {
           step === 2 &&
           <div className="flex flex-col w-full p-10 pt-6 space-y-6">
-            <div className="relative flex justify-start items-center gap-4">
-              <Input accept="image/*" onChange={handleCoverImageChange} type="file" className="absolute opacity-0 h-full z-[2] cursor-pointer" />
-              <div className="h-24 w-24 relative self-stretch overflow-hidden rounded-xl bg-[#f0f0f0] flex items-center justify-center">
-                {
-                  coverImage ?
-                    <Image
-                      fill
-                      priority
-                      className="object-cover"
-                      alt="Vector"
-                      src={coverImage}
-                    /> :
-                    <Image
-                      width={40}
-                      height={40}
-                      alt="Vector"
-                      src="/vector.svg"
-                    />
-                }
-              </div>
+            <Form {...formTwo}>
+              <form onSubmit={formTwo.handleSubmit(onSubmitSecond)} className="space-y-4">
+                <FormField
+                  control={formTwo.control}
+                  name="image"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Image</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            field.onChange(file); // Update the form state with the selected file
+                          }}
+                          className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="relative flex justify-start items-center gap-4">
+                  <Input accept="image/*" onChange={handleCoverImageChange} type="file" className="absolute opacity-0 h-full z-[2] cursor-pointer" />
+                  <div className="h-24 w-24 relative self-stretch overflow-hidden rounded-xl bg-[#f0f0f0] flex items-center justify-center">
+                    {
+                      coverImage ?
+                        <Image
+                          fill
+                          priority
+                          className="object-cover"
+                          alt="Vector"
+                          src={coverImage}
+                        /> :
+                        <Image
+                          width={40}
+                          height={40}
+                          alt="Vector"
+                          src="/vector.svg"
+                        />
+                    }
+                  </div>
 
-              <div className="">
-                <h3 className="font-bold">Insérer la photo du membre</h3>
-                <p className="text-gray text-sm">cliquez dans la zone pour ajouter une photo</p>
-              </div>
+                  <div className="">
+                    <h3 className="font-bold">Insérer la photo du membre</h3>
+                    <p className="text-gray text-sm">cliquez dans la zone pour ajouter une photo</p>
+                  </div>
 
-            </div>
+                </div>
 
-            {/* Textarea */}
-            <div className="flex flex-col space-y-2">
-              <Label htmlFor="description">Description(français)</Label>
-              <Textarea
-                value={member.description_fr}
-                onChange={(e) => setMember(prev => ({...prev, description_fr: e.target.value }))}
-                placeholder="Une description du membre..."
-                className="min-h-20"
-              />
-            </div>
+                <FormField
+                  control={formTwo.control}
+                  name="description_fr"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Description(français)</FormLabel>
+                      <FormControl>
+                        {/* Textarea */}
+                        <Textarea
+                          {...field}
+                          placeholder="Une description du membre..."
+                          className="min-h-20"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={formTwo.control}
+                  name="description_en"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Description(anglais)</FormLabel>
+                      <FormControl>
+                        {/* Textarea */}
+                        <Textarea
+                          {...field}
+                          placeholder="Une description du membre..."
+                          className="min-h-20"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="flex flex-row gap-4">
+                  <Button variant={'outline'} onClick={() => setStep(1)} className="w-1/3 mt-8 h-12 rounded-lg">
+                    Retour
+                  </Button>
+                  <Button type="submit" className="w-2/3 h-12 mt-8 bg-blue text-white rounded-lg">
+                    { isLoading && <Loader className='text-white mr-2' /> }
+                    Ajouter ce membre
+                  </Button>
+                </div>
+              </form>
+            </Form>
 
-            {/* Textarea */}
-            <div className="flex flex-col space-y-2">
-              <Label htmlFor="description">Description(anglais)</Label>
-              <Textarea
-                value={member.description_en}
-                onChange={(e) => setMember(prev => ({...prev, description_en: e.target.value }))}
-                placeholder="Une description du membre..."
-                className="min-h-20"
-              />
-            </div>
-
-            <div className="flex flex-row gap-4">
-              <Button variant={'outline'} onClick={() => setStep(1)} className="w-1/3 mt-8 h-12 rounded-lg">
-                Retour
-              </Button>
-              <Button onClick={handleSubmitForm} className="w-2/3 h-12 mt-8 bg-blue text-white rounded-lg">
-                { isLoading && <Loader className='text-white mr-2' /> }
-                Ajouter ce membre
-              </Button>
-            </div>
           </div>
         }
-
 
       </DialogContent>
     </Dialog>
