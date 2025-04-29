@@ -3,29 +3,63 @@
 
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Loader } from "@/components/ui/loader";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { apiClient } from "@/lib/axios";
 import { cn, handleImageUpload } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { PlusIcon } from "lucide-react";
 import Image from "next/image";
 import React, { JSX, useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 
+
+
+const fonctions = [
+  {
+    "intitule_fr": "Diacre",
+    "intitule_en": "Deacons",
+    "id": 19
+  },
+  {
+    "intitule_fr": "Prêtre",
+    "intitule_en": "Priest",
+    "id": 20
+  },
+  {
+    "intitule_fr": "Archevêque",
+    "intitule_en": "Archbishop",
+    "id": 21
+  },
+  {
+    "intitule_fr": "Réligieux",
+    "intitule_en": "Religious",
+    "id": 22
+  },
+  {
+    "intitule_fr": "Autre",
+    "intitule_en": "Other",
+    "id": 23
+  }
+]
+// Extraire les IDs ou noms pour validation
+const fonctionIds = fonctions.map((f) => `${f.id}`);
 
 const formSchemaOne = z.object({
   nom: z.string().min(1, "Le nom est requis"),
-  fonction: z.string().min(1, "La fonction est requise"),
+  fonction: z
+    .string()
+    .refine((val) => fonctionIds.includes(val), {
+      message: "La fonction est invalide",
+    }),
   etablissement: z.enum(["paroisse", "diocese"]),
-  statut: z.enum(["actif", "inactif"]),
+  statut: z.enum(["actif", "inactif"]), 
   coordonnees: z.string().optional(), // z.string().min(1, "Les coordonnées sont requises"),
 });
 
@@ -34,7 +68,6 @@ const formSchemaTwo = z.object({
   description_fr: z.string().min(1, "La description en français est requise"),
   image: z.instanceof(File).optional(),
 });
-
 
 const defaultMember = {
   nom: '',
@@ -47,6 +80,7 @@ const defaultMember = {
 
 export const AddMemberFormSection = (): JSX.Element => {
 
+  const [member, setMember] = useState(defaultMember);
   const [fileImage, setFileImage] = useState<File | undefined>();
 
   const formOne = useForm<z.infer<typeof formSchemaOne>>({
@@ -54,7 +88,6 @@ export const AddMemberFormSection = (): JSX.Element => {
     defaultValues: {
       nom: "",
       coordonnees: "Moncton",
-      fonction: "archeveque",
       etablissement: "paroisse",
       statut: 'actif',
     },
@@ -68,7 +101,6 @@ export const AddMemberFormSection = (): JSX.Element => {
       image: fileImage!,
     },
   });
-
 
   // Status options data
   const statusOptions = [
@@ -91,17 +123,17 @@ export const AddMemberFormSection = (): JSX.Element => {
     }
   };
 
-  const [member, setMember] = useState(defaultMember);
+
 
   const handleSubmitForm =  async (data: any) => {
     if (isLoading) return
     setIsloading(true)
 
     const formdata = new FormData();
-    formdata.append("categorie_id", '1');
+    formdata.append("categorie_id", `${data.poste}`);
     formdata.append("nom", `${data.nom}`);
     formdata.append("prenom", ``);
-    formdata.append("poste", `${data.poste}`);
+    formdata.append("poste", `${fonctions.find((f) => f.id === parseInt(data.poste))?.intitule_fr}`);
     formdata.append("coordonnees", `${data.etablissement}`);
     formdata.append("etat", `${status}`);
     formdata.append("image", fileImage!);
@@ -149,6 +181,7 @@ export const AddMemberFormSection = (): JSX.Element => {
     }
     setMember(newMember)
     await handleSubmitForm(newMember)
+    
   }
 
   return (
@@ -164,8 +197,7 @@ export const AddMemberFormSection = (): JSX.Element => {
           <DialogTitle className="text-lg font-bold leading-7">
             Ajouter un membre
           </DialogTitle>
-        </DialogHeader>
-
+        </DialogHeader> 
         {
           step === 1 &&
           <div className="flex flex-col w-full p-10 pt-6 space-y-4">
@@ -202,10 +234,11 @@ export const AddMemberFormSection = (): JSX.Element => {
                         </FormControl>
                         <SelectContent>
                           {/* Function options would go here */}
-                          <SelectItem value="archeveque">Archevêque</SelectItem>
-                          <SelectItem value="pretre">Prêtre</SelectItem>
-                          <SelectItem value="diacre">Diacre</SelectItem>
-                          <SelectItem value="religieux">Réligieux</SelectItem>
+                          {fonctions.map((fonction) => (
+                            <SelectItem key={fonction.id} value={`${fonction.id}`}>
+                              { fonction.intitule_fr }
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Loader } from "@/components/ui/loader";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { apiClient } from "@/lib/axios";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,22 +13,26 @@ import { DialogTrigger } from "@radix-ui/react-dialog";
 import { PlusIcon } from "lucide-react";
 import { JSX, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 
 
 const formSchema = z.object({
   nom: z.string().min(1, "Le nom est requis"),
+  email: z.string().email("L'adresse email n'est pas valide"),
   role: z.enum(["administrateur", "moderateur", "editeur", "viewer"]),
   statut: z.enum(["actif", "inactif"]),
 });
 
 export const AddUserFormSection = (): JSX.Element => {
+
+  const [isLoading, setIsLoading] = useState(false)
  
-  const [role, setRole] = useState("")
+  const [roles, setRoles] = useState<any>()
 
   const getRoles = async () => {
     const response = await apiClient.get("/api/roles")
-    console.log("Rôles",response);
+    setRoles(response)
   }
 
   useEffect(() => {
@@ -38,14 +43,18 @@ export const AddUserFormSection = (): JSX.Element => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       nom: "",
+      email: "",
       role: "viewer",
       statut: 'actif',
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (isLoading) return 
+    setIsLoading(true)
     const data = {
       nom: values.nom,
+      email: values.email,
       role: values.role,
       statut: values.statut,
     };
@@ -53,13 +62,26 @@ export const AddUserFormSection = (): JSX.Element => {
 
     try {
       const response: any = await apiClient.post("/api/administrateurs", data);
-      console.log("Utilisateur ajouté avec succès", response.data);
+      if (response.id ) {
+        toast.success('Utilisateur ajouté avec succès');
+      }
+      else  {
+        toast.error(
+          <div className='p-3 bg-red-500 text-white rounded-md'>
+            Une erreur est survenue lors de l\'ajout du membre
+          </div>
+        )
+      }
+      setIsLoading(false)
     }
-    catch (error) {
-      console.error("Erreur lors de l'ajout de l'utilisateur", error);
+    catch (error: any) {
+      setIsLoading(false)
+      toast.warning(
+        <div className='p-3 bg-red-500 text-white rounded-md'>
+          Erreur lors de l'ajout de l'utilisateur {error}
+        </div>
+      )
     }
-    console.log(values);
-    // onOpenChange(false);
     form.reset();
   }
 
@@ -91,6 +113,21 @@ export const AddUserFormSection = (): JSX.Element => {
                     <FormLabel>Nom complet</FormLabel>
                     <FormControl>
                       <Input placeholder="Entrez le nom complet" {...field}
+                        className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Adresse email</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Entrez l'adresse email" {...field}
                         className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200"
                       />
                     </FormControl>
@@ -150,6 +187,7 @@ export const AddUserFormSection = (): JSX.Element => {
 
               <DialogFooter>
                 <Button type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
+                  {isLoading && <Loader className="h-5 w-5 mr-2" />}
                   Ajouter l’utilisateur
                 </Button>
               </DialogFooter>
