@@ -482,7 +482,7 @@ export const ClergPretres = (): JSX.Element => {
       </Tabs>
 
       {/* Sheet */}
-      <Sheet open={openModal}>
+      <Sheet open={openModal} onOpenChange={setOpenModal}>
         <SheetContent className="max-w-2xl min-w-2xl">
           <SheetHeader className='relative'>
             <SheetTitle hidden>Détails du membre</SheetTitle>

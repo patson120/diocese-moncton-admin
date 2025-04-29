@@ -9,6 +9,7 @@ import { ChangeEvent, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import ActualiteContent from "../ActualiteContent/ActualiteContent";
 import MessageContent from "../MessageContent/MessageContent";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function ContentDisplaySection() {
   const [displayMode, setDisplayMode] = useState<'list' | 'grid'>('grid')
@@ -146,19 +147,21 @@ export default function ContentDisplaySection() {
                   </div>
                 </div>
               </div>
-              <TabsContent value="published" className="mt-6 space-y-6">
-                <ActualiteContent is_actif={1} query={query} displayMode={displayMode} />
-              </TabsContent>
+              <ScrollArea className="w-full h-[calc(80vh)] mt-6">
+                <TabsContent value="published" className="mt-6 space-y-6">
+                  <ActualiteContent is_actif={1} query={query} displayMode={displayMode} />
+                </TabsContent>
 
-              <TabsContent value="pending" className="mt-6 space-y-6">
-                {/* Content for pending tab */}
-                <ActualiteContent is_actif={0} query={query} displayMode={displayMode} />
-              </TabsContent>
+                <TabsContent value="pending" className="mt-6 space-y-6">
+                  {/* Content for pending tab */}
+                  <ActualiteContent is_actif={0} query={query} displayMode={displayMode} />
+                </TabsContent>
 
-              <TabsContent value="disabled" className="mt-6 space-y-6">
-                {/* Content for disabled tab */}
-                <ActualiteContent is_actif={-1} query={query} displayMode={displayMode} />
-              </TabsContent>
+                <TabsContent value="disabled" className="mt-6 space-y-6">
+                  {/* Content for disabled tab */}
+                  <ActualiteContent is_actif={-1} query={query} displayMode={displayMode} />
+                </TabsContent>
+              </ScrollArea>
             </Tabs>
           </TabsContent>
 
