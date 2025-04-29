@@ -103,6 +103,7 @@ export default function ActualiteContent(
                         <TableRow key={index} className="border-b border-[#d9d9d9]">
                           <TableCell className="font-body-3 text-noir-dashboard py-3.5">
                             {article?.titre_fr}
+                            <Text labelEn={article?.titre_en} labelFr={article?.titre_fr} />
                           </TableCell>
                           <TableCell className="font-body-3 text-gray py-3.5">
                             {article?.categorie?.intitule_fr}
@@ -139,7 +140,6 @@ export default function ActualiteContent(
                 </div>
               </CardContent>
             </Card> :
-        
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8">
                 {
                     actualites.map((article) => (

@@ -2,7 +2,7 @@
 'use client'
 
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -10,19 +10,59 @@ import { apiClient } from "@/lib/axios";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { PlusIcon } from "lucide-react";
 import { JSX, useEffect, useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+
+
+const formSchema = z.object({
+  nom: z.string().min(1, "Le nom est requis"),
+  role: z.enum(["administrateur", "moderateur", "editeur", "viewer"]),
+  statut: z.enum(["actif", "inactif"]),
+});
 
 export const AddUserFormSection = (): JSX.Element => {
  
   const [role, setRole] = useState("")
 
-    const getRoles = async () => {
-      const response = await apiClient.get("/api/roles")
-      console.log("Rôles",response);
+  const getRoles = async () => {
+    const response = await apiClient.get("/api/roles")
+    console.log("Rôles",response);
+  }
+
+  useEffect(() => {
+    getRoles()
+  }, [])
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      nom: "",
+      role: "viewer",
+      statut: 'actif',
+    },
+  });
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const data = {
+      nom: values.nom,
+      role: values.role,
+      statut: values.statut,
+    };
+
+
+    try {
+      const response: any = await apiClient.post("/api/administrateurs", data);
+      console.log("Utilisateur ajouté avec succès", response.data);
     }
-  
-    useEffect(() => {
-      getRoles()
-    }, [])
+    catch (error) {
+      console.error("Erreur lors de l'ajout de l'utilisateur", error);
+    }
+    console.log(values);
+    // onOpenChange(false);
+    form.reset();
+  }
 
   return (
     <Dialog>
@@ -42,51 +82,81 @@ export const AddUserFormSection = (): JSX.Element => {
         </DialogHeader>
 
         <div className="flex flex-col w-full p-10 pt-6 space-y-4">
-          <div className="flex flex-col space-y-2">
-            <label className="text-sm font-body-3 leading-[var(--body-3-line-height)] tracking-[var(--body-3-letter-spacing)]">
-              Nom complet
-            </label>
-            <Input
-              className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200"
-              placeholder="Entrez le nom complet"
-            />
-          </div>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="nom"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nom complet</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Entrez le nom complet" {...field}
+                        className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Rôle</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}>
+                      <FormControl className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200">
+                        <SelectTrigger>
+                          <SelectValue placeholder="Sélectionnez son rôle" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="administrateur">Administrateur</SelectItem>
+                        <SelectItem value="moderateur">Modérateur</SelectItem>
+                        <SelectItem value="editeur">Éditeur</SelectItem>
+                        <SelectItem value="viewer">Viewer</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <div className="flex flex-col space-y-2">
-            <Label htmlFor="role">Rôle</Label>
-            <Select value={role} onValueChange={setRole}>
-              <SelectTrigger className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200 text-[#454545]">
-                <SelectValue placeholder="Sélectionnez son role" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="administrateur">Administrateur</SelectItem>
-                <SelectItem value="moderateur">Modérateur</SelectItem>
-                <SelectItem value="editeur">Éditeur</SelectItem>
-                <SelectItem value="viewer">Viewer</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+              <FormField
+                control={form.control}
+                name="statut"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Statut</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}>
+                      <FormControl className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200">
+                        <SelectTrigger>
+                          <SelectValue placeholder="Sélectionnez le statut" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                      <SelectItem value="inactif">Inactif</SelectItem>
+                      <SelectItem value="actif">Actif</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <div className="flex flex-col space-y-2">
-            <Label htmlFor="statut">Statut</Label>
-            <Select>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Sélectionnez le statut" />
-              </SelectTrigger>
-              <SelectContent>
-                {/* Establishment options would go here */}
-                <SelectItem value="inactif">Inactif</SelectItem>
-                <SelectItem value="actif">Actif</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <Button className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
-              Ajouter l’utilisateur
-            </Button>
-          </div>
+              <DialogFooter>
+                <Button type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
+                  Ajouter l’utilisateur
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
         </div>
-
       </DialogContent>
     </Dialog>
   );

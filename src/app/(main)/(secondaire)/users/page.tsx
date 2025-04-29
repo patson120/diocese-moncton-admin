@@ -1,9 +1,12 @@
+'use client';
+
 import React from 'react'
 import { UserListSection } from '@/components/sections/UserListSection/UserListSection'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { AddUserFormSection } from '@/components/sections/AddUserFormSection'
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { AddTransactionDialog } from '@/components/sections/AddUserFormSection/AddTransactionDialog';
 
 export default function page() {
   // Data for tabs
@@ -69,6 +72,7 @@ export default function page() {
               ))}
             </TabsList>
           </div>
+          {/* Add user button */}
           <AddUserFormSection />
         </div>
       </header>
@@ -87,8 +91,7 @@ export default function page() {
                   {roles.map((role, index) => (
                     <TableHead
                       key={index}
-                      className="font-bold text-noir-dashboard text-lg"
-                    >
+                      className="font-bold text-noir-dashboard text-lg">
                       {role.title}
                     </TableHead>
                   ))}
