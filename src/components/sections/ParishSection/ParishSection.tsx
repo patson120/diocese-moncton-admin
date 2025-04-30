@@ -1,5 +1,6 @@
 "use client"
 
+import Text from '@/components/shared/Text';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -7,14 +8,13 @@ import { Input } from '@/components/ui/input';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { fetchParoisses } from '@/lib/data';
-import { Church, LayoutGridIcon, ListFilter, MailIcon, MapPinIcon, PhoneIcon, PlusIcon, SearchIcon } from 'lucide-react';
-import { ChangeEvent, useEffect, useState } from 'react';
-import { Paroisse } from '../../../../types';
-import Text from '@/components/shared/Text';
+import { Church, LayoutGridIcon, ListFilter, MailIcon, MapPinIcon, PhoneIcon, SearchIcon } from 'lucide-react';
 import Image from 'next/image';
-import { AddParishFormSection } from '../AddParishFormSection';
-import { useDebouncedCallback } from 'use-debounce';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { ChangeEvent, useEffect, useState } from 'react';
+import { useDebouncedCallback } from 'use-debounce';
+import { Paroisse } from '../../../../types';
+import { AddParishFormSection } from '../AddParishFormSection';
 
 export default function ParishSection() {
     const router = useRouter()

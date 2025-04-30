@@ -1,9 +1,9 @@
 "use client"
 
-import React, { JSX, useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -13,61 +13,18 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { Pencil, Trash2, XIcon } from "lucide-react";
-import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { apiClient } from "@/lib/axios";
+import { formatDateToLocal } from "@/lib/utils";
+import { Pencil, Trash2, XIcon } from "lucide-react";
+import { JSX, useEffect, useState } from "react";
 
 
 export const UserListSection = (): JSX.Element => {
   // State to track the selected role filter
   const [selectedRole, setSelectedRole] = useState('all');
   const [openModal, setOpenModal] = useState(false);
+  const [users, setUsers] = useState([]);
 
-  // User data array for mapping
-  const users = [
-    {
-      id: 1,
-      name: "Hadrien GAYAP",
-      role: "Administrateur",
-      createdAt: "12/03/2025",
-      status: "Actif",
-    },
-    {
-      id: 2,
-      name: "Gabin NANA",
-      role: "Modérateur",
-      createdAt: "12/03/2025",
-      status: "Actif",
-    },
-    {
-      id: 3,
-      name: "Patrick Kenne",
-      role: "Éditeur",
-      createdAt: "12/03/2025",
-      status: "Actif",
-    },
-    {
-      id: 4,
-      name: "Flavie",
-      role: "Éditeur",
-      createdAt: "12/03/2025",
-      status: "Actif",
-    },
-    {
-      id: 5,
-      name: "Wilfried ASSOMO",
-      role: "Éditeur",
-      createdAt: "12/03/2025",
-      status: "Actif",
-    },
-    {
-      id: 6,
-      name: "Karl LAUNDRY",
-      role: "Viewer",
-      createdAt: "12/03/2025",
-      status: "Inactif",
-    },
-  ];
 
   // Role filter options
   const roleFilters = [
@@ -79,8 +36,8 @@ export const UserListSection = (): JSX.Element => {
   ];
 
   const getUsers = async () => {
-    const response = await apiClient.get("/api/administrateurs")
-    console.log(response);
+    const response: any = await apiClient.get("/api/administrateurs")
+    setUsers(response);
   }
 
   useEffect(() => {
@@ -142,19 +99,19 @@ export const UserListSection = (): JSX.Element => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {users.map((user) => (
+                {users.map((user: any) => (
                   <TableRow key={user.id} className="border-b border-[#d9d9d9]">
                     <TableCell className="py-3.5 font-body-3 font-[number:var(--body-3-font-weight)] text-noir-dashboard text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                      {user.name}
+                      {user.nom}
                     </TableCell>
                     <TableCell className="py-3.5 font-body-3 font-[number:var(--body-3-font-weight)] text-noir-dashboard text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                      {user.role}
+                      {user.role.intitule}
                     </TableCell>
                     <TableCell className="py-3.5 font-body-3 font-[number:var(--body-3-font-weight)] text-noir-dashboard text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                      {user.createdAt}
+                      { formatDateToLocal((new Date(user.created_at)).toISOString()) }
                     </TableCell>
                     <TableCell className="py-3.5">
-                      {user.status === "Actif" ? (
+                      {user.status !== "Actif" ? (
                         <span className="font-body-3 font-[number:var(--body-3-font-weight)] text-noir-dashboard text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
                           Actif
                         </span>

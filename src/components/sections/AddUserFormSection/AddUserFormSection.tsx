@@ -32,7 +32,7 @@ export const AddUserFormSection = (): JSX.Element => {
 
   const getRoles = async () => {
     const response = await apiClient.get("/api/roles")
-    setRoles(response)
+    setRoles(response)    
   }
 
   useEffect(() => {
@@ -56,6 +56,8 @@ export const AddUserFormSection = (): JSX.Element => {
       nom: values.nom,
       email: values.email,
       role: values.role,
+      role_id: roles.find((role: any) => role.sigle === values.role)?.id,
+      password: '1234',
       statut: values.statut,
     };
 
@@ -78,7 +80,7 @@ export const AddUserFormSection = (): JSX.Element => {
       setIsLoading(false)
       toast.warning(
         <div className='p-3 bg-red-500 text-white rounded-md'>
-          Erreur lors de l'ajout de l'utilisateur {error}
+          Erreur lors de l'ajout de l'utilisateur {JSON.stringify(error)}
         </div>
       )
     }
@@ -127,7 +129,7 @@ export const AddUserFormSection = (): JSX.Element => {
                   <FormItem>
                     <FormLabel>Adresse email</FormLabel>
                     <FormControl>
-                      <Input placeholder="Entrez l'adresse email" {...field}
+                      <Input type="email" placeholder="Entrez l'adresse email" {...field}
                         className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200"
                       />
                     </FormControl>

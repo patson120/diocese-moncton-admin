@@ -1,7 +1,13 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { formatDateToLocal } from '@/lib/utils';
 import { Event } from '../../../types';
+import { useState } from 'react';
+import { apiClient } from '@/lib/axios';
+import { toast } from 'sonner';
+import { Loader } from '@/components/ui/loader';
 
 interface EventDetailsDialogProps {
   event: Event | null;
@@ -11,7 +17,37 @@ interface EventDetailsDialogProps {
 
 export default function EventDetailsDialog({ event, open, onOpenChange }: EventDetailsDialogProps) {
   if (!event) return null;
+  
+  const [isDeleting, setIsDeleting] = useState(false)
 
+  // Function to handle event deletion
+  const handleDeleteEvent = async () => {
+    setIsDeleting(true);
+    try {
+     await apiClient.delete(`/api/evenements/${event.id}`);      
+      
+      // if (response.ok) {
+      //   // Handle successful deletion (e.g., show a success message, refresh the event list, etc.)
+      //   toast.success('Event deleted successfully');
+      // } else {
+      //   // Handle error response
+      //   toast.warning(
+      //     <div className='p-3 bg-red-500 text-white rounded-md'>
+      //       Error deleting event: {JSON.stringify(response)}
+      //     </div>
+      //   )
+      // }
+    } catch (error) {
+      toast.warning(
+        <div className='p-3 bg-red-500 text-white rounded-md'>
+          Error deleting event: {JSON.stringify(error)}
+        </div>
+      )
+    } finally {
+      setIsDeleting(false);
+      onOpenChange(false); // Close the dialog after deletion
+    }
+  }
   return (
     <Sheet open={open} onOpenChange={onOpenChange} >
       <SheetContent aria-describedby={undefined} className="max-w-3xl min-w-[620px]">
@@ -24,12 +60,16 @@ export default function EventDetailsDialog({ event, open, onOpenChange }: EventD
             <Button onClick={() => onOpenChange(false)} variant="outline" className="h-10">
               Fermer
             </Button>
-            <div className="flex gap-4">
+            <div className="flex gap-2">
               <Button variant="outline" className="h-10">
                 Désactiver
               </Button>
               <Button className="h-10 bg-blue text-white hover:bg-blue/90">
                 Modifier
+              </Button>
+              <Button onClick={handleDeleteEvent} className="h-10 bg-red-500 text-white hover:bg-blue/90">
+                { isDeleting && <Loader className='h-5 w-5, mr-2' /> }
+                Supprimer
               </Button>
             </div>
           </header>
