@@ -10,7 +10,7 @@ import { Event } from "../../../../types";
 import Text from "@/components/shared/Text";
 import { formatDateToLocal } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { AddEventFormSection } from "../AddEventFormSection ";
+import { AddEventFormSection } from "@/components/sections/EventSection/AddEventFormSection ";
 
 const QuickActionsSection = (): JSX.Element => {
 

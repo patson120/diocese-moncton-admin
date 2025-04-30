@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { apiClient } from '@/lib/axios';
 import { toast } from 'sonner';
 import { Loader } from '@/components/ui/loader';
+import { EditEventFormSection } from '@/components/sections/EventSection/EditEventFormSection';
 
 interface EventDetailsDialogProps {
   event: Event | null;
@@ -63,9 +64,7 @@ export default function EventDetailsDialog({ event, open, onOpenChange }: EventD
               <Button variant="outline" className="h-10">
                 Désactiver
               </Button>
-              <Button className="h-10 bg-blue text-white hover:bg-blue/90">
-                Modifier
-              </Button>
+              <EditEventFormSection eventData={event}/>
               <Button onClick={handleDeleteEvent} className="h-10 bg-red-500 text-white hover:bg-blue/90">
                 { isDeleting && <Loader className='h-5 w-5, mr-2' /> }
                 Supprimer

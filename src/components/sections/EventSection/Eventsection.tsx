@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { apiClient } from "@/lib/axios";
 import { JSX, useEffect, useState } from "react";
 import { Event } from "../../../../types";
-import { AddEventFormSection } from "../AddEventFormSection ";
+import { AddEventFormSection } from "./AddEventFormSection ";
 
 export default function EventSection(): JSX.Element {
 
