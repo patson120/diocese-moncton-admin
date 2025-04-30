@@ -16,9 +16,8 @@ interface EventDetailsDialogProps {
 }
 
 export default function EventDetailsDialog({ event, open, onOpenChange }: EventDetailsDialogProps) {
-  if (!event) return null;
-  
   const [isDeleting, setIsDeleting] = useState(false)
+  if (!event) return null;
 
   // Function to handle event deletion
   const handleDeleteEvent = async () => {
