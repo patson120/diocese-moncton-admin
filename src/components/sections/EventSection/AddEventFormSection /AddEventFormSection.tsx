@@ -13,11 +13,11 @@ import { PlusIcon } from "lucide-react";
 import Image from "next/image";
 import { JSX, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Category } from "../../../../types";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Category } from "../../../../../types";
 
 const defaultEvent = {
   paroisse_id: 1,
