@@ -125,6 +125,8 @@ export type Member = {
     nom: string;
     prenom: string;
     poste: string;
+    description_fr: string;
+    description_en: string;
     coordonnees: string;
     etat: number;
     created_at: string;

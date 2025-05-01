@@ -12,14 +12,12 @@ import { apiClient } from "@/lib/axios";
 import { cn, handleImageUpload } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTrigger } from "@radix-ui/react-dialog";
-import { PlusIcon } from "lucide-react";
 import Image from "next/image";
 import React, { JSX, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-
-
+import { Member } from "../../../../types";
 
 const fonctions = [
   {
@@ -78,7 +76,7 @@ const defaultMember = {
   description_fr: '',
 }
 
-export const AddMemberFormSection = (): JSX.Element => {
+const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Element => {
 
   const [member, setMember] = useState(defaultMember);
   const [fileImage, setFileImage] = useState<File | undefined>();
@@ -86,18 +84,19 @@ export const AddMemberFormSection = (): JSX.Element => {
   const formOne = useForm<z.infer<typeof formSchemaOne>>({
     resolver: zodResolver(formSchemaOne),
     defaultValues: {
-      nom: "",
-      coordonnees: "Moncton",
+      nom: memberData.nom,
+      fonction: `${fonctions.find((f) => f.intitule_fr === memberData.poste)?.id}`,
+      coordonnees: memberData.coordonnees,
       etablissement: "paroisse",
-      //statut: 'actif',
+      // statut: 'actif',
     },
   });
 
   const formTwo = useForm<z.infer<typeof formSchemaTwo>>({
     resolver: zodResolver(formSchemaTwo),
     defaultValues: {
-      description_en: "",
-      description_fr: "",
+      description_en: memberData.description_en,
+      description_fr: memberData.description_fr,
       image: fileImage!,
     },
   });
@@ -112,7 +111,7 @@ export const AddMemberFormSection = (): JSX.Element => {
   const [coverImage, setCoverImage] = useState('')
   const [isLoading, setIsloading] = useState(false)
   const [step, setStep] = useState(1)
-  const [status, setStatus] = useState('1')
+  const [status, setStatus] = useState(statusOptions.find((s) => s.value === `${memberData.etat}`)?.value || "1");
 
   const handleCoverImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -138,7 +137,7 @@ export const AddMemberFormSection = (): JSX.Element => {
     formdata.append("description_fr", `${data.description_fr}`);
     formdata.append("description_en", `${data.description_en}`);
 
-    const response: any = await apiClient.post('/api/membres', formdata, {
+    const response: any = await apiClient.put(`/api/membres/${memberData.id}`, formdata, {
       'Content-Type': 'multipart/form-data'
     });
 
@@ -185,15 +184,14 @@ export const AddMemberFormSection = (): JSX.Element => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="h-10 gap-2 px-3.5 py-0 bg-blue rounded-[7px] text-white">
-          <PlusIcon className="w-5 h-5" />
-          <span className="font-body-3 text-sm">Ajouter un membre</span>
-        </Button>
+      <Button className="h-10 bg-blue text-white hover:bg-blue/90">
+        Modifier
+      </Button>
       </DialogTrigger>
       <DialogContent aria-describedby={undefined} className="w-[500px] p-0 rounded-2xl">
         <DialogHeader className="border-b border-neutral-200 p-4 rounded-t-2xl">
           <DialogTitle className="text-lg font-bold leading-7">
-            Ajouter un membre
+            Mettre à jour le membre
           </DialogTitle>
         </DialogHeader> 
         {
@@ -370,7 +368,7 @@ export const AddMemberFormSection = (): JSX.Element => {
                   </Button>
                   <Button type="submit" className="w-2/3 h-12 mt-8 bg-blue text-white rounded-lg">
                     { isLoading && <Loader className='text-white mr-2' /> }
-                    Ajouter ce membre
+                    Mettre à jour
                   </Button>
                 </div>
               </form>
@@ -381,3 +379,6 @@ export const AddMemberFormSection = (): JSX.Element => {
     </Dialog>
   );
 };
+
+
+export default EditMemberFormSection;

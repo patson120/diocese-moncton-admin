@@ -16,12 +16,16 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Member } from "../../../../types";
 import { apiClient } from "@/lib/axios";
+import { Loader } from "@/components/ui/loader";
+import EditMemberFormSection from "../AddMemberFormSection/EditMemberFormSection";
 
 export const ClergPretres = (): JSX.Element => {
 
   const [openModal, setOpenModal] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   const [members, setMembers] = useState<Member[]>([])
+  const [selectedMember, setSelectedMember] = useState<Member>()
   const [membersCopy, setMembersCopy] = useState<Member[]>([])
 
   // Clergy tabs data
@@ -109,7 +113,10 @@ export const ClergPretres = (): JSX.Element => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
                   {members.map((member, index) => (
                     <Card
-                      onClick={() => setOpenModal(true)}
+                      onClick={() => {
+                        setOpenModal(true)
+                        setSelectedMember(member)
+                      }}
                       key={index}
                       className="w-full border-none shadow-none cursor-pointer">
                       <CardContent className="p-0 space-y-3">
@@ -483,7 +490,7 @@ export const ClergPretres = (): JSX.Element => {
 
       {/* Sheet */}
       <Sheet open={openModal} onOpenChange={setOpenModal}>
-        <SheetContent className="max-w-2xl min-w-2xl">
+        <SheetContent className="max-w-2xl min-w-[600px]">
           <SheetHeader className='relative'>
             <SheetTitle hidden>Détails du membre</SheetTitle>
           </SheetHeader>
@@ -491,16 +498,17 @@ export const ClergPretres = (): JSX.Element => {
             {/* Header with action buttons */}
             <header className="w-full h-20 border-b border-[#d9d9d9] flex items-center justify-between px-12">
               <Button variant="outline" className="h-10"
-                onClick={() => setOpenModal(false)}
-              >
+                onClick={() => setOpenModal(false)}>
                 Fermer
               </Button>
-              <div className="flex gap-4">
+              <div className="flex gap-2">
                 <Button variant="outline" className="h-10">
                   Désactiver
                 </Button>
-                <Button className="h-10 bg-blue text-white hover:bg-blue/90">
-                  Modifier
+                <EditMemberFormSection memberData={selectedMember!} />
+                <Button className="h-10 bg-red-500 text-white hover:bg-blue/90">
+                { isDeleting && <Loader className='h-5 w-5, mr-2' /> }
+                  Supprimer
                 </Button>
               </div>
             </header>
@@ -521,24 +529,28 @@ export const ClergPretres = (): JSX.Element => {
                 </div>
                 <div className="flex flex-col space-y-3">
                   <div>
-                    <h4 className="text-lg font-bold">P. Denis Belliveau</h4>
-                    <p className="text-gray">En activité</p>
+                    <h4 className="text-lg font-bold">{selectedMember?.nom}</h4>
+                    <p className="text-gray">
+                      { selectedMember?.etat === 1 && "En activité" }
+                      { selectedMember?.etat === 0 && "En retraite" }
+                      { selectedMember?.etat === -1 && "Décédé" }
+                    </p>
                   </div>
                   <div>
                     <h4 className="text-lg font-bold">Coordonnées</h4>
-                    <p className="text-gray">-</p>
+                    <p className="text-gray">{selectedMember?.coordonnees}</p>
                   </div>
                   <div>
                     <h4 className="text-lg font-bold">Fonctions</h4>
-                    <p className="text-gray">-</p>
+                    <p className="text-gray">{selectedMember?.poste}</p>
                   </div>
                 </div>
               </div>
               <div>
                 <h1 className="text-blue text-lg font-bold">Biographie</h1>
-                <p className="text-gray mt-2">Né le 12 avril 1966 à Moncton ; fils d’Ernest Belliveau et Louina LeBlanc.
-                  Études : Collège Dominicain, Ottawa, Bruxelles.
-                  Ordination : le 13 octobre 1992 à Memramcook par Mgr Donat Chiasson.  Ministère : vicaire : Shédiac (1992) ; curé : Pointe-Sapin (1994-1998), Ste-Marie et St-Norbert (1998-2000), Rogersville (2000-2004), Études à Bruxelles (2004-2005), Aumônier assistant aux hôpitaux de Moncton et prêtre assistant aux paroisses St. Bernard et St. Augustin (2006-2007), Aumônier des hôpitaux de Moncton et du Foyer pour les vétérans (2007-).</p>
+                <p className="text-gray mt-2">
+                  {selectedMember?.description_fr}
+                </p>
               </div>
             </div>
           </ScrollArea>
