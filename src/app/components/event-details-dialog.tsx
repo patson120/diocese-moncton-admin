@@ -24,19 +24,8 @@ export default function EventDetailsDialog({ event, open, onOpenChange }: EventD
   const handleDeleteEvent = async () => {
     setIsDeleting(true);
     try {
-     await apiClient.delete(`/api/evenements/${event.id}`);      
-      
-      // if (response.ok) {
-      //   // Handle successful deletion (e.g., show a success message, refresh the event list, etc.)
-      //   toast.success('Event deleted successfully');
-      // } else {
-      //   // Handle error response
-      //   toast.warning(
-      //     <div className='p-3 bg-red-500 text-white rounded-md'>
-      //       Error deleting event: {JSON.stringify(response)}
-      //     </div>
-      //   )
-      // }
+      await apiClient.delete(`/api/evenements/${event.id}`);
+      window.location.reload(); // Reload the page to reflect changes      
     } catch (error) {
       toast.warning(
         <div className='p-3 bg-red-500 text-white rounded-md'>

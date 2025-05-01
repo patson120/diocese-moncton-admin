@@ -72,9 +72,8 @@ export default function CreateActutalite() {
       });
 
       if (result.id) {
-      toast.success("Données enregistrées avec succès !")
-      }
-      else {
+        toast.success("Données enregistrées avec succès !")
+        router.back()
       toast.warning(
         <div className='p-3 bg-red-500 text-white rounded-md'>
           {JSON.stringify(result)}
@@ -411,7 +410,10 @@ export default function CreateActutalite() {
           <p className='text-gray text-sm'>Vous risquez de perdre votre travail. Enregistrez le comme brouillon ou publier.</p>
           <div className='flex gap-3'>
             <Button
-              onClick={() => setAlertModal('goback')}
+              onClick={() => {
+                setAlertModal('goback')
+                router.back()
+              }}
               variant="outline"
               className=" p-3.5 bg-white rounded-lg border border-solid border-[#d9d9d9]">
               <span className="font-body-3 text-noir-dashboard whitespace-nowrap">

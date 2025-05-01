@@ -139,6 +139,9 @@ export const AddEventFormSection = (): JSX.Element => {
         setStep(1)
         setCoverImage('')
         setOpenModal(false)
+        setTimeout(() => {
+          window.location.reload()
+        }, 1500);
       }
       else {
         toast.warning(

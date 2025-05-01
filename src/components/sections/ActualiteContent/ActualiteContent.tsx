@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { Actualite } from '../../../../types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { EyeIcon, Trash2Icon } from 'lucide-react';
+import { Loader } from '@/components/ui/loader';
 
 export default function ActualiteContent(
     { is_actif, query , displayMode}: 
@@ -16,6 +17,7 @@ export default function ActualiteContent(
     const [actualites, setActualites] = useState<Actualite[]>([])
     const [selectedActualite, setSelectedActualite] = useState<Actualite>()
     const [openModal, setOpenModal] = useState(false) 
+    const [isDeleting, setIsDeleting] = useState(false)
 
     useEffect(() => {
         const getActualites = async () => {
@@ -73,6 +75,20 @@ export default function ActualiteContent(
         date: "12/03/2025",
         },
     ];
+
+    const handleDeleteActualite = async () => {
+        if (isDeleting) return
+        setIsDeleting(true)
+        try {
+            await apiClient.delete(`/api/actualites/${selectedActualite?.id}`)
+            setActualites(actualites.filter((actualite) => actualite.id !== selectedActualite?.id))
+            setOpenModal(false)
+        } catch (error) {
+            console.error('Error deleting message:', error)
+        } finally {
+            setIsDeleting(false)
+        }
+    }
 
     return (
         <>
@@ -200,7 +216,7 @@ export default function ActualiteContent(
 
             {/* Sheet */}
             <Sheet open={openModal} onOpenChange={setOpenModal} >
-                <SheetContent className="max-w-3xl min-w-3xl">
+                <SheetContent className="max-w-3xl min-w-[600px]">
                     <SheetHeader>
                         <SheetTitle hidden>Détails de l'actualité</SheetTitle>
                     </SheetHeader>
@@ -211,12 +227,16 @@ export default function ActualiteContent(
                                 onClick={() => setOpenModal(false)}>
                                 Fermer
                             </Button>
-                            <div className="flex gap-4">
+                            <div className="flex gap-2">
                                 <Button variant="outline" className="h-10">
                                     Désactiver
                                 </Button>
                                 <Button className="h-10 bg-blue text-white hover:bg-blue/90">
                                     Modifier
+                                </Button>
+                                <Button onClick={handleDeleteActualite} className="h-10 bg-red-500 text-white hover:bg-blue/90">
+                                    { isDeleting && <Loader className='h-5 w-5, mr-2' /> }
+                                    Supprimer
                                 </Button>
                             </div>
                         </header>
