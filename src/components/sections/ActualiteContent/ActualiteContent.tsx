@@ -9,6 +9,7 @@ import { Actualite } from '../../../../types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { EyeIcon, Trash2Icon } from 'lucide-react';
 import { Loader } from '@/components/ui/loader';
+import { toast } from 'sonner';
 
 export default function ActualiteContent(
     { is_actif, query , displayMode}: 
@@ -18,6 +19,7 @@ export default function ActualiteContent(
     const [selectedActualite, setSelectedActualite] = useState<Actualite>()
     const [openModal, setOpenModal] = useState(false) 
     const [isDeleting, setIsDeleting] = useState(false)
+    const [isUpdateStatus, setIsUpdateStatus] = useState(false)
 
     useEffect(() => {
         const getActualites = async () => {
@@ -34,50 +36,6 @@ export default function ActualiteContent(
         setOpenModal(true)
     }
 
-    // Document data for mapping
-    const documents = [
-        {
-        name: "Bulletin diocésain mensuel",
-        format: "PDF",
-        date: "12/03/2025",
-        },
-        {
-        name: "Calendrier des pèlerinages organisés",
-        format: "EXCEL",
-        date: "12/03/2025",
-        },
-        {
-        name: "Lettre pastorale de l'évêque",
-        format: "PDF",
-        date: "12/03/2025",
-        },
-        {
-        name: "Fiches de catéchèse pour jeunes et adultes",
-        format: "WORD",
-        date: "12/03/2025",
-        },
-        {
-        name: "Catalogue des formations diocésaines",
-        format: "PDF",
-        date: "12/03/2025",
-        },
-        {
-        name: "Guide de la vie paroissiale",
-        format: "PDF",
-        date: "12/03/2025",
-        },
-        {
-        name: "Document de réflexion synodale",
-        format: "PDF",
-        date: "12/03/2025",
-        },
-        {
-        name: "Charte de bénévolat dans le diocèse",
-        format: "WORD",
-        date: "12/03/2025",
-        },
-    ];
-
     const handleDeleteActualite = async () => {
         if (isDeleting) return
         setIsDeleting(true)
@@ -86,9 +44,28 @@ export default function ActualiteContent(
             setActualites(actualites.filter((actualite) => actualite.id !== selectedActualite?.id))
             setOpenModal(false)
         } catch (error) {
-            console.error('Error deleting message:', error)
+            console.error('Error deleting actualité:', error)
         } finally {
             setIsDeleting(false)
+        }
+    }
+    const handleUpdateStatus = async () => {
+        if (isUpdateStatus) return
+        setIsUpdateStatus(true)
+        try {
+            is_actif = selectedActualite?.is_actif === 1 ? -1 : 1
+            const newActualite = { ...selectedActualite, is_actif: is_actif } as Actualite
+            await apiClient.put(`/api/actualites/${selectedActualite?.id}`, newActualite)
+            const findIndex = actualites.findIndex(actu =>  actu.id === selectedActualite?.id)
+            const data= actualites
+            data[findIndex] = newActualite
+            setActualites(data)
+            toast.success("Le statut a été mis à jour")
+            setOpenModal(false)
+        } catch (error) {
+            console.error('Error updating message:', error)
+        } finally {
+            setIsUpdateStatus(isUpdateStatus)
         }
     }
 
@@ -235,8 +212,9 @@ export default function ActualiteContent(
                                 Fermer
                             </Button>
                             <div className="flex gap-2">
-                                <Button variant="outline" className="h-10">
-                                    Désactiver
+                                <Button onClick={handleUpdateStatus} variant="outline" className="h-10">
+                                    { isUpdateStatus && <Loader className='h-5 w-5, mr-2' /> }
+                                    { selectedActualite?.is_actif === 1 ? 'Désactiver' : 'Activer' }
                                 </Button>
                                 <Button onClick={handleEditActualite} className="h-10 bg-blue text-white hover:bg-blue/90">
                                     Modifier

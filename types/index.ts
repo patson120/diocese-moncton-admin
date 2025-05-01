@@ -35,6 +35,7 @@ export type Actualite = {
     titre_fr: string;
     titre_en: string;
     date_publication: string;
+    is_actif: number;
     is_brouillon: number;
     is_planifier: number;
     date_planification: any;
