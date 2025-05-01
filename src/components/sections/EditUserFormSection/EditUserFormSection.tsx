@@ -45,7 +45,7 @@ export const EditUserFormSection = ({user}: { user: User}): JSX.Element => {
     defaultValues: {
       nom: user.nom,
       email: user.email,
-      role: user.role.sigle,
+      role: user.role.sigle as "admin" | "moderateur" | "editeur" | "viewer",
       statut: 'actif',
     },
   });
