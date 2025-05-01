@@ -18,6 +18,7 @@ import { Member } from "../../../../types";
 import { apiClient } from "@/lib/axios";
 import { Loader } from "@/components/ui/loader";
 import EditMemberFormSection from "../AddMemberFormSection/EditMemberFormSection";
+import { toast } from "sonner";
 
 export const ClergPretres = (): JSX.Element => {
 
@@ -68,6 +69,21 @@ export const ClergPretres = (): JSX.Element => {
         setMembersCopy(response)
       })()
   }, [])
+
+  const handleDeleteMember = async () => {
+    setIsDeleting(true)
+    try {
+      await apiClient.delete(`/api/membres/${selectedMember?.id}`);
+      setOpenModal(false);
+      setMembers(members.filter((member) => member.id !== selectedMember?.id));
+      toast.success("Membre supprimé avec succès");
+    } catch (error) {
+      toast.error("Erreur lors de la suppression du membre");
+    }
+    finally {
+      setIsDeleting(false);
+    }
+  }
   
   return (
     <main>
@@ -506,7 +522,7 @@ export const ClergPretres = (): JSX.Element => {
                   Désactiver
                 </Button>
                 <EditMemberFormSection memberData={selectedMember!} />
-                <Button className="h-10 bg-red-500 text-white hover:bg-blue/90">
+                <Button onClick={handleDeleteMember} className="h-10 bg-red-500 text-white hover:bg-blue/90">
                 { isDeleting && <Loader className='h-5 w-5, mr-2' /> }
                   Supprimer
                 </Button>
