@@ -74,7 +74,7 @@ export default function ImageContentSection() {
                 </ScrollArea>
             </div>
 
-            <Dialog open={selectedImage != undefined}>
+            <Dialog open={selectedImage != undefined} onOpenChange={() => setSelectedImage(undefined)}>
                 <DialogContent aria-describedby={undefined} className="max-w-4xl p-3 rounded-2xl">
                   <DialogClose onClick={() => setSelectedImage(undefined)} className="absolute border-none w-5 h-5 top-[14px] right-[14px]">
                   </DialogClose>
