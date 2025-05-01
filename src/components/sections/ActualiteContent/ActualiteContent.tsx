@@ -21,7 +21,9 @@ export default function ActualiteContent(
 
     useEffect(() => {
         const getActualites = async () => {
-            const response: any = await apiClient.get(`/api/actualites?paginate=200&is_actif=${is_actif}&intitule=${query}`)
+            let params = `?paginate=200&is_actif=${is_actif}`
+            if (query) { params += `&intitule=${query}` }
+            const response: any = await apiClient.get(`/api/actualites${params}`)
             setActualites(response.data)
         }
         getActualites()
@@ -88,6 +90,11 @@ export default function ActualiteContent(
         } finally {
             setIsDeleting(false)
         }
+    }
+
+    const handleEditActualite = () => {
+        if (!selectedActualite) return
+        window.location.href = `/actualite/${selectedActualite.id}`
     }
 
     return (
@@ -231,7 +238,7 @@ export default function ActualiteContent(
                                 <Button variant="outline" className="h-10">
                                     Désactiver
                                 </Button>
-                                <Button className="h-10 bg-blue text-white hover:bg-blue/90">
+                                <Button onClick={handleEditActualite} className="h-10 bg-blue text-white hover:bg-blue/90">
                                     Modifier
                                 </Button>
                                 <Button onClick={handleDeleteActualite} className="h-10 bg-red-500 text-white hover:bg-blue/90">

@@ -1,3 +1,4 @@
+
 "use client"
 
 import { Editor } from '@/components/Editor/Editor'
@@ -9,16 +10,16 @@ import { Loader } from '@/components/ui/loader'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { apiClient } from '@/lib/axios'
+import { createActualite } from '@/lib/data'
 import { TabsContent } from '@radix-ui/react-tabs'
 import { ArrowLeft, CopyIcon, ExternalLinkIcon, } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { Actualite } from '../../../../types'
-import ActuDialog from './ActuDialog'
 import { toast } from 'sonner'
-import { createActualite } from '@/lib/data'
+import { Actualite } from '../../../../../types'
+import EditActuDialog from './EditActuDialog'
 
-export default function CreateActutalite() {
+export default function EditActualiteForm({actualite}: { actualite: Actualite }) {
   const router = useRouter()
   const [isSave, setIsSave] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -27,29 +28,27 @@ export default function CreateActutalite() {
   const [isEmptyActu, setIsEmptyActu] = useState(false);
   const [openPublishModal, setOpenPublishModal] = useState(false);
   const [coverImage, setCoverImage] = useState<string>("");
-  const [actualite, setActualite] = useState<Actualite>();
   const [fileImage, setFileImage] = useState<File | undefined>();
   const [title, setTitle] = useState({
-    french: '',
-    english: '',
+    french: actualite.titre_fr,
+    english: actualite.titre_en,
   })
   const [content, setContent] = useState({
-    french: '',
-    english: '',
+    french: actualite.description_fr,
+    english: actualite.description_en,
   })
 
   const handlePublish = async (data: any) => {
     if (isLoading) return
     setIsLoading(true)
 
-    const response: any = await apiClient.post('/api/actualites', {
+    const response: any = await apiClient.put(`/api/actualites/${actualite.id}`, {
       ...data,
       titre_fr: title.french,
       titre_en: title.english,
       description_fr: content.french,
       description_en: content.english,
-      is_brouillon: 0,
-      is_actif: 0,
+      is_brouillon: 1,
     })
 
     if (response.id) {
@@ -58,29 +57,31 @@ export default function CreateActutalite() {
       setOpenPublishModal(false)
       setIsSave(1)
       setAlertModal("")
-      toast.success("Actualité enregistré avec succès !")
+      toast.success("Actualité modifée avec succès !")
+      setTimeout(() => {
+        router.back()
+      }, 1500);
 
       // Creer l'image de couverture
-      const formdata = new FormData();
-      formdata.append("path", fileImage!);
-      formdata.append("label", "actualite");
-      formdata.append("value", `${response.id}`);
-      formdata.append("fichier", fileImage!);
-    
+      // const formdata = new FormData();
+      // formdata.append("path", fileImage!);
+      // formdata.append("label", "actualite");
+      // formdata.append("value", `${response.id}`);
+      // formdata.append("fichier", fileImage!);
 
-      const result: any = await apiClient.post('/api/galeries', formdata, {
-        'Content-Type': 'multipart/form-data'
-      });
+      // const result: any = await apiClient.post('/api/galeries', formdata, {
+      //   'Content-Type': 'multipart/form-data'
+      // } );
 
-      if (result.id) {
-        toast.success("Données enregistrées avec succès !")
-        router.back()
-      toast.warning(
-        <div className='p-3 bg-red-500 text-white rounded-md'>
-          {JSON.stringify(result)}
-        </div>
-      )
-      }
+      // if (result.id) {
+      //   toast.success("Données enregistrées avec succès !")
+      //   router.back()
+      // toast.warning(
+      //   <div className='p-3 bg-red-500 text-white rounded-md'>
+      //     {JSON.stringify(result)}
+      //   </div>
+      // )
+      // }
     }
     else {
       toast.warning(
@@ -89,9 +90,7 @@ export default function CreateActutalite() {
         </div>
       )
     }
-
     setIsLoading(false)
-
   }
 
   const handleCoverImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -114,11 +113,9 @@ export default function CreateActutalite() {
   };
 
   const verifyEnglishContent = () => {
-
     if (title.french.trim() == '' || content.french.trim() == '') {
       return setIsEmptyActu(prev => !prev)
     }
-
     if (title.english.trim() == '' || content.english.trim() == '') {
       return setIsEnglishVersion(prev => !prev)
     }
@@ -144,8 +141,7 @@ export default function CreateActutalite() {
         <Button
           onClick={goback}
           variant="ghost"
-          className="h-10 gap-2 px-3.5 py-0 bg-white rounded-[7px]"
-        >
+          className="h-10 gap-2 px-3.5 py-0 bg-white rounded-[7px]">
           <ArrowLeft className='w-[18px] h-[18px]' />
           <span className="font-body-3 text-noir-dashboard whitespace-nowrap">
             Retour à l&apos;accueil
@@ -159,18 +155,14 @@ export default function CreateActutalite() {
               Sauvegarder brouillon
             </span>
           </Button>
-
           <Separator orientation="vertical" className="h-[34px]" />
-
           <Button
             variant="outline"
-            className="h-10 px-3.5 py-0 border-[#d9d9d9] rounded-[7px]"
-          >
+            className="h-10 px-3.5 py-0 border-[#d9d9d9] rounded-[7px]">
             <span className="font-body-3 text-noir-dashboard whitespace-nowrap">
               Prévisualiser
             </span>
           </Button>
-
           <Button onClick={verifyEnglishContent} className="h-10 px-3.5 py-0 bg-blue text-white rounded-[7px]">
             {isLoading && <Loader className='text-white mr-2' />}
             <span className="font-body-3 whitespace-nowrap">
@@ -183,7 +175,6 @@ export default function CreateActutalite() {
 
       {/* Main content area */}
       <div className="max-w-4xl  mx-auto bg-transparent">
-
         <div className="w-full bg-transparent">
           {/* Language tabs */}
           <div className="my-4 rounded-lg overflow-hidden bg-white">
@@ -366,7 +357,7 @@ export default function CreateActutalite() {
         </Card>
       </div>
 
-      <Dialog open={isEnglishVersion}>
+      <Dialog open={isEnglishVersion} onOpenChange={setIsEnglishVersion}>
         <DialogContent aria-describedby={undefined} className="max-w-sm p-10 text-center rounded-2xl">
           <DialogClose onClick={() => setIsEnglishVersion(false)} className="absolute border-none w-5 h-5 top-[14px] right-[14px]">
           </DialogClose>
@@ -383,7 +374,7 @@ export default function CreateActutalite() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={isEmptyActu}>
+      <Dialog open={isEmptyActu}onOpenChange={setIsEmptyActu}>
         <DialogContent aria-describedby={undefined} className="max-w-sm p-10 text-center rounded-2xl">
           <DialogClose onClick={() => setIsEmptyActu(false)} className="absolute border-none w-5 h-5 top-[14px] right-[14px]">
           </DialogClose>
@@ -400,7 +391,7 @@ export default function CreateActutalite() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={alertModal === 'goback'}>
+      <Dialog open={alertModal === 'goback'} onOpenChange={(val) => setAlertModal('')}>
         <DialogContent aria-describedby={undefined} className="max-w-sm p-10 text-center rounded-2xl">
           <DialogClose onClick={() => setAlertModal('')} className="absolute border-none w-5 h-5 top-[14px] right-[14px]">
           </DialogClose>
@@ -430,11 +421,10 @@ export default function CreateActutalite() {
         </DialogContent>
       </Dialog>
 
-      <ActuDialog
+      <EditActuDialog
         imageUrl={coverImage}
-        title={title}
+        actualite={actualite}
         isLoading={isLoading}
-        content={content}
         handlePublish={handlePublish}
         open={openPublishModal}
       />
