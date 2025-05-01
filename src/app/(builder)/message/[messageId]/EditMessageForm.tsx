@@ -1,4 +1,6 @@
+
 "use client"
+
 import { Editor } from '@/components/Editor/Editor'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -10,21 +12,27 @@ import { ArrowLeft, CopyIcon, ExternalLinkIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { Message } from '../../../../../types'
+import { apiClient } from '@/lib/axios'
+import { Loader } from '@/components/ui/loader'
 
-export default function CreateMessage() {
+export default function EditMessageForm({message}: { message: Message }) {
+
+    const [isLoading, setIsLoading] = useState(false)
 
   const router = useRouter()
 
   const [title, setTitle] = useState({
-    french: '',
-    english: '',
+    french: message.titre_fr,
+    english: message.titre_en,
   })
   const [content, setContent] = useState({
-    french: '',
-    english: '',
+    french: message.message_fr,
+    english: message.message_en,
   })
 
   const handlePublish = async () => {
+    if (isLoading) return
     if (title.french.trim() == '' || title.english.trim() == '') {
       toast.warning(
         <div className='p-3 bg-red-500 text-white rounded-md'>
@@ -36,21 +44,25 @@ export default function CreateMessage() {
     }
 
     if (content.french.trim() == '' || content.english.trim() == '') {
-      toast.warning("Veuillez renseigner les contenus dans les deux langues")
+        toast.warning(<div className='p-3 bg-red-500 text-white rounded-md'>
+          Veuillez renseigner les contenus dans les deux langues
+        </div>)
       return;
     }
 
-    const response = await createMessage({
-      titre_fr: title.french,
-      titre_en: title.english,
-      message_fr: content.french,
-      message_en: content.english,
-      archeveque_id: 16,
-      etat: 1,
-      // message: "Aliquid eveniet ex et porro similique totam. Officia fugiat eos et iure. Aut minus fugiat ipsa illum. Ipsa voluptas vel ut. Possimus ex voluptatem similique pariatur autem assumenda. Maiores enim quo accusamus adipisci.",
+    setIsLoading(true)
+    const response: any = await apiClient.put(`/api/mot_archeve/${message.id}`, {
+        titre_fr: title.french,
+        titre_en: title.english,
+        message_fr: content.french,
+        message_en: content.english,
+        archeveque_id: 16,
+        etat: 1,
+        // message: "Aliquid eveniet ex et porro similique totam. Officia fugiat eos et iure. Aut minus fugiat ipsa illum. Ipsa voluptas vel ut. Possimus ex voluptatem similique pariatur autem assumenda. Maiores enim quo accusamus adipisci.",
     })
+
     if (response.titre_fr) {
-      toast.success("Message enregistré avec succès !")
+      toast.success("Message modifié avec succès !")
       setTitle({ french: '', english: '', })
       setContent({ french: '', english: '', })
       setTimeout(() => {
@@ -58,8 +70,11 @@ export default function CreateMessage() {
       }, 1500);
     }
     else {
-      toast.success(JSON.stringify(response))
+      toast.warning(<div className='p-3 bg-red-500 text-white rounded-md'>
+        {JSON.stringify(response)}
+      </div>)
     }
+    setIsLoading(false)
 
   }
   return (
@@ -71,8 +86,7 @@ export default function CreateMessage() {
         <Button
           onClick={() => router.back()}
           variant="ghost"
-          className="h-10 gap-2 px-3.5 py-0 bg-white rounded-[7px]"
-        >
+          className="h-10 gap-2 px-3.5 py-0 bg-white rounded-[7px]">
           <ArrowLeft className='w-[18px] h-[18px]' />
           <span className="font-body-3 text-noir-dashboard whitespace-nowrap">
             Retour à l&apos;accueil
@@ -99,6 +113,7 @@ export default function CreateMessage() {
           </Button>
 
           <Button onClick={handlePublish} className="h-10 px-3.5 py-0 bg-blue text-white rounded-[7px]">
+            { isLoading && <Loader className='h-5 w-5 mr-2' /> }
             <span className="font-body-3 whitespace-nowrap">
               Publier message
             </span>

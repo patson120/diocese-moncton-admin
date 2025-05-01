@@ -141,6 +141,9 @@ export const EditEventFormSection = ({ eventData} : EditEventDialogProps): JSX.E
         setStep(1)
         setCoverImage('')
         setOpenModal(false)
+        setTimeout(() => {
+          window.location.reload()
+        }, 2000);
       }
       else {
         toast.warning(

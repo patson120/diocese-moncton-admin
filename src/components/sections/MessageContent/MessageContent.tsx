@@ -7,11 +7,15 @@ import { apiClient } from '@/lib/axios';
 import { formatDateToLocal } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import { Message } from '../../../../types';
+import { Loader } from '@/components/ui/loader';
 
 export default function MessageContent({ etat }: { etat: number }) {
     const [messages, setMessages] = useState<Message[]>([])
     const [selectedMessage, setSelectedMessage] = useState<Message | undefined>()
     const [openModal, setOpenModal] = useState(false)
+
+    const [isDeleting, setIsDeleting] = useState(false)
+
     useEffect(() => {
         const getMessages = async () => {
             const response: any = await apiClient.get(`/api/mot_archeve?paginate=200&etat=${etat}`)
@@ -19,6 +23,25 @@ export default function MessageContent({ etat }: { etat: number }) {
         }
         getMessages()
     }, [etat])
+
+    const handleDeleteMessage = async () => {
+        if (isDeleting) return
+        setIsDeleting(true)
+        try {
+            await apiClient.delete(`/api/mot_archeve/${selectedMessage?.id}`)
+            setMessages(messages.filter((message) => message.id !== selectedMessage?.id))
+            setOpenModal(false)
+        } catch (error) {
+            console.error('Error deleting message:', error)
+        } finally {
+            setIsDeleting(false)
+        }
+    }
+
+    const handleEditMessage = () => {
+        if (!selectedMessage) return
+        window.location.href = `/message/${selectedMessage.id}`
+    }
 
     return (
         <div>
@@ -37,10 +60,7 @@ export default function MessageContent({ etat }: { etat: number }) {
                 }
             </div>
             {/* Sheet */}
-            <Sheet open={openModal} >
-                {/* <SheetTrigger asChild>
-                            <Button variant="outline">Ouvrir le panneau</Button>
-                        </SheetTrigger> */}
+            <Sheet open={openModal} onOpenChange={setOpenModal} >
                 <SheetContent className="max-w-3xl">
                     <SheetHeader className='relative'>
                         <SheetTitle hidden>Détails du message de l'archevêque</SheetTitle>
@@ -52,12 +72,16 @@ export default function MessageContent({ etat }: { etat: number }) {
                                 onClick={() => setOpenModal(false)}>
                                 Fermer
                             </Button>
-                            <div className="flex gap-4">
+                            <div className="flex gap-2">
                                 <Button variant="outline" className="h-10">
                                     Désactiver
                                 </Button>
-                                <Button className="h-10 bg-blue text-white hover:bg-blue/90">
+                                <Button onClick={handleEditMessage} className="h-10 bg-blue text-white hover:bg-blue/90">
                                     Modifier
+                                </Button>
+                                <Button onClick={handleDeleteMessage} className="h-10 bg-red-500 text-white hover:bg-blue/90">
+                                    { isDeleting && <Loader className='h-5 w-5, mr-2' /> }
+                                    Supprimer
                                 </Button>
                             </div>
                         </header>
