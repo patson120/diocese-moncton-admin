@@ -44,7 +44,7 @@ export default function ImageContentSection() {
     return (
         <section className="w-full flex-1 p-6">
             <div className="flex flex-col bg-white w-full items-start gap-6 rounded-2xl p-6">
-                <ScrollArea className="w-full h-[500px]">
+                <ScrollArea className="w-full h-[calc(80vh)]">
                     {/* Image grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 gap-4">
                         {images.map((image, index) => (
