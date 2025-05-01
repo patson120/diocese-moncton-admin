@@ -27,7 +27,6 @@ export default function CreateActutalite() {
   const [isEmptyActu, setIsEmptyActu] = useState(false);
   const [openPublishModal, setOpenPublishModal] = useState(false);
   const [coverImage, setCoverImage] = useState<string>("");
-  const [actualite, setActualite] = useState<Actualite>();
   const [fileImage, setFileImage] = useState<File | undefined>();
   const [title, setTitle] = useState({
     french: '',

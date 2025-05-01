@@ -4,34 +4,71 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Loader } from "@/components/ui/loader";
+import { apiClient } from "@/lib/axios";
 import { handleImageUpload } from "@/lib/utils";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { PlusIcon } from "lucide-react";
 import Image from "next/image";
 import { JSX, useState } from "react";
+import { toast } from "sonner";
 
 export const AddImageFormSection = (): JSX.Element => {
  
   const [fileName, setFileName] = useState("")
   const [coverImage, setCoverImage] = useState('')
+  const [fileImage, setFileImage] = useState<File | undefined>();
   const [openModal, setOpenModal] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleCoverImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const imageUrl = await handleImageUpload(file);
-      // setFileImage(file)
+      setFileImage(file)
       setCoverImage(imageUrl);
     }
   };
 
   const handleAddImage = async () => {
-    setOpenModal(false)
+    if (isLoading) return
+    if (!fileImage) {
+      toast.warning(
+        <p className='p-3 bg-red-500 text-white rounded-md'>
+          Veuillez choisir une image avant de continuer !
+        </p>
+      )
+      return
+    }
+
+    setIsLoading(true)
+    // Creer l'image de couverture
+    const formdata = new FormData();
+    formdata.append("fichier", fileImage!);
+    const result: any = await apiClient.post('/api/galeries', formdata, {
+      'Content-Type': 'multipart/form-data'
+    });
+
+    if (result.id) {
+      toast.success("Image enregistrée avec succès !")
+      setFileImage(undefined)
+      setCoverImage('');
+      window.location.reload()
+      setOpenModal(false)
+    }
+    else {
+      toast.warning(
+        <div className='p-3 bg-red-500 text-white rounded-md'>
+          {JSON.stringify(result)}
+        </div>
+      )
+    }
+    setIsLoading(false)
   }
 
 
   return (
-    <Dialog open={openModal}>
+    <Dialog open={openModal} onOpenChange={setOpenModal}>
       <DialogTrigger asChild>
         <Button onClick={( ) => setOpenModal(true)} className="bg-blue hover:bg-blue/90 text-white gap-2">
           <PlusIcon className="w-5 h-5" />
@@ -96,6 +133,7 @@ export const AddImageFormSection = (): JSX.Element => {
         
         <div className='flex justify-center items-center  my-4 gap-3'>
           <Button onClick={handleAddImage} className="px-3.5 py-0 bg-blue text-white rounded-[7px]">
+            { isLoading && <Loader className="h-5 w-5 mr-2" /> }
             <span className="font-body-3 font-bold whitespace-nowrap">
                 Ajouter l'image
             </span>

@@ -54,7 +54,6 @@ export default function ImageContentSection() {
                   <DialogHeader className='hidden'>
                       <DialogTitle></DialogTitle>
                   </DialogHeader>
-                  
                   <div className='w-full h-[calc(70vh)] relative rounded-xl overflow-hidden'>
                     <Image
                       alt={`Image details`}
@@ -64,7 +63,6 @@ export default function ImageContentSection() {
                       priority
                     />
                   </div>
-                  
                   <div className='flex justify-between items-center gap-3'>
                     <div className='flex gap-3'>
                       <Button onClick={() => setSelectedImage(undefined)} className="px-3.5 py-0 bg-blue text-white rounded-[7px]">
