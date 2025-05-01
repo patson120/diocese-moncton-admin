@@ -20,6 +20,7 @@ import { JSX, useEffect, useState } from "react";
 import { Role } from "../../../../types";
 import { Loader } from "@/components/ui/loader";
 import { toast } from "sonner";
+import { EditUserFormSection } from "../EditUserFormSection";
 
 
 export const UserListSection = (): JSX.Element => {
@@ -173,15 +174,7 @@ export const UserListSection = (): JSX.Element => {
                     </TableCell>
                     <TableCell className="py-3.5">
                       <div className="flex items-center gap-[17px]">
-                        <Button
-                          variant="ghost"
-                          className="h-auto p-0 flex items-center gap-1"
-                        >
-                          <Pencil className="w-4 h-4 mr-1" />
-                          <span className="font-body-3 font-[number:var(--body-3-font-weight)] text-noir-dashboard text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                            Modifier
-                          </span>
-                        </Button>
+                        <EditUserFormSection user={user} />
                         <Button
                           onClick={() => handleDeletUser(user)}
                           variant="ghost"

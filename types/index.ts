@@ -141,3 +141,15 @@ export type Role = {
     created_at: string;
     updated_at: string;
 }
+
+export type User = {
+    id: number;
+    nom: string;
+    email: string;
+    password: string;
+    role_id: number;
+    created_at: string;
+    updated_at: string;
+    privilege: string[];
+    role: Role;
+}
