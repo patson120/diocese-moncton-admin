@@ -55,7 +55,6 @@ export const AddUserFormSection = (): JSX.Element => {
     const data = {
       nom: values.nom,
       email: values.email,
-      role: values.role,
       role_id: roles.find((role: any) => role.sigle === values.role)?.id,
       password: '1234',
       statut: values.statut,
@@ -152,10 +151,13 @@ export const AddUserFormSection = (): JSX.Element => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="administrateur">Administrateur</SelectItem>
-                        <SelectItem value="moderateur">Modérateur</SelectItem>
-                        <SelectItem value="editeur">Éditeur</SelectItem>
-                        <SelectItem value="viewer">Viewer</SelectItem>
+                        {
+                          roles && roles.map((role: any) => (
+                            <SelectItem key={role.id} value={role.sigle}>
+                              {role.intitule}
+                            </SelectItem>
+                          ))
+                        }
                       </SelectContent>
                     </Select>
                     <FormMessage />
