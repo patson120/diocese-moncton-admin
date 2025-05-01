@@ -20,7 +20,7 @@ import * as z from "zod";
 const formSchema = z.object({
   nom: z.string().min(1, "Le nom est requis"),
   email: z.string().email("L'adresse email n'est pas valide"),
-  role: z.enum(["administrateur", "moderateur", "editeur", "viewer"]),
+  role: z.enum(["admin", "moderateur", "editeur", "viewer"]),
   statut: z.enum(["actif", "inactif"]),
 });
 
@@ -59,12 +59,13 @@ export const AddUserFormSection = (): JSX.Element => {
       password: '1234',
       statut: values.statut,
     };
-
-
     try {
       const response: any = await apiClient.post("/api/administrateurs", data);
       if (response.id ) {
         toast.success('Utilisateur ajouté avec succès');
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
       }
       else  {
         toast.error(
