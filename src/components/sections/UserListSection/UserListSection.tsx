@@ -18,6 +18,8 @@ import { formatDateToLocal } from "@/lib/utils";
 import { Pencil, Trash2, XIcon } from "lucide-react";
 import { JSX, useEffect, useState } from "react";
 import { Role } from "../../../../types";
+import { Loader } from "@/components/ui/loader";
+import { toast } from "sonner";
 
 
 export const UserListSection = (): JSX.Element => {
@@ -37,8 +39,10 @@ export const UserListSection = (): JSX.Element => {
   const [selectedRole, setSelectedRole] = useState(roleFilters[0]);
   const [roles, setRoles] = useState<Role[]>(roleFilters);
   const [openModal, setOpenModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [users, setUsers] = useState([]);
   const [usersCopy, setUserscopy] = useState([]);
+  const [selectedUser, setSelectedUser] = useState<any>();
 
   const getUsers = async () => {
     const response: any = await apiClient.get("/api/administrateurs")
@@ -64,6 +68,28 @@ export const UserListSection = (): JSX.Element => {
       setUsers(filteredUsers);
     }
   }, [selectedRole.sigle])
+
+  const handleDeletUser = async (user: any) => {
+    setSelectedUser(user)
+    setOpenModal(true)
+  }
+
+  const handleDelete = async () => {
+    if (isDeleting) return
+    setIsDeleting(true)
+    try {
+      await apiClient.delete(`/api/administrateurs/${selectedUser.id}`);
+      setUsers(users.filter((user: any) => user.id !== selectedUser.id));
+      setOpenModal(false);
+      toast.success("L'utilisateur a été supprimé avec succès.");
+      
+    } catch (error) {
+      toast.error("Une erreur s'est produite lors de la suppression de l'utilisateur.");
+    }
+    finally {
+      setIsDeleting(false);
+    }
+  }
 
   return (
     <>
@@ -157,7 +183,7 @@ export const UserListSection = (): JSX.Element => {
                           </span>
                         </Button>
                         <Button
-                          onClick={() => setOpenModal(true)}
+                          onClick={() => handleDeletUser(user)}
                           variant="ghost"
                           className="h-auto p-0 flex items-center gap-1"
                         >
@@ -176,7 +202,7 @@ export const UserListSection = (): JSX.Element => {
         </CardContent>
       </Card>
 
-      <Dialog open={openModal}>
+      <Dialog open={openModal} onOpenChange={setOpenModal}>
         <DialogContent aria-describedby={undefined} className="max-w-sm p-10 text-center rounded-2xl">
           <DialogClose className="z-[5] absolute w-5 h-5 top-[14px] right-[14px]">
             <XIcon onClick={() => { setOpenModal(false) }} className="h-5 w-5" />
@@ -200,8 +226,12 @@ export const UserListSection = (): JSX.Element => {
                 Annuler
               </span>
             </Button>
-            <Button onClick={() => setOpenModal(false)} className="px-3.5 py-0 bg-[#EB5E60] text-white rounded-[7px]">
-              <Trash2 className="h-5 w-5 mr-2 text-white" />
+            <Button onClick={handleDelete} className="px-3.5 py-0 bg-[#EB5E60] text-white rounded-[7px]">
+              {
+                isDeleting ? 
+                <Loader className="w-5 h-5 mr-2" /> : 
+                <Trash2 className="h-5 w-5 mr-2 text-white" />
+              }
               <span className="font-body-3 whitespace-nowrap text-white">
                 Supprimer
               </span>
