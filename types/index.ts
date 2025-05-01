@@ -133,3 +133,11 @@ export type Member = {
     updated_at: string;
     categorie: Category;
 }
+
+export type Role = {
+    id: number;
+    intitule: string;
+    sigle:  string;
+    created_at: string;
+    updated_at: string;
+}

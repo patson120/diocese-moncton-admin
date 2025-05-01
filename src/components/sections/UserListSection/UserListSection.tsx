@@ -17,32 +17,53 @@ import { apiClient } from "@/lib/axios";
 import { formatDateToLocal } from "@/lib/utils";
 import { Pencil, Trash2, XIcon } from "lucide-react";
 import { JSX, useEffect, useState } from "react";
+import { Role } from "../../../../types";
 
 
 export const UserListSection = (): JSX.Element => {
-  // State to track the selected role filter
-  const [selectedRole, setSelectedRole] = useState('all');
-  const [openModal, setOpenModal] = useState(false);
-  const [users, setUsers] = useState([]);
-
 
   // Role filter options
   const roleFilters = [
-    { value: "all", label: "Tout" },
-    { value: "admin", label: "Administrateur" },
-    { value: "moderator", label: "Modérateur" },
-    { value: "editor", label: "Éditeur" },
-    { value: "viewer", label: "Viewer" },
+    {
+      "id": -1,
+      "intitule": "Tout",
+      "sigle": "all",
+      "created_at": "2025-04-29T03:45:01.000000Z",
+      "updated_at": "2025-04-29T03:45:01.000000Z"
+    }
   ];
+
+  // State to track the selected role filter
+  const [selectedRole, setSelectedRole] = useState(roleFilters[0]);
+  const [roles, setRoles] = useState<Role[]>(roleFilters);
+  const [openModal, setOpenModal] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [usersCopy, setUserscopy] = useState([]);
 
   const getUsers = async () => {
     const response: any = await apiClient.get("/api/administrateurs")
     setUsers(response);
+    setUserscopy(response);
+  }
+
+  const getRoles = async () => {
+    const response: any = await apiClient.get("/api/roles")
+    setRoles(prev => ([...prev, ...response]));
   }
 
   useEffect(() => {
     getUsers()
+    getRoles()
   }, [])
+
+  useEffect(() => {
+    if (selectedRole.sigle === "all") {
+      setUsers(usersCopy);
+    } else {
+      const filteredUsers = usersCopy.filter((user: any) => user.role.sigle === selectedRole.sigle);
+      setUsers(filteredUsers);
+    }
+  }, [selectedRole.sigle])
 
   return (
     <>
@@ -57,20 +78,20 @@ export const UserListSection = (): JSX.Element => {
 
               <ToggleGroup
                 type="single"
-                value={selectedRole}
-                onValueChange={(value: any) => value && setSelectedRole(value)}
+                value={selectedRole.sigle}
+                onValueChange={(value: any) => value && setSelectedRole(roles.find((role) => role.sigle === `${value}`)!)}
               >
-                {roleFilters.map((filter) => (
+                {roles.map((filter) => (
                   <ToggleGroupItem
-                    key={filter.value}
-                    value={filter.value}
-                    className={`px-3 py-2 rounded-lg ${filter.value === selectedRole
+                    key={filter.sigle}
+                    value={filter.sigle}
+                    className={`px-3 py-2 rounded-lg ${filter.sigle === selectedRole.sigle
                       ? "!bg-noir-dashboard !text-white !font-bold"
                       : "bg-white text-gray border border-solid border-[#d9d9d9]"
                       }`}
                   >
                     <span className="font-body-3 font-[number:var(--body-3-font-weight)] text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                      {filter.label}
+                      {filter.intitule}
                     </span>
                   </ToggleGroupItem>
                 ))}
