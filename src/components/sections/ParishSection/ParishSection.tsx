@@ -273,7 +273,6 @@ export default function ParishSection() {
                         
                     </section>
                 </div>
-                
             </Tabs>
 
             {/* Sheet */}

@@ -37,7 +37,7 @@ export default function RootLayout({
             </main>
           </div>
         </div>
-        <Toaster />
+        <Toaster  />
         <SonnerToaster />
       </body>
     </html>

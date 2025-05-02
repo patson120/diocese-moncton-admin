@@ -48,7 +48,7 @@ export default function EditActualiteForm({actualite}: { actualite: Actualite })
       titre_en: title.english,
       description_fr: content.french,
       description_en: content.english,
-      is_brouillon: 1,
+      is_brouillon: actualite.is_brouillon,
     })
 
     if (response.id) {

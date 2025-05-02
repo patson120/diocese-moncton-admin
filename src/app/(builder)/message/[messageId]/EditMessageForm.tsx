@@ -39,7 +39,6 @@ export default function EditMessageForm({message}: { message: Message }) {
           Veuillez renseigner les titres dans les deux langues
         </div>
       )
-      // toast.warning("Veuillez renseigner les titres dans les deux langues")
       return;
     }
 
@@ -57,7 +56,7 @@ export default function EditMessageForm({message}: { message: Message }) {
         message_fr: content.french,
         message_en: content.english,
         archeveque_id: 16,
-        etat: 1,
+        etat: message.etat,
         // message: "Aliquid eveniet ex et porro similique totam. Officia fugiat eos et iure. Aut minus fugiat ipsa illum. Ipsa voluptas vel ut. Possimus ex voluptatem similique pariatur autem assumenda. Maiores enim quo accusamus adipisci.",
     })
 
