@@ -53,7 +53,7 @@ export const UserListSection = (): JSX.Element => {
 
   const getRoles = async () => {
     const response: any = await apiClient.get("/api/roles")
-    setRoles(prev => ([...prev, ...response]));
+    setRoles([...roleFilters, ...response]);
   }
 
   useEffect(() => {

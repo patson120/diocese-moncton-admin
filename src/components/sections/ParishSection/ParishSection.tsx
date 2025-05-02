@@ -14,7 +14,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { Paroisse } from '../../../../types';
-import { AddParishFormSection } from '../AddParishFormSection';
+import { AddParishFormSection } from './AddParishFormSection';
 import { Loader } from '@/components/ui/loader';
 import { apiClient } from '@/lib/axios';
 import { toast } from 'sonner';
@@ -289,7 +289,7 @@ export default function ParishSection() {
                                 onClick={() => setOpenModal(false)}>
                                 Fermer
                             </Button>
-                            <div className="flex gap-4">
+                            <div className="flex gap-2">
                                 <Button variant="outline" className="h-10">
                                     Désactiver
                                 </Button>
