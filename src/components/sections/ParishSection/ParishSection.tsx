@@ -15,10 +15,14 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import { Paroisse } from '../../../../types';
 import { AddParishFormSection } from '../AddParishFormSection';
+import { Loader } from '@/components/ui/loader';
+import { apiClient } from '@/lib/axios';
+import { toast } from 'sonner';
 
 export default function ParishSection() {
     const router = useRouter()
 
+    const [isDeleting, setIsDeleting] = useState(false)
     const [openModal, setOpenModal] = useState(false)
     const [selecteParish, setSelectedParish] = useState<Paroisse | undefined>()
     const [parishes, setParishes] = useState<Paroisse[]>([])
@@ -79,6 +83,26 @@ export default function ParishSection() {
         }
         router.replace(`${pathname}?${params.toString()}`)
     }, 800)
+
+
+    const handleDeleteParish = async () => {
+        if (isDeleting) return
+        setIsDeleting(true)
+        try {
+            await apiClient.delete(`/api/paroisses/${selecteParish?.id}`);
+            setOpenModal(false)
+            setParishes(prev => (prev.filter(parish => parish.id !== selecteParish?.id)))
+            
+        } catch (error) {
+            toast.error(
+                <div className='p-3 bg-red-500 text-white rounded-md'>
+                    Error deleting parish: {JSON.stringify(error)}
+                </div>
+            )
+        } finally {
+            setIsDeleting(false)
+        }
+    }
     
 
     return (
@@ -271,6 +295,10 @@ export default function ParishSection() {
                                 </Button>
                                 <Button className="h-10 bg-blue text-white hover:bg-blue/90">
                                     Modifier
+                                </Button>
+                                <Button onClick={handleDeleteParish} className="h-10 bg-red-500 text-white hover:bg-blue/90">
+                                    { isDeleting && <Loader className='h-5 w-5, mr-2' /> }
+                                    Supprimer
                                 </Button>
                             </div>
                         </header>

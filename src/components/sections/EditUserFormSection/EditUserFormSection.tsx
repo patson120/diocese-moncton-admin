@@ -79,7 +79,7 @@ export const EditUserFormSection = ({user}: { user: User}): JSX.Element => {
     }
     catch (error: any) {
       setIsLoading(false)
-      toast.warning(
+      toast.error(
         <div className='p-3 bg-red-500 text-white rounded-md'>
           Erreur lors de la mise à jour de l'utilisateur {JSON.stringify(error)}
         </div>
