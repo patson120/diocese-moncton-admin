@@ -220,21 +220,22 @@ export default function ContentDisplaySection() {
                 </div>
               </div>
 
-              <TabsContent value="published" className="mt-6 space-y-6">
-                {/* Content for published tab */}
-                <MessageContent etat={1} />
-              </TabsContent>
+              <ScrollArea className="w-full h-[calc(80vh)] mt-6">
+                <TabsContent value="published" className="mt-6 space-y-6">
+                  {/* Content for published tab */}
+                  <MessageContent etat={1} />
+                </TabsContent>
 
-              <TabsContent value="pending" className="mt-6 space-y-6">
-                {/* Content for pending tab */}
-                <MessageContent etat={0} />
-              </TabsContent>
+                <TabsContent value="pending" className="mt-6 space-y-6">
+                  {/* Content for pending tab */}
+                  <MessageContent etat={0} />
+                </TabsContent>
 
-              <TabsContent value="disabled" className="mt-6 space-y-6">
-                {/* Content for disabled tab */}
-                <MessageContent etat={-1} />
-              </TabsContent>
-
+                <TabsContent value="disabled" className="mt-6 space-y-6">
+                  {/* Content for disabled tab */}
+                  <MessageContent etat={-1} />
+                </TabsContent>
+              </ScrollArea>
             </Tabs>
 
             {/* <div className="flex items-center justify-center h-[400px]">

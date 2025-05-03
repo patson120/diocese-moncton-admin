@@ -18,6 +18,8 @@ import { AddParishFormSection } from './AddParishFormSection';
 import { Loader } from '@/components/ui/loader';
 import { apiClient } from '@/lib/axios';
 import { toast } from 'sonner';
+import { AddUnitePastoraleFormSection } from './AddUnitePastoraleFormSection';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function ParishSection() {
     const router = useRouter()
@@ -27,6 +29,7 @@ export default function ParishSection() {
     const [selecteParish, setSelectedParish] = useState<Paroisse | undefined>()
     const [parishes, setParishes] = useState<Paroisse[]>([])
     const [statut, setStatut] = useState(1)
+    const [selectedItem, setSelectedItem] = useState<any>('paroisses')
 
     const [query, setQuery] = useState('')
     
@@ -119,6 +122,7 @@ export default function ParishSection() {
                                     <TabsTrigger
                                         key={item.value}
                                         value={item.value}
+                                        onClick={() => setSelectedItem(item.value)}
                                         className="p-2.5 rounded-none font-body-3 text-sm data-[state=active]:border-b-[3px] data-[state=active]:border-blue data-[state=active]:text-blue data-[state=active]:shadow-none data-[state=inactive]:text-gray data-[state=inactive]:bg-transparent">
                                         {item.label}
                                     </TabsTrigger>
@@ -126,151 +130,157 @@ export default function ParishSection() {
                             </TabsList>
                         </div>
 
-                        <AddParishFormSection />
+                        {
+                            selectedItem === 'paroisses' ?
+                            <AddParishFormSection /> :
+                            <AddUnitePastoraleFormSection />
+                        }
+
                     </div>
                 </header>
 
                 <div className="p-6">
                     <section className="bg-white rounded-2xl p-7 space-y-6">
-                        <TabsContent
-                            value="paroisses"
-                            className="border-none">
-                            <Tabs defaultValue="paroisses-actives">
-                                <div className="flex justify-between items-center">
-                                    <TabsList className="justify-start h-12 p-0 bg-[#F1F3F6] rounded-md px-3 py-2">
-                                        <TabsTrigger
-                                            onClick={() => setStatut(1)}
-                                            value="paroisses-actives"
-                                            className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
-                                            <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                                                Paroisses actives
-                                            </span>
-                                        </TabsTrigger>
-                                        <TabsTrigger
-                                            onClick={() => setStatut(0)}
-                                            value="paroisses-fermees"
-                                            className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
-                                            <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                                                Paroisses fermées
-                                            </span>
-                                        </TabsTrigger>
-                                    </TabsList>
-                                    <div className="flex items-start gap-2.5">
-                                        <div className="flex items-center gap-2">
-                                            <div className="relative w-[256px]">
-                                                <Input
-                                                    className="h-10 bg-neutral-100 border-none pl-9"
-                                                    placeholder="Rechercher une paroisse"
-                                                    onChange={handleSearch}
-                                                    defaultValue={searchParams.get('query')?.toString()}
-                                                />
-                                                <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
-                                            </div>
-                                            <Button
-                                                variant="outline"
-                                                className="h-11 flex items-center gap-2.5 border border-[#d9d9d9] rounded-lg">
-                                                <ListFilter className="w-5 h-5" />
-                                                <span className="font-body-3 text-noir-dashboard">
-                                                    Trier par...
+                        <ScrollArea className="w-full h-[calc(80vh)] mt-6">
+                            <TabsContent
+                                value="paroisses"
+                                className="border-none">
+                                <Tabs defaultValue="paroisses-actives">
+                                    <div className="flex justify-between items-center">
+                                        <TabsList className="justify-start h-12 p-0 bg-[#F1F3F6] rounded-md px-3 py-2">
+                                            <TabsTrigger
+                                                onClick={() => setStatut(1)}
+                                                value="paroisses-actives"
+                                                className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
+                                                <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
+                                                    Paroisses actives
                                                 </span>
-                                            </Button>
+                                            </TabsTrigger>
+                                            <TabsTrigger
+                                                onClick={() => setStatut(0)}
+                                                value="paroisses-fermees"
+                                                className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
+                                                <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
+                                                    Paroisses fermées
+                                                </span>
+                                            </TabsTrigger>
+                                        </TabsList>
+                                        <div className="flex items-start gap-2.5">
+                                            <div className="flex items-center gap-2">
+                                                <div className="relative w-[256px]">
+                                                    <Input
+                                                        className="h-10 bg-neutral-100 border-none pl-9"
+                                                        placeholder="Rechercher une paroisse"
+                                                        onChange={handleSearch}
+                                                        defaultValue={searchParams.get('query')?.toString()}
+                                                    />
+                                                    <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
+                                                </div>
+                                                <Button
+                                                    variant="outline"
+                                                    className="h-11 flex items-center gap-2.5 border border-[#d9d9d9] rounded-lg">
+                                                    <ListFilter className="w-5 h-5" />
+                                                    <span className="font-body-3 text-noir-dashboard">
+                                                        Trier par...
+                                                    </span>
+                                                </Button>
 
-                                            <Button
-                                                variant="outline"
-                                                className="w-11 h-11 p-0 flex items-center justify-center border border-[#d9d9d9] rounded-lg"
-                                            >
-                                                <LayoutGridIcon className="w-5 h-5" />
-                                            </Button>
+                                                <Button
+                                                    variant="outline"
+                                                    className="w-11 h-11 p-0 flex items-center justify-center border border-[#d9d9d9] rounded-lg"
+                                                >
+                                                    <LayoutGridIcon className="w-5 h-5" />
+                                                </Button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <TabsContent value="paroisses-actives" className="mt-6">
-                                    {/* Parish grid */}
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                                        {parishes.map((parish, index) => (
-                                            <Card
-                                                key={index}
-                                                className="w-full border-none shadow-none cursor-pointer"
-                                                onClick={() => {
-                                                    setOpenModal(true)
-                                                    setSelectedParish(parish)
-                                                }}>
-                                                <CardContent className="p-0 w-full h-full space-y-2 bg-[#F9F9F0] rounded-xl flex flex-col justify-between gap-[10px] px-5 py-6">
-                                                    <div className="">
-                                                        <div className='h-6 w-6 mb-2'>
-                                                            <Church className='h-5 w-5' />
+                                    <TabsContent value="paroisses-actives" className="mt-6">
+                                        {/* Parish grid */}
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                            {parishes.map((parish, index) => (
+                                                <Card
+                                                    key={index}
+                                                    className="w-full border-none shadow-none cursor-pointer"
+                                                    onClick={() => {
+                                                        setOpenModal(true)
+                                                        setSelectedParish(parish)
+                                                    }}>
+                                                    <CardContent className="p-0 w-full h-full space-y-2 bg-[#F9F9F0] rounded-xl flex flex-col justify-between gap-[10px] px-5 py-6">
+                                                        <div className="">
+                                                            <div className='h-6 w-6 mb-2'>
+                                                                <Church className='h-5 w-5' />
+                                                            </div>
+                                                            <div className='body-1 font-bold text-black line-clamp-2'>
+                                                                <Text className='text-sm font-bold' labelFr={parish.nom} labelEn={parish.nom_en} />
+                                                                {/* <h1 className='text-lg font-bold'>{parish.nom}</h1> */}
+                                                            </div>
+                                                            <div className='body-2 mt-2 line-clamp-2 text-[#575757]'>
+                                                                <p className='text-sm'>{parish.adresse}</p>
+                                                            </div>
                                                         </div>
+                                                    </CardContent>
+                                                </Card>
+                                            ))}
+                                        </div>
+                                    </TabsContent>
+
+                                    <TabsContent value="paroisses-fermees" className="mt-6">
+                                        {/* Priests grid */}
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                            {parishes.map((parish, index) => (
+                                                <Card
+                                                    key={index}
+                                                    className="w-full border-none shadow-none"
+                                                    onClick={() => {
+                                                        setOpenModal(true)
+                                                        setSelectedParish(parish)
+                                                    }}>
+                                                    <CardContent className="bg-[#F9F9F0] rounded-xl px-5 py-6">
                                                         <div className='body-1 font-bold text-black line-clamp-2'>
                                                             <Text className='text-sm font-bold' labelFr={parish.nom} labelEn={parish.nom_en} />
-                                                            {/* <h1 className='text-lg font-bold'>{parish.nom}</h1> */}
                                                         </div>
-                                                        <div className='body-2 mt-2 line-clamp-2 text-[#575757]'>
-                                                            <p className='text-sm'>{parish.adresse}</p>
+                                                        <div className='body-2 line-clamp-2 text-[#575757]'>
+                                                            <p className='text-gray'>Paroisse fermée</p>
                                                         </div>
-                                                    </div>
-                                                </CardContent>
-                                            </Card>
-                                        ))}
-                                    </div>
-                                </TabsContent>
-
-                                <TabsContent value="paroisses-fermees" className="mt-6">
-                                    {/* Priests grid */}
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                                        {parishes.map((parish, index) => (
-                                            <Card
-                                                key={index}
-                                                className="w-full border-none shadow-none"
-                                                onClick={() => {
-                                                    setOpenModal(true)
-                                                    setSelectedParish(parish)
-                                                }}>
-                                                <CardContent className="bg-[#F9F9F0] rounded-xl px-5 py-6">
-                                                    <div className='body-1 font-bold text-black line-clamp-2'>
-                                                        <Text className='text-sm font-bold' labelFr={parish.nom} labelEn={parish.nom_en} />
-                                                    </div>
-                                                    <div className='body-2 line-clamp-2 text-[#575757]'>
-                                                        <p className='text-gray'>Paroisse fermée</p>
-                                                    </div>
-                                                </CardContent>
-                                            </Card>
-                                        ))}
-                                    </div>
-                                </TabsContent>
-                            </Tabs>
-                        </TabsContent>
-                        <TabsContent
-                            value="unites-paroissiales"
-                            className="border-none">
-                                <div>
-                                    <div className="flex items-start gap-2.5">
-                                        <div className="flex items-center gap-2">
-                                            <div className="relative w-[256px]">
-                                                <Input
-                                                    className="h-10 bg-neutral-100 border-none pl-9"
-                                                    placeholder="Rechercher une unité..."
-                                                />
-                                                <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
+                                                    </CardContent>
+                                                </Card>
+                                            ))}
+                                        </div>
+                                    </TabsContent>
+                                </Tabs>
+                            </TabsContent>
+                            <TabsContent
+                                value="unites-paroissiales"
+                                className="border-none">
+                                    <div>
+                                        <div className="flex items-start gap-2.5">
+                                            <div className="flex items-center gap-2">
+                                                <div className="relative w-[256px]">
+                                                    <Input
+                                                        className="h-10 bg-neutral-100 border-none pl-9"
+                                                        placeholder="Rechercher une unité..."
+                                                    />
+                                                    <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
+                                                </div>
+                                                <Button
+                                                    variant="outline"
+                                                    className="h-11 flex items-center gap-2.5 border border-[#d9d9d9] rounded-lg">
+                                                    <ListFilter className="w-5 h-5" />
+                                                    <span className="font-body-3 text-noir-dashboard">
+                                                        Trier par...
+                                                    </span>
+                                                </Button>
+                                                <Button
+                                                    variant="outline"
+                                                    className="w-11 h-11 p-0 flex items-center justify-center border border-[#d9d9d9] rounded-lg">
+                                                    <LayoutGridIcon className="w-5 h-5" />
+                                                </Button>
                                             </div>
-                                            <Button
-                                                variant="outline"
-                                                className="h-11 flex items-center gap-2.5 border border-[#d9d9d9] rounded-lg">
-                                                <ListFilter className="w-5 h-5" />
-                                                <span className="font-body-3 text-noir-dashboard">
-                                                    Trier par...
-                                                </span>
-                                            </Button>
-                                            <Button
-                                                variant="outline"
-                                                className="w-11 h-11 p-0 flex items-center justify-center border border-[#d9d9d9] rounded-lg">
-                                                <LayoutGridIcon className="w-5 h-5" />
-                                            </Button>
                                         </div>
                                     </div>
-                                </div>
-                        </TabsContent>
-                        
+                            </TabsContent>
+                        </ScrollArea>
                     </section>
                 </div>
             </Tabs>
