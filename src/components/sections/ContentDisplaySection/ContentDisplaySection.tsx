@@ -14,6 +14,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 export default function ContentDisplaySection() {
   const [displayMode, setDisplayMode] = useState<'list' | 'grid'>('grid')
 
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+  const params = new URLSearchParams(searchParams)
   const router = useRouter()
   
   // Navigation menu items data
@@ -24,14 +27,10 @@ export default function ContentDisplaySection() {
     { id: "mouvements", label: "Mouvements", route: "#", labelRouter: "un mouvement", active: false },
   ];
   const [selectedItem, setSelectedItem] = useState(navItems[0])
-  const [query, setQuery] = useState('')
-
-  const searchParams = useSearchParams()
-  const pathname = usePathname()
+  const [query, setQuery] = useState(params.get('query')?.toString() || '')
 
   const handleSearch = useDebouncedCallback((event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value
-    const params = new URLSearchParams(searchParams)
     // params.set('page', '1');
 
     setQuery(value)

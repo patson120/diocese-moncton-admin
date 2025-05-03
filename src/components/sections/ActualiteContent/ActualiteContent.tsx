@@ -101,9 +101,8 @@ export default function ActualiteContent(
                         <TableBody>
                         { actualites.map((article, index) => (
                             <TableRow key={index} className="border-b border-[#d9d9d9]">
-                            <TableCell className="font-body-3 text-noir-dashboard py-3.5">
-                                {article?.titre_fr}
-                                <Text labelEn={article?.titre_en} labelFr={article?.titre_fr} />
+                            <TableCell className="font-body-3 text-noir-dashboard py-3.5 max-w-2xl">
+                                <Text className='font-bold ' labelEn={article?.titre_en} labelFr={article?.titre_fr} />
                             </TableCell>
                             <TableCell className="font-body-3 text-gray py-3.5">
                                 {article?.categorie?.intitule_fr}
@@ -114,6 +113,7 @@ export default function ActualiteContent(
                             <TableCell className="py-3.5">
                                 <div className="flex items-center gap-[17px]">
                                 <Button
+                                    onClick={() => handelOpenDetailsSheet(article)}
                                     variant="ghost"
                                     size="sm"
                                     className="h-auto p-0 flex items-center gap-1">
@@ -123,12 +123,22 @@ export default function ActualiteContent(
                                     </span>
                                 </Button>
                                 <Button
+                                    onClick={() => (
+                                        setSelectedActualite(article),
+                                        setTimeout(() => {
+                                            handleDeleteActualite()
+                                        }, 200)
+                                    )}
                                     variant="ghost"
                                     size="sm"
                                     className="h-auto p-0 flex items-center gap-1">
-                                    <Trash2Icon className="w-4 h-4" />
+                                    {
+                                        (isDeleting && selectedActualite?.id === article.id )? 
+                                        <Loader className='h-4 w-4' /> :
+                                        <Trash2Icon className="w-4 h-4" />
+                                    }
                                     <span className="font-body-3 text-noir-dashboard">
-                                    Supprimer
+                                        Supprimer
                                     </span>
                                 </Button>
                                 </div>
