@@ -136,7 +136,7 @@ export const ClergPretres = (): JSX.Element => {
                       key={index}
                       className="w-full border-none shadow-none cursor-pointer">
                       <CardContent className="p-0 space-y-3">
-                        <div className="relative w-full h-[250px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
+                        <div className="relative w-full h-[250px] shrink-0 bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
                           <Image
                             fill
                             priority
@@ -534,7 +534,7 @@ export const ClergPretres = (): JSX.Element => {
           <ScrollArea className="w-full h-[calc(100%-80px)] mt-24 px-7">
             <div className='flex flex-col gap-6'>
               <div className="flex gap-4">
-                <div className="h-48  w-48 relative self-stretch rounded-xl borderborder-gray bg-[#f0f0f0] flex items-center justify-center">
+                <div className="h-48  w-48 shrink-0 relative self-stretch rounded-xl borderborder-gray bg-[#f0f0f0] flex items-center justify-center">
                   <Image
                     fill
                     priority
