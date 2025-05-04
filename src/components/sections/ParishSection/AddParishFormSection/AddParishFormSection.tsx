@@ -16,6 +16,7 @@ import { DialogTrigger } from "@radix-ui/react-dialog";
 import { PlusIcon } from "lucide-react";
 import { JSX, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 
 
@@ -38,26 +39,6 @@ const generateHourOptions = (): Option[] => {
 
 const hourOptions = generateHourOptions();
 
-
-const defaultParish = {
-  type_paroisse_id: '',
-  nom_fr: '',
-  nom_en: '',
-  adresse: '',
-  telephone: '',
-  email: '',
-  site_web: '',
-  code_postal: '',
-  lien_youtube: '',
-  pretre_responsable: '',
-  etabli_le: '',
-  ordonne_le: '',
-  premier_cure: '',
-  histoire_fr: '',
-  histoire_en: '',
-  gps: '48.8566;2.3522',
-  statut: '1',
-}
 
 const formSchemaOne = z.object({
   nom_fr: z.string().min(1, { message: "Nom de la paroisse requis" }),
@@ -88,6 +69,7 @@ const formSchemaFive = z.object({
 export const AddParishFormSection = (): JSX.Element => {
   const [step, setStep] = useState(1)
   const [horaires, setHoraires] = useState<{[key: string]: any}[]>([])
+  const [isLoading, setIsLoading] = useState(false)
 
   const jours = [
     { value: 'lundi', label: 'Lundi' },
@@ -144,27 +126,27 @@ export const AddParishFormSection = (): JSX.Element => {
   });
 
   const onSubmitFirst = async (values: z.infer<typeof formSchemaOne>) => {
-    console.log(values);
+    // console.log(values);
     setStep(2)
   }
 
   const onSubmitSecond = async (values: z.infer<typeof formSchemaTwo>) => {
-    console.log(values);
+    // console.log(values);
     setStep(3)
   }
 
   const onSubmitThree = async (values: z.infer<typeof formSchemaThree>) => {
-    console.log(values);
+    // console.log(values);
     setStep(4)
   }
 
   const onSubmitFour = async (values: z.infer<typeof formSchemaFour>) => {
-    console.log(values);
+    // console.log(values);
     setStep(5)
   }
 
   const onSubmitFive = async (values: z.infer<typeof formSchemaFive>) => {
-    console.log(values);
+    // console.log(values);
     setStep(6)
   }
 
@@ -185,52 +167,69 @@ export const AddParishFormSection = (): JSX.Element => {
       const found = horaires.find(horaire => horaire.jour === selectedDay);
       if (found) {
         const updatedHoraires = horaires.map(horaire => 
-          horaire.jour === selectedDay ? { ...horaire, hours: selectedHours } : horaire
+          horaire.jour === selectedDay ? { ...horaire, heures: selectedHours } : horaire
         );
         setHoraires(updatedHoraires);
       } else {
-        setHoraires(prev => ([...prev, { jour: selectedDay, hours: selectedHours,}]))
+        setHoraires(prev => ([...prev, { jour: selectedDay, heures: selectedHours,}]))
       }
       formFive.setValue("selectedHours", [])
-      // formFive.setValue("jour", "")
     }
   }
 
   const handleSubmitForm = async () => {
+    if (isLoading) return
+    setIsLoading(true)
+    const formdata = new FormData()
+    formdata.append("type_paroisse_id", "1")
+    formdata.append("nom", formOne.getValues("nom_fr"))
+    formdata.append("nom_en", formTwo.getValues("nom_en"))
+    formdata.append("histoire", formOne.getValues("histoire_fr"))
+    formdata.append("histoire_en", formTwo.getValues("histoire_en"))
+    formdata.append("telephone", formFour.getValues("telephone"))
+    formdata.append("email", formFour.getValues("email"))
+    formdata.append("site_web", formFour.getValues("site_web"))
+    formdata.append("horaires", `${horaires}`)
+    formdata.append("etabli_le", formThree.getValues("etabli_le").split('-')[0])
+    formdata.append("ordonne_le", formThree.getValues("ordonne_le").split('-')[0])
+    formdata.append("premier_cure", formThree.getValues("premier_cure").split('-')[0])
+    formdata.append("gps", '48.8566;2.3522')
+    formdata.append("statut", '1')
+    formdata.append("adresse", 'Rue 232 Moncton')
+
     const data = {
-      
-      unite_pastorale: formThree.getValues("unite_pastorale"),
-      
-      
-      
-      jour: formFive.getValues("jour"),
-      selectedHours: horaires,
-
-
-      ////
-      type_paroisse_id: '1',
-      nom_fr: formOne.getValues("nom_fr"),
-      nom_en: formTwo.getValues("nom_en"),
-      adresse: 'Rue 232 Moncton',
-      telephone: formFour.getValues("telephone"),
-      email: formFour.getValues("email"),
-      site_web: formFour.getValues("site_web"),
+      // unite_pastorale: formThree.getValues("unite_pastorale"),
       code_postal: '',
       lien_youtube: '',
       pretre_responsable: '',
-      etabli_le: '',
-      ordonne_le: '',
-      premier_cure: '',
-      histoire_fr: '',
-      histoire_en: '',
-      gps: '48.8566;2.3522',
-      statut: '1',
     }
-    // const result: any = await apiClient.post('/api/paroisses', 'formdata', {
-    //   'Content-Type': 'multipart/form-data'
-    // });
-    console.log(data);
-    
+  
+    try {
+      const response: any = await apiClient.post('/api/paroisses', formdata, {
+        'Content-Type': 'multipart/form-data'
+      });
+      if (response.id) {
+        toast.success('Paroisse ajoutée avec succès');
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
+      }
+      else {
+        toast.error(
+          <div className='p-3 bg-red-500 text-white rounded-md'>
+            Erreur lors de l'ajout de la paroisse
+          </div>
+        )
+      }
+    } catch (error) {
+      toast.error(
+        <div className='p-3 bg-red-500 text-white rounded-md'>
+          Erreur lors de l'ajout de la paroisse {JSON.stringify(error)}
+        </div>
+      )
+    }finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -589,7 +588,7 @@ export const AddParishFormSection = (): JSX.Element => {
                       {
                         horaires.map((horaire, index) => (
                           <p key={index} className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-                            {horaire.jour}:  <span className="font-semibold text-black ml-2">{horaire.hours.join(', ')}</span>
+                            {horaire.jour}: <span className="font-semibold text-black ml-2">{horaire.heures.join(', ')}</span>
                           </p>
                         ))
                       }

@@ -78,7 +78,7 @@ export const AddUserFormSection = (): JSX.Element => {
     }
     catch (error: any) {
       setIsLoading(false)
-      toast.warning(
+      toast.error(
         <div className='p-3 bg-red-500 text-white rounded-md'>
           Erreur lors de l'ajout de l'utilisateur {JSON.stringify(error)}
         </div>

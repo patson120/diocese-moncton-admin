@@ -44,6 +44,7 @@ export const AddImageFormSection = (): JSX.Element => {
     setIsLoading(true)
     // Creer l'image de couverture
     const formdata = new FormData();
+    formdata.append("titre", fileName);
     formdata.append("fichier", fileImage!);
     const result: any = await apiClient.post('/api/galeries', formdata, {
       'Content-Type': 'multipart/form-data'
