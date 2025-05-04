@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Loader } from "@/components/ui/loader";
 import { MultiSelect, Option } from "@/components/ui/multi-select";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,6 +17,8 @@ import { JSX, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
+import { Paroisse } from "../../../../../types";
+import { Loader } from "@/components/ui/loader";
 
 
 // Generate hours from 00:00 to 23:59 in 30-minute intervals
@@ -66,7 +67,7 @@ const formSchemaFive = z.object({
   selectedHours: z.array(z.string()), // Make this required
 });
 
-export const AddParishFormSection = (): JSX.Element => {
+export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Element => {
   const [step, setStep] = useState(1)
   const [horaires, setHoraires] = useState<{[key: string]: any}[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -85,16 +86,16 @@ export const AddParishFormSection = (): JSX.Element => {
   const formOne = useForm<z.infer<typeof formSchemaOne>>({
     resolver: zodResolver(formSchemaOne),
     defaultValues: {
-      nom_fr: "",
-      histoire_fr: "",
+      nom_fr: parish.nom,
+      histoire_fr: parish.histoire,
     },
   });
 
   const formTwo = useForm<z.infer<typeof formSchemaTwo>>({
     resolver: zodResolver(formSchemaTwo),
     defaultValues: {
-      nom_en: "",
-      histoire_en: "",
+      nom_en: parish.nom_en,
+      histoire_en: parish.histoire_en,
     },
   });
 
@@ -102,18 +103,18 @@ export const AddParishFormSection = (): JSX.Element => {
     resolver: zodResolver(formSchemaThree),
     defaultValues: {
       unite_pastorale: "",
-      etabli_le: "",
-      ordonne_le: "",
-      premier_cure: "",
+      etabli_le: `${parish.etabli_le}`,
+      ordonne_le: `${parish.ordonne_le}`,
+      premier_cure: `${parish.premier_cure}`,
     },
   });
 
   const formFour = useForm<z.infer<typeof formSchemaFour>>({
     resolver: zodResolver(formSchemaFour),
     defaultValues: {
-      telephone: "",
-      email: "",
-      site_web: "",
+      telephone: `${parish.telephone}`,
+      email: `${parish.email}`,
+      site_web: `${parish.site_web}`,
     },
   });
 
@@ -126,27 +127,22 @@ export const AddParishFormSection = (): JSX.Element => {
   });
 
   const onSubmitFirst = async (values: z.infer<typeof formSchemaOne>) => {
-    // console.log(values);
     setStep(2)
   }
 
   const onSubmitSecond = async (values: z.infer<typeof formSchemaTwo>) => {
-    // console.log(values);
     setStep(3)
   }
 
   const onSubmitThree = async (values: z.infer<typeof formSchemaThree>) => {
-    // console.log(values);
     setStep(4)
   }
 
   const onSubmitFour = async (values: z.infer<typeof formSchemaFour>) => {
-    // console.log(values);
     setStep(5)
   }
 
   const onSubmitFive = async (values: z.infer<typeof formSchemaFive>) => {
-    // console.log(values);
     setStep(6)
   }
 
@@ -189,13 +185,13 @@ export const AddParishFormSection = (): JSX.Element => {
     formdata.append("telephone", formFour.getValues("telephone"))
     formdata.append("email", formFour.getValues("email"))
     formdata.append("site_web", formFour.getValues("site_web"))
-    formdata.append("horaires", `${horaires}`)
+    formdata.append("horaireparoisses", `${horaires}`)
     formdata.append("etabli_le", formThree.getValues("etabli_le").split('-')[0])
     formdata.append("ordonne_le", formThree.getValues("ordonne_le").split('-')[0])
     formdata.append("premier_cure", formThree.getValues("premier_cure").split('-')[0])
     formdata.append("gps", '48.8566;2.3522')
     formdata.append("statut", '1')
-    formdata.append("adresse", 'Rue 232 Moncton')
+    formdata.append("adresse", 'Rue 232 Moncton') // Rue 232 Moncton
 
     const data = {
       // unite_pastorale: formThree.getValues("unite_pastorale"),
@@ -205,7 +201,7 @@ export const AddParishFormSection = (): JSX.Element => {
     }
   
     try {
-      const response: any = await apiClient.post('/api/paroisses', formdata, {
+      const response: any = await apiClient.put(`/api/paroisses/${parish.id}`, formdata, {
         'Content-Type': 'multipart/form-data'
       });
       if (response.id) {
@@ -235,15 +231,14 @@ export const AddParishFormSection = (): JSX.Element => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="h-10 gap-2 px-3.5 py-0 bg-blue rounded-[7px] text-white">
-          <PlusIcon className="w-5 h-5" />
-          <span className="font-body-3 text-sm">Ajouter une paroisse</span>
+        <Button className="h-10 bg-blue text-white hover:bg-blue/90">
+          Modifier
         </Button>
       </DialogTrigger>
       <DialogContent aria-describedby={undefined} className="w-[500px] p-0 gap-0 rounded-2xl overflow-hidden">
         <DialogHeader className="border-b border-neutral-200 p-4 rounded-t-2xl">
           <DialogTitle className="text-lg font-bold leading-7">
-            Créer une paroisse
+            Mettre à jour la paroisse
           </DialogTitle>
         </DialogHeader>
         {
@@ -623,7 +618,7 @@ export const AddParishFormSection = (): JSX.Element => {
               </Button>
               <Button onClick={handleSubmitForm} className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
                 { isLoading && <Loader className='h-5 w-5, mr-2' /> }
-                Ajouter la paroisse
+                Modifier la paroisse
               </Button>
             </div>
           </div>

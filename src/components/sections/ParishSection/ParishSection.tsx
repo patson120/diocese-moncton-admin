@@ -20,6 +20,7 @@ import { useDebouncedCallback } from 'use-debounce';
 import { Paroisse } from '../../../../types';
 import { AddParishFormSection } from './AddParishFormSection';
 import { AddUnitePastoraleFormSection } from './AddUnitePastoraleFormSection';
+import { EditParishFormSection } from './EditParishFormSection';
 
 export default function ParishSection() {
     const router = useRouter()
@@ -302,9 +303,7 @@ export default function ParishSection() {
                                 <Button variant="outline" className="h-10">
                                     Désactiver
                                 </Button>
-                                <Button className="h-10 bg-blue text-white hover:bg-blue/90">
-                                    Modifier
-                                </Button>
+                                <EditParishFormSection parish={selecteParish!} />
                                 <Button onClick={handleDeleteParish} className="h-10 bg-red-500 text-white hover:bg-blue/90">
                                     { isDeleting && <Loader className='h-5 w-5, mr-2' /> }
                                     Supprimer
