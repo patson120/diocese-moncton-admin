@@ -1,15 +1,16 @@
 import Text from '@/components/shared/Text';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Loader } from '@/components/ui/loader';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { apiClient } from '@/lib/axios';
 import { formatDateToLocal } from '@/lib/utils';
-import { useEffect, useState } from 'react';
-import { Actualite } from '../../../../types';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { EyeIcon, Trash2Icon } from 'lucide-react';
-import { Loader } from '@/components/ui/loader';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { Actualite } from '../../../../types';
 
 export default function ActualiteContent(
     { is_actif, query , displayMode}: 
@@ -108,7 +109,7 @@ export default function ActualiteContent(
                                 {article?.categorie?.intitule_fr}
                             </TableCell>
                             <TableCell className="font-body-3 text-noir-dashboard py-3.5">
-                                { formatDateToLocal((new Date(article?.date_publication)).toISOString()) }
+                                { formatDateToLocal((new Date(article?.date_publication ? article?.date_publication : article?.created_at)).toISOString()) }
                             </TableCell>
                             <TableCell className="py-3.5">
                                 <div className="flex items-center gap-[17px]">
@@ -122,25 +123,49 @@ export default function ActualiteContent(
                                     Voir
                                     </span>
                                 </Button>
-                                <Button
-                                    onClick={() => (
-                                        setSelectedActualite(article),
-                                        setTimeout(() => {
-                                            handleDeleteActualite()
-                                        }, 200)
-                                    )}
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-auto p-0 flex items-center gap-1">
-                                    {
-                                        (isDeleting && selectedActualite?.id === article.id )? 
-                                        <Loader className='h-4 w-4' /> :
-                                        <Trash2Icon className="w-4 h-4" />
-                                    }
-                                    <span className="font-body-3 text-noir-dashboard">
-                                        Supprimer
-                                    </span>
-                                </Button>
+                                {/* Alert Dialog */}
+                                <Card>
+                                    <CardContent className='p-0'>
+                                        <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                            <Button
+                                                onClick={() => setSelectedActualite(article)}
+                                                variant="ghost"
+                                                size="sm"
+                                                className="h-auto p-0 flex items-center gap-1">
+                                                    {
+                                                        (isDeleting && selectedActualite?.id === article.id )? 
+                                                        <Loader className='h-4 w-4 mr-2' /> :
+                                                        <Trash2Icon className="w-4 h-4 mr-2" />
+                                                    }
+                                                <span className="font-body-3 text-noir-dashboard">
+                                                    Supprimer
+                                                </span>
+                                                
+                                            </Button>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                    <AlertDialogTitle>Êtes-vous absolument sûr?</AlertDialogTitle>
+                                                    <AlertDialogDescription>
+                                                    Cette action est irréversible et supprimera définitivement votre article.
+                                                    </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter>
+                                                    <AlertDialogCancel>Annuler</AlertDialogCancel>
+                                                    <AlertDialogAction className='bg-blue text-white' onClick={handleDeleteActualite} >
+                                                    {
+                                                        (isDeleting && selectedActualite?.id === article.id )? 
+                                                        <Loader className='h-4 w-4 mr-2' /> :
+                                                        <Trash2Icon className="w-4 h-4 mr-2" />
+                                                    }
+                                                        Continuer
+                                                    </AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
+                                    </CardContent>
+                                </Card>
                                 </div>
                             </TableCell>
                             </TableRow>
@@ -249,7 +274,7 @@ export default function ActualiteContent(
                             {/* Content section */}
                             <section className="flex flex-col gap-2 ">
                                 <div className='flex justify-between items-center'>
-                                    <span className="text-gray">{selectedActualite?.categorie.intitule_fr}</span>
+                                    <span className="text-gray">{selectedActualite?.categorie?.intitule_fr}</span>
                                     {
                                         selectedActualite?.date_publication && (
                                             <div>

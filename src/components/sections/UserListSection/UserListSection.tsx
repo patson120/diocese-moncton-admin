@@ -17,7 +17,7 @@ import { apiClient } from "@/lib/axios";
 import { formatDateToLocal } from "@/lib/utils";
 import { Pencil, Trash2, XIcon } from "lucide-react";
 import { JSX, useEffect, useState } from "react";
-import { Role } from "../../../../types";
+import { Role, User } from "../../../../types";
 import { Loader } from "@/components/ui/loader";
 import { toast } from "sonner";
 import { EditUserFormSection } from "../EditUserFormSection";
@@ -41,12 +41,12 @@ export const UserListSection = (): JSX.Element => {
   const [roles, setRoles] = useState<Role[]>(roleFilters);
   const [openModal, setOpenModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [users, setUsers] = useState([]);
-  const [usersCopy, setUserscopy] = useState([]);
-  const [selectedUser, setSelectedUser] = useState<any>();
+  const [users, setUsers] = useState<User[]>([]);
+  const [usersCopy, setUserscopy] = useState<User[]>([]);
+  const [selectedUser, setSelectedUser] = useState<User>();
 
   const getUsers = async () => {
-    const response: any = await apiClient.get("/api/administrateurs")
+    const response: User[] = await apiClient.get("/api/administrateurs")
     setUsers(response);
     setUserscopy(response);
   }
@@ -79,8 +79,8 @@ export const UserListSection = (): JSX.Element => {
     if (isDeleting) return
     setIsDeleting(true)
     try {
-      await apiClient.delete(`/api/administrateurs/${selectedUser.id}`);
-      setUsers(users.filter((user: any) => user.id !== selectedUser.id));
+      await apiClient.delete(`/api/administrateurs/${selectedUser?.id}`);
+      setUsers(users.filter((user: any) => user.id !== selectedUser?.id));
       setOpenModal(false);
       toast.success("L'utilisateur a été supprimé avec succès.");
       
@@ -159,7 +159,7 @@ export const UserListSection = (): JSX.Element => {
                       { formatDateToLocal((new Date(user.created_at)).toISOString()) }
                     </TableCell>
                     <TableCell className="py-3.5">
-                      {user.status !== "Actif" ? (
+                      {user.statut === 1 ? (
                         <span className="font-body-3 font-[number:var(--body-3-font-weight)] text-noir-dashboard text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
                           Actif
                         </span>

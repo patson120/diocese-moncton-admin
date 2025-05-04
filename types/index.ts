@@ -146,6 +146,7 @@ export type User = {
     id: number;
     nom: string;
     email: string;
+    statut: number;
     password: string;
     role_id: number;
     created_at: string;

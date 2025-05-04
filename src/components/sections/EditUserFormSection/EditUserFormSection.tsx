@@ -46,7 +46,7 @@ export const EditUserFormSection = ({user}: { user: User}): JSX.Element => {
       nom: user.nom,
       email: user.email,
       role: user.role.sigle as "admin" | "moderateur" | "editeur" | "viewer",
-      statut: 'actif',
+      statut: user.statut === 1 ? 'actif' : 'inactif',
     },
   });
 
@@ -58,7 +58,7 @@ export const EditUserFormSection = ({user}: { user: User}): JSX.Element => {
       email: values.email,
       role_id: roles.find((role: any) => role.sigle === values.role)?.id,
       password: '1234',
-      statut: values.statut,
+      statut: values.statut === 'actif' ? 1 : 0,
     };
     try {
       const response: any = await apiClient.put(`/api/administrateurs/${user.id}`, data);

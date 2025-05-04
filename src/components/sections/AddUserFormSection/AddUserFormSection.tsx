@@ -57,7 +57,7 @@ export const AddUserFormSection = (): JSX.Element => {
       email: values.email,
       role_id: roles.find((role: any) => role.sigle === values.role)?.id,
       password: '1234',
-      statut: values.statut,
+      statut: values.statut === 'actif' ? 1 : 0,
     };
     try {
       const response: any = await apiClient.post("/api/administrateurs", data);

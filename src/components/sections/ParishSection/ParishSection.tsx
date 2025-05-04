@@ -5,21 +5,21 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Loader } from '@/components/ui/loader';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { apiClient } from '@/lib/axios';
 import { fetchParoisses } from '@/lib/data';
 import { Church, LayoutGridIcon, ListFilter, MailIcon, MapPinIcon, PhoneIcon, SearchIcon } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { ChangeEvent, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { useDebouncedCallback } from 'use-debounce';
 import { Paroisse } from '../../../../types';
 import { AddParishFormSection } from './AddParishFormSection';
-import { Loader } from '@/components/ui/loader';
-import { apiClient } from '@/lib/axios';
-import { toast } from 'sonner';
 import { AddUnitePastoraleFormSection } from './AddUnitePastoraleFormSection';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function ParishSection() {
     const router = useRouter()
