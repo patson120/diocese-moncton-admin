@@ -2,7 +2,7 @@
 import ContentDisplaySection from '@/components/sections/ContentDisplaySection/ContentDisplaySection';
 import { Suspense } from 'react';
 
-export default  async function page(props: {
+export default async function page(props: {
   searchParams?: Promise<{
     query?: string;
     page?: number;

@@ -13,8 +13,8 @@ import { toast } from 'sonner';
 import { Actualite } from '../../../../types';
 
 export default function ActualiteContent(
-    { is_actif, query , displayMode}: 
-    { is_actif: number, query: string, displayMode: 'list' | 'grid' }) {
+    { is_actif, query, ordre , displayMode}: 
+    { is_actif: number, query: string, ordre: string, displayMode: 'list' | 'grid' }) {
 
     const [actualites, setActualites] = useState<Actualite[]>([])
     const [selectedActualite, setSelectedActualite] = useState<Actualite>()
@@ -26,11 +26,12 @@ export default function ActualiteContent(
         const getActualites = async () => {
             let params = `?paginate=200&is_actif=${is_actif}`
             if (query) { params += `&intitule=${query}` }
+            if (ordre) { params += `&ordre=${ordre}` }
             const response: any = await apiClient.get(`/api/actualites${params}`)
             setActualites(response.data)
         }
         getActualites()
-    }, [is_actif, query])
+    }, [is_actif, query, ordre])
 
     const handelOpenDetailsSheet = (actualite: Actualite) => {
         setSelectedActualite(actualite)
@@ -76,7 +77,7 @@ export default function ActualiteContent(
     }
 
     return (
-        <>
+        <>  
             {
                 ( displayMode === 'list') ?
                 <Card className="w-full rounded-2xl bg-white">

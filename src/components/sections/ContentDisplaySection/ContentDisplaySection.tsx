@@ -1,15 +1,16 @@
 'use client'
 
+import MenuCard from "@/components/shared/MenuCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LayoutGridIcon, ListFilter, ListOrdered, PlusIcon, SearchIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import ActualiteContent from "../ActualiteContent/ActualiteContent";
 import MessageContent from "../MessageContent/MessageContent";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function ContentDisplaySection() {
   const [displayMode, setDisplayMode] = useState<'list' | 'grid'>('grid')
@@ -17,7 +18,7 @@ export default function ContentDisplaySection() {
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const params = new URLSearchParams(searchParams)
-  const router = useRouter()
+  const router = useRouter()  
   
   // Navigation menu items data
   const navItems = [
@@ -28,6 +29,7 @@ export default function ContentDisplaySection() {
   ];
   const [selectedItem, setSelectedItem] = useState(navItems[0])
   const [query, setQuery] = useState(params.get('query')?.toString() || '')
+  const [ordre, setOrdre] = useState(searchParams.get('ordre')?.toString() || '')
 
   const handleSearch = useDebouncedCallback((event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value
@@ -123,14 +125,9 @@ export default function ContentDisplaySection() {
                       />
                       <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
                     </div>
-                    <Button
-                      variant="outline"
-                      className="h-11 flex items-center gap-2.5 border border-[#d9d9d9] rounded-lg">
-                      <ListFilter className="w-5 h-5" />
-                      <span className="font-body-3 text-noir-dashboard">
-                        Trier par...
-                      </span>
-                    </Button>
+
+                    {/* Menus */}
+                    <MenuCard ordre={ordre} setOrdre={setOrdre} />
 
                     <Button
                       variant="outline"
@@ -148,17 +145,32 @@ export default function ContentDisplaySection() {
               </div>
               <ScrollArea className="w-full h-[calc(80vh)] mt-6">
                 <TabsContent value="published" className="mt-6 space-y-6">
-                  <ActualiteContent is_actif={1} query={query} displayMode={displayMode} />
+                  <ActualiteContent 
+                    is_actif={1} 
+                    query={query} 
+                    ordre={ordre} 
+                    displayMode={displayMode} 
+                  />
                 </TabsContent>
 
                 <TabsContent value="pending" className="mt-6 space-y-6">
                   {/* Content for pending tab */}
-                  <ActualiteContent is_actif={0} query={query} displayMode={displayMode} />
+                  <ActualiteContent 
+                    is_actif={0} 
+                    query={query} 
+                    ordre={ordre} 
+                    displayMode={displayMode}
+                  />
                 </TabsContent>
 
                 <TabsContent value="disabled" className="mt-6 space-y-6">
                   {/* Content for disabled tab */}
-                  <ActualiteContent is_actif={-1} query={query} displayMode={displayMode} />
+                  <ActualiteContent 
+                    is_actif={-1} 
+                    query={query} 
+                    ordre={ordre} 
+                    displayMode={displayMode}
+                  />
                 </TabsContent>
               </ScrollArea>
             </Tabs>
@@ -209,6 +221,9 @@ export default function ContentDisplaySection() {
                         Trier par...
                       </span>
                     </Button>
+                    {/* Menus 
+                      <MenuCard ordre={ordre} setOrdre={setOrdre} />
+                    */}
 
                     <Button
                       variant="outline"

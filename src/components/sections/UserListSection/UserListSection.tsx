@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Loader } from "@/components/ui/loader";
 import {
   Table,
   TableBody,
@@ -15,11 +16,10 @@ import {
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { apiClient } from "@/lib/axios";
 import { formatDateToLocal } from "@/lib/utils";
-import { Pencil, Trash2, XIcon } from "lucide-react";
+import { Trash2, XIcon } from "lucide-react";
 import { JSX, useEffect, useState } from "react";
-import { Role, User } from "../../../../types";
-import { Loader } from "@/components/ui/loader";
 import { toast } from "sonner";
+import { Role, User } from "../../../../types";
 import { EditUserFormSection } from "../EditUserFormSection";
 
 
@@ -44,6 +44,7 @@ export const UserListSection = (): JSX.Element => {
   const [users, setUsers] = useState<User[]>([]);
   const [usersCopy, setUserscopy] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<User>();
+
 
   const getUsers = async () => {
     const response: User[] = await apiClient.get("/api/administrateurs")

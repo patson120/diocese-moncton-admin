@@ -182,8 +182,7 @@ export const DocumentContentSection = (): JSX.Element => {
                             <DropdownMenuTrigger asChild >
                               <Button
                                 variant="ghost"
-                                className="w-[18px] h-[18px] p-0"
-                              >
+                                className="w-[18px] h-[18px] p-0">
                                 <MoreHorizontalIcon className="w-[18px] h-[18px]" />
                               </Button>
                             </DropdownMenuTrigger>

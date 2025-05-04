@@ -44,8 +44,8 @@ export default function ActuDialog(
             categorie_id: categorie?.id!,
             motcles: motcles ? motcles.split(',') : [],
             is_planifier: isPlan ? 1 : 0,
+            date_planification: `${date}`,
             // date_planification: `${date}T${hour}:00.000000Z`
-            date_planification: `${date}`
         })
     }
 
