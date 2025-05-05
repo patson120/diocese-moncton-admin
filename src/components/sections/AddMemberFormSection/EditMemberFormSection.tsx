@@ -137,7 +137,7 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
     formdata.append("description_fr", `${data.description_fr}`);
     formdata.append("description_en", `${data.description_en}`);
 
-    const response: any = await apiClient.put(`/api/membres/${memberData.id}`, formdata, {
+    const response: any = await apiClient.post(`/api/membres/${memberData.id}?_method=PUT`, formdata, {
       'Content-Type': 'multipart/form-data'
     });
 
@@ -145,13 +145,14 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
       setStep(1)
       setMember(defaultMember)
       setCoverImage('')
-      toast.success('Membre ajouté avec succès');
+      toast.success('Membre modifié avec succès');
       setFileImage(undefined)
-      formOne.reset();
-      formTwo.reset();
+      setTimeout(() => {
+        window.location.reload()
+      }, 1500);
     }
     else  {
-      toast.error('Une erreur est survenue lors de l\'ajout du membre');
+      toast.error('Une erreur est survenue lors de modification du membre');
     }
     setIsloading(false)
   }
