@@ -11,13 +11,13 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { JSX, useEffect, useState } from "react";
-import { AddMemberFormSection } from "../AddMemberFormSection";
+import AddMemberFormSection  from "./AddMemberFormSection";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Member } from "../../../../types";
 import { apiClient } from "@/lib/axios";
 import { Loader } from "@/components/ui/loader";
-import EditMemberFormSection from "../AddMemberFormSection/EditMemberFormSection";
+import EditMemberFormSection from "./EditMemberFormSection";
 import { toast } from "sonner";
 
 export const ClergPretres = (): JSX.Element => {

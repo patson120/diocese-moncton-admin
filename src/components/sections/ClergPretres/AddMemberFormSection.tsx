@@ -78,7 +78,7 @@ const defaultMember = {
   description_fr: '',
 }
 
-export const AddMemberFormSection = (): JSX.Element => {
+export default function AddMemberFormSection(){
 
   const [member, setMember] = useState(defaultMember);
   const [fileImage, setFileImage] = useState<File | undefined>();
