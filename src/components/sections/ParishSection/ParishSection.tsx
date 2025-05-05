@@ -25,6 +25,7 @@ import { EditParishFormSection } from './EditParishFormSection';
 export default function ParishSection() {
     const router = useRouter()
 
+    const [isStatutLoading, setIsStatutLoading] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
     const [openModal, setOpenModal] = useState(false)
     const [selecteParish, setSelectedParish] = useState<Paroisse | undefined>()
@@ -67,6 +68,7 @@ export default function ParishSection() {
         const getActualites = async () => {
             const response = await fetchParoisses(`?paginate=200&statut=${statut}&nom=${query}`)
             setParishes(response.data)
+            console.log(response.data)
         }
         getActualites()
     }, [statut, query])
@@ -105,6 +107,57 @@ export default function ParishSection() {
             )
         } finally {
             setIsDeleting(false)
+        }
+    }
+
+    const handleChangeStatus =  async () => {
+        if (isStatutLoading) return
+        setIsStatutLoading(true)        
+        const formdata = new FormData()
+        formdata.append("id", `${selecteParish?.id!}`)
+        formdata.append("type_paroisse_id", `${selecteParish?.type_paroisse_id!}`)
+        formdata.append("nom", `${selecteParish?.nom!}`)
+        formdata.append("nom_en", selecteParish?.nom_en!)
+        formdata.append("histoire", selecteParish?.histoire!)
+        formdata.append("histoire_en", selecteParish?.histoire_en!)
+        formdata.append("telephone", selecteParish?.telephone!)
+        formdata.append("email", selecteParish?.email!)
+        formdata.append("site_web", selecteParish?.site_web!)
+        formdata.append("horaireparoisses", `${selecteParish?.horaireparoisses}`)
+        formdata.append("etabli_le", `${selecteParish?.etabli_le!}`)
+        formdata.append("ordonne_le", `${selecteParish?.ordonne_le!}`)
+        formdata.append("premier_cure", `${selecteParish?.premier_cure!}`)
+        formdata.append("gps", selecteParish?.gps!)
+        formdata.append("statut", `${ selecteParish?.statut === 1 ? '0': '1' }`)
+        formdata.append("adresse", selecteParish?.adresse!)
+
+        try {
+            const response: any = await apiClient.post(`/api/paroisses/${selecteParish?.id}?_method=PUT`, formdata, {
+                'Content-Type': 'multipart/form-data'
+            });
+            console.log(response);
+            
+            if (response.id) {
+                toast.success('Paroisse modifié avec succès');
+                setTimeout(() => {
+                    window.location.reload()
+                }, 1500);
+            }
+            else {
+                toast.error(
+                    <div className='p-3 bg-red-500 text-white rounded-md'>
+                    Erreur lors de la modification de la paroisse
+                    </div>
+                )
+            }
+        } catch (error) {
+            toast.error(
+            <div className='p-3 bg-red-500 text-white rounded-md'>
+                Erreur lors de la modification de la paroisse {JSON.stringify(error)}
+            </div>
+            )
+        }finally {
+            setIsStatutLoading(false)
         }
     }
     
@@ -300,8 +353,9 @@ export default function ParishSection() {
                                 Fermer
                             </Button>
                             <div className="flex gap-2">
-                                <Button variant="outline" className="h-10">
-                                    Désactiver
+                                <Button onClick={handleChangeStatus} variant="outline" className="h-10">
+                                    { isStatutLoading && <Loader className='h-5 w-5, mr-2' /> }
+                                    {selecteParish?.statut === 1 ? 'Désactiver': 'Activer'}
                                 </Button>
                                 <EditParishFormSection parish={selecteParish!} />
                                 <Button onClick={handleDeleteParish} className="h-10 bg-red-500 text-white hover:bg-blue/90">

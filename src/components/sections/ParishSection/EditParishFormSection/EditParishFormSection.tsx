@@ -201,7 +201,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
     }
   
     try {
-      const response: any = await apiClient.put(`/api/paroisses/${parish.id}`, formdata, {
+      const response: any = await apiClient.post(`/api/paroisses/${parish.id}?_method=PUT`, formdata, {
         'Content-Type': 'multipart/form-data'
       });
       if (response.id) {

@@ -189,7 +189,7 @@ export const AddParishFormSection = (): JSX.Element => {
     formdata.append("telephone", formFour.getValues("telephone"))
     formdata.append("email", formFour.getValues("email"))
     formdata.append("site_web", formFour.getValues("site_web"))
-    formdata.append("horaires", `${horaires}`)
+    formdata.append("horaireparoisses", `${horaires}`)
     formdata.append("etabli_le", formThree.getValues("etabli_le").split('-')[0])
     formdata.append("ordonne_le", formThree.getValues("ordonne_le").split('-')[0])
     formdata.append("premier_cure", formThree.getValues("premier_cure").split('-')[0])
