@@ -6,8 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Copy, Check, MapPin } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Location } from "@/components/map-container";
-
+import { Location } from "@/components/sections/MapSection/map-container";
 interface CoordinatesDisplayProps {
   location: Location;
 }

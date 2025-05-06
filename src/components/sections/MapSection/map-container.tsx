@@ -1,12 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { SearchBar } from "@/components/sections/MapSection/search-bar";
-import { CoordinatesDisplay } from "@/components/sections/MapSection/coordinates-display";
-import { MapDisplay } from "@/components/sections/MapSection/map-display";
-import { RecentSearches } from "@/components/sections/MapSection/recent-searches";
-import { useLoadGoogleMapsScript } from "@/hooks/use-load-google-maps-script";
 import { LoadingSpinner } from "@/components/sections/MapSection/loading-spinner";
+import { MapDisplay } from "@/components/sections/MapSection/map-display";
+import { SearchBar } from "@/components/sections/MapSection/search-bar";
+import { useLoadGoogleMapsScript } from "@/hooks/use-load-google-maps-script";
+import { useEffect, useState } from "react";
 
 export type Location = {
   placeId: string;
@@ -42,8 +40,6 @@ export function MapContainer() {
 
   const handleLocationSelect = (location: Location) => {
     setSelectedLocation(location);
-
-    console.log({location});
     
     // Add to recent searches if not already present
     if (!recentSearches.some(search => search.placeId === location.placeId)) {
