@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Clock, MapPin, X } from "lucide-react";
-import { Location } from "@/components/map-container";
+import { Location } from "@/components/sections/MapSection/map-container";
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 
