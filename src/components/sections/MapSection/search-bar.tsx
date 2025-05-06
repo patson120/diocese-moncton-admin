@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { Search } from "lucide-react";
+import { Location } from "@/components/sections/MapSection/map-container";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Location } from "@/components/map-container";
+import { Search } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 interface SearchBarProps {
   onLocationSelect: (location: Location) => void;
