@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 
 // This fake API key will be replaced with a real one that the user provides
-const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API;
 
 
 export function useLoadGoogleMapsScript() {
