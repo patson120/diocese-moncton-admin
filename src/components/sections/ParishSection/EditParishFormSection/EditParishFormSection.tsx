@@ -103,9 +103,9 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
     resolver: zodResolver(formSchemaThree),
     defaultValues: {
       unite_pastorale: "",
-      etabli_le: `${parish.etabli_le}`,
-      ordonne_le: `${parish.ordonne_le}`,
-      premier_cure: `${parish.premier_cure}`,
+      etabli_le: `${parish.etabli_le}-01-01`,
+      ordonne_le: `${parish.ordonne_le}-01-01`,
+      premier_cure: `${parish.premier_cure}-01-01`,
     },
   });
 
