@@ -15,7 +15,7 @@ import { JSX, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { User } from "../../../../types";
+import { User } from "../../../app/types";
 
 
 const formSchema = z.object({

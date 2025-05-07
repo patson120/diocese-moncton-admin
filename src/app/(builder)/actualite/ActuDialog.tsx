@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { fetchCategories } from '@/lib/data';
 import Image from 'next/image';
 import { ChangeEvent, useEffect, useState } from 'react';
-import { Category } from '../../../../types';
+import { Category } from '../../types';
 import { MonitorUp, Timer } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 

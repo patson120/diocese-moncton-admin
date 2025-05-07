@@ -1,5 +1,5 @@
 import React from 'react'
-import { Actualite } from '../../../../../types';
+import { Actualite } from '../../../types';
 import { apiClient } from '@/lib/axios';
 import EditActualiteForm from './EditActualiteForm';
 

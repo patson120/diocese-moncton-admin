@@ -6,7 +6,7 @@ import { fetchEvenements } from "@/lib/data";
 import { BookOpenText, Calendar1, CalendarPlus, Layers, MapPin } from "lucide-react";
 import Link from "next/link";
 import { JSX, useEffect, useState } from "react";
-import { Event } from "../../../../types";
+import { Event } from "../../../app/types";
 import Text from "@/components/shared/Text";
 import { formatDateToLocal } from "@/lib/utils";
 import { useRouter } from "next/navigation";

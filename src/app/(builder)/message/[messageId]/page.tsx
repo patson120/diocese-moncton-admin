@@ -1,6 +1,6 @@
 import { apiClient } from '@/lib/axios';
 import React from 'react'
-import { Message } from '../../../../../types';
+import { Message } from '../../../types';
 import EditMessageForm from './EditMessageForm';
 
 export default async function page(props: {

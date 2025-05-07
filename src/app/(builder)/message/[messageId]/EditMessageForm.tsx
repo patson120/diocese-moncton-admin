@@ -12,7 +12,7 @@ import { ArrowLeft, CopyIcon, ExternalLinkIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { Message } from '../../../../../types'
+import { Message } from '../../../types'
 import { apiClient } from '@/lib/axios'
 import { Loader } from '@/components/ui/loader'
 

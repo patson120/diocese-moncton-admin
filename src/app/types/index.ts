@@ -81,7 +81,9 @@ export type TypeParoisse = {
     couleur: string;
     created_at: string;
     updated_at: string;
+    paroisses: Paroisse[]
 }
+
 export type Horaire = {
     id: number;
     paroisse_id: number;

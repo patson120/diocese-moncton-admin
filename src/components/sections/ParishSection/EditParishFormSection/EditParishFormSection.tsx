@@ -17,7 +17,7 @@ import { JSX, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { Paroisse } from "../../../../../types";
+import { Paroisse } from "../../../../app/types";
 import { Loader } from "@/components/ui/loader";
 
 

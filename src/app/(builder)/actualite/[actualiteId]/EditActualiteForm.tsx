@@ -16,7 +16,7 @@ import { ArrowLeft, CopyIcon, ExternalLinkIcon, } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { Actualite } from '../../../../../types'
+import { Actualite } from '../../../types'
 import EditActuDialog from './EditActuDialog'
 
 export default function EditActualiteForm({actualite}: { actualite: Actualite }) {

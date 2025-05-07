@@ -2,7 +2,6 @@
 
 import EventDetailsDialog from "@/app/components/event-details-dialog";
 import { holidays } from "@/app/lib/holidays";
-import { eventTypeColors } from "@/app/types/event";
 import { cn } from "@/lib/utils";
 import {
   differenceInDays,
@@ -23,7 +22,7 @@ import {
 } from "date-fns";
 import { fr } from "date-fns/locale";
 import React, { useState } from "react";
-import { Event } from "../../../../types";
+import { Event } from "../../types";
 
 interface CalendarGridProps {
   currentDate: Date;
@@ -57,14 +56,10 @@ export function CalendarGrid({ currentDate, events, view }: CalendarGridProps) {
   };
 
   const getEventStyle = (event: Event) => {
-    const colors = eventTypeColors["default"];
     return cn(
       "rounded-md shadow-sm cursor-pointer transition-colors",
       "bg-gradient-to-r",
-      colors.light,
-      colors.dark,
-      colors.hover,
-      colors.darkHover
+      'bg-[#F4F4E6]'
     );
   };
 

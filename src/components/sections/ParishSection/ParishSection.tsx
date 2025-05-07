@@ -17,10 +17,11 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useDebouncedCallback } from 'use-debounce';
-import { Paroisse } from '../../../../types';
+import { Paroisse, TypeParoisse } from '../../../app/types';
 import { AddParishFormSection } from './AddParishFormSection';
 import { AddUnitePastoraleFormSection } from './AddUnitePastoraleFormSection';
 import { EditParishFormSection } from './EditParishFormSection';
+import { formatDateToLocal } from '@/lib/utils';
 
 export default function ParishSection() {
     const router = useRouter()
@@ -30,6 +31,8 @@ export default function ParishSection() {
     const [openModal, setOpenModal] = useState(false)
     const [selecteParish, setSelectedParish] = useState<Paroisse | undefined>()
     const [parishes, setParishes] = useState<Paroisse[]>([])
+    const [uniteParoitiales, setUniteParoitiales] = useState<TypeParoisse[]>([])
+    const [uniteParoitiale, setUniteParoitiale] = useState<TypeParoisse>()
     const [statut, setStatut] = useState(1)
     const [selectedItem, setSelectedItem] = useState<any>('paroisses')
 
@@ -43,7 +46,6 @@ export default function ParishSection() {
         { value: "paroisses", label: "Paroisses", active: true },
         { value: "unites-paroissiales", label: "Unités paroissiales", active: false },
     ];
-
 
     // Parish data
     const parishData = {
@@ -63,6 +65,19 @@ export default function ParishSection() {
             { day: "Dimanche", times: ["08h:00", "12h:00", "17h:00"] },
         ],
     };
+
+    useEffect(() => {
+        // Récupérer les unités paroitiales depuis l'api
+        (async () => {
+            const response: TypeParoisse[] = await apiClient.get(`/api/type_paroisses`)
+            setUniteParoitiales(response)
+        })()
+    }, [])
+
+    const fetchUniteParoitiale = async (id: number) => {
+        const response: TypeParoisse = await apiClient.get(`/api/type_paroisses/${id}`)
+        setUniteParoitiale(response)
+    }
 
     useEffect(() => {
         const getActualites = async () => {
@@ -331,6 +346,27 @@ export default function ParishSection() {
                                                     <LayoutGridIcon className="w-5 h-5" />
                                                 </Button>
                                             </div>
+                                        </div>
+                                        {/* Priests grid */}
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
+                                            {uniteParoitiales.map((unite, index) => (
+                                                <Card
+                                                    key={index}
+                                                    className="w-full border-none shadow-none"
+                                                    onClick={() => {
+                                                        setOpenModal(true)
+                                                        // setSelectedParish(parish)
+                                                    }}>
+                                                    <CardContent className="bg-[#F9F9F0] rounded-xl px-5 py-6">
+                                                        <div className='body-1 font-bold text-black line-clamp-2'>
+                                                            <Text className='text-base font-bold' labelFr={unite.intitule_fr} labelEn={unite.intitule_en} />
+                                                        </div>
+                                                        <div className='body-2 line-clamp-2 text-[#575757]'>
+                                                            <p className='text-muted-foreground mt-2 text-sm'>Publiée le {formatDateToLocal((new Date(unite.created_at)).toISOString())} </p>
+                                                        </div>
+                                                    </CardContent>
+                                                </Card>
+                                            ))}
                                         </div>
                                     </div>
                             </TabsContent>

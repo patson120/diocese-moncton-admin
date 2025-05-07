@@ -19,7 +19,7 @@ import { formatDateToLocal } from "@/lib/utils";
 import { Trash2, XIcon } from "lucide-react";
 import { JSX, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Role, User } from "../../../../types";
+import { Role, User } from "../../../app/types";
 import { EditUserFormSection } from "../EditUserFormSection";
 
 

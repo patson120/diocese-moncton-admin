@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { formatDateToLocal } from '@/lib/utils';
-import { Event } from '../../../types';
+import { Event } from '../types';
 import { useState } from 'react';
 import { apiClient } from '@/lib/axios';
 import { toast } from 'sonner';

@@ -17,7 +17,7 @@ import React, { JSX, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { Member } from "../../../../types";
+import { Member } from "../../../app/types";
 
 const fonctions = [
   {

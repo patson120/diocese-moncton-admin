@@ -10,7 +10,7 @@ import { formatDateToLocal } from '@/lib/utils';
 import { EyeIcon, Trash2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { Actualite } from '../../../../types';
+import { Actualite } from '../../../app/types';
 
 export default function ActualiteContent(
     { is_actif, query, ordre , displayMode}: 

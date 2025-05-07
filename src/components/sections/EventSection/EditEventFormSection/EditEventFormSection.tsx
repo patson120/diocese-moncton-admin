@@ -14,7 +14,7 @@ import { JSX, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { Category, Event } from "../../../../../types";
+import { Category, Event } from "../../../../app/types";
 
 interface EditEventDialogProps {
   eventData: Event;

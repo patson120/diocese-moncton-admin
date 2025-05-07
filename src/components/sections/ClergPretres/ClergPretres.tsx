@@ -14,7 +14,7 @@ import { JSX, useEffect, useState } from "react";
 import AddMemberFormSection  from "./AddMemberFormSection";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { Member } from "../../../../types";
+import { Member } from "../../../app/types";
 import { apiClient } from "@/lib/axios";
 import { Loader } from "@/components/ui/loader";
 import EditMemberFormSection from "./EditMemberFormSection";

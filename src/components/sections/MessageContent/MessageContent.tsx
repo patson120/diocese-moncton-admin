@@ -6,7 +6,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 import { apiClient } from '@/lib/axios';
 import { formatDateToLocal } from '@/lib/utils';
 import { useEffect, useState } from 'react';
-import { Message } from '../../../../types';
+import { Message } from '../../../app/types';
 import { Loader } from '@/components/ui/loader';
 
 export default function MessageContent({ etat }: { etat: number }) {

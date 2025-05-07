@@ -4,7 +4,7 @@ import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { apiClient } from '@/lib/axios';
 import Image from 'next/image';
-import { Image as ImageType } from '../../../../types';
+import { Image as ImageType } from '../../../app/types';
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';

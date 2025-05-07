@@ -1,6 +1,6 @@
 
 import { formatDateToLocal } from "@/lib/utils"
-import { Message } from "../../../types"
+import { Message } from "../../app/types"
 import Text from "./Text"
 
 const MessageComp = ({ message, onClick }: { message: Message, onClick?: (e: any) => void }) => {
