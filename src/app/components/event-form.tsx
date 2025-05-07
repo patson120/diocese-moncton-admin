@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 import usePlacesAutocomplete, { getGeocode, getLatLng } from "use-places-autocomplete";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { EventType } from "../types/event";
+
 
 interface EventFormProps {
   onSubmit: (data: any) => void;
@@ -68,7 +68,7 @@ export function EventForm({ onSubmit }: EventFormProps) {
       </div>
 
       <div>
-        <Select onValueChange={(value: EventType) => setValue("type", value)}>
+        <Select onValueChange={(value: any) => setValue("type", value)}>
           <SelectTrigger>
             <SelectValue placeholder="Type d'événement" />
           </SelectTrigger>
