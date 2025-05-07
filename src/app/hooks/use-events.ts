@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Event } from "../types/event";
 import { mockEvents } from "../lib/mock-data";
 
 export function useEvents() {
-  const [events, setEvents] = useState<Event[]>([]);
+  const [events, setEvents] = useState<any[]>([]);
 
   useEffect(() => {
     // Charger les événements depuis le localStorage ou utiliser les données mock
