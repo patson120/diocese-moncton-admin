@@ -2,7 +2,6 @@
 
 import { CalendarGrid } from "@/app/components/calendar/calendar-grid";
 import { CalendarHeader } from "@/app/components/calendar/calendar-header";
-import { useEvents } from "@/app/hooks/use-events";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { apiClient } from "@/lib/axios";
 import { JSX, useEffect, useState } from "react";
@@ -21,7 +20,6 @@ export default function EventSection(): JSX.Element {
 
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState<"day" | "week" | "month">("month");
-  const { events, addEvent } = useEvents();
 
   const getEvents = async () => {
     const response: any = await apiClient.get("/api/evenements?paginate=200")
