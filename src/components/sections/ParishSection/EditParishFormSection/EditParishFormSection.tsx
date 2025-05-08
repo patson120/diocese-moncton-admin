@@ -104,7 +104,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
   const formThree = useForm<z.infer<typeof formSchemaThree>>({
     resolver: zodResolver(formSchemaThree),
     defaultValues: {
-      unite_pastorale: "",
+      unite_pastorale: `${parish.type_paroisse_id}`,
       etabli_le: `${parish.etabli_le}-01-01`,
       ordonne_le: `${parish.ordonne_le}-01-01`,
       premier_cure: `${parish.premier_cure}-01-01`,
@@ -193,7 +193,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
     formdata.append("premier_cure", formThree.getValues("premier_cure").split('-')[0])
     formdata.append("gps", '48.8566;2.3522')
     formdata.append("statut", '1')
-    formdata.append("adresse", 'Rue 232 Moncton') // Rue 232 Moncton
+    formdata.append("adresse", `${parish.adresse}`)
 
     const data = {
       // unite_pastorale: formThree.getValues("unite_pastorale"),
@@ -390,8 +390,11 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
                             <SelectValue placeholder="Sélectionnez une unité" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="unite1">Unité 1</SelectItem>
-                            <SelectItem value="unite2">Unité 2</SelectItem>
+                            { 
+                              unitePastorales.map(unite => (
+                                <SelectItem key={unite.id} value={`${unite.id}`}>{unite.intitule_fr}</SelectItem>
+                              ))
+                            }
                           </SelectContent>
                         </Select>
                       </div>
