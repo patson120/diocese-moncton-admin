@@ -87,16 +87,16 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
   const formOne = useForm<z.infer<typeof formSchemaOne>>({
     resolver: zodResolver(formSchemaOne),
     defaultValues: {
-      nom_fr: parish.nom,
-      histoire_fr: parish.histoire,
+      nom_fr: parish.nom || '',
+      histoire_fr: parish.histoire || '',
     },
   });
 
   const formTwo = useForm<z.infer<typeof formSchemaTwo>>({
     resolver: zodResolver(formSchemaTwo),
     defaultValues: {
-      nom_en: parish.nom_en,
-      histoire_en: parish.histoire_en,
+      nom_en: parish.nom_en || '',
+      histoire_en: parish.histoire_en || '',
     },
   });
 
@@ -174,7 +174,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
     }
   }
 
-  const handleSubmitForm = async () => {
+  const handleSubmitForm = async () => {    
     if (isLoading) return
     setIsLoading(true)
     const formdata = new FormData()
@@ -191,7 +191,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
     formdata.append("ordonne_le", formThree.getValues("ordonne_le").split('-')[0])
     formdata.append("premier_cure", formThree.getValues("premier_cure").split('-')[0])
     formdata.append("gps", '48.8566;2.3522')
-    formdata.append("statut", '1')
+    formdata.append("statut", `${parish.statut}`)
     formdata.append("adresse", `${parish.adresse}`)
 
     const data = {
@@ -207,7 +207,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
       if (response.id) {
         toast.success('Paroisse ajoutée avec succès');
         setTimeout(() => {
-          window.location.reload();
+          // window.location.reload();
         }, 1500);
       }
       else {
