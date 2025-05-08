@@ -83,11 +83,9 @@ export default function ParishSection() {
         const getActualites = async () => {
             const response = await fetchParoisses(`?paginate=200&statut=${statut}&nom=${query}`)
             setParishes(response.data)
-            console.log(response.data)
         }
         getActualites()
     }, [statut, query])
-
 
     const handleSearch = useDebouncedCallback((event: ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value
@@ -104,7 +102,6 @@ export default function ParishSection() {
         }
         router.replace(`${pathname}?${params.toString()}`)
     }, 800)
-
 
     const handleDeleteParish = async () => {
         if (isDeleting) return

@@ -211,7 +211,7 @@ export const AddParishFormSection = (): JSX.Element => {
       if (response.id) {
         toast.success('Paroisse ajoutée avec succès');
         setTimeout(() => {
-          // window.location.reload();
+          window.location.reload();
         }, 1500);
       }
       else {
