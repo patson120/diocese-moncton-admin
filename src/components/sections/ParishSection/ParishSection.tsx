@@ -11,6 +11,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { apiClient } from '@/lib/axios';
 import { fetchParoisses } from '@/lib/data';
+import { formatDateToLocal } from '@/lib/utils';
 import { Church, LayoutGridIcon, ListFilter, MailIcon, MapPinIcon, PhoneIcon, SearchIcon } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -21,7 +22,6 @@ import { Paroisse, TypeParoisse } from '../../../app/types';
 import { AddParishFormSection } from './AddParishFormSection';
 import { AddUnitePastoraleFormSection } from './AddUnitePastoraleFormSection';
 import { EditParishFormSection } from './EditParishFormSection';
-import { formatDateToLocal } from '@/lib/utils';
 
 export default function ParishSection() {
     const router = useRouter()
@@ -31,7 +31,6 @@ export default function ParishSection() {
     const [openModal, setOpenModal] = useState(false)
     const [openModalUnite, setOpenModalUnite] = useState(false)
     const [selecteParish, setSelectedParish] = useState<Paroisse | undefined>()
-    const [selectedUnite, setSelectedUnite] = useState<TypeParoisse | undefined>()
     const [parishes, setParishes] = useState<Paroisse[]>([])
     const [unitePastorales, setUnitePastorales] = useState<TypeParoisse[]>([])
     const [unitePastorale, setUnitePastorale] = useState<TypeParoisse>()
@@ -357,7 +356,6 @@ export default function ParishSection() {
                                                     onClick={() => {
                                                         fetchUnitePastorale(unite.id)
                                                         setOpenModalUnite(true)
-                                                        setSelectedUnite(unite)
                                                     }}>
                                                     <CardContent className="bg-[#F9F9F0] rounded-xl px-5 py-6">
                                                         <div className='body-1 font-bold text-black line-clamp-2'>
