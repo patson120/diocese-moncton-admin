@@ -71,7 +71,7 @@ export function MapContainer() {
   }
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="h-full w-full">
 
       {/**
         <header className="bg-background/95 backdrop-blur-sm border-b z-10 sticky top-0">
@@ -105,7 +105,7 @@ export function MapContainer() {
         </div>
       */}
 
-      <div className="h-80 w-[500px] rounded-xl overflow-hidden shadow-md relative mt-20">
+      <div className="h-80 w-[500px] rounded-xl overflow-hidden shadow-md relative">
         <MapDisplay selectedLocation={selectedLocation} />
         <div className="absolute top-3 left-3 right-3 bg-white rounded-md">
           <SearchBar onLocationSelect={handleLocationSelect} />

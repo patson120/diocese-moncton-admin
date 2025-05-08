@@ -12,6 +12,7 @@ export default function Home() {
         <QuickActionsSection />
       </div>
       {/** Map view */}
+      <div className="mt-20"></div>
       <MapView />
     </main>
   );
