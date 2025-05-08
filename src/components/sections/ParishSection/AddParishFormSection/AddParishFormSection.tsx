@@ -1,6 +1,7 @@
 
 'use client'
 
+import { TypeParoisse } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -14,7 +15,7 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { PlusIcon } from "lucide-react";
-import { JSX, useState } from "react";
+import { JSX, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -70,6 +71,7 @@ export const AddParishFormSection = (): JSX.Element => {
   const [step, setStep] = useState(1)
   const [horaires, setHoraires] = useState<{[key: string]: any}[]>([])
   const [isLoading, setIsLoading] = useState(false)
+  const [unitePastorales, setUnitePastorales] = useState<TypeParoisse[]>([])
 
   const jours = [
     { value: 'lundi', label: 'Lundi' },
@@ -181,7 +183,7 @@ export const AddParishFormSection = (): JSX.Element => {
     if (isLoading) return
     setIsLoading(true)
     const formdata = new FormData()
-    formdata.append("type_paroisse_id", "2")
+    formdata.append("type_paroisse_id", formThree.getValues("unite_pastorale"))
     formdata.append("nom", formOne.getValues("nom_fr"))
     formdata.append("nom_en", formTwo.getValues("nom_en"))
     formdata.append("histoire", formOne.getValues("histoire_fr"))
@@ -198,7 +200,6 @@ export const AddParishFormSection = (): JSX.Element => {
     formdata.append("adresse", 'Rue 232 Moncton')
     
     const data = {
-      // unite_pastorale: formThree.getValues("unite_pastorale"),
       code_postal: '',
       lien_youtube: '',
       pretre_responsable: '',
@@ -231,6 +232,14 @@ export const AddParishFormSection = (): JSX.Element => {
       setIsLoading(false)
     }
   }
+
+  useEffect(() => {
+      // Récupérer les unités paroitiales depuis l'api
+      (async () => {
+          const response: TypeParoisse[] = await apiClient.get(`/api/type_paroisses`)
+          setUnitePastorales(response)
+      })()
+  }, [])
 
   return (
     <Dialog>
@@ -385,8 +394,11 @@ export const AddParishFormSection = (): JSX.Element => {
                             <SelectValue placeholder="Sélectionnez une unité" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="unite1">Unité 1</SelectItem>
-                            <SelectItem value="unite2">Unité 2</SelectItem>
+                            { 
+                              unitePastorales.map(unite => (
+                                <SelectItem key={unite.id} value={`${unite.id}`}>{unite.intitule_fr}</SelectItem>
+                              ))
+                            }
                           </SelectContent>
                         </Select>
                       </div>

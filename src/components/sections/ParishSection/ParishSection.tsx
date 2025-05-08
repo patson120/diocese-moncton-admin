@@ -202,7 +202,6 @@ export default function ParishSection() {
             setIsDeleting(false)
         }
     }
-    
 
     return (
         <main>
@@ -449,7 +448,7 @@ export default function ParishSection() {
                                         <div className="font-body-2 text-noir-dashboard text-base leading-4">
                                             <Text className='text-sm font-bold' labelFr={selecteParish?.nom} labelEn={selecteParish?.nom_en} />
                                         </div>
-                                        <p className="font-body-3 text-gray">{parishData.unit}</p>
+                                        <Text className='text-sm text-gray' labelFr={selecteParish?.type?.intitule_fr} labelEn={selecteParish?.type?.intitule_en} />
                                     </div>
 
                                     <div className="w-auto border-t border-b border-neutral-200 py-3.5">

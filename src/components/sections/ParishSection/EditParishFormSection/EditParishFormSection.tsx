@@ -13,11 +13,11 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { PlusIcon } from "lucide-react";
-import { JSX, useState } from "react";
+import { JSX, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { Paroisse } from "../../../../app/types";
+import { Paroisse, TypeParoisse } from "../../../../app/types";
 import { Loader } from "@/components/ui/loader";
 
 
@@ -71,6 +71,8 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
   const [step, setStep] = useState(1)
   const [horaires, setHoraires] = useState<{[key: string]: any}[]>([])
   const [isLoading, setIsLoading] = useState(false)
+
+  const [unitePastorales, setUnitePastorales] = useState<TypeParoisse[]>([])
 
   const jours = [
     { value: 'lundi', label: 'Lundi' },
@@ -177,7 +179,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
     if (isLoading) return
     setIsLoading(true)
     const formdata = new FormData()
-    formdata.append("type_paroisse_id", "2")
+    formdata.append("type_paroisse_id", formThree.getValues("unite_pastorale"))
     formdata.append("nom", formOne.getValues("nom_fr"))
     formdata.append("nom_en", formTwo.getValues("nom_en"))
     formdata.append("histoire", formOne.getValues("histoire_fr"))
@@ -227,6 +229,14 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
       setIsLoading(false)
     }
   }
+
+  useEffect(() => {
+    // Récupérer les unités paroitiales depuis l'api
+    (async () => {
+        const response: TypeParoisse[] = await apiClient.get(`/api/type_paroisses`)
+        setUnitePastorales(response)
+    })()
+  }, [])
 
   return (
     <Dialog>
