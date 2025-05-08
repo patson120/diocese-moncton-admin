@@ -29,10 +29,12 @@ export default function ParishSection() {
     const [isStatutLoading, setIsStatutLoading] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
     const [openModal, setOpenModal] = useState(false)
+    const [openModalUnite, setOpenModalUnite] = useState(false)
     const [selecteParish, setSelectedParish] = useState<Paroisse | undefined>()
+    const [selectedUnite, setSelectedUnite] = useState<TypeParoisse | undefined>()
     const [parishes, setParishes] = useState<Paroisse[]>([])
-    const [uniteParoitiales, setUniteParoitiales] = useState<TypeParoisse[]>([])
-    const [uniteParoitiale, setUniteParoitiale] = useState<TypeParoisse>()
+    const [unitePastorales, setUnitePastorales] = useState<TypeParoisse[]>([])
+    const [unitePastorale, setUnitePastorale] = useState<TypeParoisse>()
     const [statut, setStatut] = useState(1)
     const [selectedItem, setSelectedItem] = useState<any>('paroisses')
 
@@ -70,13 +72,15 @@ export default function ParishSection() {
         // Récupérer les unités paroitiales depuis l'api
         (async () => {
             const response: TypeParoisse[] = await apiClient.get(`/api/type_paroisses`)
-            setUniteParoitiales(response)
+            setUnitePastorales(response)
         })()
     }, [])
 
-    const fetchUniteParoitiale = async (id: number) => {
+    const fetchUnitePastorale = async (id: number) => {
+        // setIsStatutLoading(true)
         const response: TypeParoisse = await apiClient.get(`/api/type_paroisses/${id}`)
-        setUniteParoitiale(response)
+        setUnitePastorale(response)
+        // setIsStatutLoading(false)
     }
 
     useEffect(() => {
@@ -346,13 +350,14 @@ export default function ParishSection() {
                                         </div>
                                         {/* Priests grid */}
                                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
-                                            {uniteParoitiales.map((unite, index) => (
+                                            {unitePastorales.map((unite, index) => (
                                                 <Card
                                                     key={index}
-                                                    className="w-full border-none shadow-none"
+                                                    className="w-full border-none shadow-none cursor-pointer"
                                                     onClick={() => {
-                                                        setOpenModal(true)
-                                                        // setSelectedParish(parish)
+                                                        fetchUnitePastorale(unite.id)
+                                                        setOpenModalUnite(true)
+                                                        setSelectedUnite(unite)
                                                     }}>
                                                     <CardContent className="bg-[#F9F9F0] rounded-xl px-5 py-6">
                                                         <div className='body-1 font-bold text-black line-clamp-2'>
@@ -374,7 +379,7 @@ export default function ParishSection() {
 
             {/* Sheet */}
             <Sheet open={openModal} onOpenChange={setOpenModal} >
-                <SheetContent className="max-w-3xl min-w-3xl">
+                <SheetContent aria-describedby={undefined} className="max-w-3xl min-w-3xl">
                     <SheetHeader >
                         <SheetTitle hidden>Détails de la paroissse</SheetTitle>
                     </SheetHeader>
@@ -464,7 +469,7 @@ export default function ParishSection() {
                                     Heure des messes
                                 </h2>
                                 <div className="flex flex-wrap gap-[12px_16px]">
-                                    {selecteParish?.horaireparoisses.map((schedule, index) => (
+                                    {selecteParish?.horaireparoisses?.map((schedule, index) => (
                                         <Card
                                             key={index}
                                             className="border border-[#e5e5e580] rounded-xl"
@@ -519,7 +524,104 @@ export default function ParishSection() {
 
                             {/* Map section */}
                             <section className="w-full">
-                                <h2 className="font-heading-5 text-[#1c0004] mb-4">
+                                <h2 className="font-heading-5 text-2xl text-[#1c0004] mb-4 font-bold">
+                                    Sur la carte
+                                </h2>
+                                <div className="w-full h-[350px] bg-neutral-100 rounded-3xl overflow-hidden">
+                                    <div className="h-[350px] rounded-[18px] overflow-scroll v-scroll relative">
+                                        <div className="relative w-[2100px] h-[1200px] top-[-520px] left-[-473px]">
+                                            <img
+                                                className="absolute w-[700px] h-[400px] top-[520px] left-[473px] object-cover"
+                                                alt="Map detail view"
+                                                src="/rectangle-42-1.svg"
+                                            />
+                                            <img
+                                                className="absolute w-[2100px] h-[1200px] top-0 left-0 object-cover"
+                                                alt="Map overview"
+                                                src="/rectangle-42.png"
+                                            />
+                                            <div className="absolute w-[74px] h-[74px] top-[633px] left-[741px] bg-[#8b22361a] rounded-[37px] flex items-center justify-center">
+                                                <img
+                                                    className="w-8 h-8"
+                                                    alt="Location marker"
+                                                    src="/frame-2.svg"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </SheetContent>
+            </Sheet>
+
+            {/* Sheet */}
+            <Sheet open={openModalUnite} onOpenChange={setOpenModalUnite} >
+                <SheetContent aria-describedby={undefined}  className="max-w-3xl min-w-3xl">
+                    <SheetHeader >
+                        <SheetTitle hidden>Détails de l'unité pastorale </SheetTitle>
+                    </SheetHeader>
+                    <div className='absolute top-0 left-0 right-0 z-[1] bg-white'>
+                        {/* Header with action buttons */}
+                        <header className="w-full h-20 border-b border-[#d9d9d9] flex items-center justify-between px-12">
+                            <Button variant="outline" className="h-10"
+                                onClick={() => setOpenModalUnite(false)}>
+                                Fermer
+                            </Button>
+                            <div className="flex gap-2">
+                                <Button variant="outline" className="h-10">Désactiver</Button>
+                                {/** 
+                                    <EditParishFormSection parish={selecteParish!} />
+                                 */}
+                                <Button className="h-10 bg-blue text-white hover:bg-blue/90">
+                                    Modifier
+                                </Button>
+                            </div>
+                        </header>
+                    </div>
+
+                    {/* Scrollable content area */}
+                    <div className="h-[calc(100%-80px)] mt-24 px-7 v-scroll overflow-y-scroll">
+                        <div className="flex flex-col gap-[34px] w-full">
+                            <div>
+                                <div className='body-1 font-bold text-black mb-6'>
+                                    <Text className='text-2xl font-bold' labelFr={unitePastorale?.intitule_fr} labelEn={unitePastorale?.intitule_en} />
+                                </div>
+                                <h2 className="font-heading-5 text-2xl text-[#1c0004] mb-4 font-bold">
+                                    Paroisses
+                                </h2>
+                                {/* Parish grid */}
+                                <div className="grid grid-cols-2 gap-4 w-full">
+                                    { unitePastorale?.paroisses?.map((parish, index) => (
+                                        <Card
+                                            key={index}
+                                            className="w-full border-none shadow-none cursor-pointer"
+                                            onClick={() => {
+                                                setOpenModal(true)
+                                                setSelectedParish(parish)
+                                            }}>
+                                            <CardContent className="p-0 w-full h-full space-y-2 bg-[#F9F9F0] rounded-xl flex flex-col justify-between gap-[10px] px-5 py-6">
+                                                <div className="">
+                                                    <div className='h-6 w-6 mb-2'>
+                                                        <Church className='h-5 w-5' />
+                                                    </div>
+                                                    <div className='body-1 font-bold text-black line-clamp-2'>
+                                                        <Text className='text-sm font-bold' labelFr={parish.nom} labelEn={parish.nom_en} />
+                                                    </div>
+                                                    <div className='body-2 mt-2 line-clamp-2 text-[#575757]'>
+                                                        <p className='text-sm'>{parish.adresse}</p>
+                                                    </div>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Map section */}
+                            <section className="w-full">
+                                <h2 className="font-heading-5 text-2xl text-[#1c0004] mb-4 font-bold">
                                     Sur la carte
                                 </h2>
                                 <div className="w-full h-[350px] bg-neutral-100 rounded-3xl overflow-hidden">
