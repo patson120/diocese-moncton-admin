@@ -40,7 +40,6 @@ const generateHourOptions = (): Option[] => {
 
 const hourOptions = generateHourOptions();
 
-
 const formSchemaOne = z.object({
   nom_fr: z.string().min(1, { message: "Nom de la paroisse requis" }),
   histoire_fr: z.string().min(1, { message: "Histoire de la paroisse requise" }),
@@ -196,7 +195,6 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
     formdata.append("adresse", `${parish.adresse}`)
 
     const data = {
-      // unite_pastorale: formThree.getValues("unite_pastorale"),
       code_postal: '',
       lien_youtube: '',
       pretre_responsable: '',
