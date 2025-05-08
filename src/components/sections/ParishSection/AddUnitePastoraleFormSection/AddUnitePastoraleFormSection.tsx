@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Loader } from "@/components/ui/loader";
 import { apiClient } from "@/lib/axios";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,6 +28,7 @@ const formSchemaThree = z.object({
 
 export const AddUnitePastoraleFormSection = (): JSX.Element => {
   const [step, setStep] = useState(1)
+  const [isLoading, setIsLoading] = useState(false)
 
   // Forms
   const formOne = useForm<z.infer<typeof formSchemaOne>>({
@@ -65,17 +67,22 @@ export const AddUnitePastoraleFormSection = (): JSX.Element => {
 
 
   const handleSubmitForm = async () => {
-    return
+    if (isLoading) return
+    setIsLoading(true)
     const formData = new FormData();
-    formData.append('nom_fr', formOne.getValues("nom_fr"));
-    formData.append('nom_en', formTwo.getValues("nom_en"));
+    formData.append('intitule_fr', formOne.getValues("nom_fr"));
+    formData.append('intitule_en', formTwo.getValues("nom_en"));
+    formData.append('couleur', "#fff");
     formData.append('gps', '48.8566;2.3522');
     try {
-      const response: any = await apiClient.post('/api/paroisses', 'formdata', {
+      const response: any = await apiClient.post('/api/type_paroisses', formData, {
         'Content-Type': 'multipart/form-data'
       });
       if (response.id) {
         toast.success("Unité pastorale ajoutée avec succès");
+        setTimeout(() => {
+          window.location.reload()
+        }, 1500);
       }else {
         toast.error(
           <div className='p-3 bg-red-500 text-white rounded-md'>
@@ -90,6 +97,9 @@ export const AddUnitePastoraleFormSection = (): JSX.Element => {
           Une erreur s'est produite lors de l'ajout de l'unité pastorale {JSON.stringify(error)}
         </div>
       )
+    }
+    finally {
+      setIsLoading(false)
     }
   }
 
@@ -204,6 +214,7 @@ export const AddUnitePastoraleFormSection = (): JSX.Element => {
                 Retour
               </Button>
               <Button onClick={handleSubmitForm} className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
+                {  isLoading && <Loader className=" w-5 h-5 mr-2" />}
                 Ajouter l'unite pastorale
               </Button>
             </div>

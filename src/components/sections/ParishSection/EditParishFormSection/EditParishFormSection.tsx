@@ -177,7 +177,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
     if (isLoading) return
     setIsLoading(true)
     const formdata = new FormData()
-    formdata.append("type_paroisse_id", "1")
+    formdata.append("type_paroisse_id", "2")
     formdata.append("nom", formOne.getValues("nom_fr"))
     formdata.append("nom_en", formTwo.getValues("nom_en"))
     formdata.append("histoire", formOne.getValues("histoire_fr"))

@@ -175,6 +175,33 @@ export default function ParishSection() {
             setIsStatutLoading(false)
         }
     }
+
+    const handleDeleteUnitePastorale = async () => {
+        if (isDeleting) return
+        if ( unitePastorale?.paroisses?.length ) {
+            toast.error(
+                <div className='p-3 bg-red-500 text-white rounded-md'>
+                    Cette unité pastorale ne peut être supprimer car des paroisses y sont liées
+                </div>
+            )
+            return
+        }
+        setIsDeleting(true)
+        try {
+            await apiClient.delete(`/api/type_paroisses/${unitePastorale?.id}`);
+            setOpenModalUnite(false)
+            setUnitePastorales(prev => (prev.filter(unite => unite.id !== unitePastorale?.id)))
+            
+        } catch (error) {
+            toast.error(
+                <div className='p-3 bg-red-500 text-white rounded-md'>
+                    Erreur de suppression de l'unité pastorale: {JSON.stringify(error)}
+                </div>
+            )
+        } finally {
+            setIsDeleting(false)
+        }
+    }
     
 
     return (
@@ -574,6 +601,9 @@ export default function ParishSection() {
                                  */}
                                 <Button className="h-10 bg-blue text-white hover:bg-blue/90">
                                     Modifier
+                                </Button>
+                                <Button onClick={handleDeleteUnitePastorale} className="h-10 bg-red-500 text-white hover:bg-blue/90">
+                                    Supprimer
                                 </Button>
                             </div>
                         </header>
