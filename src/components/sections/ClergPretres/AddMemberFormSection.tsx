@@ -138,23 +138,30 @@ export default function AddMemberFormSection(){
     formdata.append("description_fr", `${data.description_fr}`);
     formdata.append("description_en", `${data.description_en}`);
 
-    const response: any = await apiClient.post('/api/membres', formdata, {
-      'Content-Type': 'multipart/form-data'
-    });
+    try {
+      const response: any = await apiClient.post('/api/membres', formdata, {
+        'Content-Type': 'multipart/form-data'
+      });
+  
+      if (response.id ) {
+        setStep(1)
+        setMember(defaultMember)
+        setCoverImage('')
+        toast.success('Membre ajouté avec succès');
+        setFileImage(undefined)
+        formOne.reset();
+        formTwo.reset();
+      }
+      else  {
+        toast.error('Une erreur est survenue lors de l\'ajout du membre');
+      }
+    } catch (error: any) {
+      toast.error(`Une erreur est survenue lors de l\'ajout du membre, ${error.message}`);
+    }
+    finally {
+      setIsloading(false)
+    }
 
-    if (response.id ) {
-      setStep(1)
-      setMember(defaultMember)
-      setCoverImage('')
-      toast.success('Membre ajouté avec succès');
-      setFileImage(undefined)
-      formOne.reset();
-      formTwo.reset();
-    }
-    else  {
-      toast.error('Une erreur est survenue lors de l\'ajout du membre');
-    }
-    setIsloading(false)
   }
 
   const onSubmitFirst = async (values: z.infer<typeof formSchemaOne>) => {

@@ -137,25 +137,33 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
     formdata.append("description_fr", `${data.description_fr}`);
     formdata.append("description_en", `${data.description_en}`);
 
-    const response: any = await apiClient.post(`/api/membres/${memberData.id}?_method=PUT`, formdata, {
-      'Content-Type': 'multipart/form-data'
-    });
-
-    if (response.id ) {
-      setStep(1)
-      setMember(defaultMember)
-      setCoverImage('')
-      toast.success('Membre modifié avec succès');
-      setFileImage(undefined)
-      setTimeout(() => {
-        window.location.reload()
-      }, 1500);
+    try {
+      const response: any = await apiClient.post(`/api/membres/${memberData.id}?_method=PUT`, formdata, {
+        'Content-Type': 'multipart/form-data'
+      });  
+      if (response.id ) {
+        setStep(1)
+        setMember(defaultMember)
+        setCoverImage('')
+        toast.success('Membre modifié avec succès');
+        setFileImage(undefined)
+        setTimeout(() => {
+          window.location.reload()
+        }, 1500);
+      }
+      else  {
+        toast.error('Une erreur est survenue lors de modification du membre');
+      }
+      
+    } catch (error: any) {
+      toast.error(`Une erreur est survenue lors de modification du membre, ${error.message}`);
     }
-    else  {
-      toast.error('Une erreur est survenue lors de modification du membre');
+    finally {
+      setIsloading(false)
     }
-    setIsloading(false)
   }
+
+    
 
   const onSubmitFirst = async (values: z.infer<typeof formSchemaOne>) => {
     const newMember = {
