@@ -17,8 +17,9 @@ import { JSX, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { Paroisse, TypeParoisse } from "../../../../app/types";
+import { Location, Paroisse, TypeParoisse } from "@/app/types";
 import { Loader } from "@/components/ui/loader";
+import { MapContainer } from "@/components/sections/MapSection/map-container";
 
 
 // Generate hours from 00:00 to 23:59 in 30-minute intervals
@@ -70,6 +71,14 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
   const [step, setStep] = useState(1)
   const [horaires, setHoraires] = useState<{[key: string]: any}[]>([])
   const [isLoading, setIsLoading] = useState(false)
+
+  const [location, setLocation] = useState<Location | null>({
+    address: `${parish?.adresse.split(";")[1]}`,
+    name: `${parish?.adresse.split(";")[0]}`,
+    lat: Number(parish?.gps.split(";")[0]),
+    lng: Number(parish?.gps.split(";")[1]),
+    placeId: (new Date()).getTime().toString()
+  });
 
   const [unitePastorales, setUnitePastorales] = useState<TypeParoisse[]>([])
 
@@ -174,7 +183,16 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
     }
   }
 
-  const handleSubmitForm = async () => {    
+  const handleSubmitForm = async () => { 
+    // Vérifier si les coordonnées de la paroisse sont fournies
+    if (!location){
+      toast.error(
+        <div className='p-3 bg-red-500 text-white rounded-md'>
+          Veuillez indiquer la location de la paroisse "{formOne.getValues("nom_fr")}"
+        </div>
+      )
+      return
+    }   
     if (isLoading) return
     setIsLoading(true)
     const formdata = new FormData()
@@ -190,9 +208,10 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
     formdata.append("etabli_le", formThree.getValues("etabli_le").split('-')[0])
     formdata.append("ordonne_le", formThree.getValues("ordonne_le").split('-')[0])
     formdata.append("premier_cure", formThree.getValues("premier_cure").split('-')[0])
-    formdata.append("gps", '48.8566;2.3522')
+    formdata.append("gps", `${location?.lat};${location?.lng}`)
     formdata.append("statut", `${parish.statut}`)
-    formdata.append("adresse", `${parish.adresse}`)
+    formdata.append("adresse", `${location?.name};${location?.address}`)
+
 
     const data = {
       code_postal: '',
@@ -207,7 +226,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
       if (response.id) {
         toast.success('Paroisse ajoutée avec succès');
         setTimeout(() => {
-          // window.location.reload();
+          window.location.reload();
         }, 1500);
       }
       else {
@@ -618,10 +637,27 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
           step === 6 &&
           <div className="flex flex-col w-full p-10 pt-6 space-y-6">
             <h1 className="font-bold">Emplacement sur la map</h1>
-            <div className="h-80 w-full bg-black/5 rounded-lg"></div>
+            <div className="h-80 w-full bg-black/5 rounded-lg overflow-hidden">
+              {/** Map view */}
+              <MapContainer 
+                showSearchBar={true}
+                location={location}
+                setLocation={setLocation}
+              />
+            </div>
             <div className="flex flex-col space-y-2">
               <h1 className="font-bold">Localisation</h1>
-              <p className=" text-black">Entrez une adresse pour voir les informations s'afficher</p>
+              <p className=" text-black">
+                {
+                  location ?
+                  <span>
+                    {location?.name} {location?.address}<br /> 
+                    lat: {location?.lat.toFixed(6)} <br /> 
+                    lng: {location?.lng.toFixed(6)}
+                  </span> :
+                  <span>Entrez une adresse pour voir les informations s'afficher</span>
+                }
+                </p>
             </div>
             <div className="flex flex-row gap-4">
               <Button variant={'outline'} onClick={() => setStep(5)} className="w-min px-8 mt-8 h-12 rounded-lg">

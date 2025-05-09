@@ -183,6 +183,16 @@ export const AddParishFormSection = (): JSX.Element => {
   }
 
   const handleSubmitForm = async () => {
+    // Vérifier si les coordonnées de la paroisse sont fournies
+    if (!location){
+      toast.error(
+        <div className='p-3 bg-red-500 text-white rounded-md'>
+          Veuillez indiquer la location de la paroisse "{formOne.getValues("nom_fr")}"
+        </div>
+      )
+      return
+    }
+
     if (isLoading) return
     setIsLoading(true)
     const formdata = new FormData()
@@ -627,7 +637,7 @@ export const AddParishFormSection = (): JSX.Element => {
           step === 6 &&
           <div className="flex flex-col w-full p-10 pt-6 space-y-6">
             <h1 className="font-bold">Emplacement sur la map</h1>
-            <div className="h-80 w-full bg-black/5 rounded-lg">
+            <div className="h-80 w-full bg-black/5 rounded-lg overflow-hidden">
               {/** Map view */}
               <MapContainer 
                 showSearchBar={true}
