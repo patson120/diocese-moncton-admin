@@ -158,3 +158,11 @@ export type User = {
     privilege: string[];
     role: Role;
 }
+
+export type Location = {
+    placeId: string;
+    name: string;
+    address: string;
+    lat: number;
+    lng: number;
+};

@@ -1,5 +1,4 @@
 import { DashboardSection } from "@/components/sections/DashboardSection/DashboardSection";
-import MapView from "@/components/sections/MapSection/map-view";
 import QuickActionsSection from "@/components/sections/QuickActionsSection/QuickActionsSection";
 
 export default function Home() {
@@ -11,11 +10,6 @@ export default function Home() {
       <div className="flex-1 mt-4 ">
         <QuickActionsSection />
       </div>
-      {/** Map view */}
-      <div className="mt-20"></div>
-      <MapView />
     </main>
   );
 }
-
-// 

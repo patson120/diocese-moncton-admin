@@ -1,7 +1,7 @@
 
 'use client'
 
-import { TypeParoisse } from "@/app/types";
+import { Location, TypeParoisse } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -19,6 +19,7 @@ import { JSX, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
+import { MapContainer } from "../../MapSection/map-container";
 
 
 // Generate hours from 00:00 to 23:59 in 30-minute intervals
@@ -72,6 +73,8 @@ export const AddParishFormSection = (): JSX.Element => {
   const [horaires, setHoraires] = useState<{[key: string]: any}[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [unitePastorales, setUnitePastorales] = useState<TypeParoisse[]>([])
+
+  const [location, setLocation] = useState<Location | null>(null);
 
   const jours = [
     { value: 'lundi', label: 'Lundi' },
@@ -195,9 +198,9 @@ export const AddParishFormSection = (): JSX.Element => {
     formdata.append("etabli_le", formThree.getValues("etabli_le").split('-')[0])
     formdata.append("ordonne_le", formThree.getValues("ordonne_le").split('-')[0])
     formdata.append("premier_cure", formThree.getValues("premier_cure").split('-')[0])
-    formdata.append("gps", '48.8566;2.3522')
+    formdata.append("gps", `${location?.lat};${location?.lng}`)
     formdata.append("statut", '1')
-    formdata.append("adresse", 'Rue 232 Moncton')
+    formdata.append("adresse", `${location?.name};${location?.address}`)
     
     const data = {
       code_postal: '',
@@ -624,10 +627,24 @@ export const AddParishFormSection = (): JSX.Element => {
           step === 6 &&
           <div className="flex flex-col w-full p-10 pt-6 space-y-6">
             <h1 className="font-bold">Emplacement sur la map</h1>
-            <div className="h-80 w-full bg-black/5 rounded-lg"></div>
+            <div className="h-80 w-full bg-black/5 rounded-lg">
+              {/** Map view */}
+              <MapContainer 
+                showSearchBar={true}
+                location={location}
+                setLocation={setLocation}
+              />
+            </div>
             <div className="flex flex-col space-y-2">
               <h1 className="font-bold">Localisation</h1>
-              <p className=" text-black">Entrez une adresse pour voir les informations s'afficher</p>
+              <p className=" text-black">
+                {
+                  location ?
+                  <span>
+                    {location?.name} {location?.address}<br /> lat: {location?.lat.toFixed(6)} <br /> long: {location?.lng.toFixed(6)}</span> :
+                  <span>Entrez une adresse pour voir les informations s'afficher</span>
+                }
+               </p>
             </div>
             <div className="flex flex-row gap-4">
               <Button variant={'outline'} onClick={() => setStep(5)} className="w-min px-8 mt-8 h-12 rounded-lg">

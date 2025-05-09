@@ -1,6 +1,6 @@
 "use client";
 
-import { Location } from "@/components/sections/MapSection/map-container";
+import { Location } from "@/app/types";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
