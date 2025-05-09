@@ -73,8 +73,8 @@ export const EditEventFormSection = ({ eventData} : EditEventDialogProps): JSX.E
   const [location, setLocation] = useState<Location | null>({
     address: `${eventData?.lieu.split(";")[1]}`,
     name: `${eventData?.lieu.split(";")[0]}`,
-    lat: Number(eventData?.gps.split(";")[0]),
-    lng: Number(eventData?.gps.split(";")[1]),
+    lat: eventData?.gps ? Number(eventData?.gps.split(";")[0]) : 46.091091,
+    lng: eventData?.gps ? Number(eventData?.gps.split(";")[1]) : -64.781880,
     placeId: (new Date()).getTime().toString()
   });
 

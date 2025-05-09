@@ -1,6 +1,5 @@
-"use client";
+'use client'
 
-import EventDetailsDialog from "@/app/components/event-details-dialog";
 import { holidays } from "@/app/lib/holidays";
 import { cn } from "@/lib/utils";
 import {
@@ -22,7 +21,8 @@ import {
 } from "date-fns";
 import { fr } from "date-fns/locale";
 import React, { useState } from "react";
-import { Event } from "../../types";
+import { Event } from "@/app/types";
+import EventDetailsDialog from "../event-details-dialog";
 
 interface CalendarGridProps {
   currentDate: Date;
@@ -30,7 +30,11 @@ interface CalendarGridProps {
   view: "day" | "week" | "month";
 }
 
-export function CalendarGrid({ currentDate, events, view }: CalendarGridProps) {
+export function CalendarGrid({ 
+  currentDate, 
+  events, 
+  view
+}: CalendarGridProps) {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -91,7 +95,7 @@ export function CalendarGrid({ currentDate, events, view }: CalendarGridProps) {
     return holidays.find(holiday => isSameDay(parseISO(holiday.date), date))?.name;
   };
 
-  if (view === "day") {
+  if ( view === 'day') {
     return (
       <>
         <div className="h-[600px] overflow-y-auto">
@@ -131,18 +135,16 @@ export function CalendarGrid({ currentDate, events, view }: CalendarGridProps) {
             })}
           </div>
         </div>
-        {/**
-          <EventDetailsDialog
-            event={selectedEvent}
-            open={dialogOpen}
-            onOpenChange={setDialogOpen}
-          />
-         */}
+        <EventDetailsDialog
+          event={selectedEvent}
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+        /> 
       </>
-    );
+    )
   }
 
-  if (view === "week") {
+  if ( view === 'week') {
     return (
       <>
         <div className="h-[600px] overflow-y-auto">
@@ -198,15 +200,13 @@ export function CalendarGrid({ currentDate, events, view }: CalendarGridProps) {
             ))}
           </div>
         </div>
-        {/** 
-          <EventDetailsDialog
-            event={selectedEvent}
-            open={dialogOpen}
-            onOpenChange={setDialogOpen}
-          />
-         */}
+        <EventDetailsDialog
+          event={selectedEvent}
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+        /> 
       </>
-    );
+    )
   }
 
   return (
@@ -272,12 +272,12 @@ export function CalendarGrid({ currentDate, events, view }: CalendarGridProps) {
             </div>
           );
         })}
-      </div>
-       <EventDetailsDialog
-         event={selectedEvent}
-         open={dialogOpen}
-         onOpenChange={setDialogOpen}
-       />      
+      </div>   
+      <EventDetailsDialog
+        event={selectedEvent}
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+      /> 
     </>
   );
 }

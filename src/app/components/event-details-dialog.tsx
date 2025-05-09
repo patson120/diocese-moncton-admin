@@ -100,8 +100,8 @@ export default function EventDetailsDialog({ event, open, onOpenChange }: EventD
                       location={{
                         address: `${event?.lieu.split(";")[1]}`,
                         name: `${event?.lieu.split(";")[0]}`,
-                        lat: Number(event?.gps.split(";")[0]),
-                        lng: Number(event?.gps.split(";")[1]),
+                        lat: event?.gps ? Number(event?.gps.split(";")[0]) : 46.091091,
+                        lng: event?.gps ? Number(event?.gps.split(";")[1]) : -64.781880,
                         placeId: (new Date()).getTime().toString()
                       }}
                     />
