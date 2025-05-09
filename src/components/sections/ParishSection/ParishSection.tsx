@@ -22,6 +22,7 @@ import { Paroisse, TypeParoisse } from '../../../app/types';
 import { AddParishFormSection } from './AddParishFormSection';
 import { AddUnitePastoraleFormSection } from './AddUnitePastoraleFormSection';
 import { EditParishFormSection } from './EditParishFormSection';
+import { MapContainer } from '../MapSection/map-container';
 
 export default function ParishSection() {
     const router = useRouter()
@@ -553,25 +554,11 @@ export default function ParishSection() {
                                 </h2>
                                 <div className="w-full h-[350px] bg-neutral-100 rounded-3xl overflow-hidden">
                                     <div className="h-[350px] rounded-[18px] overflow-scroll v-scroll relative">
-                                        <div className="relative w-[2100px] h-[1200px] top-[-520px] left-[-473px]">
-                                            <img
-                                                className="absolute w-[700px] h-[400px] top-[520px] left-[473px] object-cover"
-                                                alt="Map detail view"
-                                                src="/rectangle-42-1.svg"
-                                            />
-                                            <img
-                                                className="absolute w-[2100px] h-[1200px] top-0 left-0 object-cover"
-                                                alt="Map overview"
-                                                src="/rectangle-42.png"
-                                            />
-                                            <div className="absolute w-[74px] h-[74px] top-[633px] left-[741px] bg-[#8b22361a] rounded-[37px] flex items-center justify-center">
-                                                <img
-                                                    className="w-8 h-8"
-                                                    alt="Location marker"
-                                                    src="/frame-2.svg"
-                                                />
-                                            </div>
-                                        </div>
+                                        {/** Map view */}
+                                        <MapContainer 
+                                            showSearchBar={false}
+                                            // location={location}
+                                        />
                                     </div>
                                 </div>
                             </section>
