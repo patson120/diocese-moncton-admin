@@ -1,7 +1,7 @@
 "use client";
 
+import { Location } from "@/app/types";
 import { useEffect, useRef, useState } from "react";
-import { Location } from "@/components/sections/MapSection/map-container";
 /// <reference types="@types/google.maps" />
 
 interface MapDisplayProps {
