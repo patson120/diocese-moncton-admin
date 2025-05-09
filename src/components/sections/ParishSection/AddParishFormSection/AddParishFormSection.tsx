@@ -641,7 +641,10 @@ export const AddParishFormSection = (): JSX.Element => {
                 {
                   location ?
                   <span>
-                    {location?.name} {location?.address}<br /> lat: {location?.lat.toFixed(6)} <br /> long: {location?.lng.toFixed(6)}</span> :
+                    {location?.name} {location?.address}<br /> 
+                    lat: {location?.lat.toFixed(6)} <br /> 
+                    lng: {location?.lng.toFixed(6)}
+                  </span> :
                   <span>Entrez une adresse pour voir les informations s'afficher</span>
                 }
                </p>

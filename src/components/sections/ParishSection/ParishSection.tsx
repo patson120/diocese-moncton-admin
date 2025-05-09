@@ -553,11 +553,17 @@ export default function ParishSection() {
                                     Sur la carte
                                 </h2>
                                 <div className="w-full h-[350px] bg-neutral-100 rounded-3xl overflow-hidden">
-                                    <div className="h-[350px] rounded-[18px] overflow-scroll v-scroll relative">
+                                    <div className="h-[350px] rounded-[18px]">
                                         {/** Map view */}
                                         <MapContainer 
                                             showSearchBar={false}
-                                            // location={location}
+                                            location={{
+                                                address: `${selecteParish?.adresse.split(";")[1]}`,
+                                                name: `${selecteParish?.adresse.split(";")[0]}`,
+                                                lat: Number(selecteParish?.gps.split(";")[0]),
+                                                lng: Number(selecteParish?.gps.split(";")[1]),
+                                                placeId: (new Date()).getTime().toString()
+                                            }}
                                         />
                                     </div>
                                 </div>

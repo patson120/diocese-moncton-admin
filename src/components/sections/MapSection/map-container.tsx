@@ -109,7 +109,7 @@ export function MapContainer({
         </div>
       */}
 
-      <div className="h-full w-full rounded-xl overflow-hidden shadow-md relative">
+      <div className="h-full w-full overflow-hidden relative">
         <MapDisplay selectedLocation={selectedLocation} />
         {
           showSearchBar && 
