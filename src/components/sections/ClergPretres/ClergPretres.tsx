@@ -28,14 +28,15 @@ export const ClergPretres = (): JSX.Element => {
   const [members, setMembers] = useState<Member[]>([])
   const [selectedMember, setSelectedMember] = useState<Member>()
   const [membersCopy, setMembersCopy] = useState<Member[]>([])
+  const [categoryId, setCategoryId] = useState('21')
 
   // Clergy tabs data
   const clergyTabs = [
-    { value: "archeveque", label: "Archevêque", active: false },
-    { value: "diacres", label: "Diacres", active: false },
-    { value: "pretres", label: "Prêtres", active: false },
-    { value: "religieux", label: "Religieux", active: true, },
-    { value: "options", label: "Options", active: false },
+    { value: "archeveque", label: "Archevêque", active: false, id: '21' },
+    { value: "diacres", label: "Diacres", active: false, id: '19'  },
+    { value: "pretres", label: "Prêtres", active: false, id: '20'  },
+    { value: "religieux", label: "Religieux", active: true, id: '22' },
+    { value: "options", label: "Options", active: false, id: '23' },
   ];
 
   // Priest data
@@ -64,11 +65,11 @@ export const ClergPretres = (): JSX.Element => {
 
   useEffect(() => {
       ( async () => {
-        const response: Member[] = await apiClient.get('/api/membres')
+        const response: Member[] = await apiClient.get(`/api/membres?categorie_id=${categoryId}`)
         setMembers(response)
         setMembersCopy(response)
       })()
-  }, [])
+  }, [categoryId])
 
   const handleDeleteMember = async () => {
     setIsDeleting(true)
@@ -99,6 +100,7 @@ export const ClergPretres = (): JSX.Element => {
                   <TabsTrigger
                     key={item.value}
                     value={item.value}
+                    onClick={() => setCategoryId(item.id)}
                     className="p-2.5 rounded-none font-body-3 text-sm data-[state=active]:border-b-[3px] data-[state=active]:border-blue data-[state=active]:text-blue data-[state=active]:shadow-none data-[state=inactive]:text-gray data-[state=inactive]:bg-transparent">
                     {item.label}
                   </TabsTrigger>
@@ -148,11 +150,11 @@ export const ClergPretres = (): JSX.Element => {
 
                         <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
                           <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
-                            <span className="font-bold text-sm">
+                            <span className="font-bold text-lg">
                               {member.nom} {member.prenom}
                             </span>
                           </div>
-                          <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
+                          <p className="relative self-stretch font-body-3 text-gray text-sm tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
                             {member.poste}
                           </p>
                         </div>
@@ -161,6 +163,119 @@ export const ClergPretres = (): JSX.Element => {
                   ))}
                 </div>
               </ScrollArea>
+            </TabsContent>
+
+            {/* Diacres */}
+            <TabsContent
+              value="diacres"
+              className="border-none">
+              <Tabs defaultValue="actif" className="w-full">
+                <div className="flex justify-between items-center">
+                  <TabsList className="justify-start h-12 p-0 bg-[#F1F3F6] rounded-md px-3 py-2">
+                    <TabsTrigger
+                      value="actif"
+                      className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
+                      <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
+                        Actif
+                      </span>
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="en-retraite"
+                      className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray"
+                    >
+                      <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
+                        En retraite
+                      </span>
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="decedes"
+                      className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
+                      <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
+                        Décédés
+                      </span>
+                    </TabsTrigger>
+                  </TabsList>
+                  <div className="flex items-start gap-2.5">
+                    <div className="flex items-center gap-2">
+                      <div className="relative w-[256px]">
+                        <Input
+                          className="h-10 bg-neutral-100 border-none pl-9"
+                          placeholder="Rechercher un diacre"
+                        />
+                        <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
+                      </div>
+                      <Button
+                        variant="outline"
+                        className="h-11 flex items-center gap-2.5 border border-[#d9d9d9] rounded-lg">
+                        <ListFilter className="w-5 h-5" />
+                        <span className="font-body-3 text-noir-dashboard">
+                          Trier par...
+                        </span>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        className="w-11 h-11 p-0 flex items-center justify-center border border-[#d9d9d9] rounded-lg">
+                        <LayoutGridIcon className="w-5 h-5" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                <TabsContent value="actif" className="mt-6 space-y-6">
+                  <ScrollArea className="w-full h-[calc(80vh)] mt-6">
+                    {/* Diacres grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
+                      {members.map((member, index) => (
+                        <Card
+                          onClick={() => {
+                            setOpenModal(true)
+                            setSelectedMember(member)
+                          }}
+                          key={index}
+                          className="w-full border-none shadow-none cursor-pointer"
+                        >
+                          <CardContent className="p-0 space-y-3">
+                            <div className="relative w-full h-[250px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
+                              <Image
+                                fill
+                                priority
+                                className="object-cover"
+                                alt="Vector"
+                                src="/clerge-1.png"
+                              />
+                            </div>
+
+                            <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
+                              <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
+                                <span className="font-bold text-sm">
+                                  {member.nom} {member.prenom}
+                                </span>
+                              </div>
+                              <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
+                                {member.poste}
+                              </p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </TabsContent>
+
+                <TabsContent
+                  value="en-retraite"
+                  className="mt-6 p-0 border-none">
+                  <div className="flex items-center justify-center h-[400px]">
+                    <p className="text-gray">Aucun Diacre</p>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="decedes" className="mt-6 p-0 border-none">
+                  <div className="flex items-center justify-center h-[400px]">
+                    <p className="text-gray">Aucun Diacre décédé</p>
+                  </div>
+                </TabsContent>
+              </Tabs>
             </TabsContent>
 
             {/* Réligieux */}
@@ -223,12 +338,14 @@ export const ClergPretres = (): JSX.Element => {
                   <ScrollArea className="w-full h-[calc(80vh)] ">
                     {/* Priests grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
-                      {priestsData.map((priest, index) => (
+                    {members.map((member, index) => (
                         <Card
-                          onClick={() => setOpenModal(true)}
+                          onClick={() => {
+                            setOpenModal(true)
+                            setSelectedMember(member)
+                          }}
                           key={index}
-                          className="w-full border-none shadow-none cursor-pointer"
-                        >
+                          className="w-full border-none shadow-none cursor-pointer">
                           <CardContent className="p-0 space-y-3">
                             <div className="relative self-stretch w-full h-[250px] bg-[#f0f0f0] rounded-xl flex items-center justify-center">
                               <Image
@@ -242,11 +359,11 @@ export const ClergPretres = (): JSX.Element => {
                             <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
                               <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
                                 <span className="font-bold text-sm">
-                                  {priest.name}
+                                {member.nom} {member.prenom}
                                 </span>
                               </div>
                               <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
-                                {priest.parish}
+                              {member.poste}
                               </p>
                             </div>
                           </CardContent>
@@ -267,116 +384,6 @@ export const ClergPretres = (): JSX.Element => {
                 <TabsContent value="decedes" className="mt-6 p-0 border-none">
                   <div className="flex items-center justify-center h-[400px]">
                     <p className="text-gray">Aucun prêtre décédé</p>
-                  </div>
-                </TabsContent>
-              </Tabs>
-            </TabsContent>
-
-            {/* Diacres */}
-            <TabsContent
-              value="diacres"
-              className="border-none">
-              <Tabs defaultValue="actif" className="w-full">
-                <div className="flex justify-between items-center">
-                  <TabsList className="justify-start h-12 p-0 bg-[#F1F3F6] rounded-md px-3 py-2">
-                    <TabsTrigger
-                      value="actif"
-                      className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
-                      <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                        Actif
-                      </span>
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="en-retraite"
-                      className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray"
-                    >
-                      <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                        En retraite
-                      </span>
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="decedes"
-                      className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
-                      <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                        Décédés
-                      </span>
-                    </TabsTrigger>
-                  </TabsList>
-                  <div className="flex items-start gap-2.5">
-                    <div className="flex items-center gap-2">
-                      <div className="relative w-[256px]">
-                        <Input
-                          className="h-10 bg-neutral-100 border-none pl-9"
-                          placeholder="Rechercher un diacre"
-                        />
-                        <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
-                      </div>
-                      <Button
-                        variant="outline"
-                        className="h-11 flex items-center gap-2.5 border border-[#d9d9d9] rounded-lg">
-                        <ListFilter className="w-5 h-5" />
-                        <span className="font-body-3 text-noir-dashboard">
-                          Trier par...
-                        </span>
-                      </Button>
-                      <Button
-                        variant="outline"
-                        className="w-11 h-11 p-0 flex items-center justify-center border border-[#d9d9d9] rounded-lg">
-                        <LayoutGridIcon className="w-5 h-5" />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-
-                <TabsContent value="actif" className="mt-6 space-y-6">
-                  <ScrollArea className="w-full h-[calc(80vh)] mt-6">
-                    {/* Archevêque grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
-                      {priestsData.map((priest, index) => (
-                        <Card
-                        onClick={() => setOpenModal(true)}
-                          key={index}
-                          className="w-full border-none shadow-none cursor-pointer"
-                        >
-                          <CardContent className="p-0 space-y-3">
-                            <div className="relative w-full h-[250px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
-                              <Image
-                                fill
-                                priority
-                                className="object-cover"
-                                alt="Vector"
-                                src="/clerge-1.png"
-                              />
-                            </div>
-
-                            <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
-                              <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
-                                <span className="font-bold text-sm">
-                                  {priest.name}
-                                </span>
-                              </div>
-                              <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
-                                {priest.parish}
-                              </p>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
-                  </ScrollArea>
-                </TabsContent>
-
-                <TabsContent
-                  value="en-retraite"
-                  className="mt-6 p-0 border-none">
-                  <div className="flex items-center justify-center h-[400px]">
-                    <p className="text-gray">Aucun Diacre</p>
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="decedes" className="mt-6 p-0 border-none">
-                  <div className="flex items-center justify-center h-[400px]">
-                    <p className="text-gray">Aucun Diacre décédé</p>
                   </div>
                 </TabsContent>
               </Tabs>
@@ -442,9 +449,12 @@ export const ClergPretres = (): JSX.Element => {
                   <ScrollArea className="w-full h-[calc(80vh)] mt-6">
                     {/* Prêtres grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
-                      {[...priestsData, ...priestsData].map((priest, index) => (
+                    {members.map((member, index) => (
                         <Card
-                        onClick={() => setOpenModal(true)}
+                          onClick={() => {
+                            setOpenModal(true)
+                            setSelectedMember(member)
+                          }}
                           key={index}
                           className="w-full border-none shadow-none cursor-pointer"
                         >
@@ -462,11 +472,11 @@ export const ClergPretres = (): JSX.Element => {
                             <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
                               <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
                                 <span className="font-bold text-sm">
-                                  {priest.name}
+                                  {member.nom} {member.prenom}
                                 </span>
                               </div>
                               <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
-                                {priest.parish}
+                                {member.poste}
                               </p>
                             </div>
                           </CardContent>
@@ -495,10 +505,52 @@ export const ClergPretres = (): JSX.Element => {
             {/* Options */}
             <TabsContent
               value="options"
-              className="mt-6 p-0 border-none">
-              <div className="flex items-center justify-center h-[400px]">
-                <p className="text-gray">Aucune option</p>
+              className="border-none">
+              <div className="flex justify-between items-center">
+                <div className="relative w-[256px]">
+                  <Input
+                    className="h-10 bg-neutral-100 border-none pl-9"
+                    placeholder="Rechercher..."
+                  />
+                  <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
+                </div>
               </div>
+              <ScrollArea className="w-full h-[calc(80vh)] mt-6">
+                {/* Options grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
+                  {members.map((member, index) => (
+                    <Card
+                      onClick={() => {
+                        setOpenModal(true)
+                        setSelectedMember(member)
+                      }}
+                      key={index}
+                      className="w-full border-none shadow-none cursor-pointer">
+                      <CardContent className="p-0 space-y-3">
+                        <div className="relative self-stretch w-full h-[250px] bg-[#f0f0f0] rounded-xl flex items-center justify-center">
+                          <Image
+                            width={60}
+                            height={60}
+                            alt="Vector"
+                            src="/vector.svg"
+                          />
+                        </div>
+
+                        <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
+                          <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
+                            <span className="font-bold text-lg">
+                              {member.nom} {member.prenom}
+                            </span>
+                          </div>
+                          <p className="relative self-stretch font-body-3 text-gray text-sm tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
+                            {member.poste}
+                          </p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </ScrollArea>
             </TabsContent>
           </section>
         </div>

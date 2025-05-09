@@ -284,6 +284,7 @@ export default function AddMemberFormSection(){
                         onClick={() => setStatus(opt.value)}
                         key={opt.value}
                         variant="outline"
+                        type="button"
                         className={
                           cn("rounded-[20px] hover:bg-blue hover:text-white px-3 py-2 h-auto  font-body-3 font-[number:var(--body-3-font-weight)] text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]",
                             status === opt.value ? 'text-white bg-blue' : 'text-[#454545]'
