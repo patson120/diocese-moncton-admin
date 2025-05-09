@@ -17,7 +17,8 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Category } from "../../../../app/types";
+import { Category, Location } from "@/app/types";
+import { MapContainer } from "@/components/sections/MapSection/map-container";
 
 const defaultEvent = {
   paroisse_id: 1,
@@ -67,6 +68,8 @@ export const AddEventFormSection = (): JSX.Element => {
   const [coverImage, setCoverImage] = useState('')
   const [categories, setCategories] = useState<Category[]>([])
   const [selectedCategory, setSelectedCategory] = useState<Category>()
+
+  const [location, setLocation] = useState<Location | null>(null);
 
   const [event, setEvent] = useState(defaultEvent)
 
@@ -122,23 +125,35 @@ export const AddEventFormSection = (): JSX.Element => {
   }, [])
 
   const handleCreateEvent = async () => {
+    // Vérifier si les coordonnées de la paroisse sont fournies
+    if (!location){
+      toast.error(
+        <div className='p-3 bg-red-500 text-white rounded-md'>
+          <p>Veuillez indiquer la location de l'évènement <span>"{formOne.getValues("titre_fr")}"</span> </p>
+        </div>
+      )
+      return
+    }
     if (isLoading) return
     setIsloading(true)
+
     try {
       const response: any = await apiClient.post('/api/evenements', {
         ...event,
         categorie_id: selectedCategory?.id,
-        contact: formFour.getValues('contact')
+        contact: formFour.getValues('contact'),
+        gps: `${location?.lat};${location?.lng}`,
+        lieu: `${location?.name};${location?.address}`
       })
       if (response.id) {
         toast.success("Evènement enregistré avec succès !")
-        formOne.reset()
-        formTwo.reset()
-        formThree.reset()
-        formFour.reset()
-        setStep(1)
-        setCoverImage('')
-        setOpenModal(false)
+        // formOne.reset()
+        // formTwo.reset()
+        // formThree.reset()
+        // formFour.reset()
+        // setStep(1)
+        // setCoverImage('')
+        // setOpenModal(false)
         setTimeout(() => {
           window.location.reload()
         }, 1500);
@@ -441,10 +456,27 @@ export const AddEventFormSection = (): JSX.Element => {
                   )}
                 />
                 <h1 className="font-bold">Emplacement sur la map</h1>
-                <div className="h-80 w-full bg-black/5 rounded-lg"></div>
+                <div className="h-80 w-full bg-black/5 rounded-lg overflow-hidden">
+                  {/** Map view */}
+                  <MapContainer 
+                    showSearchBar={true}
+                    location={location}
+                    setLocation={setLocation}
+                  />
+                </div>
                 <div className="flex flex-col space-y-2">
                   <h1 className="font-bold">Localisation</h1>
-                  <p className=" text-black">Entrez une adresse pour voir les informations s'afficher</p>
+                  <p className=" text-black">
+                    {
+                      location ?
+                      <span>
+                        {location?.name} {location?.address}<br /> 
+                        lat: {location?.lat.toFixed(6)} <br /> 
+                        lng: {location?.lng.toFixed(6)}
+                      </span> :
+                      <span>Entrez une adresse pour voir les informations s'afficher</span>
+                    }
+                  </p>
                 </div>
                 
                 <div className="flex flex-row gap-4">

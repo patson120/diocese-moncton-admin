@@ -5,7 +5,7 @@ import { CalendarHeader } from "@/app/components/calendar/calendar-header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { apiClient } from "@/lib/axios";
 import { JSX, useEffect, useState } from "react";
-import { Event } from "../../../app/types";
+import { Event } from "@/app/types";
 import { AddEventFormSection } from "./AddEventFormSection ";
 
 export default function EventSection(): JSX.Element {

@@ -9,6 +9,7 @@ import { apiClient } from '@/lib/axios';
 import { toast } from 'sonner';
 import { Loader } from '@/components/ui/loader';
 import { EditEventFormSection } from '@/components/sections/EventSection/EditEventFormSection';
+import { MapContainer } from '@/components/sections/MapSection/map-container';
 
 interface EventDetailsDialogProps {
   event: Event | null;
@@ -71,36 +72,43 @@ export default function EventDetailsDialog({ event, open, onOpenChange }: EventD
               style={{ backgroundImage: `url("/image-5.png")` }}
             />
             {/* Content section */}
-              <section className="flex flex-col gap-2 ">
-                <div className='flex justify-between items-center'>
-                    <p className='text-gray font-medium'>
-                      {formatDateToLocal((new Date(event.date_event)).toISOString())} | <span>{event.heure_event}</span>
-                    </p>
+            <section className="flex flex-col gap-2 ">
+              <div className='flex justify-between items-center'>
+                  <p className='text-gray font-medium'>
+                    {formatDateToLocal((new Date(event.date_event)).toISOString())} | <span>{event.heure_event}</span>
+                  </p>
+              </div>
+              <div className='flex flex-col space-y-7'>
+                <div className='flex flex-col space-y-3'>
+                  <h3 className='text-3xl font-bold'>{event.titre_fr}</h3>
+                  <p className='text-gray'>{event.description_fr}</p>
                 </div>
-                <div className='flex flex-col space-y-7'>
-                  <div className='flex flex-col space-y-3'>
-                    <h3 className='text-3xl font-bold'>{event.titre_fr}</h3>
-                    <p className='text-gray'>{event.description_fr}</p>
-                  </div>
-                  <div className='flex justify-start items-center gap-3'>
-                    <h3 className='font-bold'>Type évènement</h3>
-                    <span className='px-4 py-2 border border-black/20 rounded-xl text-gray'>{event.categorie.intitule_fr}</span>
-                    {/*
-                      categories.map((cat, index) =>(
-                        <span key={index} className='px-4 py-2 border border-black/20 rounded-xl text-gray'>{cat}</span>
-                      ))
-                    */}
-                  </div>
-                  <div className='flex flex-col space-y-2'>
-                    <h3 className='font-bold text-2xl'>Lieu</h3>
-                    <p className='text-gray'>{event.lieu}</p>
-                  </div>
-                  <div className='flex flex-col space-y-3'>
-                    <h3 className='font-bold text-2xl'>Sur la carte</h3>
-                    <p className='bg-[#F1F3F6] h-96 rounded-lg'></p>
+                <div className='flex justify-start items-center gap-3'>
+                  <h3 className='font-bold'>Type évènement</h3>
+                  <span className='px-4 py-2 border border-black/20 rounded-xl text-gray'>{event.categorie.intitule_fr}</span>
+                </div>
+                <div className='flex flex-col space-y-2'>
+                  <h3 className='font-bold text-2xl'>Lieu</h3>
+                  <p className='text-gray'>{event.lieu}</p>
+                </div>
+                <div className='flex flex-col space-y-3'>
+                  <h3 className='font-bold text-2xl'>Sur la carte</h3>
+                  <div className='bg-[#F1F3F6] h-96 rounded-lg overflow-hidden'>
+                    {/** Map view */}
+                    <MapContainer 
+                      showSearchBar={false}
+                      location={{
+                        address: `${event?.lieu.split(";")[1]}`,
+                        name: `${event?.lieu.split(";")[0]}`,
+                        lat: Number(event?.gps.split(";")[0]),
+                        lng: Number(event?.gps.split(";")[1]),
+                        placeId: (new Date()).getTime().toString()
+                      }}
+                    />
                   </div>
                 </div>
-              </section>
+              </div>
+            </section>
           </div>
         </div>
       </SheetContent>

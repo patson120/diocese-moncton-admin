@@ -14,11 +14,10 @@ import { JSX, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { Category, Event } from "../../../../app/types";
+import { Category, Event, Location } from "@/app/types";
+import { MapContainer } from "../../MapSection/map-container";
 
-interface EditEventDialogProps {
-  eventData: Event;
-}
+interface EditEventDialogProps { eventData: Event }
 
 const defaultEvent = {
   paroisse_id: 1,
@@ -70,6 +69,14 @@ export const EditEventFormSection = ({ eventData} : EditEventDialogProps): JSX.E
   const [selectedCategory, setSelectedCategory] = useState<Category>()
 
   const [event, setEvent] = useState(defaultEvent)
+
+  const [location, setLocation] = useState<Location | null>({
+    address: `${eventData?.lieu.split(";")[1]}`,
+    name: `${eventData?.lieu.split(";")[0]}`,
+    lat: Number(eventData?.gps.split(";")[0]),
+    lng: Number(eventData?.gps.split(";")[1]),
+    placeId: (new Date()).getTime().toString()
+  });
 
   // Forms 
   const formOne = useForm<z.infer<typeof formSchemaOne>>({
@@ -130,17 +137,19 @@ export const EditEventFormSection = ({ eventData} : EditEventDialogProps): JSX.E
       const response: any = await apiClient.put(`/api/evenements/${eventData.id}`, {
         ...event,
         categorie_id: selectedCategory?.id,
-        contact: formFour.getValues('contact')
+        contact: formFour.getValues('contact'),
+        gps: `${location?.lat};${location?.lng}`,
+        lieu: `${location?.name};${location?.address}`
       })
       if (response.id) {
         toast.success("Evènement modifié avec succès !")
-        formOne.reset()
-        formTwo.reset()
-        formThree.reset()
-        formFour.reset()
-        setStep(1)
-        setCoverImage('')
-        setOpenModal(false)
+        // formOne.reset()
+        // formTwo.reset()
+        // formThree.reset()
+        // formFour.reset()
+        // setStep(1)
+        // setCoverImage('')
+        // setOpenModal(false)
         setTimeout(() => {
           window.location.reload()
         }, 2000);
@@ -444,10 +453,27 @@ export const EditEventFormSection = ({ eventData} : EditEventDialogProps): JSX.E
                   )}
                 />
                 <h1 className="font-bold">Emplacement sur la map</h1>
-                <div className="h-80 w-full bg-black/5 rounded-lg"></div>
+                <div className="h-80 w-full bg-black/5 rounded-lg overflow-hidden">
+                  {/** Map view */}
+                  <MapContainer 
+                    showSearchBar={true}
+                    location={location}
+                    setLocation={setLocation}
+                  />
+                </div>
                 <div className="flex flex-col space-y-2">
                   <h1 className="font-bold">Localisation</h1>
-                  <p className=" text-black">Entrez une adresse pour voir les informations s'afficher</p>
+                  <p className=" text-black">
+                    {
+                      location ?
+                      <span>
+                        {location?.name} {location?.address}<br /> 
+                        lat: {location?.lat.toFixed(6)} <br /> 
+                        lng: {location?.lng.toFixed(6)}
+                      </span> :
+                      <span>Entrez une adresse pour voir les informations s'afficher</span>
+                    }
+                    </p>
                 </div>
                 
                 <div className="flex flex-row gap-4">

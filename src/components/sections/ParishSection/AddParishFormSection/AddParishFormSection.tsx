@@ -56,7 +56,6 @@ const formSchemaThree = z.object({
   ordonne_le: z.string().min(1, { message: "Date d'ordination requise" }),
   premier_cure: z.string().min(1, { message: "Date du premier curé requise" }),
 })
-
 const formSchemaFour = z.object({
   telephone: z.string().min(1, { message: "Téléphone requis" }),
   email: z.string().email({ message: "Email requis"}),

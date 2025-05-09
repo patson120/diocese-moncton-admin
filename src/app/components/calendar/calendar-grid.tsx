@@ -131,11 +131,13 @@ export function CalendarGrid({ currentDate, events, view }: CalendarGridProps) {
             })}
           </div>
         </div>
-        <EventDetailsDialog
-          event={selectedEvent}
-          open={dialogOpen}
-          onOpenChange={setDialogOpen}
-        />
+        {/**
+          <EventDetailsDialog
+            event={selectedEvent}
+            open={dialogOpen}
+            onOpenChange={setDialogOpen}
+          />
+         */}
       </>
     );
   }
@@ -159,7 +161,7 @@ export function CalendarGrid({ currentDate, events, view }: CalendarGridProps) {
               </div>
             ))}
 
-            {hours.map((hour, index) => (
+            { hours.map((hour, index) => (
               <React.Fragment key={index}>
                 <div key={`hour-${hour}`} className="p-2 text-sm text-muted-foreground border-b">
                   {format(setHours(setMinutes(new Date(), 0), hour), "HH:mm")}
@@ -196,11 +198,13 @@ export function CalendarGrid({ currentDate, events, view }: CalendarGridProps) {
             ))}
           </div>
         </div>
-        <EventDetailsDialog
-          event={selectedEvent}
-          open={dialogOpen}
-          onOpenChange={setDialogOpen}
-        />
+        {/** 
+          <EventDetailsDialog
+            event={selectedEvent}
+            open={dialogOpen}
+            onOpenChange={setDialogOpen}
+          />
+         */}
       </>
     );
   }
