@@ -2,23 +2,21 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  LayoutGridIcon,
-  ListFilter,
-  SearchIcon
-} from "lucide-react";
-import Image from "next/image";
-import { JSX, useEffect, useState } from "react";
-import AddMemberFormSection  from "./AddMemberFormSection";
+import { Loader } from "@/components/ui/loader";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { Member } from "../../../app/types";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { apiClient } from "@/lib/axios";
-import { Loader } from "@/components/ui/loader";
-import EditMemberFormSection from "./EditMemberFormSection";
+import {
+  LayoutGridIcon,
+  ListFilter
+} from "lucide-react";
+import Image from "next/image";
+import { JSX, Suspense, useEffect, useState } from "react";
 import { toast } from "sonner";
+import { Member } from "../../../app/types";
+import AddMemberFormSection from "./AddMemberFormSection";
+import EditMemberFormSection from "./EditMemberFormSection";
 import SearchInput from "./SearchInput";
 
 export const ClergPretres = (): JSX.Element => {
