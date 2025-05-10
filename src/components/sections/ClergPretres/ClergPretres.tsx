@@ -19,6 +19,7 @@ import { apiClient } from "@/lib/axios";
 import { Loader } from "@/components/ui/loader";
 import EditMemberFormSection from "./EditMemberFormSection";
 import { toast } from "sonner";
+import SearchInput from "./SearchInput";
 
 export const ClergPretres = (): JSX.Element => {
 
@@ -27,8 +28,9 @@ export const ClergPretres = (): JSX.Element => {
 
   const [members, setMembers] = useState<Member[]>([])
   const [selectedMember, setSelectedMember] = useState<Member>()
-  const [membersCopy, setMembersCopy] = useState<Member[]>([])
   const [categoryId, setCategoryId] = useState('21')
+  const [query, setQuery] = useState('')
+  const [etat, setEtat] = useState('')
 
   // Clergy tabs data
   const clergyTabs = [
@@ -39,37 +41,15 @@ export const ClergPretres = (): JSX.Element => {
     { value: "options", label: "Options", active: false, id: '23' },
   ];
 
-  // Priest data
-  const priestsData = [
-    {
-      name: "ùBELISLE, P. Jean, C.Ss.R.",
-      parish: "Unité pastorale Providence",
-    },
-    {
-      name: "GAUTHIER, P. Bernard,C.Ss.R.",
-      parish: "Sixième archevêque de Moncton (2012-2023)",
-    },
-    {
-      name: "BERNARD, P. Bill,C.Ss.R.",
-      parish: "Unité pastorale Sainte-Famille",
-    },
-    {
-      name: "MAHN THUONG NGUYEN, P. Joseph, C.Ss.R.",
-      parish: "Unité pastorale Saint-Jean-Paul II",
-    },
-    {
-      name: "P. Jean Bourque",
-      parish: "Unité pastorale Saint-Jean XXIII",
-    },
-  ];
-
   useEffect(() => {
       ( async () => {
-        const response: Member[] = await apiClient.get(`/api/membres?categorie_id=${categoryId}`)
+        let params = `?categorie_id=${categoryId}`
+        if (query) params += `&nom=${query}`
+        if (etat) params += `&etat=${etat}`
+        const response: Member[] = await apiClient.get(`/api/membres${params}`)
         setMembers(response)
-        setMembersCopy(response)
       })()
-  }, [categoryId])
+  }, [categoryId, query, etat])
 
   const handleDeleteMember = async () => {
     setIsDeleting(true)
@@ -100,7 +80,7 @@ export const ClergPretres = (): JSX.Element => {
                   <TabsTrigger
                     key={item.value}
                     value={item.value}
-                    onClick={() => setCategoryId(item.id)}
+                    onClick={() => {setCategoryId(item.id); setEtat('')}}
                     className="p-2.5 rounded-none font-body-3 text-sm data-[state=active]:border-b-[3px] data-[state=active]:border-blue data-[state=active]:text-blue data-[state=active]:shadow-none data-[state=inactive]:text-gray data-[state=inactive]:bg-transparent">
                     {item.label}
                   </TabsTrigger>
@@ -118,13 +98,10 @@ export const ClergPretres = (): JSX.Element => {
               value="archeveque"
               className="border-none">
               <div className="flex justify-between items-center">
-                <div className="relative w-[256px]">
-                  <Input
-                    className="h-10 bg-neutral-100 border-none pl-9"
-                    placeholder="Rechercher un archevêque"
-                  />
-                  <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
-                </div>
+                <SearchInput
+                  placeholder="Rechercher un archevêque"
+                  setQuery={setQuery}
+                />
               </div>
               <ScrollArea className="w-full h-[calc(80vh)] mt-6">
                 {/* Archevêque grid */}
@@ -174,6 +151,7 @@ export const ClergPretres = (): JSX.Element => {
                   <TabsList className="justify-start h-12 p-0 bg-[#F1F3F6] rounded-md px-3 py-2">
                     <TabsTrigger
                       value="actif"
+                      onClick={() =>  setEtat('1')}
                       className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
                       <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
                         Actif
@@ -181,6 +159,7 @@ export const ClergPretres = (): JSX.Element => {
                     </TabsTrigger>
                     <TabsTrigger
                       value="en-retraite"
+                      onClick={() =>  setEtat('0')}
                       className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray"
                     >
                       <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
@@ -189,6 +168,7 @@ export const ClergPretres = (): JSX.Element => {
                     </TabsTrigger>
                     <TabsTrigger
                       value="decedes"
+                      onClick={() =>  setEtat('-1')}
                       className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
                       <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
                         Décédés
@@ -197,13 +177,10 @@ export const ClergPretres = (): JSX.Element => {
                   </TabsList>
                   <div className="flex items-start gap-2.5">
                     <div className="flex items-center gap-2">
-                      <div className="relative w-[256px]">
-                        <Input
-                          className="h-10 bg-neutral-100 border-none pl-9"
-                          placeholder="Rechercher un diacre"
-                        />
-                        <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
-                      </div>
+                      <SearchInput
+                        placeholder="Rechercher un diacre"
+                        setQuery={setQuery}
+                      />
                       <Button
                         variant="outline"
                         className="h-11 flex items-center gap-2.5 border border-[#d9d9d9] rounded-lg">
@@ -265,15 +242,85 @@ export const ClergPretres = (): JSX.Element => {
                 <TabsContent
                   value="en-retraite"
                   className="mt-6 p-0 border-none">
-                  <div className="flex items-center justify-center h-[400px]">
-                    <p className="text-gray">Aucun Diacre</p>
-                  </div>
+                  <ScrollArea className="w-full h-[calc(80vh)] mt-6">
+                    {/* Diacres grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
+                      {members.map((member, index) => (
+                        <Card
+                          onClick={() => {
+                            setOpenModal(true)
+                            setSelectedMember(member)
+                          }}
+                          key={index}
+                          className="w-full border-none shadow-none cursor-pointer"
+                        >
+                          <CardContent className="p-0 space-y-3">
+                            <div className="relative w-full h-[250px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
+                              <Image
+                                fill
+                                priority
+                                className="object-cover"
+                                alt="Vector"
+                                src="/clerge-1.png"
+                              />
+                            </div>
+
+                            <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
+                              <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
+                                <span className="font-bold text-sm">
+                                  {member.nom} {member.prenom}
+                                </span>
+                              </div>
+                              <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
+                                {member.poste}
+                              </p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </ScrollArea>
                 </TabsContent>
 
                 <TabsContent value="decedes" className="mt-6 p-0 border-none">
-                  <div className="flex items-center justify-center h-[400px]">
-                    <p className="text-gray">Aucun Diacre décédé</p>
-                  </div>
+                  <ScrollArea className="w-full h-[calc(80vh)] mt-6">
+                    {/* Diacres grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
+                      {members.map((member, index) => (
+                        <Card
+                          onClick={() => {
+                            setOpenModal(true)
+                            setSelectedMember(member)
+                          }}
+                          key={index}
+                          className="w-full border-none shadow-none cursor-pointer"
+                        >
+                          <CardContent className="p-0 space-y-3">
+                            <div className="relative w-full h-[250px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
+                              <Image
+                                fill
+                                priority
+                                className="object-cover"
+                                alt="Vector"
+                                src="/clerge-1.png"
+                              />
+                            </div>
+
+                            <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
+                              <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
+                                <span className="font-bold text-sm">
+                                  {member.nom} {member.prenom}
+                                </span>
+                              </div>
+                              <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
+                                {member.poste}
+                              </p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </ScrollArea>
                 </TabsContent>
               </Tabs>
             </TabsContent>
@@ -286,6 +333,7 @@ export const ClergPretres = (): JSX.Element => {
                 <div className="flex justify-between items-center">
                   <TabsList className="justify-start h-12 p-0 bg-[#F1F3F6] rounded-md px-3 py-2">
                     <TabsTrigger
+                      onClick={() =>  setEtat('')}
                       value="pretres-redemptoristes"
                       className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
                       <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
@@ -294,6 +342,7 @@ export const ClergPretres = (): JSX.Element => {
                     </TabsTrigger>
                     <TabsTrigger
                       value="autres-groupes"
+                      onClick={() =>  setEtat('')}
                       className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray"
                     >
                       <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
@@ -302,6 +351,7 @@ export const ClergPretres = (): JSX.Element => {
                     </TabsTrigger>
                     <TabsTrigger
                       value="decedes"
+                      onClick={() =>  setEtat('-1')}
                       className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
                       <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
                         Décédés
@@ -310,13 +360,10 @@ export const ClergPretres = (): JSX.Element => {
                   </TabsList>
                   <div className="flex items-start gap-2.5">
                     <div className="flex items-center gap-2">
-                      <div className="relative w-[256px]">
-                        <Input
-                          className="h-10 bg-neutral-100 border-none pl-9"
-                          placeholder="Rechercher un prêtre"
-                        />
-                        <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
-                      </div>
+                      <SearchInput
+                        placeholder="Rechercher un réligieux"
+                        setQuery={setQuery}
+                      />
                       <Button
                         variant="outline"
                         className="h-11 flex items-center gap-2.5 border border-[#d9d9d9] rounded-lg">
@@ -376,15 +423,81 @@ export const ClergPretres = (): JSX.Element => {
                 <TabsContent
                   value="autres-groupes"
                   className="mt-6 p-0 border-none">
-                  <div className="flex items-center justify-center h-[400px]">
-                    <p className="text-gray">Aucun autre groupe</p>
-                  </div>
+                  <ScrollArea className="w-full h-[calc(80vh)] ">
+                    {/* Priests grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
+                    {members.map((member, index) => (
+                        <Card
+                          onClick={() => {
+                            setOpenModal(true)
+                            setSelectedMember(member)
+                          }}
+                          key={index}
+                          className="w-full border-none shadow-none cursor-pointer">
+                          <CardContent className="p-0 space-y-3">
+                            <div className="relative self-stretch w-full h-[250px] bg-[#f0f0f0] rounded-xl flex items-center justify-center">
+                              <Image
+                                width={60}
+                                height={60}
+                                alt="Vector"
+                                src="/vector.svg"
+                              />
+                            </div>
+
+                            <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
+                              <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
+                                <span className="font-bold text-sm">
+                                {member.nom} {member.prenom}
+                                </span>
+                              </div>
+                              <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
+                              {member.poste}
+                              </p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </ScrollArea>
                 </TabsContent>
 
                 <TabsContent value="decedes" className="mt-6 p-0 border-none">
-                  <div className="flex items-center justify-center h-[400px]">
-                    <p className="text-gray">Aucun prêtre décédé</p>
-                  </div>
+                  <ScrollArea className="w-full h-[calc(80vh)] ">
+                    {/* Priests grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
+                    {members.map((member, index) => (
+                        <Card
+                          onClick={() => {
+                            setOpenModal(true)
+                            setSelectedMember(member)
+                          }}
+                          key={index}
+                          className="w-full border-none shadow-none cursor-pointer">
+                          <CardContent className="p-0 space-y-3">
+                            <div className="relative self-stretch w-full h-[250px] bg-[#f0f0f0] rounded-xl flex items-center justify-center">
+                              <Image
+                                width={60}
+                                height={60}
+                                alt="Vector"
+                                src="/vector.svg"
+                              />
+                            </div>
+
+                            <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
+                              <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
+                                <span className="font-bold text-sm">
+                                {member.nom} {member.prenom}
+                                </span>
+                              </div>
+                              <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
+                              {member.poste}
+                              </p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </ScrollArea>
                 </TabsContent>
               </Tabs>
             </TabsContent>
@@ -397,6 +510,7 @@ export const ClergPretres = (): JSX.Element => {
                 <div className="flex justify-between items-center">
                   <TabsList className="justify-start h-12 p-0 bg-[#F1F3F6] rounded-md px-3 py-2">
                     <TabsTrigger
+                      onClick={() =>  setEtat('1')}
                       value="actif"
                       className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
                       <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
@@ -405,6 +519,7 @@ export const ClergPretres = (): JSX.Element => {
                     </TabsTrigger>
                     <TabsTrigger
                       value="en-retraite"
+                      onClick={() =>  setEtat('0')}
                       className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray"
                     >
                       <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
@@ -413,6 +528,7 @@ export const ClergPretres = (): JSX.Element => {
                     </TabsTrigger>
                     <TabsTrigger
                       value="decedes"
+                      onClick={() =>  setEtat('-1')}
                       className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
                       <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
                         Décédés
@@ -421,13 +537,10 @@ export const ClergPretres = (): JSX.Element => {
                   </TabsList>
                   <div className="flex items-start gap-2.5">
                     <div className="flex items-center gap-2">
-                      <div className="relative w-[256px]">
-                        <Input
-                          className="h-10 bg-neutral-100 border-none pl-9"
-                          placeholder="Rechercher un prêtre"
-                        />
-                        <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
-                      </div>
+                      <SearchInput
+                        placeholder="Rechercher un prêtre"
+                        setQuery={setQuery}
+                      />
                       <Button
                         variant="outline"
                         className="h-11 flex items-center gap-2.5 border border-[#d9d9d9] rounded-lg">
@@ -489,15 +602,85 @@ export const ClergPretres = (): JSX.Element => {
                 <TabsContent
                   value="en-retraite"
                   className="mt-6 p-0 border-none">
-                  <div className="flex items-center justify-center h-[400px]">
-                    <p className="text-gray">Aucun Diacre</p>
-                  </div>
+                  <ScrollArea className="w-full h-[calc(80vh)] mt-6">
+                    {/* Prêtres grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
+                    {members.map((member, index) => (
+                        <Card
+                          onClick={() => {
+                            setOpenModal(true)
+                            setSelectedMember(member)
+                          }}
+                          key={index}
+                          className="w-full border-none shadow-none cursor-pointer"
+                        >
+                          <CardContent className="p-0 space-y-3">
+                            <div className="relative w-full h-[250px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
+                              <Image
+                                fill
+                                priority
+                                className="object-cover"
+                                alt="Vector"
+                                src="/clerge-1.png"
+                              />
+                            </div>
+
+                            <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
+                              <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
+                                <span className="font-bold text-sm">
+                                  {member.nom} {member.prenom}
+                                </span>
+                              </div>
+                              <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
+                                {member.poste}
+                              </p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </ScrollArea>
                 </TabsContent>
 
                 <TabsContent value="decedes" className="mt-6 p-0 border-none">
-                  <div className="flex items-center justify-center h-[400px]">
-                    <p className="text-gray">Aucun Diacre décédé</p>
-                  </div>
+                  <ScrollArea className="w-full h-[calc(80vh)] mt-6">
+                    {/* Prêtres grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
+                    {members.map((member, index) => (
+                        <Card
+                          onClick={() => {
+                            setOpenModal(true)
+                            setSelectedMember(member)
+                          }}
+                          key={index}
+                          className="w-full border-none shadow-none cursor-pointer"
+                        >
+                          <CardContent className="p-0 space-y-3">
+                            <div className="relative w-full h-[250px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
+                              <Image
+                                fill
+                                priority
+                                className="object-cover"
+                                alt="Vector"
+                                src="/clerge-1.png"
+                              />
+                            </div>
+
+                            <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
+                              <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
+                                <span className="font-bold text-sm">
+                                  {member.nom} {member.prenom}
+                                </span>
+                              </div>
+                              <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
+                                {member.poste}
+                              </p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </ScrollArea>
                 </TabsContent>
               </Tabs>
             </TabsContent>
@@ -507,13 +690,10 @@ export const ClergPretres = (): JSX.Element => {
               value="options"
               className="border-none">
               <div className="flex justify-between items-center">
-                <div className="relative w-[256px]">
-                  <Input
-                    className="h-10 bg-neutral-100 border-none pl-9"
-                    placeholder="Rechercher..."
-                  />
-                  <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
-                </div>
+                <SearchInput
+                  placeholder="Rechercher..."
+                  setQuery={setQuery}
+                />
               </div>
               <ScrollArea className="w-full h-[calc(80vh)] mt-6">
                 {/* Options grid */}
@@ -570,9 +750,11 @@ export const ClergPretres = (): JSX.Element => {
                 Fermer
               </Button>
               <div className="flex gap-2">
-                <Button variant="outline" className="h-10">
-                  Désactiver
-                </Button>
+                {/** 
+                  <Button variant="outline" className="h-10">
+                    Désactiver
+                  </Button>
+                 */}
                 <EditMemberFormSection memberData={selectedMember!} />
                 <Button onClick={handleDeleteMember} className="h-10 bg-red-500 text-white hover:bg-blue/90">
                 { isDeleting && <Loader className='h-5 w-5, mr-2' /> }
