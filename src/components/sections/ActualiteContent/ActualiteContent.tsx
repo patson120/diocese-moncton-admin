@@ -64,6 +64,9 @@ export default function ActualiteContent(
             setActualites(data)
             toast.success("Le statut a été mis à jour")
             setOpenModal(false)
+            setTimeout(() => {
+                window.location.reload()
+            }, 1500);
         } catch (error) {
             console.error('Error updating message:', error)
         } finally {
@@ -236,7 +239,7 @@ export default function ActualiteContent(
 
             {/* Sheet */}
             <Sheet open={openModal} onOpenChange={setOpenModal} >
-                <SheetContent className="max-w-3xl min-w-[600px]">
+                <SheetContent aria-describedby={undefined} className="max-w-3xl min-w-[600px]">
                     <SheetHeader>
                         <SheetTitle hidden>Détails de l'actualité</SheetTitle>
                     </SheetHeader>

@@ -213,22 +213,22 @@ export default function ContentDisplaySection() {
                       />
                       <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
                     </div>
-                    <Button
-                      variant="outline"
-                      className="h-11 flex items-center gap-2.5 border border-[#d9d9d9] rounded-lg">
-                      <ListFilter className="w-5 h-5" />
-                      <span className="font-body-3 text-noir-dashboard">
-                        Trier par...
-                      </span>
-                    </Button>
-                    {/* Menus 
-                      <MenuCard ordre={ordre} setOrdre={setOrdre} />
-                    */}
+                    {/** 
+                      <Button
+                        variant="outline"
+                        className="h-11 flex items-center gap-2.5 border border-[#d9d9d9] rounded-lg">
+                        <ListFilter className="w-5 h-5" />
+                        <span className="font-body-3 text-noir-dashboard">
+                          Trier par...
+                        </span>
+                      </Button>
+                     */}
+                    {/* Menus */}
+                    <MenuCard ordre={ordre} setOrdre={setOrdre} />
 
                     <Button
                       variant="outline"
-                      className="w-11 h-11 p-0 flex items-center justify-center border border-[#d9d9d9] rounded-lg"
-                    >
+                      className="w-11 h-11 p-0 flex items-center justify-center border border-[#d9d9d9] rounded-lg">
                       <LayoutGridIcon className="w-5 h-5" />
                     </Button>
                   </div>

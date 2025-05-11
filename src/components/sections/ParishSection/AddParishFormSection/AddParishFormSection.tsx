@@ -192,6 +192,10 @@ export const AddParishFormSection = (): JSX.Element => {
       return
     }
 
+    // const dataH = horaires.map(item => `${item.jour}=${item.heures.join(";")}`)
+
+    // console.log({ horaires: dataH });
+
     if (isLoading) return
     setIsLoading(true)
     const formdata = new FormData()
