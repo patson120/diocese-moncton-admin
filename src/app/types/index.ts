@@ -59,7 +59,6 @@ export type Paroisse = {
     site_web: string;
     statut: number,
     code_postal: string;
-    horaires: string;
     lien_youtube: string;
     pretre_responsable: string;
     gps: string;

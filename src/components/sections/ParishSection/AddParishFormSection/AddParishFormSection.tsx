@@ -169,13 +169,14 @@ export const AddParishFormSection = (): JSX.Element => {
     
     else {
       const found = horaires.find(horaire => horaire.jour === selectedDay);
+  
       if (found) {
         const updatedHoraires = horaires.map(horaire => 
           horaire.jour === selectedDay ? { ...horaire, heures: selectedHours } : horaire
         );
         setHoraires(updatedHoraires);
       } else {
-        setHoraires(prev => ([...prev, { jour: selectedDay, heures: selectedHours,}]))
+        setHoraires(prev => ([...prev, { jour: selectedDay, heures: selectedHours }]))
       }
       formFive.setValue("selectedHours", [])
     }
@@ -192,10 +193,6 @@ export const AddParishFormSection = (): JSX.Element => {
       return
     }
 
-    // const dataH = horaires.map(item => `${item.jour}=${item.heures.join(";")}`)
-
-    // console.log({ horaires: dataH });
-
     if (isLoading) return
     setIsLoading(true)
     const formdata = new FormData()
@@ -207,7 +204,7 @@ export const AddParishFormSection = (): JSX.Element => {
     formdata.append("telephone", formFour.getValues("telephone"))
     formdata.append("email", formFour.getValues("email"))
     formdata.append("site_web", formFour.getValues("site_web"))
-    formdata.append("horaires", `${horaires}`)
+    formdata.append("horaires", horaires.map(item => `${item.jour}=${item.heures.join(";")}`).join(","))
     formdata.append("etabli_le", formThree.getValues("etabli_le").split('-')[0])
     formdata.append("ordonne_le", formThree.getValues("ordonne_le").split('-')[0])
     formdata.append("premier_cure", formThree.getValues("premier_cure").split('-')[0])
@@ -616,7 +613,7 @@ export const AddParishFormSection = (): JSX.Element => {
                       {
                         horaires.map((horaire, index) => (
                           <p key={index} className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-                            {horaire.jour}: <span className="font-semibold text-black ml-2">{horaire.heures.join(', ')}</span>
+                            <span className="capitalize">{horaire.jour}</span>: <span className="font-semibold text-black ml-2">{horaire.heures.join(', ')}</span>
                           </p>
                         ))
                       }

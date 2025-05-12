@@ -126,7 +126,7 @@ const QuickActionsSection = (): JSX.Element => {
                     </div>
                   </div>
                   <div className="flex space-x-2">
-                    <MapPin className="h-5 w-5 text-gray" />
+                    <MapPin className="h-5 w-5 text-gray shrink-0" />
                     <p className="text-gray line-clamp-1">{event.lieu}</p>
                   </div>
                 </div>

@@ -139,7 +139,7 @@ export default function ParishSection() {
         formdata.append("telephone", selecteParish?.telephone!)
         formdata.append("email", selecteParish?.email!)
         formdata.append("site_web", selecteParish?.site_web!)
-        formdata.append("horaireparoisses", `${selecteParish?.horaireparoisses}`)
+        formdata.append("horaires", `${selecteParish?.horaireparoisses.map(item => `${item.jour}=${item.heure}`).join(",")}`)
         formdata.append("etabli_le", `${selecteParish?.etabli_le!}`)
         formdata.append("ordonne_le", `${selecteParish?.ordonne_le!}`)
         formdata.append("premier_cure", `${selecteParish?.premier_cure!}`)
@@ -151,7 +151,6 @@ export default function ParishSection() {
             const response: any = await apiClient.post(`/api/paroisses/${selecteParish?.id}?_method=PUT`, formdata, {
                 'Content-Type': 'multipart/form-data'
             });
-            console.log(response);
             
             if (response.id) {
                 toast.success('Paroisse modifié avec succès');
@@ -327,7 +326,7 @@ export default function ParishSection() {
                                             {parishes.map((parish, index) => (
                                                 <Card
                                                     key={index}
-                                                    className="w-full border-none shadow-none"
+                                                    className="w-full border-none shadow-none cursor-pointer"
                                                     onClick={() => {
                                                         setOpenModal(true)
                                                         setSelectedParish(parish)
@@ -500,7 +499,7 @@ export default function ParishSection() {
                                             className="border border-[#e5e5e580] rounded-xl"
                                         >
                                             <CardContent className="flex items-center gap-3 p-1.5 px-2">
-                                                <span className="font-normal text-[#1c0004] text-base leading-4">
+                                                <span className="font-normal text-[#1c0004] text-base leading-4 capitalize">
                                                     {schedule.jour}
                                                 </span>
                                                 <div className="flex items-center gap-1">

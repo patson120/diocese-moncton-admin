@@ -12,7 +12,7 @@ import { apiClient } from "@/lib/axios";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTrigger } from "@radix-ui/react-dialog";
-import { PlusIcon } from "lucide-react";
+import { Edit, EditIcon, Pen, PlusIcon } from "lucide-react";
 import { JSX, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -68,8 +68,11 @@ const formSchemaFive = z.object({
 });
 
 export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Element => {
+  
   const [step, setStep] = useState(1)
-  const [horaires, setHoraires] = useState<{[key: string]: any}[]>([])
+  const [horaires, setHoraires] = useState<{[key: string]: any}[]>(
+    parish.horaireparoisses?.map(horaire =>  ({ jour: horaire.jour, heures: horaire.heure.split(",")}))
+  )
   const [isLoading, setIsLoading] = useState(false)
 
   const [location, setLocation] = useState<Location | null>({
@@ -131,7 +134,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
   const formFive = useForm<z.infer<typeof formSchemaFive>>({
     resolver: zodResolver(formSchemaFive),
     defaultValues: {
-      jour: "dimanche",
+      jour: "",
       selectedHours: [], // Ensure this is initialized as an empty array
     },
   });
@@ -173,11 +176,11 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
       const found = horaires.find(horaire => horaire.jour === selectedDay);
       if (found) {
         const updatedHoraires = horaires.map(horaire => 
-          horaire.jour === selectedDay ? { ...horaire, heures: selectedHours } : horaire
+          horaire.jour === selectedDay ? { ...horaire, heures: selectedHours.sort((a, b) => a.localeCompare(b)) } : horaire
         );
         setHoraires(updatedHoraires);
       } else {
-        setHoraires(prev => ([...prev, { jour: selectedDay, heures: selectedHours,}]))
+        setHoraires(prev => ([...prev, { jour: selectedDay, heures: selectedHours.sort((a, b) => a.localeCompare(b)) }]))
       }
       formFive.setValue("selectedHours", [])
     }
@@ -204,7 +207,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
     formdata.append("telephone", formFour.getValues("telephone"))
     formdata.append("email", formFour.getValues("email"))
     formdata.append("site_web", formFour.getValues("site_web"))
-    formdata.append("horaireparoisses", `${horaires}`)
+    formdata.append("horaires", horaires.map(item => `${item.jour}=${item.heures.join(";")}`).join(","))
     formdata.append("etabli_le", formThree.getValues("etabli_le").split('-')[0])
     formdata.append("ordonne_le", formThree.getValues("ordonne_le").split('-')[0])
     formdata.append("premier_cure", formThree.getValues("premier_cure").split('-')[0])
@@ -255,6 +258,12 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
     })()
   }, [])
 
+  const editHoraire = (index: number) => {
+    formFive.setValue("jour", horaires[index].jour);
+    formFive.setValue("selectedHours", [ ...horaires[index].heures[0].split(";") ])
+    setHoraires(prev =>(prev.filter(horaire => horaire.jour !== horaires[index].jour)))
+  }
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -288,7 +297,6 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
             
           </div>
         }
-
         {
           step === 1 &&
           <div className="flex flex-col w-full p-10 pt-6 space-y-4">
@@ -612,8 +620,9 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
                     <div className=" flex flex-wrap gap-2">
                       {
                         horaires.map((horaire, index) => (
-                          <p key={index} className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-                            {horaire.jour}: <span className="font-semibold text-black ml-2">{horaire.heures.join(', ')}</span>
+                          <p key={index} className="flex text-blue-800 px-2 py-1 rounded-full">
+                            <span className="capitalize">{horaire.jour}</span>: <span className="font-semibold text-black ml-2">{horaire.heures.join(', ')}</span>
+                            <button onClick={() => editHoraire(index)} type="button" className="bg-black/5 rounded-full p-1 ml-2"><Pen className="w-4 h-4" /> </button>
                           </p>
                         ))
                       }
@@ -632,7 +641,6 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
             </Form>
           </div>
         }
-
         {
           step === 6 &&
           <div className="flex flex-col w-full p-10 pt-6 space-y-6">
