@@ -46,27 +46,31 @@ export const AddImageFormSection = (): JSX.Element => {
     const formdata = new FormData();
     formdata.append("titre", fileName);
     formdata.append("fichier", fileImage!);
-    const result: any = await apiClient.post('/api/galeries', formdata, {
-      'Content-Type': 'multipart/form-data'
-    });
-
-    if (result.id) {
-      toast.success("Image enregistrée avec succès !")
-      setFileImage(undefined)
-      setCoverImage('');
-      window.location.reload()
-      setOpenModal(false)
-    }
-    else {
+    try {
+      const result: any = await apiClient.post('/api/galeries', formdata, {
+        'Content-Type': 'multipart/form-data'
+      });
+  
+      if (result.id) {
+        toast.success("Image enregistrée avec succès !")
+        setFileImage(undefined)
+        setCoverImage('');
+        setTimeout(() => {  
+          window.location.reload()
+        }, 1500);
+        setOpenModal(false)
+      }
+    } catch (error: any) {
       toast.warning(
         <div className='p-3 bg-red-500 text-white rounded-md'>
-          {JSON.stringify(result)}
+          Une erreur est survenue. Erreur:  {JSON.stringify(error.message)}
         </div>
       )
     }
-    setIsLoading(false)
+    finally {
+      setIsLoading(false)
+    }
   }
-
 
   return (
     <Dialog open={openModal} onOpenChange={setOpenModal}>

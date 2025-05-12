@@ -23,7 +23,8 @@ export const AddDocumentFormSection = (): JSX.Element => {
     const fileTarget = e.target.files?.[0];
     if (fileTarget) {
       setFile(fileTarget)
-    }
+      setFileName(fileTarget.name)
+    } 
   };
 
   const handleAddRessource = async () => {
@@ -40,10 +41,11 @@ export const AddDocumentFormSection = (): JSX.Element => {
     setIsLoading(true)
     // Creer l'image de couverture
     const formdata = new FormData();
-    formdata.append("titre_fr", fileName || file.name);
-    formdata.append("titre_en", fileName || file.name);
+    formdata.append("titre_fr", fileName);
+    formdata.append("titre_en", fileName);
     formdata.append("type", file.type.split('/')[1]);
     formdata.append("media", file!);
+
     try {
       const result: any = await apiClient.post('/api/ressources', formdata, {
         'Content-Type': 'multipart/form-data'
@@ -51,7 +53,9 @@ export const AddDocumentFormSection = (): JSX.Element => {
       if (result.id) {
         toast.success("Ressource enregistrée avec succès !")
         setFile(undefined)
-        window.location.reload()
+        setTimeout(() => {
+          window.location.reload()
+        }, 1500);
         setOpenModal(false)
       }
     } catch (error: any) {
