@@ -10,7 +10,6 @@ import { Loader } from '@/components/ui/loader'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { apiClient } from '@/lib/axios'
-import { createActualite } from '@/lib/data'
 import { TabsContent } from '@radix-ui/react-tabs'
 import { ArrowLeft, CopyIcon, ExternalLinkIcon, } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -44,11 +43,13 @@ export default function EditActualiteForm({actualite}: { actualite: Actualite })
 
     const response: any = await apiClient.put(`/api/actualites/${actualite.id}`, {
       ...data,
+      is_actif: actualite.is_actif,
       titre_fr: title.french,
       titre_en: title.english,
       description_fr: content.french,
       description_en: content.english,
       is_brouillon: actualite.is_brouillon,
+      galerie_id: 24,
     })
 
     if (response.id) {

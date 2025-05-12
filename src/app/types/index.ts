@@ -165,3 +165,17 @@ export type Location = {
     lat: number;
     lng: number;
 };
+
+export type Ressource = {
+    id: number;
+    categorie_id: number | null;
+    titre_fr: string;
+    titre_en: string | null;
+    type: string;
+    media: string;
+    description_fr: string | null;
+    description_en: string | null;
+    created_at: string;
+    updated_at: string;
+    categorie: any;
+}

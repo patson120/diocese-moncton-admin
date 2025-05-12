@@ -49,6 +49,7 @@ export default function CreateActutalite() {
       description_en: content.english,
       is_brouillon: 0,
       is_actif: 0,
+      galerie_id: 24,
     })
 
     if (response.id) {
@@ -58,6 +59,10 @@ export default function CreateActutalite() {
       setIsSave(1)
       setAlertModal("")
       toast.success("Actualité enregistré avec succès !")
+      setTimeout(() => {
+        window.location.reload()
+      }, 1500);
+    
 
       // // Creer l'image de couverture
       // const formdata = new FormData();
@@ -74,11 +79,11 @@ export default function CreateActutalite() {
       // if (result.id) {
       //   toast.success("Données enregistrées avec succès !")
       //   router.back()
-      // toast.warning(
-      //   <div className='p-3 bg-red-500 text-white rounded-md'>
-      //     {JSON.stringify(result)}
-      //   </div>
-      // )
+      //   toast.warning(
+      //     <div className='p-3 bg-red-500 text-white rounded-md'>
+      //       {JSON.stringify(result)}
+      //     </div>
+      //   )
       // }
     }
     else {

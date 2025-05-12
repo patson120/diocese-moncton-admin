@@ -1,11 +1,14 @@
 'use client'
 
+import { Ressource } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { apiClient } from "@/lib/axios";
+import { formatDateToLocal } from "@/lib/utils";
 import {
   EyeIcon,
   LayoutGridIcon,
@@ -15,11 +18,14 @@ import {
   SearchIcon,
   Trash2Icon
 } from "lucide-react";
-import { JSX, useState } from "react";
+import { JSX, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export const DocumentContentSection = (): JSX.Element => {
 
   const [dislayMode, setDislayMode] = useState<'list' | 'grid'>('grid')
+
+  const [ressources, setRessources] = useState<Ressource[]>([])
 
   // Document data for mapping
   const documents = [
@@ -69,6 +75,30 @@ export const DocumentContentSection = (): JSX.Element => {
     if (dislayMode === 'list') setDislayMode("grid") 
     else setDislayMode("list")
   }
+
+  const fetchRessources = async () => {
+    const response: Ressource[] = await apiClient.get('/api/ressources')
+    setRessources(response)
+  }
+  
+  const deleteRessources = async (idRessource: number) => {
+    try {
+      await apiClient.delete(`/api/ressources/${idRessource}`)
+      setRessources(prev  => prev.filter( doc  => doc.id != idRessource))
+      toast.success("Ressource supprimée avec succès")
+    } catch (error: any) {
+      toast.error(
+        <div className='p-3 bg-red-500 text-white rounded-md'>
+          Une erreur est survenue. Erreur:  {JSON.stringify(error.message)}
+        </div>
+      )
+    }
+  }
+
+  useEffect(() => {
+    fetchRessources()
+  }, [])
+  
 
   return (
     <section className="w-full flex-1 p-6">
@@ -129,16 +159,16 @@ export const DocumentContentSection = (): JSX.Element => {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {documents.map((document, index) => (
+                        {ressources.map((doc, index) => (
                           <TableRow key={index} className="border-b border-[#d9d9d9]">
                             <TableCell className="font-body-3 text-noir-dashboard py-3.5">
-                              {document.name}
+                              {doc.titre_fr}
                             </TableCell>
                             <TableCell className="font-body-3 text-gray py-3.5">
-                              {document.format}
+                              {doc.type}
                             </TableCell>
                             <TableCell className="font-body-3 text-noir-dashboard py-3.5">
-                              {document.date}
+                              {formatDateToLocal((new Date(doc.created_at)).toISOString())}
                             </TableCell>
                             <TableCell className="py-3.5">
                               <div className="flex items-center gap-[17px]">
@@ -171,7 +201,7 @@ export const DocumentContentSection = (): JSX.Element => {
               </Card> :
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 gap-3">
                 {/* Document cards grid */}
-                {documents.map((doc, index) => (
+                {ressources.map((doc, index) => (
                   <Card
                     key={index}
                     className="bg-[#f9f9f0] rounded-2xl">
@@ -198,11 +228,11 @@ export const DocumentContentSection = (): JSX.Element => {
                         <div className="flex flex-col items-center gap-3 my-4">
                           <div className="w-[100px] h-20 bg-white rounded-2xl border border-solid border-[#d9d9d9] flex items-center justify-center">
                             <span className="font-body-3 text-[length:var(--body-3-font-size)] text-gray text-center">
-                              {doc.format}
+                              {doc.type}
                             </span>
                           </div>
                           <p className="font-body-3 text-[length:var(--body-3-font-size)] text-noir-dashboard text-center">
-                            {doc.name}
+                            {doc.titre_fr}
                           </p>
                         </div>
                       </div>

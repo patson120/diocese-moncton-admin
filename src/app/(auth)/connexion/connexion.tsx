@@ -2,14 +2,65 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Loader } from "@/components/ui/loader";
+import { apiClient } from "@/lib/axios";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeClosed, EyeIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { JSX, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import * as z from "zod";
+
+
+const formSchema = z.object({
+  password: z.string().min(1, "Le mot de passe est requis"),
+  email: z.string().email("L'adresse email n'est pas valide"),
+});
 
 export const Connexion = (): JSX.Element => {
   const [showPassword, setShowPassword] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const handleLoginUser = async (values: z.infer<typeof formSchema>) => {
+    if (isLoading) return 
+    setIsLoading(true)
+    try {
+      const response = await apiClient.post("/api/auth/login", {
+        email: values.email.trim(), 
+        password: values.password.trim()
+      })
+      console.log(response);
+      toast.success("Connecté avec succès")
+
+      setTimeout(() => {
+        window.location.href = '/'
+      }, 1500);
+
+    } catch (error: any ) {
+      console.log(error);
+      toast.warning(
+        <div className='p-3 bg-red-500 text-white rounded-md'>
+          Une erreur est survenue lors de la connexion. Erreur: {JSON.stringify(error.message)}
+        </div>
+      )
+    }
+    finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <div className="bg-white w-full h-screen flex flex-row justify-center">
       <div className="grid grid-cols-5 gap-10 m-3 w-full">
@@ -38,70 +89,88 @@ export const Connexion = (): JSX.Element => {
                 </p>
               </CardContent>
             </Card>
+            
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(handleLoginUser)} className="space-y-4">
+                {/* Form fields */}
+                <div className="flex flex-col items-start gap-16 relative self-stretch w-full">
+                  <div className="flex flex-col items-start gap-4 relative self-stretch w-full">
+                    <div className="flex flex-col items-start gap-6 relative self-stretch w-full">
+                      {/* Email field */}
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem className="w-full">
+                            <FormLabel>Email</FormLabel>
+                            <FormControl>
+                              <Input
+                                id="email"
+                                {...field}
+                                type="email"
+                                // className="h-[50px] rounded-[13px]"
+                                className="h-12 rounded-[13px] px-3 py-3.5 border border-neutral-200 self-stretch w-full"
+                                placeholder="Entrez votre email"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
 
-            {/* Form fields */}
-            <div className="flex flex-col items-start gap-16 relative self-stretch w-full">
-              <div className="flex flex-col items-start gap-4 relative self-stretch w-full">
-                <div className="flex flex-col items-start gap-6 relative self-stretch w-full">
-                  {/* Email field */}
-                  <div className="flex flex-col items-start gap-2 relative self-stretch w-full">
-                    <label
-                      className="font-bold text-[#1c0004] text-sm"
-                      htmlFor="email">
-                      Email
-                    </label>
-                    <Input
-                      id="email"
-                      className="h-[50px] rounded-[13px]"
-                      placeholder="Entrez votre nom d'utilisateur"
-                    />
+                      {/* Password field */}
+                      <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                          <FormItem className="w-full">
+                            <FormLabel>Mot de passe</FormLabel>
+                            <FormControl>
+                              <div className="relative w-full">
+                                <Input
+                                  id="password"
+                                  {...field}
+                                  type={showPassword ? 'text': 'password'}
+                                  className="h-12 rounded-[13px] px-3 py-3.5 border border-neutral-200 self-stretch w-full"
+                                  placeholder="Entrez votre mot de passe"
+                                />
+                                {
+                                  showPassword ?
+                                  <EyeClosed onClick={() => setShowPassword(prev => !prev) } className="absolute w-5 h-5 top-3.5 right-3.5 text-gray-400 cursor-pointer" /> :
+                                  <EyeIcon onClick={() => setShowPassword(prev => !prev) } className="absolute w-5 h-5 top-3.5 right-3.5 text-gray-400 cursor-pointer" /> 
+                                }
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    {/* Forgot password link */}
+                    <a href="#" className="text-sm text-black underline">
+                      Mot de passe oublié ?
+                    </a>
                   </div>
 
-                  {/* Password field */}
-                  <div className="flex flex-col items-start gap-2 relative self-stretch w-full">
-                    <label
-                      className="font-bold text-[#1c0004] text-sm"
-                      htmlFor="password"
-                    >
-                      Mot de passe
-                    </label>
-                    <div className="relative w-full">
-                      <Input
-                        id="password"
-                        type={showPassword ? 'text': 'password'}
-                        className="h-[50px] rounded-[13px]"
-                        placeholder="Entrez votre mot de passe"
-                      />
-                      {
-                        showPassword ?
-                        <EyeClosed onClick={() => setShowPassword(prev => !prev) } className="absolute w-5 h-5 top-3.5 right-3.5 text-gray-400 cursor-pointer" /> :
-                        <EyeIcon onClick={() => setShowPassword(prev => !prev) } className="absolute w-5 h-5 top-3.5 right-3.5 text-gray-400 cursor-pointer" /> 
-                      }
+                  <div className="w-full">
+                    {/* Login button */}
+                    <Button type="submit" className="w-full h-[50px] bg-blue rounded-[13px] text-base font-bold">
+                      { isLoading && <Loader className="w-5 h-5 mr-2" /> }
+                      Se connecter
+                    </Button>
+
+                      {/* Return to homepage link */}
+                    <div className="mt-10 text-center">  
+                      <Link href="/"
+                        className="text-gray text-sm underline">
+                        Retour à la page d&apos;accueil
+                      </Link>
                     </div>
                   </div>
                 </div>
-
-                {/* Forgot password link */}
-                <a href="#" className="text-sm text-black underline">
-                  Mot de passe oublié ?
-                </a>
-              </div>
-
-              <div className="w-full">
-                {/* Login button */}
-                <Button className="w-full h-[50px] bg-blue rounded-[13px] text-base font-bold">
-                  Se connecter
-                </Button>
-
-                  {/* Return to homepage link */}
-                <div className="mt-10 text-center">  
-                  <Link href="/"
-                    className="text-gray text-sm underline">
-                    Retour à la page d&apos;accueil
-                  </Link>
-                </div>
-              </div>
-            </div>
+              </form>
+            </Form>
           </div>
 
           {/* Copyright */}
