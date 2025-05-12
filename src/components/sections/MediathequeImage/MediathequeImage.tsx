@@ -7,6 +7,7 @@ import { AudioContentSection } from "./AudioContentSection";
 import { DocumentContentSection } from "./DocumentContentSection";
 import ImageContentSection from "./ImageContentSection";
 import { VideoContentSection } from "./VideoContentSection";
+import { AddDocumentFormSection } from "./forms/AddDocumentFormSection";
 
 export default function MediathequeImage(): JSX.Element {
 
@@ -44,6 +45,7 @@ export default function MediathequeImage(): JSX.Element {
         </div>
 
         {selectedItem.value === 'images' &&  <AddImageFormSection /> }
+        {selectedItem.value === 'documents' &&  <AddDocumentFormSection /> }
 
       </div>
 
