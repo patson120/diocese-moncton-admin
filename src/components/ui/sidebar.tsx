@@ -22,6 +22,7 @@ import { useEffect, useState } from 'react';
 import { Button } from './button';
 import { ScrollArea } from './scroll-area';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 
 interface SidebarProps {
   className?: string;
@@ -31,6 +32,8 @@ export function Sidebar({ className }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
+  const pathname = usePathname()
+
   // Navigation menu data structure for better maintainability
   const [navigationSections, setNavigationSections] = useState([
     {
@@ -39,7 +42,7 @@ export function Sidebar({ className }: SidebarProps) {
         {
           icon: LayoutDashboard,
           label: "Tableau de bord",
-          active: true,
+          active: false,
           href: "/",
         },
         {
@@ -131,9 +134,20 @@ export function Sidebar({ className }: SidebarProps) {
         item.active = sectionIndex === i && itemIndex === index;
       });
     });
-
     setNavigationSections(updatedSections);
   }
+
+
+  useEffect(() => {
+    const updatedSections = [...navigationSections];
+    updatedSections.forEach((section) => {
+      section.items.forEach((item) => {
+        item.active = pathname === item.href
+      });
+    });
+    setNavigationSections(updatedSections);
+  }, [pathname])
+  
 
   return (
     <>

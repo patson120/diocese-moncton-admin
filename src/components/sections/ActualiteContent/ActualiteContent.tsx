@@ -280,7 +280,7 @@ export default function ActualiteContent(
                                 <div className='flex justify-between items-center'>
                                     <span className="text-gray">{selectedActualite?.categorie?.intitule_fr}</span>
                                     {
-                                        selectedActualite?.date_publication && (
+                                        selectedActualite?.created_at && (
                                             <div>
                                                 {/* <span className="text-gray">{formatDateToLocal((new Date(selectedActualite?.date_publication!)).toISOString())}</span> */}
                                                 {
@@ -292,7 +292,7 @@ export default function ActualiteContent(
                                                 {
                                                     is_actif === 1 &&
                                                     <p className='text-xs text-gray font-medium'>
-                                                        {formatDateToLocal((new Date(selectedActualite.date_publication)).toISOString())}
+                                                        {formatDateToLocal((new Date(selectedActualite?.date_publication ? selectedActualite?.date_publication : selectedActualite?.created_at)).toISOString())}
                                                     </p>
                                                 }
                                                 {
