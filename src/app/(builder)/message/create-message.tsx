@@ -2,8 +2,10 @@
 import { Editor } from '@/components/Editor/Editor'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { Loader } from '@/components/ui/loader'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { apiClient } from '@/lib/axios'
 import { createMessage } from '@/lib/data'
 import { TabsContent } from '@radix-ui/react-tabs'
 import { ArrowLeft, CopyIcon, ExternalLinkIcon } from 'lucide-react'
@@ -14,6 +16,7 @@ import { toast } from 'sonner'
 export default function CreateMessage() {
 
   const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
 
   const [title, setTitle] = useState({
     french: '',
@@ -25,13 +28,14 @@ export default function CreateMessage() {
   })
 
   const handlePublish = async () => {
+    if (isLoading) return
+    setIsLoading(true)
     if (title.french.trim() == '' || title.english.trim() == '') {
       toast.warning(
         <div className='p-3 bg-red-500 text-white rounded-md'>
           Veuillez renseigner les titres dans les deux langues
         </div>
       )
-      // toast.warning("Veuillez renseigner les titres dans les deux langues")
       return;
     }
 
@@ -39,26 +43,24 @@ export default function CreateMessage() {
       toast.warning("Veuillez renseigner les contenus dans les deux langues")
       return;
     }
-
-    const response = await createMessage({
+    const response: any = await apiClient.post('/api/mot_archeve', {
       titre_fr: title.french,
       titre_en: title.english,
       message_fr: content.french,
       message_en: content.english,
       archeveque_id: 16,
       etat: 1,
-      // message: "Aliquid eveniet ex et porro similique totam. Officia fugiat eos et iure. Aut minus fugiat ipsa illum. Ipsa voluptas vel ut. Possimus ex voluptatem similique pariatur autem assumenda. Maiores enim quo accusamus adipisci.",
     })
     if (response.titre_fr) {
       toast.success("Message enregistré avec succès !")
       setTitle({ french: '', english: '', })
       setContent({ french: '', english: '', })
       setTimeout(() => {
-        router.back()
+        window.location.reload()
       }, 1500);
     }
     else {
-      toast.success(JSON.stringify(response))
+      toast.error(JSON.stringify(response))
     }
 
   }
@@ -91,7 +93,7 @@ export default function CreateMessage() {
 
           <Button
             variant="outline"
-            className="h-10 px-3.5 py-0 border-[#d9d9d9] rounded-[7px]"
+            className="h-10 px-3.5 py-0 border-[#d9d9d9] rounded-[7px] cursor-not-allowed"
           >
             <span className="font-body-3 text-noir-dashboard whitespace-nowrap">
               Planifier
@@ -99,6 +101,9 @@ export default function CreateMessage() {
           </Button>
 
           <Button onClick={handlePublish} className="h-10 px-3.5 py-0 bg-blue text-white rounded-[7px]">
+            {
+              isLoading && <Loader className='w-5 h-5 mr-2' />
+            }
             <span className="font-body-3 whitespace-nowrap">
               Publier message
             </span>

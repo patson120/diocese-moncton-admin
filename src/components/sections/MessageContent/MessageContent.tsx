@@ -8,6 +8,7 @@ import { formatDateToLocal } from '@/lib/utils';
 import { useEffect, useState } from 'react';
 import { Message } from '../../../app/types';
 import { Loader } from '@/components/ui/loader';
+import { toast } from 'sonner';
 
 export default function MessageContent({ etat }: { etat: number }) {
     const [messages, setMessages] = useState<Message[]>([])
@@ -15,6 +16,7 @@ export default function MessageContent({ etat }: { etat: number }) {
     const [openModal, setOpenModal] = useState(false)
 
     const [isDeleting, setIsDeleting] = useState(false)
+    const [isStatusChanging, setIsStatusChanging] = useState(false)
 
     useEffect(() => {
         const getMessages = async () => {
@@ -35,6 +37,23 @@ export default function MessageContent({ etat }: { etat: number }) {
             console.error('Error deleting message:', error)
         } finally {
             setIsDeleting(false)
+        }
+    }
+    const handleChangeStatus = async () => {
+        if (isStatusChanging) return
+        setIsStatusChanging(true)
+        try {
+            await apiClient.put(`/api/mot_archeve/${selectedMessage?.id}`, {
+                ...selectedMessage,
+                etat: selectedMessage?.etat === 1 ? 0 : 1
+            })
+            setMessages(messages.filter((message) => message.id !== selectedMessage?.id))
+            setOpenModal(false)
+            toast.success(`Message mise à jour avec succès`)
+        } catch (error: any) {
+            toast.error(`Error deleting message: ${error.message}`)
+        } finally {
+            setIsStatusChanging(false)
         }
     }
 
@@ -61,7 +80,7 @@ export default function MessageContent({ etat }: { etat: number }) {
             </div>
             {/* Sheet */}
             <Sheet open={openModal} onOpenChange={setOpenModal} >
-                <SheetContent className="max-w-3xl">
+                <SheetContent className="max-w-3xl min-w-[650px]">
                     <SheetHeader className='relative'>
                         <SheetTitle hidden>Détails du message de l'archevêque</SheetTitle>
                     </SheetHeader>
@@ -73,8 +92,13 @@ export default function MessageContent({ etat }: { etat: number }) {
                                 Fermer
                             </Button>
                             <div className="flex gap-2">
-                                <Button variant="outline" className="h-10">
-                                    Désactiver
+                                <Button
+                                    onClick={handleChangeStatus}
+                                    variant="outline" className="h-10">
+                                    { isStatusChanging && <Loader className='w-5 h-5 mr-2' /> }
+                                    {
+                                        selectedMessage?.etat === 1 ? 'Désactiver' : 'Activer'
+                                    }
                                 </Button>
                                 <Button onClick={handleEditMessage} className="h-10 bg-blue text-white hover:bg-blue/90">
                                     Modifier

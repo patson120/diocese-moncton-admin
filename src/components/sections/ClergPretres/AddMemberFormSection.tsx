@@ -1,6 +1,7 @@
 
 'use client'
 
+import { TypeParoisse } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -14,7 +15,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { PlusIcon } from "lucide-react";
 import Image from "next/image";
-import React, { JSX, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -58,8 +59,7 @@ const formSchemaOne = z.object({
     .refine((val) => fonctionIds.includes(val), {
       message: "La fonction est invalide",
     }),
-  etablissement: z.enum(["paroisse", "diocese"]),
-  // statut: z.enum(["actif", "inactif"]), 
+  etablissement: z.string().min(1, "L'établissement est requis"),
   coordonnees: z.string().optional(), // z.string().min(1, "Les coordonnées sont requises"),
 });
 
@@ -80,15 +80,16 @@ const defaultMember = {
 
 export default function AddMemberFormSection(){
 
-  const [member, setMember] = useState(defaultMember);
-  const [fileImage, setFileImage] = useState<File | undefined>();
+  const [member, setMember] = useState(defaultMember)
+  const [fileImage, setFileImage] = useState<File | undefined>()
+  const [unitePastorales, setUnitePastorales] = useState<TypeParoisse[]>([])
 
   const formOne = useForm<z.infer<typeof formSchemaOne>>({
     resolver: zodResolver(formSchemaOne),
     defaultValues: {
       nom: "",
       coordonnees: "Moncton",
-      etablissement: "paroisse",
+      etablissement: "",
       //statut: 'actif',
     },
   });
@@ -135,6 +136,7 @@ export default function AddMemberFormSection(){
     formdata.append("coordonnees", `${data.etablissement}`);
     formdata.append("etat", `${status}`);
     formdata.append("image", fileImage!);
+    formdata.append("etablissement_id", `${data.etablissement},`); 
     formdata.append("description_fr", `${data.description_fr}`);
     formdata.append("description_en", `${data.description_en}`);
 
@@ -188,6 +190,14 @@ export default function AddMemberFormSection(){
     await handleSubmitForm(newMember)
     
   }
+
+  useEffect(() => {
+      // Récupérer les unités paroitiales depuis l'api
+      (async () => {
+          const response: TypeParoisse[] = await apiClient.get(`/api/type_paroisses`)
+          setUnitePastorales(response)
+      })()
+  }, [])
 
   return (
     <Dialog>
@@ -255,7 +265,7 @@ export default function AddMemberFormSection(){
                   name="etablissement"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Établissement lié</FormLabel>
+                      <FormLabel>Unité pastorale</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}>
@@ -266,8 +276,11 @@ export default function AddMemberFormSection(){
                         </FormControl>
                         <SelectContent>
                           {/* Establishment options would go here */}
-                          <SelectItem value="paroisse">Paroisse</SelectItem>
-                          <SelectItem value="diocese">Diocèse</SelectItem>
+                          {
+                            unitePastorales.map(unite => (
+                              <SelectItem key={unite.id} value={`${unite.id}`}>{unite.intitule_fr}</SelectItem>
+                            ))
+                          }
                         </SelectContent>
                       </Select>
                       <FormMessage />

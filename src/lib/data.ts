@@ -16,7 +16,7 @@ export async function createActualite(body: any) {
 
 export async function createMessage(body: any) {
     try {
-        let url = `${BASE_URL}/mot_archeve`;
+        let url = `${BASE_URL} `;
         const headers = {}
         return await fetchAPI(url, 'POST', headers, JSON.stringify(body));
 

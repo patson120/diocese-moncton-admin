@@ -45,6 +45,7 @@ export const ClergPretres = (): JSX.Element => {
         if (query) params += `&nom=${query}`
         if (etat) params += `&etat=${etat}`
         const response: Member[] = await apiClient.get(`/api/membres${params}`)
+        // const response: Member[] = await apiClient.get(`/api/membres`)
         setMembers(response)
       })()
   }, [categoryId, query, etat])

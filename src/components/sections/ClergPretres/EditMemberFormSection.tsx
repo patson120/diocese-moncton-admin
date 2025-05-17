@@ -13,11 +13,11 @@ import { cn, handleImageUpload } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import Image from "next/image";
-import React, { JSX, useState } from "react";
+import React, { JSX, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { Member } from "../../../app/types";
+import { Member, TypeParoisse } from "../../../app/types";
 
 const fonctions = [
   {
@@ -56,8 +56,7 @@ const formSchemaOne = z.object({
     .refine((val) => fonctionIds.includes(val), {
       message: "La fonction est invalide",
     }),
-  etablissement: z.enum(["paroisse", "diocese"]),
-  // statut: z.enum(["actif", "inactif"]), 
+  etablissement: z.string().min(1, "L'établissement est requis"),
   coordonnees: z.string().optional(), // z.string().min(1, "Les coordonnées sont requises"),
 });
 
@@ -80,6 +79,7 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
 
   const [member, setMember] = useState(defaultMember);
   const [fileImage, setFileImage] = useState<File | undefined>();
+  const [unitePastorales, setUnitePastorales] = useState<TypeParoisse[]>([])
 
   const formOne = useForm<z.infer<typeof formSchemaOne>>({
     resolver: zodResolver(formSchemaOne),
@@ -190,6 +190,14 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
     
   }
 
+  useEffect(() => {
+    // Récupérer les unités paroitiales depuis l'api
+    (async () => {
+        const response: TypeParoisse[] = await apiClient.get(`/api/type_paroisses`)
+        setUnitePastorales(response)
+    })()
+  }, [])
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -266,8 +274,11 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
                         </FormControl>
                         <SelectContent>
                           {/* Establishment options would go here */}
-                          <SelectItem value="paroisse">Paroisse</SelectItem>
-                          <SelectItem value="diocese">Diocèse</SelectItem>
+                          {
+                            unitePastorales.map(unite => (
+                              <SelectItem key={unite.id} value={`${unite.id}`}>{unite.intitule_fr}</SelectItem>
+                            ))
+                          }
                         </SelectContent>
                       </Select>
                       <FormMessage />
