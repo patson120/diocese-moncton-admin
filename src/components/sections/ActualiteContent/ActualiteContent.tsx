@@ -84,100 +84,100 @@ export default function ActualiteContent(
             {
                 ( displayMode === 'list') ?
                 <Card className="w-full rounded-2xl bg-white">
-                <CardContent className="p-0">
-                    <div className="flex flex-col w-full items-start gap-4">
-                    <Table>
-                        <TableHeader className="bg-[#f9f9f0] rounded-lg">
-                        <TableRow className="border-none">
-                            <TableHead className="font-body-3 text-noir-dashboard text-sm">
-                            Titre
-                            </TableHead>
-                            <TableHead className="font-body-3 text-noir-dashboard text-sm">
-                            Catégorie
-                            </TableHead>
-                            <TableHead className="font-body-3 text-noir-dashboard text-sm">
-                            Ajouté le
-                            </TableHead>
-                            <TableHead className="font-body-3 text-noir-dashboard text-sm">
-                            Actions
-                            </TableHead>
-                        </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                        { actualites.map((article, index) => (
-                            <TableRow key={index} className="border-b border-[#d9d9d9]">
-                            <TableCell className="font-body-3 text-noir-dashboard py-3.5 max-w-2xl">
-                                <Text className='font-bold ' labelEn={article?.titre_en} labelFr={article?.titre_fr} />
-                            </TableCell>
-                            <TableCell className="font-body-3 text-gray py-3.5">
-                                {article?.categorie?.intitule_fr}
-                            </TableCell>
-                            <TableCell className="font-body-3 text-noir-dashboard py-3.5">
-                                { formatDateToLocal((new Date(article?.date_publication ? article?.date_publication : article?.created_at)).toISOString()) }
-                            </TableCell>
-                            <TableCell className="py-3.5">
-                                <div className="flex items-center gap-[17px]">
-                                <Button
-                                    onClick={() => handelOpenDetailsSheet(article)}
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-auto p-0 flex items-center gap-1">
-                                    <EyeIcon className="w-[18px] h-[18px]" />
-                                    <span className="font-body-3 text-noir-dashboard">
-                                    Voir
-                                    </span>
-                                </Button>
-                                {/* Alert Dialog */}
-                                <Card>
-                                    <CardContent className='p-0'>
-                                        <AlertDialog>
-                                            <AlertDialogTrigger asChild>
-                                            <Button
-                                                onClick={() => setSelectedActualite(article)}
-                                                variant="ghost"
-                                                size="sm"
-                                                className="h-auto p-0 flex items-center gap-1">
-                                                    {
-                                                        (isDeleting && selectedActualite?.id === article.id )? 
-                                                        <Loader className='h-4 w-4 mr-2' /> :
-                                                        <Trash2Icon className="w-4 h-4 mr-2" />
-                                                    }
-                                                <span className="font-body-3 text-noir-dashboard">
-                                                    Supprimer
-                                                </span>
-                                                
-                                            </Button>
-                                            </AlertDialogTrigger>
-                                            <AlertDialogContent>
-                                                <AlertDialogHeader>
-                                                    <AlertDialogTitle>Êtes-vous absolument sûr?</AlertDialogTitle>
-                                                    <AlertDialogDescription>
-                                                    Cette action est irréversible et supprimera définitivement votre article.
-                                                    </AlertDialogDescription>
-                                                </AlertDialogHeader>
-                                                <AlertDialogFooter>
-                                                    <AlertDialogCancel>Annuler</AlertDialogCancel>
-                                                    <AlertDialogAction className='bg-blue text-white' onClick={handleDeleteActualite} >
-                                                    {
-                                                        (isDeleting && selectedActualite?.id === article.id )? 
-                                                        <Loader className='h-4 w-4 mr-2' /> :
-                                                        <Trash2Icon className="w-4 h-4 mr-2" />
-                                                    }
-                                                        Continuer
-                                                    </AlertDialogAction>
-                                                </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                        </AlertDialog>
-                                    </CardContent>
-                                </Card>
-                                </div>
-                            </TableCell>
+                    <CardContent aria-describedby={undefined} className="p-0">
+                        <div className="flex flex-col w-full items-start gap-4">
+                        <Table>
+                            <TableHeader className="bg-[#f9f9f0] rounded-lg">
+                            <TableRow className="border-none">
+                                <TableHead className="font-body-3 text-noir-dashboard text-sm">
+                                Titre
+                                </TableHead>
+                                <TableHead className="font-body-3 text-noir-dashboard text-sm">
+                                Catégorie
+                                </TableHead>
+                                <TableHead className="font-body-3 text-noir-dashboard text-sm">
+                                Ajouté le
+                                </TableHead>
+                                <TableHead className="font-body-3 text-noir-dashboard text-sm">
+                                Actions
+                                </TableHead>
                             </TableRow>
-                        ))}
-                        </TableBody>
-                    </Table>
-                    </div>
-                </CardContent>
+                            </TableHeader>
+                            <TableBody>
+                            { actualites.map((article, index) => (
+                                <TableRow key={index} className="border-b border-[#d9d9d9]">
+                                <TableCell className="font-body-3 text-noir-dashboard py-3.5 max-w-2xl">
+                                    <Text className='font-bold ' labelEn={article?.titre_en} labelFr={article?.titre_fr} />
+                                </TableCell>
+                                <TableCell className="font-body-3 text-gray py-3.5">
+                                    {article?.categorie?.intitule_fr}
+                                </TableCell>
+                                <TableCell className="font-body-3 text-noir-dashboard py-3.5">
+                                    { formatDateToLocal((new Date(article?.date_publication ? article?.date_publication : article?.created_at)).toISOString()) }
+                                </TableCell>
+                                <TableCell className="py-3.5">
+                                    <div className="flex items-center gap-[17px]">
+                                    <Button
+                                        onClick={() => handelOpenDetailsSheet(article)}
+                                        variant="ghost"
+                                        size="sm"
+                                        className="h-auto p-0 flex items-center gap-1">
+                                        <EyeIcon className="w-[18px] h-[18px]" />
+                                        <span className="font-body-3 text-noir-dashboard">
+                                        Voir
+                                        </span>
+                                    </Button>
+                                    {/* Alert Dialog */}
+                                    <Card>
+                                        <CardContent aria-describedby={undefined} className='p-0'>
+                                            <AlertDialog>
+                                                <AlertDialogTrigger asChild>
+                                                <Button
+                                                    onClick={() => setSelectedActualite(article)}
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="h-auto p-0 flex items-center gap-1">
+                                                        {
+                                                            (isDeleting && selectedActualite?.id === article.id )? 
+                                                            <Loader className='h-4 w-4 mr-2' /> :
+                                                            <Trash2Icon className="w-4 h-4 mr-2" />
+                                                        }
+                                                    <span className="font-body-3 text-noir-dashboard">
+                                                        Supprimer
+                                                    </span>
+                                                    
+                                                </Button>
+                                                </AlertDialogTrigger>
+                                                <AlertDialogContent>
+                                                    <AlertDialogHeader>
+                                                        <AlertDialogTitle>Êtes-vous absolument sûr?</AlertDialogTitle>
+                                                        <AlertDialogDescription>
+                                                        Cette action est irréversible et supprimera définitivement votre article.
+                                                        </AlertDialogDescription>
+                                                    </AlertDialogHeader>
+                                                    <AlertDialogFooter>
+                                                        <AlertDialogCancel>Annuler</AlertDialogCancel>
+                                                        <AlertDialogAction className='bg-blue text-white' onClick={handleDeleteActualite} >
+                                                        {
+                                                            (isDeleting && selectedActualite?.id === article.id )? 
+                                                            <Loader className='h-4 w-4 mr-2' /> :
+                                                            <Trash2Icon className="w-4 h-4 mr-2" />
+                                                        }
+                                                            Continuer
+                                                        </AlertDialogAction>
+                                                    </AlertDialogFooter>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
+                                        </CardContent>
+                                    </Card>
+                                    </div>
+                                </TableCell>
+                                </TableRow>
+                            ))}
+                            </TableBody>
+                        </Table>
+                        </div>
+                    </CardContent>
                 </Card> :
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-8">
                     {

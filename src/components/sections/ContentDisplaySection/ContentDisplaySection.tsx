@@ -65,7 +65,11 @@ export default function ContentDisplaySection() {
                   <TabsTrigger
                     key={item.id}
                     value={item.id}
-                    onClick={() => setSelectedItem(item)}
+                    onClick={() => {
+                      setSelectedItem(item)
+                      setOrdre('')
+                      setQuery('')
+                    }}
                     className={`p-2.5 rounded-none font-body-3 text-sm data-[state=active]:border-b-[3px] data-[state=active]:border-blue data-[state=active]:text-blue data-[state=active]:shadow-none data-[state=inactive]:text-gray data-[state=inactive]:bg-transparent`}>
                     {item.label}
                   </TabsTrigger>
@@ -213,23 +217,17 @@ export default function ContentDisplaySection() {
                       />
                       <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
                     </div>
-                    {/** 
-                      <Button
-                        variant="outline"
-                        className="h-11 flex items-center gap-2.5 border border-[#d9d9d9] rounded-lg">
-                        <ListFilter className="w-5 h-5" />
-                        <span className="font-body-3 text-noir-dashboard">
-                          Trier par...
-                        </span>
-                      </Button>
-                     */}
                     {/* Menus */}
                     <MenuCard ordre={ordre} setOrdre={setOrdre} />
-
                     <Button
+                      onClick={() => toggleDisplayMode()}
                       variant="outline"
                       className="w-11 h-11 p-0 flex items-center justify-center border border-[#d9d9d9] rounded-lg">
-                      <LayoutGridIcon className="w-5 h-5" />
+                      {
+                        ( displayMode === 'list') ?
+                        <LayoutGridIcon className="w-5 h-5" /> :
+                        <ListOrdered className="w-5 h-5" />
+                      }
                     </Button>
                   </div>
                 </div>
@@ -238,17 +236,32 @@ export default function ContentDisplaySection() {
               <ScrollArea className="w-full h-[calc(80vh)] mt-6">
                 <TabsContent value="published" className="mt-6 space-y-6">
                   {/* Content for published tab */}
-                  <MessageContent etat={1} />
+                  <MessageContent 
+                    etat={1} 
+                    query={query} 
+                    ordre={ordre} 
+                    displayMode={displayMode} 
+                  />
                 </TabsContent>
 
                 <TabsContent value="pending" className="mt-6 space-y-6">
                   {/* Content for pending tab */}
-                  <MessageContent etat={0} />
+                  <MessageContent 
+                    etat={0} 
+                    query={query} 
+                    ordre={ordre} 
+                    displayMode={displayMode} 
+                  />
                 </TabsContent>
 
                 <TabsContent value="disabled" className="mt-6 space-y-6">
                   {/* Content for disabled tab */}
-                  <MessageContent etat={-1} />
+                  <MessageContent 
+                    etat={-1} 
+                    query={query} 
+                    ordre={ordre} 
+                    displayMode={displayMode} 
+                  />
                 </TabsContent>
               </ScrollArea>
             </Tabs>

@@ -9,8 +9,23 @@ import { useEffect, useState } from 'react';
 import { Message } from '../../../app/types';
 import { Loader } from '@/components/ui/loader';
 import { toast } from 'sonner';
+import { Card, CardContent } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { EyeIcon, Trash2Icon } from 'lucide-react';
 
-export default function MessageContent({ etat }: { etat: number }) {
+export default function MessageContent(
+    { 
+        etat,
+        displayMode, 
+        query, 
+        ordre 
+    }: 
+    {   etat: number,
+        query: string,
+        ordre: string,
+        displayMode: 'list' | 'grid'
+    }) {
     const [messages, setMessages] = useState<Message[]>([])
     const [selectedMessage, setSelectedMessage] = useState<Message | undefined>()
     const [openModal, setOpenModal] = useState(false)
@@ -20,6 +35,9 @@ export default function MessageContent({ etat }: { etat: number }) {
 
     useEffect(() => {
         const getMessages = async () => {
+            // let params = `?paginate=200&etat=${etat}`
+            // if (query) { params += `&intitule=${query}` }
+            // if (ordre) { params += `&ordre=${ordre}` }
             const response: any = await apiClient.get(`/api/mot_archeve?paginate=200&etat=${etat}`)
             setMessages(response.data)
         }
@@ -64,23 +82,127 @@ export default function MessageContent({ etat }: { etat: number }) {
 
     return (
         <div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {
-                    messages.map((message, index) => (
-                        <MessageComp
-                            key={index}
-                            message={message}
-                            onClick={() => {
-                                setOpenModal(true)
-                                setSelectedMessage(message)
-                            }}
-                        />
-                    ))
-                }
-            </div>
+            {
+                ( displayMode === 'list') ?
+                    <Card className="w-full rounded-2xl bg-white">
+                        <CardContent aria-describedby={undefined} className="p-0">
+                            <div className="flex flex-col w-full items-start gap-4">
+                            <Table>
+                                <TableHeader className="bg-[#f9f9f0] rounded-lg">
+                                <TableRow className="border-none">
+                                    <TableHead className="font-body-3 text-noir-dashboard text-sm">
+                                        Titre
+                                    </TableHead>
+                                    <TableHead className="font-body-3 text-noir-dashboard text-sm">
+                                        Description
+                                    </TableHead>
+                                    <TableHead className="font-body-3 text-noir-dashboard text-sm">
+                                        Ajouté le
+                                    </TableHead>
+                                    <TableHead className="font-body-3 text-noir-dashboard text-sm">
+                                        Actions
+                                    </TableHead>
+                                </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                { messages.map((message, index) => (
+                                    <TableRow key={index} className="border-b border-[#d9d9d9]">
+                                    <TableCell className="font-body-3 text-noir-dashboard py-3.5 max-w-2xl">
+                                        <Text className='font-bold ' labelEn={message?.titre_en} labelFr={message?.titre_fr} />
+                                    </TableCell>
+                                    <TableCell className="font-body-3 text-noir-dashboard py-3.5 max-w-xl">
+                                        <Text className='line-clamp-2' labelEn={message?.message_en} labelFr={message?.message_fr} />
+                                    </TableCell>
+                                    <TableCell className="font-body-3 text-noir-dashboard py-3.5">
+                                        { formatDateToLocal((new Date(message?.created_at)).toISOString()) }
+                                    </TableCell>
+                                    <TableCell className="py-3.5">
+                                        <div className="flex items-center gap-[17px]">
+                                        <Button
+                                            onClick={() => {
+                                                setOpenModal(true)
+                                                setSelectedMessage(message)
+                                            }}
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-auto p-0 flex items-center gap-1">
+                                            <EyeIcon className="w-[18px] h-[18px]" />
+                                            <span className="font-body-3 text-noir-dashboard">
+                                                Voir
+                                            </span>
+                                        </Button>
+                                        {/* Alert Dialog */}
+                                        <Card>
+                                            <CardContent aria-describedby={undefined} className='p-0'>
+                                                <AlertDialog>
+                                                    <AlertDialogTrigger asChild>
+                                                    <Button
+                                                        // onClick={() => setSelectedActualite(article)}
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="h-auto p-0 flex items-center gap-1">
+                                                            {
+                                                                (isDeleting && selectedMessage?.id === message.id )? 
+                                                                <Loader className='h-4 w-4 mr-2' /> :
+                                                                <Trash2Icon className="w-4 h-4 mr-2" />
+                                                            }
+                                                        <span className="font-body-3 text-noir-dashboard">
+                                                            Supprimer
+                                                        </span>
+                                                        
+                                                    </Button>
+                                                    </AlertDialogTrigger>
+                                                    <AlertDialogContent>
+                                                        <AlertDialogHeader>
+                                                            <AlertDialogTitle>Êtes-vous absolument sûr?</AlertDialogTitle>
+                                                            <AlertDialogDescription>
+                                                            Cette action est irréversible et supprimera définitivement ce message.
+                                                            </AlertDialogDescription>
+                                                        </AlertDialogHeader>
+                                                        <AlertDialogFooter>
+                                                            <AlertDialogCancel>Annuler</AlertDialogCancel>
+                                                            <AlertDialogAction className='bg-blue text-white' onClick={handleDeleteMessage} >
+                                                            {
+                                                                (isDeleting && selectedMessage?.id === message.id )? 
+                                                                <Loader className='h-4 w-4 mr-2' /> :
+                                                                <Trash2Icon className="w-4 h-4 mr-2" />
+                                                            }
+                                                                Continuer
+                                                            </AlertDialogAction>
+                                                        </AlertDialogFooter>
+                                                    </AlertDialogContent>
+                                                </AlertDialog>
+                                            </CardContent>
+                                        </Card>
+                                        </div>
+                                    </TableCell>
+                                    </TableRow>
+                                ))}
+                                </TableBody>
+                            </Table>
+                            </div>
+                        </CardContent>
+                    </Card> :
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {
+                            messages.map((message, index) => (
+                                <MessageComp
+                                    key={index}
+                                    message={message}
+                                    onClick={() => {
+                                        setOpenModal(true)
+                                        setSelectedMessage(message)
+                                    }}
+                                />
+                            ))
+                        }
+                    </div> 
+                    
+            }
+            
             {/* Sheet */}
             <Sheet open={openModal} onOpenChange={setOpenModal} >
-                <SheetContent className="max-w-3xl min-w-[650px]">
+                <SheetContent aria-describedby={undefined} className="max-w-3xl min-w-[650px]">
                     <SheetHeader className='relative'>
                         <SheetTitle hidden>Détails du message de l'archevêque</SheetTitle>
                     </SheetHeader>
@@ -123,10 +245,6 @@ export default function MessageContent({ etat }: { etat: number }) {
                             <Text labelFr={selectedMessage?.message_fr} labelEn={selectedMessage?.message_en} />
                         </div>
                     </ScrollArea>
-
-                    {/* <SheetFooter className='px-7'>
-                        <Button onClick={() => setOpenModal(false)}>Fermer</Button>
-                    </SheetFooter> */}
                 </SheetContent>
             </Sheet>
         </div>
