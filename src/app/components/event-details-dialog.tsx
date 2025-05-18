@@ -19,6 +19,7 @@ interface EventDetailsDialogProps {
 
 export default function EventDetailsDialog({ event, open, onOpenChange }: EventDetailsDialogProps) {
   const [isDeleting, setIsDeleting] = useState(false)
+  const [isStatusChanging, setIsStatusChanging] = useState(false)
   if (!event) return null;
 
   // Function to handle event deletion
@@ -38,6 +39,27 @@ export default function EventDetailsDialog({ event, open, onOpenChange }: EventD
       onOpenChange(false); // Close the dialog after deletion
     }
   }
+
+  const handleUpdatedStatut = async () => {
+    if(isStatusChanging) return
+    setIsStatusChanging(true);
+    try {
+      await apiClient.put(`/api/evenements/${event.id}`, {
+        ...event,
+        etat:  event.etat === 1 ? -1 : 1
+      });
+      window.location.reload(); // Reload the page to reflect changes      
+    } catch (error) {
+      toast.warning(
+        <div className='p-3 bg-red-500 text-white rounded-md'>
+          Error updating event: {JSON.stringify(error)}
+        </div>
+      )
+    } finally {
+      setIsStatusChanging(false);
+      onOpenChange(false); // Close the dialog after deletion
+    }
+  }
   return (
     <Sheet open={open} onOpenChange={onOpenChange} >
       <SheetContent aria-describedby={undefined} className="max-w-3xl min-w-[620px]">
@@ -53,6 +75,9 @@ export default function EventDetailsDialog({ event, open, onOpenChange }: EventD
             <div className="flex gap-2">
               <Button variant="outline" className="h-10">
                 Désactiver
+                {
+                  event?.etat === 1 ? 'Désactiver' : 'Activer'
+                }
               </Button>
               <EditEventFormSection eventData={event}/>
               <Button onClick={handleDeleteEvent} className="h-10 bg-red-500 text-white hover:bg-blue/90">

@@ -48,7 +48,7 @@ export default function CreateActutalite() {
       description_fr: content.french,
       description_en: content.english,
       is_brouillon: 0,
-      is_actif: 0,
+      is_actif: 1, // Un actualité créée est dabord au statut attente
       galerie_id: 24,
     })
 

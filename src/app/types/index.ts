@@ -103,6 +103,7 @@ export type Event = {
     nextId: number | null;
     lieu: string;
     gps: string;
+    etat: number;
     contact: string;
     description_fr: string;
     description_en: string;

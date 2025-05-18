@@ -12,7 +12,7 @@ import {
   ListFilter
 } from "lucide-react";
 import Image from "next/image";
-import { JSX, Suspense, useEffect, useState } from "react";
+import { JSX, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Member } from "../../../app/types";
 import AddMemberFormSection from "./AddMemberFormSection";
@@ -102,7 +102,7 @@ export const ClergPretres = (): JSX.Element => {
                   setQuery={setQuery}
                 />
               </div>
-              <ScrollArea className="w-full h-[calc(80vh)] mt-6">
+              <ScrollArea className="w-full h-[calc(100vh-345px)] mt-6">
                 {/* Archevêque grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
                   {members.map((member, index) => (
@@ -198,7 +198,7 @@ export const ClergPretres = (): JSX.Element => {
                 </div>
 
                 <TabsContent value="actif" className="mt-6 space-y-6">
-                  <ScrollArea className="w-full h-[calc(80vh)] mt-6">
+                  <ScrollArea className="w-full h-[calc(100vh-345px)] mt-6">
                     {/* Diacres grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
                       {members.map((member, index) => (
@@ -241,7 +241,7 @@ export const ClergPretres = (): JSX.Element => {
                 <TabsContent
                   value="en-retraite"
                   className="mt-6 p-0 border-none">
-                  <ScrollArea className="w-full h-[calc(80vh)] mt-6">
+                  <ScrollArea className="w-full h-[calc(100vh-345px)] mt-6">
                     {/* Diacres grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
                       {members.map((member, index) => (
@@ -282,7 +282,7 @@ export const ClergPretres = (): JSX.Element => {
                 </TabsContent>
 
                 <TabsContent value="decedes" className="mt-6 p-0 border-none">
-                  <ScrollArea className="w-full h-[calc(80vh)] mt-6">
+                  <ScrollArea className="w-full h-[calc(100vh-345px)] mt-6">
                     {/* Diacres grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
                       {members.map((member, index) => (
@@ -381,7 +381,7 @@ export const ClergPretres = (): JSX.Element => {
                 </div>
 
                 <TabsContent value="pretres-redemptoristes" className="mt-6 space-y-6">
-                  <ScrollArea className="w-full h-[calc(80vh)] ">
+                  <ScrollArea className="w-full h-[calc(100vh-345px)] ">
                     {/* Priests grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
                     {members.map((member, index) => (
@@ -422,7 +422,7 @@ export const ClergPretres = (): JSX.Element => {
                 <TabsContent
                   value="autres-groupes"
                   className="mt-6 p-0 border-none">
-                  <ScrollArea className="w-full h-[calc(80vh)] ">
+                  <ScrollArea className="w-full h-[calc(100vh-345px)] ">
                     {/* Priests grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
                     {members.map((member, index) => (
@@ -461,7 +461,7 @@ export const ClergPretres = (): JSX.Element => {
                 </TabsContent>
 
                 <TabsContent value="decedes" className="mt-6 p-0 border-none">
-                  <ScrollArea className="w-full h-[calc(80vh)] ">
+                  <ScrollArea className="w-full h-[calc(100vh-345px)] ">
                     {/* Priests grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
                     {members.map((member, index) => (
@@ -558,7 +558,7 @@ export const ClergPretres = (): JSX.Element => {
                 </div>
 
                 <TabsContent value="actif" className="mt-6 space-y-6">
-                  <ScrollArea className="w-full h-[calc(80vh)] mt-6">
+                  <ScrollArea className="w-full h-[calc(100vh-345px)] mt-6">
                     {/* Prêtres grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
                     {members.map((member, index) => (
@@ -601,7 +601,7 @@ export const ClergPretres = (): JSX.Element => {
                 <TabsContent
                   value="en-retraite"
                   className="mt-6 p-0 border-none">
-                  <ScrollArea className="w-full h-[calc(80vh)] mt-6">
+                  <ScrollArea className="w-full h-[calc(100vh-345px)] mt-6">
                     {/* Prêtres grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
                     {members.map((member, index) => (
@@ -642,7 +642,7 @@ export const ClergPretres = (): JSX.Element => {
                 </TabsContent>
 
                 <TabsContent value="decedes" className="mt-6 p-0 border-none">
-                  <ScrollArea className="w-full h-[calc(80vh)] mt-6">
+                  <ScrollArea className="w-full h-[calc(100vh-345px)] mt-6">
                     {/* Prêtres grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
                     {members.map((member, index) => (
@@ -694,7 +694,7 @@ export const ClergPretres = (): JSX.Element => {
                   setQuery={setQuery}
                 />
               </div>
-              <ScrollArea className="w-full h-[calc(80vh)] mt-6">
+              <ScrollArea className="w-full h-[calc(100vh-345px)] mt-6">
                 {/* Options grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
                   {members.map((member, index) => (

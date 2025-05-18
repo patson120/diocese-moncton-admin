@@ -136,7 +136,7 @@ export default function AddMemberFormSection(){
     formdata.append("coordonnees", `${data.etablissement}`);
     formdata.append("etat", `${status}`);
     formdata.append("image", fileImage!);
-    formdata.append("etablissement_id", `${data.etablissement},`); 
+    // formdata.append("etablissement_id", `${data.etablissement},`); 
     formdata.append("description_fr", `${data.description_fr}`);
     formdata.append("description_en", `${data.description_en}`);
 
@@ -146,13 +146,16 @@ export default function AddMemberFormSection(){
       });
   
       if (response.id ) {
-        setStep(1)
-        setMember(defaultMember)
-        setCoverImage('')
+        // setStep(1)
+        // setMember(defaultMember)
+        // setCoverImage('')
         toast.success('Membre ajouté avec succès');
-        setFileImage(undefined)
-        formOne.reset();
-        formTwo.reset();
+        // setFileImage(undefined)
+        // formOne.reset();
+        // formTwo.reset();
+        setTimeout(() => {
+          window.location.reload()
+        }, 1500);
       }
       else  {
         toast.error('Une erreur est survenue lors de l\'ajout du membre');
