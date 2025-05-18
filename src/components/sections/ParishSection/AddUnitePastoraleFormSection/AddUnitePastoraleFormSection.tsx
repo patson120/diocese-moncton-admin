@@ -14,6 +14,8 @@ import { JSX, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
+import { MapContainer } from "../../MapSection/map-container";
+import { Location } from "@/app/types";
 
 
 const formSchemaOne = z.object({
@@ -29,6 +31,7 @@ const formSchemaThree = z.object({
 export const AddUnitePastoraleFormSection = (): JSX.Element => {
   const [step, setStep] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
+  const [location, setLocation] = useState<Location | null>(null);
 
   // Forms
   const formOne = useForm<z.infer<typeof formSchemaOne>>({
@@ -73,7 +76,8 @@ export const AddUnitePastoraleFormSection = (): JSX.Element => {
     formData.append('intitule_fr', formOne.getValues("nom_fr"));
     formData.append('intitule_en', formTwo.getValues("nom_en"));
     formData.append('couleur', "#fff");
-    formData.append('gps', '48.8566;2.3522');
+    formData.append('gps', `${location?.lat};${location?.lng}`);
+    
     try {
       const response: any = await apiClient.post('/api/type_paroisses', formData, {
         'Content-Type': 'multipart/form-data'
@@ -90,7 +94,6 @@ export const AddUnitePastoraleFormSection = (): JSX.Element => {
           </div>
         )
       }
-      
     } catch (error) {
       toast.warning(
         <div className='p-3 bg-red-500 text-white rounded-md'>
@@ -204,10 +207,27 @@ export const AddUnitePastoraleFormSection = (): JSX.Element => {
           step === 3 &&
           <div className="flex flex-col w-full p-10 pt-6 space-y-6">
             <h1 className="font-bold">Emplacement sur la map</h1>
-            <div className="h-80 w-full bg-black/5 rounded-lg"></div>
+            <div className="h-80 w-full bg-black/5 rounded-lg overflow-hidden">
+              {/** Map view */}
+              <MapContainer 
+                showSearchBar={true}
+                location={location}
+                setLocation={setLocation}
+              />
+            </div>
             <div className="flex flex-col space-y-2">
               <h1 className="font-bold">Localisation</h1>
-              <p className=" text-black">Entrez une adresse pour voir les informations s'afficher</p>
+              <p className=" text-black">
+                {
+                  location ?
+                  <span>
+                    {location?.name} {location?.address}<br /> 
+                    lat: {location?.lat.toFixed(6)} <br /> 
+                    lng: {location?.lng.toFixed(6)}
+                  </span> :
+                  <span>Entrez une adresse pour voir les informations s'afficher</span>
+                }
+              </p>
             </div>
             <div className="flex flex-row gap-4">
               <Button variant={'outline'} onClick={() => setStep(2)} className="w-min px-8 mt-8 h-12 rounded-lg">

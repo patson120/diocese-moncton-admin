@@ -13,10 +13,8 @@ import { TabsContent } from '@radix-ui/react-tabs'
 import { ArrowLeft, CopyIcon, ExternalLinkIcon, } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { Actualite } from '../../types'
-import ActuDialog from './ActuDialog'
 import { toast } from 'sonner'
-import { createActualite } from '@/lib/data'
+import ActuDialog from './ActuDialog'
 
 export default function CreateActutalite() {
   const router = useRouter()

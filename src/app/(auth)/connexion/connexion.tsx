@@ -37,11 +37,15 @@ export const Connexion = (): JSX.Element => {
     if (isLoading) return 
     setIsLoading(true)
     try {
-      const response = await apiClient.post("/api/auth/login", {
-        email: values.email.trim(), 
-        password: values.password.trim()
-      })
+      const formdata = new FormData();
+      formdata.append("email", values.email.trim());
+      formdata.append("password", values.password.trim());
+
+      const response: any = await apiClient.post('/api/auth/login', formdata, {
+        'Content-Type': 'multipart/form-data'
+      });
       console.log(response);
+      
       toast.success("Connecté avec succès")
 
       setTimeout(() => {
@@ -49,7 +53,6 @@ export const Connexion = (): JSX.Element => {
       }, 1500);
 
     } catch (error: any ) {
-      console.log(error);
       toast.warning(
         <div className='p-3 bg-red-500 text-white rounded-md'>
           Une erreur est survenue lors de la connexion. Erreur: {JSON.stringify(error.message)}

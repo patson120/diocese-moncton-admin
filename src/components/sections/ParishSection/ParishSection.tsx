@@ -46,7 +46,7 @@ export default function ParishSection() {
     // parish tabs data
     const clergyTabs = [
         { value: "paroisses", label: "Paroisses", active: true },
-        { value: "unites-paroissiales", label: "Unités paroissiales", active: false },
+        { value: "unites-paroissiales", label: "Unités pastorales", active: false },
     ];
 
     // Parish data
@@ -643,6 +643,20 @@ export default function ParishSection() {
                                 <h2 className="font-heading-5 text-2xl text-[#1c0004] mb-4 font-bold">
                                     Sur la carte
                                 </h2>
+                                {/** 
+                                    <div className='bg-[#F1F3F6] h-96 rounded-lg overflow-hidden'>
+                                        <MapContainer 
+                                            showSearchBar={false}
+                                            location={{
+                                                address: `${event?.lieu.split(";")[1]}`,
+                                                name: `${event?.lieu.split(";")[0]}`,
+                                                lat: event?.gps ? Number(event?.gps.split(";")[0]) : 46.091091,
+                                                lng: event?.gps ? Number(event?.gps.split(";")[1]) : -64.781880,
+                                                placeId: (new Date()).getTime().toString()
+                                            }}
+                                        />
+                                    </div>
+                                 */}
                                 <div className="w-full h-[350px] bg-neutral-100 rounded-3xl overflow-hidden">
                                     <div className="h-[350px] rounded-[18px] overflow-scroll v-scroll relative">
                                         <div className="relative w-[2100px] h-[1200px] top-[-520px] left-[-473px]">

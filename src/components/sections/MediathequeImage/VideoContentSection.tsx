@@ -20,7 +20,7 @@ export const VideoContentSection = (): JSX.Element => {
   const [ressources, setRessources] = useState<Ressource[]>([]) 
 
   const fetchRessources = async () => {
-    const response: Ressource[] = await apiClient.get('/api/ressources')
+    const response: Ressource[] = await apiClient.get('/api/ressources?type=video')
     setRessources(response)
   }
   

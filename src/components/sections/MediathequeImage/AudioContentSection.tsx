@@ -19,7 +19,7 @@ export const AudioContentSection = (): JSX.Element => {
   const [ressources, setRessources] = useState<Ressource[]>([]) 
   
     const fetchRessources = async () => {
-      const response: Ressource[] = await apiClient.get('/api/ressources')
+      const response: Ressource[] = await apiClient.get('/api/ressources?type=audio')
       setRessources(response)
     }
     
