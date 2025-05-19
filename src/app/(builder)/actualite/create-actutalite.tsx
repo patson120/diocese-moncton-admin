@@ -351,7 +351,7 @@ export default function CreateActutalite() {
           <CardContent className="flex items-start gap-1 p-3">
             <CopyIcon className="w-5 h-5" />
             <span className="font-body-3 text-noir-dashboard text-sm">
-              Copier tout le texte
+              Copier le titre
             </span>
           </CardContent>
         </Card>
@@ -360,7 +360,7 @@ export default function CreateActutalite() {
           <CardContent className="flex items-start gap-1 p-3">
             <CopyIcon className="w-5 h-5" />
             <span className="font-body-3 text-noir-dashboard text-sm">
-              Copier tout le texte
+              Copier le contenu
             </span>
           </CardContent>
         </Card>

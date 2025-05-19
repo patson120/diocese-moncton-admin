@@ -63,7 +63,7 @@ export default function MessageContent(
         try {
             await apiClient.put(`/api/mot_archeve/${selectedMessage?.id}`, {
                 ...selectedMessage,
-                etat: selectedMessage?.etat === 1 ? 0 : 1
+                etat: selectedMessage?.etat === 1 ? -1 : 1
             })
             setMessages(messages.filter((message) => message.id !== selectedMessage?.id))
             setOpenModal(false)

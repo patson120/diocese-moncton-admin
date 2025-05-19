@@ -134,6 +134,7 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
     formdata.append("coordonnees", `${data.etablissement}`);
     formdata.append("etat", `${status}`);
     formdata.append("image", fileImage!);
+    formdata.append("etablissement_id", `${data.etablissement},`);
     formdata.append("description_fr", `${data.description_fr}`);
     formdata.append("description_en", `${data.description_en}`);
 
