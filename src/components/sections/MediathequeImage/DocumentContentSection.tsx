@@ -27,50 +27,6 @@ export const DocumentContentSection = (): JSX.Element => {
 
   const [ressources, setRessources] = useState<Ressource[]>([])
 
-  // Document data for mapping
-  const documents = [
-    {
-      name: "Bulletin diocésain mensuel",
-      format: "PDF",
-      date: "12/03/2025",
-    },
-    {
-      name: "Calendrier des pèlerinages organisés",
-      format: "EXCEL",
-      date: "12/03/2025",
-    },
-    {
-      name: "Lettre pastorale de l'évêque",
-      format: "PDF",
-      date: "12/03/2025",
-    },
-    {
-      name: "Fiches de catéchèse pour jeunes et adultes",
-      format: "WORD",
-      date: "12/03/2025",
-    },
-    {
-      name: "Catalogue des formations diocésaines",
-      format: "PDF",
-      date: "12/03/2025",
-    },
-    {
-      name: "Guide de la vie paroissiale",
-      format: "PDF",
-      date: "12/03/2025",
-    },
-    {
-      name: "Document de réflexion synodale",
-      format: "PDF",
-      date: "12/03/2025",
-    },
-    {
-      name: "Charte de bénévolat dans le diocèse",
-      format: "WORD",
-      date: "12/03/2025",
-    },
-  ];
-
   const toggleDisplayMode = () => {
     if (dislayMode === 'list') setDislayMode("grid") 
     else setDislayMode("list")

@@ -2,16 +2,16 @@
 import { HTMLContent } from '@/components/shared/html-content';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Loader } from '@/components/ui/loader';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { fetchCategories } from '@/lib/data';
+import { MonitorUp, Timer } from 'lucide-react';
 import Image from 'next/image';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { Actualite, Category } from '../../../types';
-import { MonitorUp, Timer } from 'lucide-react';
-import { Label } from '@/components/ui/label';
 
 export default function EditActuDialog(
     {
@@ -32,7 +32,7 @@ export default function EditActuDialog(
 
     const [categorie, setCategorie] = useState<Category>()
     const [categories, setCategories] = useState<Category[]>([])
-    const [motcles, setMotcles] = useState('')
+    const [motcles, setMotcles] = useState(actualite.motcles.map((item: any) => item.intitule).join(','))
     const [date, setDate] = useState('')
     const [hour, setHour] = useState('')
     const [isPlan, setIsPlan] = useState(false)
@@ -68,7 +68,6 @@ export default function EditActuDialog(
         }
         getCategories()
     }, [])
-
 
     return (
         <Dialog open={open}>

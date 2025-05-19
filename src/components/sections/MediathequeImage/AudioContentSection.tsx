@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { apiClient } from "@/lib/axios";
+import { copyToClipboard } from "@/lib/utils";
 import {
   AudioLines,
   CopyIcon,
@@ -18,36 +19,28 @@ import { toast } from "sonner";
 export const AudioContentSection = (): JSX.Element => {
   const [ressources, setRessources] = useState<Ressource[]>([]) 
   
-    const fetchRessources = async () => {
-      const response: Ressource[] = await apiClient.get('/api/ressources?type=audio')
-      setRessources(response)
-    }
+  const fetchRessources = async () => {
+    const response: Ressource[] = await apiClient.get('/api/ressources?type=audio')
+    setRessources(response)
+  }
     
-    const deleteRessources = async (idRessource: number) => {
-      try {
-        await apiClient.delete(`/api/ressources/${idRessource}`)
-        setRessources(prev  => prev.filter( doc  => doc.id != idRessource))
-        toast.success("Ressource supprimée avec succès")
-      } catch (error: any) {
-        toast.error(
-          <div className='p-3 bg-red-500 text-white rounded-md'>
-            Une erreur est survenue. Erreur:  {JSON.stringify(error.message)}
-          </div>
-        )
-      }
+  const deleteRessources = async (idRessource: number) => {
+    try {
+      await apiClient.delete(`/api/ressources/${idRessource}`)
+      setRessources(prev  => prev.filter( doc  => doc.id != idRessource))
+      toast.success("Ressource supprimée avec succès")
+    } catch (error: any) {
+      toast.error(
+        <div className='p-3 bg-red-500 text-white rounded-md'>
+          Une erreur est survenue. Erreur:  {JSON.stringify(error.message)}
+        </div>
+      )
     }
+  }
   
-    useEffect(() => {
-      fetchRessources()
-    }, [])
-  
-    const copyToClipboard = (text: string) => {
-      navigator.clipboard.writeText(text).then(() => {
-        toast.info("Texte copié dans le presse-papier !");
-      }).catch((error) => {
-        toast.error("Erreur lors de la copie dans le presse-papier :", error);
-      });
-    };
+  useEffect(() => {
+    fetchRessources()
+  }, [])
 
   return (
     <section className="w-full flex-1 p-6">

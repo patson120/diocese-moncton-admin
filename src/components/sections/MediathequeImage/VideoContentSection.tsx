@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { apiClient } from "@/lib/axios";
+import { copyToClipboard } from "@/lib/utils";
 import {
   CopyIcon,
   LayoutGridIcon,
@@ -41,15 +42,6 @@ export const VideoContentSection = (): JSX.Element => {
   useEffect(() => {
     fetchRessources()
   }, [])
-
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text).then(() => {
-      toast.info("Texte copié dans le presse-papier !");
-    }).catch((error) => {
-      toast.error("Erreur lors de la copie dans le presse-papier :", error);
-    });
-  };
-
 
   return (
     <section className="w-full flex-1 p-6">
