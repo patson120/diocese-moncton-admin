@@ -102,7 +102,7 @@ export function CalendarGrid({
           <div className="grid grid-cols-1 gap-1">
             {hours.map((hour) => {
               const currentHourEvents = events.filter(event => {
-                const eventDate = new Date(event.date_event);
+                const eventDate = new Date(`${event.date_event}T${event.heure_event}`);
                 return isSameDay(eventDate, currentDate) && getHours(eventDate) === hour;
               });
 
@@ -170,7 +170,7 @@ export function CalendarGrid({
                 </div>
                 {days.map((day) => {
                   const dayEvents = events.filter(event => {
-                    const eventDate = new Date(event.date_event);
+                    const eventDate = new Date(`${event.date_event}T${event.heure_event}`);
                     return isSameDay(eventDate, day) && getHours(eventDate) === hour;
                   });
 
