@@ -187,14 +187,17 @@ export default function ActualiteContent(
                                 onClick={() => handelOpenDetailsSheet(article)}
                                 className="w-full border-none shadow-none cursor-pointer">
                                 <CardContent className="p-0 space-y-3">
-                                    {/* {article.image ? ( */}
+                                     {article.galerie.length === 0 ? ( 
                                         <div
                                             className="w-full h-[150px] rounded-xl bg-cover bg-center"
                                             style={{ backgroundImage: `url("/image-5.png")` }}
                                         />
-                                        {/* ) : (
-                                        <div className="w-full h-[150px] bg-[#f8f8f8] rounded-[11px]" />
-                                    )} */}
+                                     ) : (
+                                        <div
+                                            className="w-full h-[150px] rounded-xl bg-cover bg-center"
+                                            style={{ backgroundImage: `url(${process.env.NEXT_PUBLIC_API_URL}/${article.galerie[0].path})` }}
+                                        />
+                                    )}
 
                                     <div className="flex flex-col gap-2">
                                         <div className='flex flex-row justify-between items-center'>

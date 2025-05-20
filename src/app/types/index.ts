@@ -47,6 +47,7 @@ export type Actualite = {
     updated_at: string;
     categorie: Category;
     motcles: string[]
+    galerie: Galerie[]
 }
 export type Paroisse = {
     id: number;
@@ -66,7 +67,7 @@ export type Paroisse = {
     histoire_en: string;
     created_at: string;
     updated_at: string;
-    galerie: any[];
+    galerie: Galerie[];
     type: TypeParoisse;
     horaireparoisses: Horaire[];
     etabli_le: number | null,
@@ -179,4 +180,15 @@ export type Ressource = {
     created_at: string;
     updated_at: string;
     categorie: any;
+}
+export type Galerie = {
+    id: number;
+    titre: string | null;
+    path: string;
+    path_en: string | null;
+    label: string;
+    value: number;
+    comment: string;
+    created_at: string;
+    updated_at: string;
 }

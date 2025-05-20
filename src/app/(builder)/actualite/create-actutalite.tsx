@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import ActuDialog from './ActuDialog'
+import { copyToClipboard } from '@/lib/utils'
 
 export default function CreateActutalite() {
   const router = useRouter()
@@ -26,6 +27,8 @@ export default function CreateActutalite() {
   const [openPublishModal, setOpenPublishModal] = useState(false);
   const [coverImage, setCoverImage] = useState<string>("");
   const [fileImage, setFileImage] = useState<File | undefined>();
+  const [section, setSection] = useState<'french' | 'english'>('french');
+
   const [title, setTitle] = useState({
     french: '',
     english: '',
@@ -193,6 +196,7 @@ export default function CreateActutalite() {
               <TabsList className="flex justify-start w-full h-auto bg-[#f8f8f8] rounded-[0px_12px_0px_0px] p-0">
                 <TabsTrigger
                   value="french"
+                  onClick={() => setSection('french')}
                   className="flex items-center gap-2 p-3 data-[state=active]:bg-noir-dashboard data-[state=active]:text-white data-[state=inactive]:bg-white rounded-[12px_12px_0px_0px]">
                   <div className="relative w-3.5 h-3.5 rounded-[7px] border border-solid border-current">
                     {/* Filled circle for active tab */}
@@ -203,6 +207,7 @@ export default function CreateActutalite() {
 
                 <TabsTrigger
                   value="english"
+                  onClick={() => setSection('english')}
                   className="flex items-center gap-2 p-3 data-[state=active]:bg-noir-dashboard data-[state=active]:text-white data-[state=inactive]:bg-white rounded-[12px_12px_0px_0px]">
                   <div className="relative w-3.5 h-3.5 rounded-[7px] border border-solid border-current" />
                   <span className="font-body-3 text-sm">Version anglaise</span>
@@ -347,7 +352,7 @@ export default function CreateActutalite() {
       </div>
       {/* Floating action buttons */}
       <div className="flex flex-col w-[244px] items-start gap-2 fixed bottom-[62px] right-[38px]">
-        <Card className="shadow-[0px_4px_12px_#0000001a] rounded-lg">
+        <Card onClick={() => copyToClipboard(section == 'french' ? title.french : title.english)} className="shadow-[0px_4px_12px_#0000001a] rounded-lg cursor-pointer">
           <CardContent className="flex items-start gap-1 p-3">
             <CopyIcon className="w-5 h-5" />
             <span className="font-body-3 text-noir-dashboard text-sm">
@@ -355,8 +360,7 @@ export default function CreateActutalite() {
             </span>
           </CardContent>
         </Card>
-
-        <Card className="shadow-[0px_4px_12px_#0000001a] rounded-lg">
+        <Card onClick={() => copyToClipboard(section == 'french' ? content.french : content.english)} className="shadow-[0px_4px_12px_#0000001a] rounded-lg cursor-pointer">
           <CardContent className="flex items-start gap-1 p-3">
             <CopyIcon className="w-5 h-5" />
             <span className="font-body-3 text-noir-dashboard text-sm">
@@ -364,7 +368,6 @@ export default function CreateActutalite() {
             </span>
           </CardContent>
         </Card>
-
         <Card className="shadow-[0px_4px_12px_#0000001a] rounded-lg w-full">
           <CardContent className="flex items-start gap-1 p-3">
             <ExternalLinkIcon className="w-5 h-5" />
