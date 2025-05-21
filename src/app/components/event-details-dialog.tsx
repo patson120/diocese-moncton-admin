@@ -73,12 +73,6 @@ export default function EventDetailsDialog({ event, open, onOpenChange }: EventD
               Fermer
             </Button>
             <div className="flex gap-2">
-              <Button variant="outline" className="h-10">
-                Désactiver
-                {
-                  event?.etat === 1 ? 'Désactiver' : 'Activer'
-                }
-              </Button>
               <EditEventFormSection eventData={event}/>
               <Button onClick={handleDeleteEvent} className="h-10 bg-red-500 text-white hover:bg-blue/90">
                 { isDeleting && <Loader className='h-5 w-5, mr-2' /> }
