@@ -1,21 +1,22 @@
 "use client"
 
+import { Image } from '@/app/types'
 import { Editor } from '@/components/Editor/Editor'
+import { GaleryPopup } from '@/components/sections/GaleryPopup'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
 import { Loader } from '@/components/ui/loader'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { apiClient } from '@/lib/axios'
+import { cn, copyToClipboard } from '@/lib/utils'
 import { TabsContent } from '@radix-ui/react-tabs'
 import { ArrowLeft, CopyIcon, ExternalLinkIcon, } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import ActuDialog from './ActuDialog'
-import { copyToClipboard } from '@/lib/utils'
 
 export default function CreateActutalite() {
   const router = useRouter()
@@ -25,8 +26,7 @@ export default function CreateActutalite() {
   const [isEnglishVersion, setIsEnglishVersion] = useState(false);
   const [isEmptyActu, setIsEmptyActu] = useState(false);
   const [openPublishModal, setOpenPublishModal] = useState(false);
-  const [coverImage, setCoverImage] = useState<string>("");
-  const [fileImage, setFileImage] = useState<File | undefined>();
+  const [selectedImage, setSelectedImage] = useState<Image | undefined>();
   const [section, setSection] = useState<'french' | 'english'>('french');
 
   const [title, setTitle] = useState({
@@ -42,81 +42,47 @@ export default function CreateActutalite() {
     if (isLoading) return
     setIsLoading(true)
 
-    const response: any = await apiClient.post('/api/actualites', {
-      ...data,
-      titre_fr: title.french,
-      titre_en: title.english,
-      description_fr: content.french,
-      description_en: content.english,
-      is_brouillon: 0,
-      is_actif: 1, // Un actualité créée est dabord au statut attente
-      galerie_id: 24,
-    })
-
-    if (response.id) {
-      setTitle({french: '',english: '',})
-      setContent({french: '',english: '',})
-      setOpenPublishModal(false)
-      setIsSave(1)
-      setAlertModal("")
-      toast.success("Actualité enregistré avec succès !")
-      setTimeout(() => {
-        window.location.reload()
-      }, 1500);
-    
-
-      // // Creer l'image de couverture
-      // const formdata = new FormData();
-      // formdata.append("path", fileImage!);
-      // formdata.append("label", "actualite");
-      // formdata.append("value", `${response.id}`);
-      // formdata.append("fichier", fileImage!);
-    
-
-      // const result: any = await apiClient.post('/api/galeries', formdata, {
-      //   'Content-Type': 'multipart/form-data'
-      // });
-
-      // if (result.id) {
-      //   toast.success("Données enregistrées avec succès !")
-      //   router.back()
-      //   toast.warning(
-      //     <div className='p-3 bg-red-500 text-white rounded-md'>
-      //       {JSON.stringify(result)}
-      //     </div>
-      //   )
-      // }
-    }
-    else {
-      toast.warning(
+    try {
+      const response: any = await apiClient.post('/api/actualites', {
+        ...data,
+        titre_fr: title.french,
+        titre_en: title.english,
+        description_fr: content.french,
+        description_en: content.english,
+        is_brouillon: 0,
+        is_actif: 1, // Un actualité créée est dabord au statut attente
+        galerie_id: selectedImage?.id!,
+      })
+  
+      if (response.id) {
+        setTitle({french: '',english: '',})
+        setContent({french: '',english: '',})
+        setOpenPublishModal(false)
+        setIsSave(1)
+        setAlertModal("")
+        toast.success("Actualité enregistré avec succès !")
+        setTimeout(() => {
+          window.location.reload()
+        }, 1500);
+      }
+      else {
+        toast.error(
+          <div className='p-3 bg-red-500 text-white rounded-md'>
+            {JSON.stringify(response)}
+          </div>
+        )
+      }
+    } catch (error: any) {
+      toast.error(
         <div className='p-3 bg-red-500 text-white rounded-md'>
-          {JSON.stringify(response)}
+          {JSON.stringify(error.message)}
         </div>
       )
     }
-
-    setIsLoading(false)
-
-  }
-
-  const handleCoverImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const imageUrl = await handleImageUpload(file);
-      setFileImage(file)
-      setCoverImage(imageUrl);
+    finally{
+      setIsLoading(false)
     }
-  };
-
-  const handleImageUpload = (file: File): Promise<string> => {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        resolve(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    });
-  };
+  }
 
   const verifyEnglishContent = () => {
 
@@ -219,42 +185,26 @@ export default function CreateActutalite() {
                   <Card className="relative w-full bg-white rounded">
                     <CardContent className="w-full p-0">
                       {/* Image upload area */}
-                      <div className="h-[250px] w-full bg-[#f8f8f8] rounded-xl border border-solid border-[#d9d9d9]"
+                      <div className="h-[250px] w-full relative bg-[#f8f8f8] rounded-xl overflow-hidden border border-solid border-[#d9d9d9]"
                         style={{
-                          backgroundImage: coverImage ? `url(${coverImage})` : 'none',
+                          backgroundImage: selectedImage ? `url(${selectedImage.path})` : 'none',
                           backgroundPosition: "center center",
                           backgroundRepeat: "no-repeat",
                         }}>
-                        <div className='w-full h-full flex justify-center items-center'>
+                        <div className={cn('absolute inset-0 w-full h-full flex justify-center items-center',
+                          selectedImage && 'bg-black/30'
+                        )}>
                           <div className='w-auto h-min flex flex-col'>
-                            <p>Insérer une image de couverture</p>
-                            <div className='flex flex-row justify-center items-center space-x-1'>
+                            <GaleryPopup setSelectedImage={setSelectedImage} >
                               <Button
                                 variant="ghost"
-                                className="rounded-xl py-1"
-                              >
-                                <span className="font-body-3 font-[number:var(--body-3-font-weight)] text-blue text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] whitespace-nowrap [font-style:var(--body-3-font-style)]">
-                                  Galerie
-                                </span>
+                                className={cn('rounded-xl py-1 border',
+                                  selectedImage ? 'border-white' : 'border-gray'
+                                )}>
+                                <p className={cn(selectedImage ? 'text-white' : 'text-gray'
+                                )}>Insérer une image de couverture</p>
                               </Button>
-                              <p className='text-gray'>ou</p>
-                              <div className='relative overflow-hidden'>
-                                <Input
-                                  id="coverImage"
-                                  type="file"
-                                  accept="image/*"
-                                  onChange={handleCoverImageChange}
-                                  className="cursor-pointer absolute inset-0 z-10 opacity-0"
-                                />
-                                <Button
-                                  variant="ghost"
-                                  className="rounded-xl py-1 cursor-pointer">
-                                  <span className="font-body-3 font-[number:var(--body-3-font-weight)] text-blue text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] whitespace-nowrap [font-style:var(--body-3-font-style)]">
-                                    Télécharger
-                                  </span>
-                                </Button>
-                              </div>
-                            </div>
+                            </GaleryPopup>
                           </div>
                         </div>
                       </div>
@@ -286,42 +236,26 @@ export default function CreateActutalite() {
                   <Card className="relative w-full bg-white rounded">
                     <CardContent className="w-full p-0">
                       {/* Image upload area */}
-                      <div className="h-[250px] w-full bg-[#f8f8f8] rounded-xl border border-solid border-[#d9d9d9]"
+                      <div className="h-[250px] w-full relative bg-[#f8f8f8] rounded-xl overflow-hidden border border-solid border-[#d9d9d9]"
                         style={{
-                          backgroundImage: coverImage ? `url(${coverImage})` : 'none',
+                          backgroundImage: selectedImage ? `url(${selectedImage.path})` : 'none',
                           backgroundPosition: "center center",
                           backgroundRepeat: "no-repeat",
                         }}>
-                        <div className='w-full h-full flex justify-center items-center'>
+                        <div className={cn('absolute inset-0 w-full h-full flex justify-center items-center',
+                          selectedImage && 'bg-black/30'
+                        )}>
                           <div className='w-auto h-min flex flex-col'>
-                            <p>Insérer une image de couverture</p>
-                            <div className='flex flex-row justify-center items-center space-x-1'>
+                            <GaleryPopup setSelectedImage={setSelectedImage} >
                               <Button
                                 variant="ghost"
-                                className="rounded-xl py-1"
-                              >
-                                <span className="font-body-3 font-[number:var(--body-3-font-weight)] text-blue text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] whitespace-nowrap [font-style:var(--body-3-font-style)]">
-                                  Galerie
-                                </span>
+                                className={cn('rounded-xl py-1 border',
+                                  selectedImage ? 'border-white' : 'border-gray'
+                                )}>
+                                <p className={cn(selectedImage ? 'text-white' : 'text-gray'
+                                )}>Insérer une image de couverture</p>
                               </Button>
-                              <p className='text-gray'>ou</p>
-                              <div className='relative overflow-hidden'>
-                                <Input
-                                  id="coverImage"
-                                  type="file"
-                                  accept="image/*"
-                                  onChange={handleCoverImageChange}
-                                  className="cursor-pointer absolute inset-0 z-10 opacity-0"
-                                />
-                                <Button
-                                  variant="ghost"
-                                  className="rounded-xl py-1 cursor-pointer">
-                                  <span className="font-body-3 font-[number:var(--body-3-font-weight)] text-blue text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] whitespace-nowrap [font-style:var(--body-3-font-style)]">
-                                    Télécharger
-                                  </span>
-                                </Button>
-                              </div>
-                            </div>
+                            </GaleryPopup>
                           </div>
                         </div>
                       </div>
@@ -445,7 +379,7 @@ export default function CreateActutalite() {
       </Dialog>
 
       <ActuDialog
-        imageUrl={coverImage}
+        imageUrl={selectedImage?.path!}
         title={title}
         isLoading={isLoading}
         content={content}

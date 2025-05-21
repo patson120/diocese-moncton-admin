@@ -1,0 +1,1 @@
+export { GaleryPopup } from "./GaleryPopup";

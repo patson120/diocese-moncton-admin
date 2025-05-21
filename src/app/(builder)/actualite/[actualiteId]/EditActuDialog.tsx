@@ -20,12 +20,14 @@ export default function EditActuDialog(
         isLoading,
         handlePublish,
         open,
+        onOpenChange
     }:
         {
             imageUrl: string;
             actualite: Actualite;
             isLoading: boolean;
             handlePublish: (data: any) => void;
+            onOpenChange: (val: boolean) => void;
             open: boolean;
         }
 ) {
@@ -70,7 +72,7 @@ export default function EditActuDialog(
     }, [])
 
     return (
-        <Dialog open={open}>
+        <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent aria-describedby={undefined} className="w-min h-[550px] p-0 rounded-2xl">
                 <DialogClose className="absolute border-none w-5 h-5 top-[14px] right-[14px]">
                 </DialogClose>

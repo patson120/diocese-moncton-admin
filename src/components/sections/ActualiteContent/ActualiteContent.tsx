@@ -273,10 +273,17 @@ export default function ActualiteContent(
                     <div className="h-[calc(100%-80px)] mt-24 px-6 v-scroll overflow-y-scroll">
                         <div className="flex flex-col gap-6">
                             {/* Article header with image and basic info */}
-                            <section
-                                className="w-full h-[260px] aspect-auto rounded-2xl bg-cover bg-center bg-no-repeat"
-                                style={{ backgroundImage: `url("/image-5.png")` }}
-                            />
+                            {
+                                selectedActualite?.galerie.length === 0 ?
+                                <section
+                                    className="w-full h-[260px] aspect-auto rounded-2xl bg-cover bg-center bg-no-repeat"
+                                    style={{ backgroundImage: `url("/image-5.png")` }}
+                                /> :
+                                <section
+                                    className="w-full h-[260px] aspect-auto rounded-2xl bg-cover bg-center bg-no-repeat"
+                                    style={{ backgroundImage: `url(${process.env.NEXT_PUBLIC_API_URL}/${selectedActualite?.galerie[0].path})` }}
+                                />
+                            }
 
                             {/* Content section */}
                             <section className="flex flex-col gap-2 ">

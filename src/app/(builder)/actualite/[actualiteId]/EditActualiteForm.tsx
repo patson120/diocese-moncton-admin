@@ -15,9 +15,10 @@ import { ArrowLeft, CopyIcon, ExternalLinkIcon, } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { Actualite } from '../../../types'
+import { Actualite, Image } from '@/app/types'
 import EditActuDialog from './EditActuDialog'
-import { copyToClipboard } from '@/lib/utils'
+import { cn, copyToClipboard } from '@/lib/utils'
+import { GaleryPopup } from '@/components/sections/GaleryPopup'
 
 export default function EditActualiteForm({actualite}: { actualite: Actualite }) {
   const router = useRouter()
@@ -27,8 +28,10 @@ export default function EditActualiteForm({actualite}: { actualite: Actualite })
   const [isEnglishVersion, setIsEnglishVersion] = useState(false);
   const [isEmptyActu, setIsEmptyActu] = useState(false);
   const [openPublishModal, setOpenPublishModal] = useState(false);
-  const [coverImage, setCoverImage] = useState<string>("");
-  const [fileImage, setFileImage] = useState<File | undefined>();
+  const [selectedImage, setSelectedImage] = useState<Image | undefined>( actualite.galerie.length > 0 ? 
+    { ...actualite.galerie[0], path: `${process.env.NEXT_PUBLIC_API_URL}/${actualite.galerie[0].path}`} 
+    : undefined
+  );
   const [section, setSection] = useState<'french' | 'english'>('french');
   const [title, setTitle] = useState({
     french: actualite.titre_fr,
@@ -42,7 +45,6 @@ export default function EditActualiteForm({actualite}: { actualite: Actualite })
   const handlePublish = async (data: any) => {
     if (isLoading) return
     setIsLoading(true)
-
     const response: any = await apiClient.put(`/api/actualites/${actualite.id}`, {
       ...data,
       is_actif: actualite.is_actif,
@@ -51,40 +53,19 @@ export default function EditActualiteForm({actualite}: { actualite: Actualite })
       description_fr: content.french,
       description_en: content.english,
       is_brouillon: actualite.is_brouillon,
-      galerie_id: 24,
-    })
+      galerie_id: selectedImage?.id,
+    })    
 
     if (response.id) {
-      setTitle({french: '',english: '',})
-      setContent({french: '',english: '',})
+      setTitle({french: '', english: '',})
+      setContent({french: '', english: '',})
       setOpenPublishModal(false)
       setIsSave(1)
       setAlertModal("")
       toast.success("Actualité modifée avec succès !")
       setTimeout(() => {
-        router.back()
+        router.back() 
       }, 1500);
-
-      // Creer l'image de couverture
-      // const formdata = new FormData();
-      // formdata.append("path", fileImage!);
-      // formdata.append("label", "actualite");
-      // formdata.append("value", `${response.id}`);
-      // formdata.append("fichier", fileImage!);
-
-      // const result: any = await apiClient.post('/api/galeries', formdata, {
-      //   'Content-Type': 'multipart/form-data'
-      // } );
-
-      // if (result.id) {
-      //   toast.success("Données enregistrées avec succès !")
-      //   router.back()
-      // toast.warning(
-      //   <div className='p-3 bg-red-500 text-white rounded-md'>
-      //     {JSON.stringify(result)}
-      //   </div>
-      // )
-      // }
     }
     else {
       toast.warning(
@@ -95,25 +76,6 @@ export default function EditActualiteForm({actualite}: { actualite: Actualite })
     }
     setIsLoading(false)
   }
-
-  const handleCoverImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const imageUrl = await handleImageUpload(file);
-      setFileImage(file)
-      setCoverImage(imageUrl);
-    }
-  };
-
-  const handleImageUpload = (file: File): Promise<string> => {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        resolve(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    });
-  };
 
   const verifyEnglishContent = () => {
     if (title.french.trim() == '' || content.french.trim() == '') {
@@ -208,42 +170,24 @@ export default function EditActualiteForm({actualite}: { actualite: Actualite })
                   <Card className="relative w-full bg-white rounded">
                     <CardContent className="w-full p-0">
                       {/* Image upload area */}
-                      <div className="h-[250px] w-full bg-[#f8f8f8] rounded-xl border border-solid border-[#d9d9d9]"
+                      <div className="h-[250px] w-full relative bg-[#f8f8f8] rounded-xl overflow-hidden border border-solid border-[#d9d9d9]"
                         style={{
-                          backgroundImage: coverImage ? `url(${coverImage})` : 'none',
+                          backgroundImage: selectedImage ? `url(${selectedImage.path})` : 'none',
                           backgroundPosition: "center center",
                           backgroundRepeat: "no-repeat",
                         }}>
-                        <div className='w-full h-full flex justify-center items-center'>
+                        <div className='absolute inset-0 w-full h-full bg-black/30 flex justify-center items-center'>
                           <div className='w-auto h-min flex flex-col'>
-                            <p>Insérer une image de couverture</p>
-                            <div className='flex flex-row justify-center items-center space-x-1'>
+                            <GaleryPopup setSelectedImage={setSelectedImage} >
                               <Button
                                 variant="ghost"
-                                className="rounded-xl py-1"
-                              >
-                                <span className="font-body-3 font-[number:var(--body-3-font-weight)] text-blue text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] whitespace-nowrap [font-style:var(--body-3-font-style)]">
-                                  Galerie
-                                </span>
+                                className={cn('rounded-xl py-1 border',
+                                  selectedImage ? 'border-white' : 'border-gray'
+                                )}>
+                                <p className={cn(selectedImage ? 'text-white' : 'text-gray'
+                                )}>Insérer une image de couverture</p>
                               </Button>
-                              <p className='text-gray'>ou</p>
-                              <div className='relative overflow-hidden'>
-                                <Input
-                                  id="coverImage"
-                                  type="file"
-                                  accept="image/*"
-                                  onChange={handleCoverImageChange}
-                                  className="cursor-pointer absolute inset-0 z-10 opacity-0"
-                                />
-                                <Button
-                                  variant="ghost"
-                                  className="rounded-xl py-1 cursor-pointer">
-                                  <span className="font-body-3 font-[number:var(--body-3-font-weight)] text-blue text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] whitespace-nowrap [font-style:var(--body-3-font-style)]">
-                                    Télécharger
-                                  </span>
-                                </Button>
-                              </div>
-                            </div>
+                            </GaleryPopup>
                           </div>
                         </div>
                       </div>
@@ -275,48 +219,29 @@ export default function EditActualiteForm({actualite}: { actualite: Actualite })
                   <Card className="relative w-full bg-white rounded">
                     <CardContent className="w-full p-0">
                       {/* Image upload area */}
-                      <div className="h-[250px] w-full bg-[#f8f8f8] rounded-xl border border-solid border-[#d9d9d9]"
+                      <div className="h-[250px] w-full relative bg-[#f8f8f8] rounded-xl overflow-hidden border border-solid border-[#d9d9d9]"
                         style={{
-                          backgroundImage: coverImage ? `url(${coverImage})` : 'none',
+                          backgroundImage: selectedImage ? `url(${selectedImage.path})` : 'none',
                           backgroundPosition: "center center",
                           backgroundRepeat: "no-repeat",
                         }}>
-                        <div className='w-full h-full flex justify-center items-center'>
+                        <div className='absolute inset-0 w-full h-full bg-black/30 flex justify-center items-center'>
                           <div className='w-auto h-min flex flex-col'>
-                            <p>Insérer une image de couverture</p>
-                            <div className='flex flex-row justify-center items-center space-x-1'>
+                            <GaleryPopup setSelectedImage={setSelectedImage} >
                               <Button
                                 variant="ghost"
-                                className="rounded-xl py-1"
-                              >
-                                <span className="font-body-3 font-[number:var(--body-3-font-weight)] text-blue text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] whitespace-nowrap [font-style:var(--body-3-font-style)]">
-                                  Galerie
-                                </span>
+                                className={cn('rounded-xl py-1 border',
+                                  selectedImage ? 'border-white' : 'border-gray'
+                                )}>
+                                <p className={cn(selectedImage ? 'text-white' : 'text-gray'
+                                )}>Insérer une image de couverture</p>
                               </Button>
-                              <p className='text-gray'>ou</p>
-                              <div className='relative overflow-hidden'>
-                                <Input
-                                  id="coverImage"
-                                  type="file"
-                                  accept="image/*"
-                                  onChange={handleCoverImageChange}
-                                  className="cursor-pointer absolute inset-0 z-10 opacity-0"
-                                />
-                                <Button
-                                  variant="ghost"
-                                  className="rounded-xl py-1 cursor-pointer">
-                                  <span className="font-body-3 font-[number:var(--body-3-font-weight)] text-blue text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] whitespace-nowrap [font-style:var(--body-3-font-style)]">
-                                    Télécharger
-                                  </span>
-                                </Button>
-                              </div>
-                            </div>
+                            </GaleryPopup>
                           </div>
                         </div>
                       </div>
                     </CardContent>
                   </Card>
-
 
                   <div className='w-full z-0 '>
                     <label htmlFor="title" className='text-lg text-gray font-semibold mb-2'>Title</label>
@@ -434,11 +359,12 @@ export default function EditActualiteForm({actualite}: { actualite: Actualite })
       </Dialog>
 
       <EditActuDialog
-        imageUrl={coverImage}
+        imageUrl={selectedImage?.path!}
         actualite={actualite}
         isLoading={isLoading}
         handlePublish={handlePublish}
         open={openPublishModal}
+        onOpenChange={setOpenPublishModal}
       />
     </div>
   )
