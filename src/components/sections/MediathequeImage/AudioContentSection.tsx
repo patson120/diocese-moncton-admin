@@ -72,7 +72,7 @@ export const AudioContentSection = (): JSX.Element => {
           </div>
         </div>
 
-        <ScrollArea className="w-full h-[calc(80vh)]">
+        <ScrollArea className="w-full h-[calc(100vh-345px)]">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 gap-3">
             {ressources.map((card, index) => (
               <Card

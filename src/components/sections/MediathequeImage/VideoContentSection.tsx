@@ -1,7 +1,9 @@
 import { Ressource } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { Loader } from "@/components/ui/loader";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { apiClient } from "@/lib/axios";
 import { copyToClipboard } from "@/lib/utils";
@@ -14,30 +16,18 @@ import {
   TvMinimalPlay
 } from "lucide-react";
 import { JSX, useEffect, useState } from "react";
-import { toast } from "sonner";
+import { VideoPlayer } from "./VideoPlayer";
 
 export const VideoContentSection = (): JSX.Element => {
 
-  const [ressources, setRessources] = useState<Ressource[]>([]) 
+  const [ressources, setRessources] = useState<Ressource[]>([])
 
   const fetchRessources = async () => {
     const response: Ressource[] = await apiClient.get('/api/ressources?type=video')
     setRessources(response)
   }
   
-  const deleteRessources = async (idRessource: number) => {
-    try {
-      await apiClient.delete(`/api/ressources/${idRessource}`)
-      setRessources(prev  => prev.filter( doc  => doc.id != idRessource))
-      toast.success("Ressource supprimée avec succès")
-    } catch (error: any) {
-      toast.error(
-        <div className='p-3 bg-red-500 text-white rounded-md'>
-          Une erreur est survenue. Erreur:  {JSON.stringify(error.message)}
-        </div>
-      )
-    }
-  }
+  
 
   useEffect(() => {
     fetchRessources()
@@ -73,7 +63,7 @@ export const VideoContentSection = (): JSX.Element => {
           </div>
         </div>
 
-        <ScrollArea className="w-full h-[calc(80vh)]">
+        <ScrollArea className="w-full h-[calc(100vh-345px)]">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 gap-3">
             {ressources.map((card, index) => (
               <Card
@@ -84,14 +74,10 @@ export const VideoContentSection = (): JSX.Element => {
 
                   <div className="flex justify-between">
                     <TvMinimalPlay className="w-6 h-6 " />
-                    <Button
-                      variant="ghost"
-                      className="w-[18px] h-[18px] top-2 right-2 p-0">
-                      <MoreHorizontalIcon className="w-[18px] h-[18px]" />
-                    </Button>
+                    <VideoPlayer video={card} setRessources={setRessources} />
+                                        
                   </div>
                   <p className="font-body-3 font-semibold text-noir-dashboard text-sm leading-[20px] line-clamp-2">{card.titre_fr}</p>
-
                   <div className="w-full h-10">
                     <div className="h-10 w-full px-2 bg-white rounded-lg border-[0.5px] border-[#d9d9d9] flex justify-between items-center">
                       <span className="left-2 font-body-3 text-noir-dashboard truncate">

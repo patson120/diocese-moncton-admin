@@ -98,7 +98,7 @@ export const DocumentContentSection = (): JSX.Element => {
           </div>
         </div>
 
-        <ScrollArea className="w-full h-[calc(80vh)]">
+        <ScrollArea className="w-full h-[calc(100vh-345px)]">
           {
              ( dislayMode === 'list') ?
               <Card className="w-full rounded-2xl bg-white">
