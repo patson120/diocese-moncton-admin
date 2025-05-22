@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { Loader } from "@/components/ui/loader";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { apiClient } from "@/lib/axios";
@@ -24,6 +25,7 @@ import { toast } from "sonner";
 export const DocumentContentSection = (): JSX.Element => {
 
   const [dislayMode, setDislayMode] = useState<'list' | 'grid'>('grid')
+  const [isDeleting, setisDeleting] = useState(false)
 
   const [ressources, setRessources] = useState<Ressource[]>([])
 
@@ -33,11 +35,13 @@ export const DocumentContentSection = (): JSX.Element => {
   }
 
   const fetchRessources = async () => {
-    const response: Ressource[] = await apiClient.get('/api/ressources')
+    const response: Ressource[] = await apiClient.get('/api/ressources?type=document')
     setRessources(response)
   }
   
   const deleteRessources = async (idRessource: number) => {
+    if (isDeleting) return
+    setisDeleting(true)
     try {
       await apiClient.delete(`/api/ressources/${idRessource}`)
       setRessources(prev  => prev.filter( doc  => doc.id != idRessource))
@@ -48,6 +52,9 @@ export const DocumentContentSection = (): JSX.Element => {
           Une erreur est survenue. Erreur:  {JSON.stringify(error.message)}
         </div>
       )
+    }
+    finally {
+      setisDeleting(false)
     }
   }
 
@@ -121,7 +128,7 @@ export const DocumentContentSection = (): JSX.Element => {
                               {doc.titre_fr}
                             </TableCell>
                             <TableCell className="font-body-3 text-gray py-3.5 uppercase">
-                              {doc.type}
+                              {doc.media.split(".")[1]}
                             </TableCell>
                             <TableCell className="font-body-3 text-noir-dashboard py-3.5">
                               {formatDateToLocal((new Date(doc.created_at)).toISOString())}
@@ -132,16 +139,22 @@ export const DocumentContentSection = (): JSX.Element => {
                                   variant="ghost"
                                   size="sm"
                                   className="h-auto p-0 flex items-center gap-1">
-                                  <EyeIcon className="w-[18px] h-[18px]" />
-                                  <span className="font-body-3 text-noir-dashboard">
-                                    Voir
-                                  </span>
+                                  <a href={`${process.env.NEXT_PUBLIC_API_URL}/${doc.media}`} target="_blank" className="flex justify-center items-center flex-nowrap space-x-2" >
+                                    <EyeIcon className="w-[18px] h-[18px]" />
+                                    <span className="font-body-3 text-noir-dashboard">
+                                      Voir
+                                    </span>
+                                  </a>
                                 </Button>
                                 <Button
+                                  onClick={() => deleteRessources(doc.id)}
                                   variant="ghost"
                                   size="sm"
                                   className="h-auto p-0 flex items-center gap-1">
-                                  <Trash2Icon className="w-4 h-4" />
+                                  { (isDeleting ) ?
+                                    <Loader className="w-4 h-4" /> :
+                                    <Trash2Icon className="w-4 h-4" />
+                                  }
                                   <span className="font-body-3 text-noir-dashboard">
                                     Supprimer
                                   </span>
@@ -174,8 +187,15 @@ export const DocumentContentSection = (): JSX.Element => {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
                               {/* Dropdown menu items would go here */}
-                              <DropdownMenuItem className="text-gray">Consulter</DropdownMenuItem>
-                              <DropdownMenuItem className="text-red-500">Supprimer</DropdownMenuItem>
+                              <DropdownMenuItem className="text-gray">
+                                <a href={`${process.env.NEXT_PUBLIC_API_URL}/${doc.media}`} target="_blank" >Consulter</a>
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => deleteRessources(doc.id)}
+                                className="text-red-500">
+                                { (isDeleting ) &&
+                                  <Loader className="w-4 h-4 mr-2" />
+                                }
+                                Supprimer</DropdownMenuItem>
                             </DropdownMenuContent>
                             
                           </DropdownMenu>
@@ -184,7 +204,7 @@ export const DocumentContentSection = (): JSX.Element => {
                         <div className="flex flex-col items-center gap-3 my-4">
                           <div className="w-[100px] h-20 bg-white rounded-2xl border border-solid border-[#d9d9d9] flex items-center justify-center">
                             <span className="font-body-3 text-[length:var(--body-3-font-size)] uppercase text-gray text-center">
-                              {doc.type}
+                              {doc.media.split(".")[1]}
                             </span>
                           </div>
                           <p className="font-body-3 text-[length:var(--body-3-font-size)] text-noir-dashboard text-center">

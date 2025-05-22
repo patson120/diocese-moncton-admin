@@ -43,7 +43,7 @@ export const AddDocumentFormSection = (): JSX.Element => {
     const formdata = new FormData();
     formdata.append("titre_fr", fileName);
     formdata.append("titre_en", fileName);
-    formdata.append("type", file.type.split('/')[1]);
+    formdata.append("type", 'document');
     formdata.append("media", file!);
 
     try {
