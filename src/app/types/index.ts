@@ -79,6 +79,7 @@ export type TypeParoisse = {
     intitule_fr: string;
     intitule_en: string;
     couleur: string;
+    gps: string;
     created_at: string;
     updated_at: string;
     paroisses: Paroisse[]
@@ -135,6 +136,7 @@ export type Member = {
     description_en: string;
     coordonnees: string;
     etat: number;
+    unites: TypeParoisse[]
     created_at: string;
     updated_at: string;
     categorie: Category;

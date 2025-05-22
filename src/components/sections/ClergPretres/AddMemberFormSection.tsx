@@ -60,12 +60,12 @@ const formSchemaOne = z.object({
       message: "La fonction est invalide",
     }),
   etablissement: z.string().min(1, "L'établissement est requis"),
-  coordonnees: z.string().optional(), // z.string().min(1, "Les coordonnées sont requises"),
 });
 
 const formSchemaTwo = z.object({
   description_en: z.string().min(1, "La description en anglais est requise"),
   description_fr: z.string().min(1, "La description en français est requise"),
+  coordonnees: z.string().min(1, "Les coordonnées sont requises"),
   image: z.instanceof(File).optional(),
 });
 
@@ -88,9 +88,7 @@ export default function AddMemberFormSection(){
     resolver: zodResolver(formSchemaOne),
     defaultValues: {
       nom: "",
-      coordonnees: "Moncton",
       etablissement: "",
-      //statut: 'actif',
     },
   });
 
@@ -99,6 +97,7 @@ export default function AddMemberFormSection(){
     defaultValues: {
       description_en: "",
       description_fr: "",
+      coordonnees: "",
       image: fileImage!,
     },
   });
@@ -133,7 +132,7 @@ export default function AddMemberFormSection(){
     formdata.append("nom", `${data.nom}`);
     formdata.append("prenom", ``);
     formdata.append("poste", `${fonctions.find((f) => f.id === parseInt(data.poste))?.intitule_fr}`);
-    formdata.append("coordonnees", `${data.etablissement}`);
+    formdata.append("coordonnees", `${data.coordonnees}`);
     formdata.append("etat", `${status}`);
     formdata.append("image", fileImage!);
     formdata.append("etablissement_id", `${data.etablissement},`); 
@@ -184,7 +183,7 @@ export default function AddMemberFormSection(){
   const onSubmitSecond = async (values: z.infer<typeof formSchemaTwo>) => {
     const newMember = {
       ...member,
-      coordonnees: "13 Rue de la Paix, Moncton",
+      coordonnees: values.coordonnees,
       description_fr: values.description_fr,
       description_en: values.description_en,
       image: fileImage,
@@ -352,6 +351,21 @@ export default function AddMemberFormSection(){
                   </div>
 
                 </div>
+                <FormField
+                  control={formTwo.control}
+                  name="coordonnees"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Coordonnées du membre</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Entrez les coordonnées du membre" {...field}
+                          className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={formTwo.control}
                   name="description_fr"

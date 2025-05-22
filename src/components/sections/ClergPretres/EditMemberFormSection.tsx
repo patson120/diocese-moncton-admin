@@ -57,12 +57,12 @@ const formSchemaOne = z.object({
       message: "La fonction est invalide",
     }),
   etablissement: z.string().min(1, "L'établissement est requis"),
-  coordonnees: z.string().optional(), // z.string().min(1, "Les coordonnées sont requises"),
 });
 
 const formSchemaTwo = z.object({
   description_en: z.string().min(1, "La description en anglais est requise"),
   description_fr: z.string().min(1, "La description en français est requise"),
+  coordonnees: z.string().min(1, "Les coordonnées sont requises"),
   image: z.instanceof(File).optional(),
 });
 
@@ -86,9 +86,7 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
     defaultValues: {
       nom: memberData.nom,
       fonction: `${fonctions.find((f) => f.intitule_fr === memberData.poste)?.id}`,
-      coordonnees: memberData.coordonnees,
-      etablissement: "paroisse",
-      // statut: 'actif',
+      etablissement: `${memberData.unites[0].id}`,
     },
   });
 
@@ -97,6 +95,7 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
     defaultValues: {
       description_en: memberData.description_en,
       description_fr: memberData.description_fr,
+      coordonnees: memberData.coordonnees,
       image: fileImage!,
     },
   });
@@ -131,7 +130,7 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
     formdata.append("nom", `${data.nom}`);
     formdata.append("prenom", ``);
     formdata.append("poste", `${fonctions.find((f) => f.id === parseInt(data.poste))?.intitule_fr}`);
-    formdata.append("coordonnees", `${data.etablissement}`);
+    formdata.append("coordonnees", `${data.coordonnees}`);
     formdata.append("etat", `${status}`);
     formdata.append("image", fileImage!);
     formdata.append("etablissement_id", `${data.etablissement},`);
@@ -164,8 +163,6 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
     }
   }
 
-    
-
   const onSubmitFirst = async (values: z.infer<typeof formSchemaOne>) => {
     const newMember = {
       ...member,
@@ -181,7 +178,7 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
   const onSubmitSecond = async (values: z.infer<typeof formSchemaTwo>) => {
     const newMember = {
       ...member,
-      coordonnees: "13 Rue de la Paix, Moncton",
+      coordonnees: values.coordonnees,
       description_fr: values.description_fr,
       description_en: values.description_en,
       image: fileImage,
@@ -348,6 +345,21 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
                   </div>
 
                 </div>
+                <FormField
+                  control={formTwo.control}
+                  name="coordonnees"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Coordonnées du membre</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Entrez les coordonnées du membre" {...field}
+                          className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={formTwo.control}
                   name="description_fr"
