@@ -568,8 +568,10 @@ export default function ParishSection() {
                                 Fermer
                             </Button>
                             <div className="flex gap-2">
-                                <Button variant="outline" className="h-10">Désactiver</Button>
-                                {/** 
+                                {/**
+                                    <Button variant="outline" className="h-10">Désactiver</Button>
+                                */}
+                                {/**
                                     <EditParishFormSection parish={selecteParish!} />
                                  */}
                                 <Button className="h-10 bg-blue text-white hover:bg-blue/90">

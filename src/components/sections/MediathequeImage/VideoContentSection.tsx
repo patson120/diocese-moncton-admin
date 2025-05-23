@@ -74,8 +74,7 @@ export const VideoContentSection = (): JSX.Element => {
 
                   <div className="flex justify-between">
                     <TvMinimalPlay className="w-6 h-6 " />
-                    <VideoPlayer video={card} setRessources={setRessources} />
-                                        
+                    <VideoPlayer video={card} setRessources={setRessources} />                      
                   </div>
                   <p className="font-body-3 font-semibold text-noir-dashboard text-sm leading-[20px] line-clamp-2">{card.titre_fr}</p>
                   <div className="w-full h-10">

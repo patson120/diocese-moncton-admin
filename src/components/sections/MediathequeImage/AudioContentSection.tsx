@@ -10,11 +10,10 @@ import {
   CopyIcon,
   LayoutGridIcon,
   ListFilter,
-  MoreHorizontalIcon,
   SearchIcon
 } from "lucide-react";
 import { JSX, useEffect, useState } from "react";
-import { toast } from "sonner";
+import { AudioPlayer } from "./AudioPlayer";
 
 export const AudioContentSection = (): JSX.Element => {
   const [ressources, setRessources] = useState<Ressource[]>([]) 
@@ -23,21 +22,7 @@ export const AudioContentSection = (): JSX.Element => {
     const response: Ressource[] = await apiClient.get('/api/ressources?type=audio')
     setRessources(response)
   }
-    
-  const deleteRessources = async (idRessource: number) => {
-    try {
-      await apiClient.delete(`/api/ressources/${idRessource}`)
-      setRessources(prev  => prev.filter( doc  => doc.id != idRessource))
-      toast.success("Ressource supprimée avec succès")
-    } catch (error: any) {
-      toast.error(
-        <div className='p-3 bg-red-500 text-white rounded-md'>
-          Une erreur est survenue. Erreur:  {JSON.stringify(error.message)}
-        </div>
-      )
-    }
-  }
-  
+
   useEffect(() => {
     fetchRessources()
   }, [])
@@ -83,11 +68,7 @@ export const AudioContentSection = (): JSX.Element => {
 
                   <div className="flex justify-between">
                     <AudioLines className="w-6 h-6 " />
-                    <Button
-                      variant="ghost"
-                      className="w-[18px] h-[18px] top-2 right-2 p-0">
-                      <MoreHorizontalIcon className="w-[18px] h-[18px]" />
-                    </Button>
+                    <AudioPlayer audio={card} setRessources={setRessources} />
                   </div>
                   <p className="font-body-3 font-semibold text-noir-dashboard text-sm leading-[20px] line-clamp-2">
                     {card.titre_fr}

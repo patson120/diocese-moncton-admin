@@ -1,7 +1,6 @@
 import { Ressource } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Loader } from "@/components/ui/loader";
 import { apiClient } from "@/lib/axios";
 import { InfoIcon, MoreHorizontalIcon, PlusIcon } from "lucide-react";
