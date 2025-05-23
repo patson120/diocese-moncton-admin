@@ -66,7 +66,7 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ video, setRessources }
           <div className="w-full aspect-video bg-black rounded-lg overflow-hidden">
             <iframe
               src={embedUrl}
-              title="YouTube Video Player"
+              title={`${video?.titre_fr || video?.titre_en}`}
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen

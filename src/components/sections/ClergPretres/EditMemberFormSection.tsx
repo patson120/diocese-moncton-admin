@@ -86,7 +86,7 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
     defaultValues: {
       nom: memberData.nom,
       fonction: `${fonctions.find((f) => f.intitule_fr === memberData.poste)?.id}`,
-      etablissement: `${memberData.unites[0].id}`,
+      etablissement: `${memberData?.unites[0]?.id}`,
     },
   });
 

@@ -45,7 +45,6 @@ export const ClergPretres = (): JSX.Element => {
         if (query) params += `&nom=${query}`
         if (etat) params += `&etat=${etat}`
         const response: Member[] = await apiClient.get(`/api/membres${params}`)
-        // const response: Member[] = await apiClient.get(`/api/membres`)
         setMembers(response)
       })()
   }, [categoryId, query, etat])
@@ -116,12 +115,12 @@ export const ClergPretres = (): JSX.Element => {
                       <CardContent className="p-0 space-y-3">
                         <div className="relative w-full h-[250px] shrink-0 bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
                           <Image
-                            fill
-                            priority
-                            className="object-cover"
-                            alt="Vector"
-                            src="/clerge-1.png"
-                          />
+                          fill
+                          priority
+                          className="object-cover"
+                          alt="Vector"
+                          src={ member.image ? `${process.env.NEXT_PUBLIC_API_URL}/${member.image}` : "/vector.svg"}
+                        />    
                         </div>
 
                         <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
@@ -217,7 +216,7 @@ export const ClergPretres = (): JSX.Element => {
                                 priority
                                 className="object-cover"
                                 alt="Vector"
-                                src="/clerge-1.png"
+                                src={ member.image ? `${process.env.NEXT_PUBLIC_API_URL}/${member.image}` : "/vector.svg"}
                               />
                             </div>
 
@@ -260,7 +259,7 @@ export const ClergPretres = (): JSX.Element => {
                                 priority
                                 className="object-cover"
                                 alt="Vector"
-                                src="/clerge-1.png"
+                                src={ member.image ? `${process.env.NEXT_PUBLIC_API_URL}/${member.image}` : "/vector.svg"}
                               />
                             </div>
 
@@ -301,7 +300,7 @@ export const ClergPretres = (): JSX.Element => {
                                 priority
                                 className="object-cover"
                                 alt="Vector"
-                                src="/clerge-1.png"
+                                src={ member.image ? `${process.env.NEXT_PUBLIC_API_URL}/${member.image}` : "/vector.svg"}
                               />
                             </div>
 
@@ -398,7 +397,7 @@ export const ClergPretres = (): JSX.Element => {
                                 width={60}
                                 height={60}
                                 alt="Vector"
-                                src="/vector.svg"
+                                src={ member.image ? `${process.env.NEXT_PUBLIC_API_URL}/${member.image}` : "/vector.svg"}
                               />
                             </div>
 
@@ -439,7 +438,7 @@ export const ClergPretres = (): JSX.Element => {
                                 width={60}
                                 height={60}
                                 alt="Vector"
-                                src="/vector.svg"
+                                src={ member.image ? `${process.env.NEXT_PUBLIC_API_URL}/${member.image}` : "/vector.svg"}
                               />
                             </div>
 
@@ -478,7 +477,7 @@ export const ClergPretres = (): JSX.Element => {
                                 width={60}
                                 height={60}
                                 alt="Vector"
-                                src="/vector.svg"
+                                src={ member.image ? `${process.env.NEXT_PUBLIC_API_URL}/${member.image}` : "/vector.svg"}
                               />
                             </div>
 
@@ -661,7 +660,7 @@ export const ClergPretres = (): JSX.Element => {
                                 priority
                                 className="object-cover"
                                 alt="Vector"
-                                src="/clerge-1.png"
+                                src={ member.image ? `${process.env.NEXT_PUBLIC_API_URL}/${member.image}` : "/vector.svg"}
                               />
                             </div>
 
@@ -767,13 +766,13 @@ export const ClergPretres = (): JSX.Element => {
           <ScrollArea className="w-full h-[calc(100%-80px)] mt-24 px-7">
             <div className='flex flex-col gap-6'>
               <div className="flex gap-4">
-                <div className="h-48  w-48 shrink-0 relative self-stretch rounded-xl borderborder-gray bg-[#f0f0f0] flex items-center justify-center">
+                <div className="h-48 w-48 shrink-0 relative self-stretch rounded-xl overflow-hidden borderborder-gray bg-[#f0f0f0] flex items-center justify-center">
                   <Image
                     fill
                     priority
                     className="object-cover"
                     alt="Vector"
-                    src="/clerge-1.png"
+                    src={ selectedMember?.image ? `${process.env.NEXT_PUBLIC_API_URL}/${selectedMember?.image}` : "/vector.svg"}
                   />
                 </div>
                 <div className="flex flex-col space-y-3">
