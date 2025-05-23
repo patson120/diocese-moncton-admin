@@ -49,24 +49,6 @@ export default function ParishSection() {
         { value: "unites-paroissiales", label: "Unités pastorales", active: false },
     ];
 
-    // Parish data
-    const parishData = {
-        name: "Immaculée-Conception",
-        unit: "Unité pastorale Saint-Benoît",
-        established: "1871",
-        ordained: "1871",
-        firstPriest: "1871",
-        history:
-            "L'histoire d'Acadieville est étroitement liée à celle de Rogersville. Les premiers colons (vers 1871) étaient pour la plupart des constructeurs du chemin de fer « Intercolonial ». Ces premiers déchifreurs avaient obtenu des lots de terre du gouvernement par l'entremise du député de Kent, M. Urbain Johnson.",
-        address: "4049, Route 480 Acadieville NB E4Y 1Z3",
-        phone: "(506) 775-2421",
-        email: "paracadi@live.ca",
-        massSchedule: [
-            { day: "Mardi", times: ["12h:00", "12h:00"] },
-            { day: "Mercredi", times: ["12h:00"] },
-            { day: "Dimanche", times: ["08h:00", "12h:00", "17h:00"] },
-        ],
-    };
 
     useEffect(() => {
         // Récupérer les unités paroitiales depuis l'api
@@ -552,7 +534,7 @@ export default function ParishSection() {
                                     Sur la carte
                                 </h2>
                                 <div className="w-full h-[350px] bg-neutral-100 rounded-3xl overflow-hidden">
-                                    <div className="h-[350px] rounded-[18px]">
+                                    <div className="h-[350px] rounded-[18px] overflow-hidden">
                                         {/** Map view */}
                                         <MapContainer 
                                             showSearchBar={false}
@@ -574,7 +556,7 @@ export default function ParishSection() {
 
             {/* Sheet */}
             <Sheet open={openModalUnite} onOpenChange={setOpenModalUnite} >
-                <SheetContent aria-describedby={undefined}  className="max-w-3xl min-w-3xl">
+                <SheetContent aria-describedby={undefined}  className="max-w-[calc(100vw/2)] min-w-[680px]">
                     <SheetHeader >
                         <SheetTitle hidden>Détails de l'unité pastorale </SheetTitle>
                     </SheetHeader>
@@ -594,6 +576,7 @@ export default function ParishSection() {
                                     Modifier
                                 </Button>
                                 <Button onClick={handleDeleteUnitePastorale} className="h-10 bg-red-500 text-white hover:bg-blue/90">
+                                    { isDeleting && <Loader className='h-5 w-5, mr-2' /> }
                                     Supprimer
                                 </Button>
                             </div>
@@ -643,42 +626,17 @@ export default function ParishSection() {
                                 <h2 className="font-heading-5 text-2xl text-[#1c0004] mb-4 font-bold">
                                     Sur la carte
                                 </h2>
-                                {/** 
-                                    <div className='bg-[#F1F3F6] h-96 rounded-lg overflow-hidden'>
-                                        <MapContainer 
-                                            showSearchBar={false}
-                                            location={{
-                                                address: `${event?.lieu.split(";")[1]}`,
-                                                name: `${event?.lieu.split(";")[0]}`,
-                                                lat: event?.gps ? Number(event?.gps.split(";")[0]) : 46.091091,
-                                                lng: event?.gps ? Number(event?.gps.split(";")[1]) : -64.781880,
-                                                placeId: (new Date()).getTime().toString()
-                                            }}
-                                        />
-                                    </div>
-                                 */}
-                                <div className="w-full h-[350px] bg-neutral-100 rounded-3xl overflow-hidden">
-                                    <div className="h-[350px] rounded-[18px] overflow-scroll v-scroll relative">
-                                        <div className="relative w-[2100px] h-[1200px] top-[-520px] left-[-473px]">
-                                            <img
-                                                className="absolute w-[700px] h-[400px] top-[520px] left-[473px] object-cover"
-                                                alt="Map detail view"
-                                                src="/rectangle-42-1.svg"
-                                            />
-                                            <img
-                                                className="absolute w-[2100px] h-[1200px] top-0 left-0 object-cover"
-                                                alt="Map overview"
-                                                src="/rectangle-42.png"
-                                            />
-                                            <div className="absolute w-[74px] h-[74px] top-[633px] left-[741px] bg-[#8b22361a] rounded-[37px] flex items-center justify-center">
-                                                <img
-                                                    className="w-8 h-8"
-                                                    alt="Location marker"
-                                                    src="/frame-2.svg"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div className='bg-[#F1F3F6] h-96 rounded-lg overflow-hidden'>
+                                    <MapContainer 
+                                        showSearchBar={false}
+                                        location={{
+                                            address: `${unitePastorale?.intitule_fr}`,
+                                            name: `${unitePastorale?.intitule_en}`,
+                                            lat: unitePastorale?.gps ? Number(unitePastorale?.gps.split(";")[0]) : 46.091091,
+                                            lng: unitePastorale?.gps ? Number(unitePastorale?.gps.split(";")[1]) : -64.781880,
+                                            placeId: (new Date()).getTime().toString()
+                                        }}
+                                    />
                                 </div>
                             </section>
                         </div>

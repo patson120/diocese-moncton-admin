@@ -17,8 +17,9 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Category, Location } from "@/app/types";
+import { Category, Image as ImageType, Location } from "@/app/types";
 import { MapContainer } from "@/components/sections/MapSection/map-container";
+import { GaleryPopup } from "../../GaleryPopup";
 
 const defaultEvent = {
   paroisse_id: 1,
@@ -65,7 +66,7 @@ export const AddEventFormSection = (): JSX.Element => {
   const [isLoading, setIsloading] = useState(false)
   const [openModal, setOpenModal] = useState(false)
   const [step, setStep] = useState(1)
-  const [coverImage, setCoverImage] = useState('')
+  const [selectedImage, setSelectedImage] = useState<ImageType | undefined>();
   const [categories, setCategories] = useState<Category[]>([])
   const [selectedCategory, setSelectedCategory] = useState<Category>()
 
@@ -105,15 +106,6 @@ export const AddEventFormSection = (): JSX.Element => {
     },
   });
 
-  const handleCoverImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const imageUrl = await handleImageUpload(file);
-      // setFileImage(file)
-      setCoverImage(imageUrl);
-    }
-  };
-
   const getCategories = async () => {
     const response: Category[] = await apiClient.get(`/api/categories?menu=event`)
     setSelectedCategory(response[0])
@@ -143,7 +135,8 @@ export const AddEventFormSection = (): JSX.Element => {
         categorie_id: selectedCategory?.id,
         contact: formFour.getValues('contact'),
         gps: `${location?.lat};${location?.lng}`,
-        lieu: `${location?.name};${location?.address}`
+        lieu: `${location?.name};${location?.address}`,
+        // galerie_id: `${selectedImage?.id}`
       })
       if (response.id) {
         toast.success("Evènement enregistré avec succès !")
@@ -407,20 +400,27 @@ export const AddEventFormSection = (): JSX.Element => {
                 </div>
                 <div className="flex flex-col space-y-2">
                   <Label htmlFor="categorie" className="mb-2">Image de couverture évènement</Label>
-                  <div className="h-44 w-full bg-[#f0f0f0] rounded-md relative flex justify-center items-center">
-                    <Image
-                      width={40}
-                      height={40}
-                      alt="Vector"
-                      src="/vector.svg"
-                    />
-                    <Input
-                      accept="image/png,jpg,jpeg"
-                      type="file"
-                      onChange={handleCoverImageChange}
-                      className="h-full w-full absolute cursor-pointer inset-0 opacity-0 z-[3]"
-                    />
-                  </div>
+                  <GaleryPopup setSelectedImage={setSelectedImage} >
+                    <div className="h-44 w-full bg-[#f0f0f0] rounded-md overflow-hidden relative flex justify-center items-center cursor-pointer">
+                      {
+                        selectedImage ?
+                          <Image
+                            fill
+                            priority
+                            className="object-cover"
+                            alt="Vector"
+                            src={selectedImage?.path}
+                          /> :
+                          <Image
+                            width={40}
+                            height={40}
+                            alt="Vector"
+                            src="/vector.svg"
+                          />
+                      }
+                    </div>
+                  </GaleryPopup>
+                  
                 </div>
                 <div className="flex flex-row gap-4">
                   <Button variant={'outline'} onClick={() => setStep(2)} className="w-min px-8 mt-8 h-12 rounded-lg">
