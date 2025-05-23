@@ -1,6 +1,7 @@
 import { DashboardSection } from "@/components/sections/DashboardSection/DashboardSection";
 import QuickActionsSection from "@/components/sections/QuickActionsSection/QuickActionsSection";
 
+
 export default function Home() {
   return (
     <main className="p-6">
