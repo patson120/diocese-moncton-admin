@@ -1,6 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
+import Cookies from 'js-cookie';
 import {
   BadgeHelp,
   BookCopy,
@@ -17,12 +18,13 @@ import {
   Users,
   X
 } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Button } from './button';
 import { ScrollArea } from './scroll-area';
-import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { toast } from 'sonner';
 
 interface SidebarProps {
   className?: string;
@@ -33,6 +35,7 @@ export function Sidebar({ className }: SidebarProps) {
   const [isMobile, setIsMobile] = useState(false);
 
   const pathname = usePathname()
+  const router = useRouter()
 
   // Navigation menu data structure for better maintainability
   const [navigationSections, setNavigationSections] = useState([
@@ -148,6 +151,11 @@ export function Sidebar({ className }: SidebarProps) {
     setNavigationSections(updatedSections);
   }, [pathname])
   
+  const logout = () => {
+    Cookies.remove('user');
+    router.push('/login');
+    toast.success('Déconnexion réussie');
+  };
 
   return (
     <>
@@ -249,7 +257,11 @@ export function Sidebar({ className }: SidebarProps) {
           {/* Logout button */}
           <div className={cn("absolute h-10 bottom-[16px] left-2.5 bg-white",
             isCollapsed ? '-translate-x-full md:translate-x-0 md:w-12' : 'w-[230px]',)}>
-            <div className={cn(
+            <button onClick={() => {
+              if (confirm("Voulez-vous vraiment vous déconnecter de l'application ?")){
+                logout()
+              }
+            }}  className={cn(
               'w-full h-10 cursor-pointer flex items-center gap-2 px-4 space-x-2 rounded-lg transition-all duration-200 hover:bg-muted',
               isCollapsed && 'md:justify-center md:px-2')}>
               <LogOut className="h-5 w-5 shrink-0" />
@@ -260,7 +272,7 @@ export function Sidebar({ className }: SidebarProps) {
                 )}>
                 Déconnexion
               </span>
-            </div>
+            </button>
           </div>
         </div>
       </div>
@@ -273,4 +285,3 @@ export function Sidebar({ className }: SidebarProps) {
     </>
   );
 }
-// 

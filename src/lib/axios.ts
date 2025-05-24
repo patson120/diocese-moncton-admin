@@ -1,3 +1,4 @@
+import { User } from '@/app/types';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
@@ -14,6 +15,9 @@ let api = axios.create({
 
 // Request interceptor
 api.interceptors.request.use(async (config) => {
+    const currentUser = Cookies.get('user');
+    const userJson: User | null = currentUser ? JSON.parse(currentUser!) : null
+    
     try {
         // Fetch CSRF token if needed
         // const res = await fetch('/api/csrf-token');
@@ -24,6 +28,12 @@ api.interceptors.request.use(async (config) => {
         // if (data.csrfToken) {
         //     config.headers['X-CSRF-Token'] = data.csrfToken;
         // }
+
+        // Add token to all request except login route
+        if (!config.url?.includes("login")){
+            config.headers['Authorization'] = `Bearer ${userJson?.token}`;
+        }
+        console.log(config?.headers);
 
         return config;
     } catch (error) {

@@ -1,10 +1,10 @@
 import React from 'react'
-import { Connexion } from './connexion'
+import { ConnexionPage } from './ConnexionPage'
 
 export default function page() {
   return (
     <div>
-        <Connexion />
+        <ConnexionPage />
     </div>
   )
 }

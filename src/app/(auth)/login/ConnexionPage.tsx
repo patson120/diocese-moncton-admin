@@ -6,10 +6,12 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/ui/loader";
 import { apiClient } from "@/lib/axios";
+import { useAuth } from "@/lib/context/AuthContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeClosed, EyeIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { JSX, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -21,14 +23,17 @@ const formSchema = z.object({
   email: z.string().email("L'adresse email n'est pas valide"),
 });
 
-export const Connexion = (): JSX.Element => {
+export const ConnexionPage = (): JSX.Element => {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null);
+  const router =  useRouter() 
+  const { login } = useAuth()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
+      email: "",  
       password: "",
     },
   });
@@ -37,20 +42,12 @@ export const Connexion = (): JSX.Element => {
     if (isLoading) return 
     setIsLoading(true)
     try {
-      const formdata = new FormData();
-      formdata.append("email", values.email.trim());
-      formdata.append("password", values.password.trim());
-
-      const response: any = await apiClient.post('/api/auth/login', formdata, {
-        'Content-Type': 'multipart/form-data'
-      });
-      console.log(response);
-      
-      toast.success("Connecté avec succès")
-
-      setTimeout(() => {
-        window.location.href = '/'
-      }, 1500);
+      const user = await login(values.email.trim(), values.password.trim());
+      if (user) {
+        router.push('/');
+      } else {
+        setError('Identifiants invalides');
+      }
 
     } catch (error: any ) {
       toast.warning(

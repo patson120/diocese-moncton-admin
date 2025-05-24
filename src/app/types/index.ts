@@ -162,6 +162,7 @@ export type User = {
     updated_at: string;
     privilege: string[];
     role: Role;
+    token: string;
 }
 
 export type Location = {
@@ -185,3 +186,5 @@ export type Ressource = {
     updated_at: string;
     categorie: any;
 }
+
+
