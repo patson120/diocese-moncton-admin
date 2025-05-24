@@ -25,6 +25,7 @@ import { useEffect, useState } from 'react';
 import { Button } from './button';
 import { ScrollArea } from './scroll-area';
 import { toast } from 'sonner';
+import { useAuth } from '@/lib/context/AuthContext';
 
 interface SidebarProps {
   className?: string;
@@ -151,8 +152,9 @@ export function Sidebar({ className }: SidebarProps) {
     setNavigationSections(updatedSections);
   }, [pathname])
   
-  const logout = () => {
-    Cookies.remove('user');
+  const logoutUser = () => {
+    window.localStorage.clear()
+  Cookies.remove('user');
     router.push('/login');
     toast.success('Déconnexion réussie');
   };
@@ -259,7 +261,7 @@ export function Sidebar({ className }: SidebarProps) {
             isCollapsed ? '-translate-x-full md:translate-x-0 md:w-12' : 'w-[230px]',)}>
             <button onClick={() => {
               if (confirm("Voulez-vous vraiment vous déconnecter de l'application ?")){
-                logout()
+                logoutUser()
               }
             }}  className={cn(
               'w-full h-10 cursor-pointer flex items-center gap-2 px-4 space-x-2 rounded-lg transition-all duration-200 hover:bg-muted',
