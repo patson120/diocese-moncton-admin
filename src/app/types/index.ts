@@ -113,6 +113,7 @@ export type Event = {
     updated_at: string;
     paroisse: Paroisse;
     categorie: Category;
+    galerie: Image[];
 }
 export type Image = {
     id: number;

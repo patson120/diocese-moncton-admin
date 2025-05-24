@@ -136,7 +136,7 @@ export const AddEventFormSection = (): JSX.Element => {
         contact: formFour.getValues('contact'),
         gps: `${location?.lat};${location?.lng}`,
         lieu: `${location?.name};${location?.address}`,
-        // galerie_id: `${selectedImage?.id}`
+        galerie_id: `${selectedImage?.id}`
       })
       if (response.id) {
         toast.success("Evènement enregistré avec succès !")
