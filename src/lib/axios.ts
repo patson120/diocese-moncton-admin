@@ -33,8 +33,6 @@ api.interceptors.request.use(async (config) => {
         if (!config.url?.includes("login")){
             config.headers['Authorization'] = `Bearer ${userJson?.token}`;
         }
-        console.log(config?.headers);
-
         return config;
     } catch (error) {
         console.error('Error fetching CSRF token:', error);
