@@ -35,14 +35,14 @@ export default function MessageContent(
 
     useEffect(() => {
         const getMessages = async () => {
-            // let params = `?paginate=200&etat=${etat}`
-            // if (query) { params += `&intitule=${query}` }
-            // if (ordre) { params += `&ordre=${ordre}` }
-            const response: any = await apiClient.get(`/api/mot_archeve?paginate=200&etat=${etat}`)
+            let params = `?paginate=200&etat=${etat}`
+            if (query) { params += `&titre=${query}` }
+            if (ordre) { params += `&ordre=${ordre}` }
+            const response: any = await apiClient.get(`/api/mot_archeve${params}`)
             setMessages(response.data)
         }
         getMessages()
-    }, [etat])
+    }, [etat, query, ordre])
 
     const handleDeleteMessage = async () => {
         if (isDeleting) return

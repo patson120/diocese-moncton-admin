@@ -7,7 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LayoutGridIcon, ListOrdered, PlusIcon, SearchIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import ActualiteContent from "../ActualiteContent/ActualiteContent";
 import MessageContent from "../MessageContent/MessageContent";
@@ -29,19 +29,36 @@ export default function ContentDisplaySection() {
   ];
   const [selectedItem, setSelectedItem] = useState(navItems[0])
   const [query, setQuery] = useState(params.get('query')?.toString() || '')
+  const [message, setMessage] = useState(params.get('message')?.toString() || '')
   const [ordre, setOrdre] = useState(searchParams.get('ordre')?.toString() || '')
 
-  const handleSearch = useDebouncedCallback((event: ChangeEvent<HTMLInputElement>) => {
+ 
+  const handleSearchActualite = useDebouncedCallback((event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value
-    // params.set('page', '1');
+    // params.set('page', '1');  
 
     setQuery(value)
     // If the value is empty, remove the query parameter
     if (value) {
-        params.set('query', value)
+      params.set('query', value)
     }
     else {
-        params.delete('query')
+      params.delete('query')
+    }
+    router.replace(`${pathname}?${params.toString()}`)
+  }, 800)
+
+  const handleSearchMessage = useDebouncedCallback((event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value
+    // params.set('page', '1');  
+
+    setMessage(value)
+    // If the value is empty, remove the query parameter
+    if (value) {
+      params.set('message', value)
+    }
+    else {
+      params.delete('message')
     }
     router.replace(`${pathname}?${params.toString()}`)
   }, 800)
@@ -66,9 +83,15 @@ export default function ContentDisplaySection() {
                     key={item.id}
                     value={item.id}
                     onClick={() => {
+                      if (selectedItem.id !== item.id){
+                        setOrdre('')
+                        setQuery('')
+                        setMessage('')
+                        params.delete("query")
+                        params.delete("message")
+                        router.replace(`${pathname}?${params.toString()}`)
+                      }
                       setSelectedItem(item)
-                      setOrdre('')
-                      setQuery('')
                     }}
                     className={`p-2.5 rounded-none font-body-3 text-sm data-[state=active]:border-b-[3px] data-[state=active]:border-blue data-[state=active]:text-blue data-[state=active]:shadow-none data-[state=inactive]:text-gray data-[state=inactive]:bg-transparent`}>
                     {item.label}
@@ -124,7 +147,7 @@ export default function ContentDisplaySection() {
                       <Input
                         className="h-10 bg-neutral-100 border-none pl-9"
                         placeholder="Rechercher une actualité..."
-                        onChange={handleSearch}
+                        onChange={handleSearchActualite}
                         defaultValue={searchParams.get('query')?.toString()}
                       />
                       <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
@@ -214,6 +237,8 @@ export default function ContentDisplaySection() {
                       <Input
                         className="h-10 bg-neutral-100 border-none pl-9"
                         placeholder="Rechercher un message"
+                        onChange={handleSearchMessage}
+                        defaultValue={searchParams.get('message')?.toString()}
                       />
                       <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
                     </div>
@@ -238,7 +263,7 @@ export default function ContentDisplaySection() {
                   {/* Content for published tab */}
                   <MessageContent 
                     etat={1} 
-                    query={query} 
+                    query={message} 
                     ordre={ordre} 
                     displayMode={displayMode} 
                   />
@@ -248,7 +273,7 @@ export default function ContentDisplaySection() {
                   {/* Content for pending tab */}
                   <MessageContent 
                     etat={0} 
-                    query={query} 
+                    query={message} 
                     ordre={ordre} 
                     displayMode={displayMode} 
                   />
@@ -258,7 +283,7 @@ export default function ContentDisplaySection() {
                   {/* Content for disabled tab */}
                   <MessageContent 
                     etat={-1} 
-                    query={query} 
+                    query={message} 
                     ordre={ordre} 
                     displayMode={displayMode} 
                   />
