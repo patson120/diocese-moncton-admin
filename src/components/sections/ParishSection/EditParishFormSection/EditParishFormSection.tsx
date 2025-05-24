@@ -1,10 +1,14 @@
 
 'use client'
 
+import {Image as ImageType, Location, Paroisse, TypeParoisse } from "@/app/types";
+import { MapContainer } from "@/components/sections/MapSection/map-container";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Loader } from "@/components/ui/loader";
 import { MultiSelect, Option } from "@/components/ui/multi-select";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,14 +16,13 @@ import { apiClient } from "@/lib/axios";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTrigger } from "@radix-ui/react-dialog";
-import { Edit, EditIcon, Pen, PlusIcon } from "lucide-react";
+import { Pen, PlusIcon } from "lucide-react";
+import Image from "next/image";
 import { JSX, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { Location, Paroisse, TypeParoisse } from "@/app/types";
-import { Loader } from "@/components/ui/loader";
-import { MapContainer } from "@/components/sections/MapSection/map-container";
+import { GaleryPopup } from "../../GaleryPopup";
 
 
 // Generate hours from 00:00 to 23:59 in 30-minute intervals
@@ -63,8 +66,8 @@ const formSchemaFour = z.object({
 })
 
 const formSchemaFive = z.object({
-  jour: z.string().min(1, { message: "Jour de messe requis" }),
-  selectedHours: z.array(z.string()), // Make this required
+  jour: z.string().optional(), // .min(1, { message: "Jour de messe requis" }),
+  selectedHours: z.array(z.any()) // z.array(z.string()), // Make this required
 });
 
 export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Element => {
@@ -74,6 +77,14 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
     parish.horaireparoisses?.map(horaire =>  ({ jour: horaire.jour, heures: horaire.heure.split(",")}))
   )
   const [isLoading, setIsLoading] = useState(false)
+  const [selectedImage, setSelectedImage] = useState<ImageType | undefined>(
+    parish?.galerie.length ? {
+      ...parish?.galerie[0]!,
+      path:`${process.env.NEXT_PUBLIC_API_URL}/${parish?.galerie[0].path}`,
+      path_en:`${process.env.NEXT_PUBLIC_API_URL}/${parish?.galerie[0].path}`,
+    }
+    : undefined
+  );
 
   const [location, setLocation] = useState<Location | null>({
     address: `${parish?.adresse.split(";")[1]}`,
@@ -213,6 +224,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
     formdata.append("premier_cure", formThree.getValues("premier_cure").split('-')[0])
     formdata.append("gps", `${location?.lat};${location?.lng}`)
     formdata.append("statut", `${parish.statut}`)
+    formdata.append("galerie_id", `${selectedImage?.id}`)
     formdata.append("adresse", `${location?.name};${location?.address}`)
 
 
@@ -540,6 +552,29 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
                     </FormItem>
                   )}
                 />
+                <div className="flex flex-col space-y-2">
+                  <Label htmlFor="categorie" className="mb-2">Image de couverture de la paroisse</Label>
+                  <GaleryPopup setSelectedImage={setSelectedImage} >
+                    <div className="h-44 w-full bg-[#f0f0f0] rounded-md overflow-hidden relative flex justify-center items-center cursor-pointer">
+                      {
+                        selectedImage ?
+                          <Image
+                            fill
+                            priority
+                            className="object-cover"
+                            alt="Église Immaculée-Conception"
+                            src={selectedImage ? `${selectedImage.path}`: `/rectangle-2492.svg`}
+                          /> :
+                          <Image
+                            width={40}
+                            height={40}
+                            alt="Vector"
+                            src="/vector.svg"
+                          />
+                      }
+                    </div>
+                  </GaleryPopup>
+                </div>
                 <div className="flex flex-row gap-4">
                   <Button variant={'outline'} onClick={() => setStep(3)} className="w-min px-8 mt-8 h-12 rounded-lg">
                     Retour

@@ -1,7 +1,7 @@
 
 'use client'
 
-import { Location, TypeParoisse } from "@/app/types";
+import { Image as ImageType, Location, TypeParoisse } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -20,6 +20,9 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 import { MapContainer } from "../../MapSection/map-container";
+import { Label } from "@radix-ui/react-label";
+import { GaleryPopup } from "../../GaleryPopup";
+import Image from "next/image";
 
 
 // Generate hours from 00:00 to 23:59 in 30-minute intervals
@@ -72,6 +75,7 @@ export const AddParishFormSection = (): JSX.Element => {
   const [horaires, setHoraires] = useState<{[key: string]: any}[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [unitePastorales, setUnitePastorales] = useState<TypeParoisse[]>([])
+  const [selectedImage, setSelectedImage] = useState<ImageType | undefined>();
 
   const [location, setLocation] = useState<Location | null>(null);
 
@@ -210,6 +214,7 @@ export const AddParishFormSection = (): JSX.Element => {
     formdata.append("premier_cure", formThree.getValues("premier_cure").split('-')[0])
     formdata.append("gps", `${location?.lat};${location?.lng}`)
     formdata.append("statut", '1')
+    formdata.append("galerie_id", `${selectedImage?.id}`)
     formdata.append("adresse", `${location?.name};${location?.address}`)
     
     const data = {
@@ -532,6 +537,29 @@ export const AddParishFormSection = (): JSX.Element => {
                     </FormItem>
                   )}
                 />
+                <div className="flex flex-col space-y-2">
+                  <Label htmlFor="categorie" className="mb-2">Image de couverture de la paroisse</Label>
+                  <GaleryPopup setSelectedImage={setSelectedImage} >
+                    <div className="h-44 w-full bg-[#f0f0f0] rounded-md overflow-hidden relative flex justify-center items-center cursor-pointer">
+                      {
+                        selectedImage ?
+                          <Image
+                            fill
+                            priority
+                            className="object-cover"
+                            alt="Vector"
+                            src={selectedImage?.path}
+                          /> :
+                          <Image
+                            width={40}
+                            height={40}
+                            alt="Vector"
+                            src="/vector.svg"
+                          />
+                      }
+                    </div>
+                  </GaleryPopup>
+                </div>
                 <div className="flex flex-row gap-4">
                   <Button variant={'outline'} onClick={() => setStep(3)} className="w-min px-8 mt-8 h-12 rounded-lg">
                     Retour

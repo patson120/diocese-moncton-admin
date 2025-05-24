@@ -419,9 +419,8 @@ export default function ParishSection() {
                                     <Image
                                         fill
                                         priority
-                                        className="object-cover"
                                         alt="Église Immaculée-Conception"
-                                        src="/rectangle-2492.svg"
+                                        src={selecteParish?.galerie[0] ?`${process.env.NEXT_PUBLIC_API_URL}/${selecteParish?.galerie[0].path}`: `/rectangle-2492.svg`}
                                     />
                                 </div>
 
