@@ -74,7 +74,7 @@ export const ConnexionPage = (): JSX.Element => {
                   fill
                   priority
                   className="w-ful h-full object-cover"
-                  alt="Photo"
+                  alt="logo archidiocèse de Moncton"
                   src="/photo-2024-12-08-19-09-08-1.png"
                 />
               </div>
@@ -185,7 +185,7 @@ export const ConnexionPage = (): JSX.Element => {
               fill
               priority
               className="w-full h-full object-cover"
-              alt="Rectangle"
+              alt="image de fond de connexion"
               src="/login-bg.png"
             />
           </div>

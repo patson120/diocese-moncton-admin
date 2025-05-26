@@ -15,8 +15,8 @@ let api = axios.create({
 
 // Request interceptor
 api.interceptors.request.use(async (config) => {
-    const currentUser = Cookies.get('user');
-    const userJson: User | null = currentUser ? JSON.parse(currentUser!) : null
+    // const currentUser = Cookies.get('user');
+    // const userJson: User | null = currentUser ? JSON.parse(currentUser!) : null
     
     try {
         // Fetch CSRF token if needed
@@ -30,9 +30,9 @@ api.interceptors.request.use(async (config) => {
         // }
 
         // Add token to all request except login route
-        if (!config.url?.includes("login")){
-            config.headers['Authorization'] = `Bearer ${userJson?.token}`;
-        }
+        // if (!config.url?.includes("login")){
+        //     config.headers['Authorization'] = `Bearer ${userJson?.token}`;
+        // }
         return config;
     } catch (error) {
         console.error('Error fetching CSRF token:', error);

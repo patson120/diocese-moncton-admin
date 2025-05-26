@@ -154,7 +154,7 @@ export function Sidebar({ className }: SidebarProps) {
   
   const logoutUser = () => {
     window.localStorage.clear()
-  Cookies.remove('user');
+    Cookies.remove('user');
     router.push('/login');
     toast.success('Déconnexion réussie');
   };
@@ -187,7 +187,7 @@ export function Sidebar({ className }: SidebarProps) {
               {/* Header with logo and collapse button */}
               <div className='relative shrink-0 w-[79px] h-12'>
                 <Image
-                  alt="Photo"
+                  alt="Logo de l'archidiocèse de Moncton"
                   src="/photo-2024-12-08-19-09-08-1.png"
                   fill
                   style={{ objectFit: 'contain' }}
