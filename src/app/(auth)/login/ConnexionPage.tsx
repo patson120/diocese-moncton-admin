@@ -64,7 +64,7 @@ export const ConnexionPage = (): JSX.Element => {
   return (
     <div className="bg-white w-full h-screen flex flex-row justify-center">
       <div className="grid grid-cols-5 gap-10 m-3 w-full">
-        <div className="col-span-2 relative flex flex-col justify-center items-center">
+        <div className="col-span-full md:col-span-2 relative flex flex-col justify-center items-center">
           {/* Login form container */}
           <div className="flex flex-col w-2/3 gap-5 lg:gap-10">
             {/* Logo */}
@@ -178,7 +178,7 @@ export const ConnexionPage = (): JSX.Element => {
             Archidiocèse de Moncton - Tous droits reservés
           </div>
         </div>
-        <div className="col-span-3 rounded-xl overflow-hidden">
+        <div className="hidden md:flex col-span-3 rounded-xl overflow-hidden">
           {/* Right side image */}
           <div className="relative w-full h-full">
             <Image
