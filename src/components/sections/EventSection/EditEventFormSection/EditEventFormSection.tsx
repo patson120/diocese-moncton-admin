@@ -68,7 +68,7 @@ export const EditEventFormSection = ({ eventData} : EditEventDialogProps): JSX.E
   const [step, setStep] = useState(1)
   const [categories, setCategories] = useState<Category[]>([])
   const [selectedCategory, setSelectedCategory] = useState<Category>()
-  const [selectedImage, setSelectedImage] = useState<ImageType | undefined>();
+  const [selectedImage, setSelectedImage] = useState<ImageType | undefined>(eventData.galerie.length ? eventData.galerie[0] : undefined);
 
   const [event, setEvent] = useState(defaultEvent)
 
