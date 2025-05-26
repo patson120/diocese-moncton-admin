@@ -63,10 +63,10 @@ export const ConnexionPage = (): JSX.Element => {
 
   return (
     <div className="bg-white w-full h-screen flex flex-row justify-center">
-      <div className="grid grid-cols-5 gap-4 md:gap-10 md:m-3 w-full">
+      <div className="grid grid-cols-5 gap-4 md:gap-10 mx-1 md:m-3 w-full">
         <div className="col-span-full md:col-span-2 relative flex flex-col justify-center items-center">
           {/* Login form container */}
-          <div className="flex flex-colM md:w-2/3 gap-5 lg:gap-10">
+          <div className="flex flex-col md:w-2/3 gap-5 lg:gap-10">
             {/* Logo */}
             <div className="w-full flex justify-center items-center">
               <div className="relative w-[160px] h-[95px] shrink-0">
