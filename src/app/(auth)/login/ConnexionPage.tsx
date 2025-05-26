@@ -178,7 +178,7 @@ export const ConnexionPage = (): JSX.Element => {
             Archidiocèse de Moncton - Tous droits reservés
           </div>
         </div>
-        <div className="hidden md:flex col-span-3 rounded-xl overflow-hidden">
+        <div className="hidden md:block col-span-3 rounded-xl overflow-hidden">
           {/* Right side image */}
           <div className="relative w-full h-full">
             <Image
