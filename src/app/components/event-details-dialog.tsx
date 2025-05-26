@@ -88,7 +88,7 @@ export default function EventDetailsDialog({ event, open, onOpenChange }: EventD
             {/* Event header with image and basic info */}
             <section
               className="w-full h-[260px] aspect-auto rounded-2xl bg-cover bg-center bg-no-repeat"
-              style={{ backgroundImage: `url(${event.galerie.length ? `${process.env.NEXT_PUBLIC_API_URL}/${event?.galerie[0].path}` : "/image-5.png"})` }}
+              style={{ backgroundImage: `url(${event.galerie.length ? `${process.env.NEXT_PUBLIC_API_URL}/${event?.galerie[0].path}` : "/assets/img/event-details.png"})` }}
             />
             {/* Content section */}
             <section className="flex flex-col gap-2 ">

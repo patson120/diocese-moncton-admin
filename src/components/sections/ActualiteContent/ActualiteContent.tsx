@@ -190,7 +190,7 @@ export default function ActualiteContent(
                                      {article.galerie.length === 0 ? ( 
                                         <div
                                             className="w-full h-[150px] rounded-xl bg-cover bg-center"
-                                            style={{ backgroundImage: `url("/image-5.png")` }}
+                                            style={{ backgroundImage: `url("/assets/img/actualite.png")` }}
                                         />
                                      ) : (
                                         <div
@@ -277,7 +277,7 @@ export default function ActualiteContent(
                                 selectedActualite?.galerie.length === 0 ?
                                 <section
                                     className="w-full h-[260px] aspect-auto rounded-2xl bg-cover bg-center bg-no-repeat"
-                                    style={{ backgroundImage: `url("/image-5.png")` }}
+                                    style={{ backgroundImage: `url("/assets/img/actualite.png")` }}
                                 /> :
                                 <section
                                     className="w-full h-[260px] aspect-auto rounded-2xl bg-cover bg-center bg-no-repeat"
