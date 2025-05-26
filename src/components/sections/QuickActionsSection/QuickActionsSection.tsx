@@ -1,16 +1,16 @@
 "use client"
 
+import { AddEventFormSection } from "@/components/sections/EventSection/AddEventFormSection ";
+import Text from "@/components/shared/Text";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { fetchEvenements } from "@/lib/data";
+import { apiClient } from "@/lib/axios";
+import { formatDateToLocal } from "@/lib/utils";
 import { BookOpenText, Calendar1, CalendarPlus, Layers, MapPin } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { JSX, useEffect, useState } from "react";
 import { Event } from "../../../app/types";
-import Text from "@/components/shared/Text";
-import { formatDateToLocal } from "@/lib/utils";
-import { useRouter } from "next/navigation";
-import { AddEventFormSection } from "@/components/sections/EventSection/AddEventFormSection ";
 
 const QuickActionsSection = (): JSX.Element => {
 
@@ -20,7 +20,7 @@ const QuickActionsSection = (): JSX.Element => {
 
   useEffect(() => {
     const getEvenements = async () => {
-      const response = await fetchEvenements(`?paginate=5`)
+      const response: any = await apiClient.get("/api/evenements?paginate=5")
       setCalendarEvents(response.data)
     }
     getEvenements()
@@ -120,7 +120,7 @@ const QuickActionsSection = (): JSX.Element => {
                     <Calendar1 className="h-5 w-5 text-blue" />
                   </div>
                   <div>
-                    <h1 className="font-bold">{formatDateToLocal(new Date(event.created_at!).toISOString())} - {event.heure_event.toString().slice(0, 5)} </h1>
+                    <h1 className="font-bold">{formatDateToLocal(new Date(event.date_event!).toISOString())} - {event.heure_event.toString().slice(0, 5)} </h1>
                     <div className="my-3 py-2 border-y border-dashed border-y-gray/20">
                       <Text className="text-gray line-clamp-2" labelEn={event.titre_en} labelFr={event.titre_fr} />
                     </div>
