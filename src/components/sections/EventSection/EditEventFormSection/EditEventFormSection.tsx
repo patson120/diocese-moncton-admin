@@ -409,7 +409,7 @@ export const EditEventFormSection = ({ eventData} : EditEventDialogProps): JSX.E
                             priority
                             className="object-cover"
                             alt="Vector"
-                            src={selectedImage?.path}
+                            src={`${process.env.NEXT_PUBLIC_API_URL}/${selectedImage.path}`}
                           /> :
                           <Image
                             width={40}
