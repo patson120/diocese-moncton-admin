@@ -43,7 +43,7 @@ const QuickActionsSection = (): JSX.Element => {
                     Créer message de l'archevêque
                   </p>
                   <p className="font-legend -mt-1 font-[number:var(--legend-font-weight)] text-gray text-xs tracking-[var(--legend-letter-spacing)] leading-[var(--legend-line-height)] [font-style:var(--legend-font-style)] line-clamp-1">
-                    Lorem ipsum dolor sit amet
+                    Ajouter un nouveau message rapidement
                   </p>
                 </div>
               </div>
@@ -63,7 +63,7 @@ const QuickActionsSection = (): JSX.Element => {
                   Créer un évènement
                 </p>
                 <p className="font-legend -mt-1 font-[number:var(--legend-font-weight)] text-gray text-xs tracking-[var(--legend-letter-spacing)] leading-[var(--legend-line-height)] [font-style:var(--legend-font-style)] line-clamp-1">
-                  Lorem ipsum dolor sit amet
+                  Programmer un nouvel évènement à venir
                 </p>
                 <div className="w-full h-full absolute opacity-0">
                   <AddEventFormSection />
@@ -85,7 +85,7 @@ const QuickActionsSection = (): JSX.Element => {
                   Créer une page
                 </p>
                 <p className="font-legend -mt-1 font-[number:var(--legend-font-weight)] text-gray text-xs tracking-[var(--legend-letter-spacing)] leading-[var(--legend-line-height)] [font-style:var(--legend-font-style)] line-clamp-1">
-                  Lorem ipsum dolor sit amet
+                  Créer une nouvelle page pour le site
                 </p>
               </div>
             </div>
