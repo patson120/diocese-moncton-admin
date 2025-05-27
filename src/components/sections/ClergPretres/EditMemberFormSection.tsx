@@ -107,7 +107,7 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
     { value: "-1", label: "Décédé" },
   ];
 
-  const [coverImage, setCoverImage] = useState('')
+  const [coverImage, setCoverImage] = useState(memberData.image ? `${process.env.NEXT_PUBLIC_API_URL}/${memberData.image}` : '')
   const [isLoading, setIsloading] = useState(false)
   const [step, setStep] = useState(1)
   const [status, setStatus] = useState(statusOptions.find((s) => s.value === `${memberData.etat}`)?.value || "1");
@@ -132,7 +132,9 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
     formdata.append("poste", `${fonctions.find((f) => f.id === parseInt(data.poste))?.intitule_fr}`);
     formdata.append("coordonnees", `${data.coordonnees}`);
     formdata.append("etat", `${status}`);
-    formdata.append("image", fileImage!);
+    if (fileImage){
+      formdata.append("image", fileImage!);
+    }
     formdata.append("etablissement_id", `${data.etablissement},`);
     formdata.append("description_fr", `${data.description_fr}`);
     formdata.append("description_en", `${data.description_en}`);
