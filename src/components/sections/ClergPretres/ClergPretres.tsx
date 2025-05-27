@@ -644,7 +644,7 @@ export const ClergPretres = (): JSX.Element => {
                   <ScrollArea className="w-full h-[calc(100vh-345px)] mt-6">
                     {/* Prêtres grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
-                    {members.map((member, index) => (
+                      {members.map((member, index) => (
                         <Card
                           onClick={() => {
                             setOpenModal(true)
