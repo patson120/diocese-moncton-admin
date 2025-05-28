@@ -44,8 +44,8 @@ export const ConnexionPage = (): JSX.Element => {
     try {
       const user = await login(values.email.trim(), values.password.trim());
       if (user) {
-        router.push('/');
-        // window.location.reload();
+        // router.push('/');
+        window.location.reload();
       } else {
         setError('Identifiants invalides');
       }
