@@ -12,20 +12,36 @@ import {
   ListFilter,
   SearchIcon
 } from "lucide-react";
-import { JSX, useEffect, useState } from "react";
+import { ChangeEvent, JSX, useEffect, useState } from "react";
 import { AudioPlayer } from "./AudioPlayer";
+import { useDebouncedCallback } from "use-debounce";
 
 export const AudioContentSection = (): JSX.Element => {
   const [ressources, setRessources] = useState<Ressource[]>([]) 
+  const [query, setQuery] = useState("")
   
   const fetchRessources = async () => {
     const response: Ressource[] = await apiClient.get('/api/ressources?type=audio')
+    setRessources(response)
+  }
+  const fetchFilteredRessources = async (titre: string) => {
+    const response: Ressource[] = await apiClient.get(`/api/ressources?type=audio&titre=${titre}`)
     setRessources(response)
   }
 
   useEffect(() => {
     fetchRessources()
   }, [])
+
+  const handleSearch = useDebouncedCallback( (event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setQuery(value);
+    if (value.trim() === "") {
+      fetchRessources(); // Re-fetch all resources if the search query is empty
+    } else {
+      fetchFilteredRessources(value); // Fetch filtered resources based on the search query
+    }
+  }, 800)
 
   return (
     <section className="w-full flex-1 p-6">

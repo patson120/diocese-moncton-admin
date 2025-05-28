@@ -1,9 +1,7 @@
 import { Ressource } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { Loader } from "@/components/ui/loader";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { apiClient } from "@/lib/axios";
 import { copyToClipboard } from "@/lib/utils";
@@ -11,23 +9,39 @@ import {
   CopyIcon,
   LayoutGridIcon,
   ListFilter,
-  MoreHorizontalIcon,
   SearchIcon,
   TvMinimalPlay
 } from "lucide-react";
-import { JSX, useEffect, useState } from "react";
+import { ChangeEvent, JSX, useEffect, useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
 import { VideoPlayer } from "./VideoPlayer";
 
 export const VideoContentSection = (): JSX.Element => {
 
   const [ressources, setRessources] = useState<Ressource[]>([])
+  const [query, setQuery] = useState<string>("")
 
   const fetchRessources = async () => {
     const response: Ressource[] = await apiClient.get('/api/ressources?type=video')
     setRessources(response)
+    console.log(response);
   }
-  
-  
+
+  const fetchFilteredRessources = async (titre: string) => {
+    const response: Ressource[] = await apiClient.get(`/api/ressources?type=video&titre=${titre}`)
+    setRessources(response)
+    console.log(response);
+  }
+
+  const handleSearch = useDebouncedCallback( (event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setQuery(value);
+    if (value.trim() === "") {
+      fetchRessources(); // Re-fetch all resources if the search query is empty
+    } else {
+      fetchFilteredRessources(value); // Fetch filtered resources based on the search query
+    }
+  }, 800)
 
   useEffect(() => {
     fetchRessources()
@@ -40,8 +54,10 @@ export const VideoContentSection = (): JSX.Element => {
           <div className="flex items-center gap-2">
             <div className="relative w-[256px]">
               <Input
-                className="h-9 bg-neutral-100 border-none pl-9"
+                className="h-10 bg-neutral-100 border-none pl-9"
                 placeholder="Rechercher une vidéo"
+                onChange={handleSearch}
+                defaultValue={query}
               />
               <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
             </div>
@@ -68,8 +84,7 @@ export const VideoContentSection = (): JSX.Element => {
             {ressources.map((card, index) => (
               <Card
                 key={index}
-                className="h-[170px] bg-[#f9f9f0] rounded-2xl relative border-none"
-              >
+                className="h-[170px] bg-[#f9f9f0] rounded-2xl relative border-none">
                 <CardContent className="p-3 h-full flex flex-col justify-between">
 
                   <div className="flex justify-between">

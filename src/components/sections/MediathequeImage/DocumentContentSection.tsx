@@ -19,13 +19,15 @@ import {
   SearchIcon,
   Trash2Icon
 } from "lucide-react";
-import { JSX, useEffect, useState } from "react";
+import { ChangeEvent, JSX, useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useDebouncedCallback } from "use-debounce";
 
 export const DocumentContentSection = (): JSX.Element => {
 
   const [dislayMode, setDislayMode] = useState<'list' | 'grid'>('grid')
   const [isDeleting, setisDeleting] = useState(false)
+  const [query, setQuery] = useState("")
 
   const [ressources, setRessources] = useState<Ressource[]>([])
 
@@ -36,6 +38,10 @@ export const DocumentContentSection = (): JSX.Element => {
 
   const fetchRessources = async () => {
     const response: Ressource[] = await apiClient.get('/api/ressources?type=document')
+    setRessources(response)
+  }
+  const fetchFilteredRessources = async (titre: string) => {
+    const response: Ressource[] = await apiClient.get(`/api/ressources?type=document&titre=${titre}`)
     setRessources(response)
   }
   
@@ -62,6 +68,16 @@ export const DocumentContentSection = (): JSX.Element => {
     fetchRessources()
   }, [])
   
+  const handleSearch = useDebouncedCallback( (event: ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setQuery(value);
+    if (value.trim() === "") {
+      fetchRessources(); // Re-fetch all resources if the search query is empty
+    } else {
+      fetchFilteredRessources(value); // Fetch filtered resources based on the search query
+    }
+  }, 800)
+
 
   return (
     <section className="w-full flex-1 p-6">
@@ -70,8 +86,10 @@ export const DocumentContentSection = (): JSX.Element => {
           <div className="flex items-center gap-2">
             <div className="relative w-[256px]">
               <Input
-                className="h-9 bg-neutral-100 border-none pl-9"
+                className="h-10 bg-neutral-100 border-none pl-9"
                 placeholder="Rechercher un document"
+                onChange={handleSearch}
+                defaultValue={query}
               />
               <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
             </div>
