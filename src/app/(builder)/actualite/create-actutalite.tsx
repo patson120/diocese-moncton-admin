@@ -1,6 +1,6 @@
 "use client"
 
-import { Image } from '@/app/types'
+import { Actualite, Image } from '@/app/types'
 import { Editor } from '@/components/Editor/Editor'
 import { GaleryPopup } from '@/components/sections/GaleryPopup'
 import { Button } from '@/components/ui/button'
@@ -17,6 +17,7 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import ActuDialog from './ActuDialog'
+import { ActualitePreview } from '@/app/(builder)/components/ActualitePreview'
 
 export default function CreateActutalite() {
   const router = useRouter()
@@ -28,6 +29,7 @@ export default function CreateActutalite() {
   const [openPublishModal, setOpenPublishModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState<Image | undefined>();
   const [section, setSection] = useState<'french' | 'english'>('french');
+  const [previewData, setPreviewData] = useState<Actualite>()
 
   const [title, setTitle] = useState({
     french: '',
@@ -107,6 +109,47 @@ export default function CreateActutalite() {
     }
   }
 
+  const actualite: Actualite = {
+    "id": 0,
+    "categorie_id": 0,
+    "titre_fr": title.french,
+    "titre_en": title.english,
+    "date_publication": `${new Date().toISOString()}`,
+    "is_actif": 1,
+    "is_brouillon": 1,
+    "is_planifier": 0,
+    "date_planification": null,
+    "description_fr": content.french,
+    "description_en": content.english,
+    "created_at": `${new Date().toISOString()}`,
+    "updated_at": `${new Date().toISOString()}`,
+    "galerie": [
+      {
+        "id": 36,
+        "titre": null,
+        "path": `${selectedImage?.path}`,
+        "path_en": null,
+        "label": '',
+        "value": 0,
+        "comment": "",
+        "created_at": `${new Date().toISOString()}`,
+        "updated_at": `${new Date().toISOString()}`
+      }
+    ],
+    "prevId": 0,
+    "nextId": 0,
+    "categorie": {
+      "id": 0,
+      "parent_id": 0,
+      "intitule_fr": "Catégorie d'actualité",
+      "intitule_en": "News Categories",
+      "menu": "event",
+      "created_at": `${new Date().toISOString()}`,
+      "updated_at": `${new Date().toISOString()}`
+    },
+    "motcles": []
+  }
+
   return (
     <div className="relative w-full h-screen bg-[#f0f0f4] overflow-x-hidden">
       {/* Secondary navigation bar */}
@@ -133,14 +176,15 @@ export default function CreateActutalite() {
 
           <Separator orientation="vertical" className="h-[34px]" />
 
-          <Button
-            variant="outline"
-            className="h-10 px-3.5 py-0 border-[#d9d9d9] rounded-[7px]"
-          >
-            <span className="font-body-3 text-noir-dashboard whitespace-nowrap">
-              Prévisualiser
-            </span>
-          </Button>
+          <ActualitePreview actualite={actualite}>
+            <Button
+              variant="outline"
+              className="h-10 px-3.5 py-0 border-[#d9d9d9] rounded-[7px]">
+              <span className="font-body-3 text-noir-dashboard whitespace-nowrap">
+                Prévisualiser
+              </span>
+            </Button>
+          </ActualitePreview>
 
           <Button onClick={verifyEnglishContent} className="h-10 px-3.5 py-0 bg-blue text-white rounded-[7px]">
             {isLoading && <Loader className='text-white mr-2' />}
