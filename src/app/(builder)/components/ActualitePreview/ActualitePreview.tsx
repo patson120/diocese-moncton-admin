@@ -42,7 +42,7 @@ export const ActualitePreview = ({ children, actualite }: {
               <Button
                 variant="outline"
                 size="sm"
-                className="text-white w-min bg-blue hover:bg-primary"
+                className="text-white w-min bg-blue hover:bg-primary hover:text-white"
                 onClick={() => setOpen(false)}>
                   Retourner sur le site
               </Button>
