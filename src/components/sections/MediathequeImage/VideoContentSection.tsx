@@ -24,13 +24,11 @@ export const VideoContentSection = (): JSX.Element => {
   const fetchRessources = async () => {
     const response: Ressource[] = await apiClient.get('/api/ressources?type=video')
     setRessources(response)
-    console.log(response);
   }
 
   const fetchFilteredRessources = async (titre: string) => {
     const response: Ressource[] = await apiClient.get(`/api/ressources?type=video&titre=${titre}`)
     setRessources(response)
-    console.log(response);
   }
 
   const handleSearch = useDebouncedCallback( (event: ChangeEvent<HTMLInputElement>) => {
