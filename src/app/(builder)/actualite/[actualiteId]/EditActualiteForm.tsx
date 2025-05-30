@@ -1,24 +1,24 @@
 
 "use client"
 
+import { Actualite, Image } from '@/app/types'
 import { Editor } from '@/components/Editor/Editor'
+import { GaleryPopup } from '@/components/sections/GaleryPopup'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
 import { Loader } from '@/components/ui/loader'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { apiClient } from '@/lib/axios'
+import { cn, copyToClipboard } from '@/lib/utils'
 import { TabsContent } from '@radix-ui/react-tabs'
 import { ArrowLeft, CopyIcon, ExternalLinkIcon, } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { Actualite, Image } from '@/app/types'
+import { ActualitePreview } from '../../components/ActualitePreview'
 import EditActuDialog from './EditActuDialog'
-import { cn, copyToClipboard } from '@/lib/utils'
-import { GaleryPopup } from '@/components/sections/GaleryPopup'
 
 export default function EditActualiteForm({actualite}: { actualite: Actualite }) {
   const router = useRouter()
@@ -28,6 +28,7 @@ export default function EditActualiteForm({actualite}: { actualite: Actualite })
   const [isEnglishVersion, setIsEnglishVersion] = useState(false);
   const [isEmptyActu, setIsEmptyActu] = useState(false);
   const [openPublishModal, setOpenPublishModal] = useState(false);
+
   const [selectedImage, setSelectedImage] = useState<Image | undefined>( actualite.galerie.length > 0 ? 
     { ...actualite.galerie[0], path: `${process.env.NEXT_PUBLIC_API_URL}/${actualite.galerie[0].path}`} 
     : undefined
@@ -41,6 +42,49 @@ export default function EditActualiteForm({actualite}: { actualite: Actualite })
     french: actualite.description_fr,
     english: actualite.description_en,
   })
+  
+  const data: Actualite = {
+      id: 0,
+      categorie_id: 0,
+      titre_fr: title.french,
+      titre_en: title.english,
+      date_publication: `${new Date().toISOString()}`,
+      is_actif: 1,
+      is_brouillon: 1,
+      is_planifier: 0,
+      date_planification: null,
+      description_fr: content.french,
+      description_en: content.english,
+      created_at: `${actualite.created_at}`,
+      updated_at: `${actualite.updated_at}`,
+      galerie: [
+        {
+          id: 36,
+          titre: null,
+          path: `${selectedImage?.path}`,
+          path_en: null,
+          label: '',
+          value: 0,
+          comment: '',
+          created_at: `${actualite.galerie[0].created_at}`,
+          updated_at: `${actualite.galerie[0].updated_at}`,
+        }
+      ],
+      prevId: 0,
+      nextId: 0,
+      categorie: {
+        id: 0,
+        parent_id: 0,
+        intitule_fr: `${actualite.categorie.intitule_fr}`,
+        intitule_en: `${actualite.categorie.intitule_en}`,
+        menu: `${actualite.categorie.menu}`,
+        created_at: `${actualite.categorie.created_at}`,
+          updated_at: `${actualite.categorie.updated_at}`,
+      },
+      motcles:  actualite.motcles
+  }
+
+  
 
   const handlePublish = async (data: any) => {
     if (isLoading) return
@@ -121,13 +165,16 @@ export default function EditActualiteForm({actualite}: { actualite: Actualite })
             </span>
           </Button>
           <Separator orientation="vertical" className="h-[34px]" />
-          <Button
-            variant="outline"
-            className="h-10 px-3.5 py-0 border-[#d9d9d9] rounded-[7px]">
-            <span className="font-body-3 text-noir-dashboard whitespace-nowrap">
-              Prévisualiser
-            </span>
-          </Button>
+          <ActualitePreview actualite={data}>
+            <Button
+              variant="outline"
+              className="h-10 px-3.5 py-0 border-[#d9d9d9] rounded-[7px]">
+              <span className="font-body-3 text-noir-dashboard whitespace-nowrap">
+                Prévisualiser
+              </span>
+            </Button>
+          </ActualitePreview>
+      
           <Button onClick={verifyEnglishContent} className="h-10 px-3.5 py-0 bg-blue text-white rounded-[7px]">
             {isLoading && <Loader className='text-white mr-2' />}
             <span className="font-body-3 whitespace-nowrap">
