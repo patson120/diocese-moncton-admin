@@ -107,7 +107,7 @@ export default function ActualiteContent(
                             { actualites.map((article, index) => (
                                 <TableRow key={index} className="border-b border-[#d9d9d9]">
                                 <TableCell className="font-body-3 text-noir-dashboard py-3.5 max-w-2xl">
-                                    <Text className='font-bold ' labelEn={article?.titre_en} labelFr={article?.titre_fr} />
+                                    <Text className='font-bold line-clamp-2' labelEn={article?.titre_en} labelFr={article?.titre_fr} />
                                 </TableCell>
                                 <TableCell className="font-body-3 text-gray py-3.5">
                                     {article?.categorie?.intitule_fr}

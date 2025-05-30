@@ -108,7 +108,7 @@ export default function MessageContent(
                                 { messages.map((message, index) => (
                                     <TableRow key={index} className="border-b border-[#d9d9d9]">
                                     <TableCell className="font-body-3 text-noir-dashboard py-3.5 max-w-2xl">
-                                        <Text className='font-bold ' labelEn={message?.titre_en} labelFr={message?.titre_fr} />
+                                        <Text className='font-bold line-clamp-2' labelEn={message?.titre_en} labelFr={message?.titre_fr} />
                                     </TableCell>
                                     <TableCell className="font-body-3 text-noir-dashboard py-3.5 max-w-xl">
                                         <Text className='line-clamp-2' labelEn={message?.message_en} labelFr={message?.message_fr} />
@@ -196,8 +196,7 @@ export default function MessageContent(
                                 />
                             ))
                         }
-                    </div> 
-                    
+                    </div>    
             }
             
             {/* Sheet */}
