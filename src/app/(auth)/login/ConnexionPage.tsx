@@ -357,6 +357,7 @@ export const ConnexionPage = (): JSX.Element => {
                               <FormItem className="w-full">
                                 <FormLabel>Nouveau mot de passe</FormLabel>
                                 <FormControl>
+                                <div className="relative w-full">
                                   <Input
                                     id="password"
                                     {...field}
@@ -364,6 +365,12 @@ export const ConnexionPage = (): JSX.Element => {
                                     className="h-12 rounded-[13px] px-3 py-3.5 border border-neutral-200 self-stretch w-full"
                                     placeholder="Entrez votre nouveau mot de passe"
                                   />
+                                  {
+                                    showPassword ?
+                                    <EyeClosed onClick={() => setShowPassword(prev => !prev) } className="absolute w-5 h-5 top-3.5 right-3.5 text-gray-400 cursor-pointer" /> :
+                                    <EyeIcon onClick={() => setShowPassword(prev => !prev) } className="absolute w-5 h-5 top-3.5 right-3.5 text-gray-400 cursor-pointer" /> 
+                                  }
+                                  </div>
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
