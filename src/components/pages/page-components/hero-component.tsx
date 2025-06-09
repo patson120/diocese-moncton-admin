@@ -10,7 +10,7 @@ interface HeroComponentProps {
   marginTop?: number;
   marginBottom?: number;
   backgroundColor?: string;
-  deviceView?: DeviceType;
+  deviceView?: string;
 }
 
 export function HeroComponent({
