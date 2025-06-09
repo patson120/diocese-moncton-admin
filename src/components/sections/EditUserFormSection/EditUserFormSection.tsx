@@ -57,7 +57,7 @@ export const EditUserFormSection = ({user}: { user: User}): JSX.Element => {
       nom: values.nom,
       email: values.email,
       role_id: roles.find((role: any) => role.sigle === values.role)?.id,
-      password: '0000',
+      // password: '0000',
       statut: values.statut === 'actif' ? 1 : 0,
     }
     try {
