@@ -56,7 +56,7 @@ export function BuilderCanvas({
     const props = {...component.props, deviceView: 'desktop' }
     switch (component.type) {
       case 'hero':
-        return <HeroComponent {...component.props} />;
+        return <HeroComponent {...props} />;
       case 'feature':
         return <FeatureComponent {...props} />;
       case 'text':
@@ -64,7 +64,7 @@ export function BuilderCanvas({
       case 'image':
         return <ImageComponent {...props} />;
       case 'columns':
-        return <ColumnsComponent {...component.props} />;
+        return <ColumnsComponent {...props} />;
       default:
         const definition = getComponentDefinitionByType(component.type);
         return (

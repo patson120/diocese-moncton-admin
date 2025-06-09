@@ -10,6 +10,7 @@ interface HeroComponentProps {
   marginTop?: number;
   marginBottom?: number;
   backgroundColor?: string;
+  deviceView?: DeviceType;
 }
 
 export function HeroComponent({
@@ -22,6 +23,7 @@ export function HeroComponent({
   marginTop = 0,
   marginBottom = 0,
   backgroundColor,
+  deviceView = 'desktop'
 }: HeroComponentProps) {
   const alignmentClasses = {
     left: 'text-left items-start',
@@ -34,6 +36,8 @@ export function HeroComponent({
     marginBottom: `${marginBottom}px`,
     backgroundColor,
   };
+
+  console.log(deviceView);
   
   return (
     <div className="relative py-20 px-6 overflow-hidden rounded-lg" style={style}>
