@@ -1,9 +1,12 @@
+import { DeviceType } from "../lib/types";
+
 interface TextComponentProps {
   content: string;
   alignment?: 'left' | 'center' | 'right';
   marginTop?: number;
   marginBottom?: number;
   backgroundColor?: string;
+  deviceView?: DeviceType;
 }
 
 export function TextComponent({
@@ -12,6 +15,7 @@ export function TextComponent({
   marginTop = 0,
   marginBottom = 0,
   backgroundColor,
+  deviceView  = 'desktop'
 }: TextComponentProps) {
   const alignmentClasses = {
     left: 'text-left',

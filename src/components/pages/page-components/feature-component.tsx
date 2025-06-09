@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { DeviceType } from "../lib/types";
 
 interface Feature {
   title: string;
@@ -14,7 +15,7 @@ interface FeatureComponentProps {
   marginBottom?: number;
   columns?: number;
   backgroundColor?: string;
-  deviceView?: 'mobile' | 'tablet' | 'desktop';
+  deviceView?: DeviceType;
 }
 
 export function FeatureComponent({

@@ -1,3 +1,5 @@
+import { DeviceType } from "../lib/types";
+
 interface HeroComponentProps {
   title: string;
   subtitle: string;
@@ -8,6 +10,7 @@ interface HeroComponentProps {
   marginTop?: number;
   marginBottom?: number;
   backgroundColor?: string;
+  deviceView?: DeviceType;
 }
 
 export function HeroComponent({
@@ -20,6 +23,7 @@ export function HeroComponent({
   marginTop = 0,
   marginBottom = 0,
   backgroundColor,
+  deviceView = 'desktop'
 }: HeroComponentProps) {
   const alignmentClasses = {
     left: 'text-left items-start',
