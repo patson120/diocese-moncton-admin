@@ -2,12 +2,12 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { DashboardShell } from '@/components/dashboard-shell';
-import { PagesList } from '@/components/pages-list';
+import { DashboardShell } from '@/components/pages/dashboard-shell';
 import { Button } from '@/components/ui/button';
 import { PlusIcon } from 'lucide-react';
-import { DashboardHeader } from '@/components/dashboard-header';
+import { DashboardHeader } from '@/components/pages/dashboard-header';
 import { usePagesStore } from '@/components/pages/stores/pages-store';
+import { PagesList } from '@/components/pages/pages-list';
 
 export default function Dashboard() {
   const router = useRouter();
