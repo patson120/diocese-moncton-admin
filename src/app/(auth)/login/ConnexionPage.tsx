@@ -1,5 +1,6 @@
 'use client'
 
+import { User } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -27,11 +28,18 @@ const formSchemaTwo = z.object({
 });
 
 const formSchemaThree = z.object({
-  codeotp: z.string().length(4, 'Code OTP invalide'),
+  codeotp: z.string().length(6, 'Code OTP invalide'),
 });
 const formSchemaFour = z.object({
   password: z.string().min(1, "Le nouveau mot de passe est requis"),
   confirmPassword: z.string().min(1, "Confirmez le nouveau mot de passe"),
+});
+
+const formSchemaFive = z.object({
+  nom: z.string().min(3, "Le nom est requis"),
+  prenom: z.string().min(3,"Le prénom est requis"),
+  email: z.string().email("L'adresse email n'est pas valide"),
+  password: z.string().min(1, "Le mot de passe est requis"),
 });
 
 export const ConnexionPage = (): JSX.Element => {
@@ -39,6 +47,7 @@ export const ConnexionPage = (): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false)
   const [step, setStep] = useState(1)
   const [error, setError] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const router =  useRouter() 
   const { login } = useAuth()
 
@@ -70,6 +79,16 @@ export const ConnexionPage = (): JSX.Element => {
     },
   });
 
+  const formFive = useForm<z.infer<typeof formSchemaFive>>({
+    resolver: zodResolver(formSchemaFive),
+    defaultValues: {
+      nom: "",  
+      prenom: "",  
+      email: "",  
+      password: "",  
+    },
+  });
+
   const handleLoginUser = async (values: z.infer<typeof formSchemaOne>) => {
     if (isLoading) return 
     setIsLoading(true)
@@ -94,17 +113,143 @@ export const ConnexionPage = (): JSX.Element => {
     }
   }
 
+  const checkEmail =  async (email: string) => {
+    if (isLoading) return
+    setIsLoading(true)
+    try {
+      const formdata = new FormData()
+      formdata.append("email", `${email}`)
+      const response: any = await apiClient.post('/api/auth/checkemail', formdata, {
+        'Content-Type': 'multipart/form-data'
+      });
+      console.log(response);
+      
+      setStep(3)
+    } catch (error: any) {
+      console.log(error);
+      toast.warning(
+        <div className='p-3 bg-red-500 text-white rounded-md'>
+          Une erreur est survenue lors de la connexion. Erreur: {JSON.stringify(error.message)}
+        </div>
+      )
+    }
+    finally{
+      setIsLoading(false)
+    }
+  }
+
+  const verifyCode =  async (otpCode: string) => {
+    if (isLoading) return
+    setIsLoading(true)
+    try {
+      const formdata = new FormData()
+      formdata.append("code", `${otpCode}`)
+      const response: any = await apiClient.post('/api/auth/verif_code', formdata, {
+        'Content-Type': 'multipart/form-data'
+      });
+      if (response.id){
+        setUser(response);
+        console.log(response);
+      }
+      setStep(4)
+    } catch (error: any) {
+      toast.warning(
+        <div className='p-3 bg-red-500 text-white rounded-md'>
+          Une erreur est survenue lors de la connexion. Erreur: { JSON.stringify(error.message) }
+        </div>
+      )
+    }
+    finally{
+      setIsLoading(false)
+    }
+  }
+
   const handleForgotPassword = async (values: z.infer<typeof formSchemaTwo>) => {
-    console.log(values);
-    setStep(3)
+    await checkEmail(values.email.trim())
   }
+
   const handleCodeOtp = async (values: z.infer<typeof formSchemaThree>) => {
-    console.log(values);
-    setStep(4)
+    await verifyCode(values.codeotp)
   }
+
   const handleChangePassword = async (values: z.infer<typeof formSchemaFour>) => {
-    console.log(values);
-    setStep(1)
+    if (isLoading) return
+    if (values.password.trim() !== values.confirmPassword.trim()){
+      toast.warning("Les deux mots de passes sont différents!")
+    }
+    setIsLoading(true)
+    const data = {
+      id: user?.id,
+      nom: user?.nom,
+      email: user?.email,
+      role_id: user?.role_id,
+      password: values.password.trim(),
+      statut: user?.statut,
+    };
+    try {
+      const response: any = await apiClient.put(`/api/administrateurs/${user?.id}`, data);
+      if (response.id ) {
+        toast.success('Mot de passe modifié avec succès');
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
+      }
+      else  {
+        toast.error(
+          <div className='p-3 bg-red-500 text-white rounded-md'>
+            Une erreur est survenue lors de la mise à jour de l'utilisateur
+          </div>
+        )
+      }
+    }
+    catch (error: any) {
+      toast.error(
+        <div className='p-3 bg-red-500 text-white rounded-md'>
+          Erreur lors de la mise à jour de l'utilisateur {JSON.stringify(error)}
+        </div>
+      )
+    }
+    finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleCreateUser = async (values: z.infer<typeof formSchemaFive>) => {
+      if (isLoading) return 
+      setIsLoading(true)
+      const data = {
+        nom: `${values.nom} ${values.prenom}`,
+        email: values.email.trim(),
+        role_id: 4, // Assuming 'viewer' role is 4
+        password: values.password.trim(),
+        statut: 0,
+      }
+      try {
+        const response: any = await apiClient.post(`/api/administrateurs`, data);
+        if (response.infos.id ) {
+          toast.success('Utilisateur modifié avec succès');
+        }
+        else  {
+          toast.error(
+            <div className='p-3 bg-red-500 text-white rounded-md'>
+              Une erreur est survenue lors de la mise à jour de l'utilisateur
+            </div>
+          )
+        }
+      }
+      catch (error: any) {
+        setIsLoading(false)
+        toast.error(
+          <div className='p-3 bg-red-500 text-white rounded-md'>
+            Erreur lors de la mise à jour de l'utilisateur {JSON.stringify(error.message)}
+          </div>
+        )
+      }
+      finally {
+        setIsLoading(false)
+        formFive.reset();
+        setStep(1);
+      }
   }
 
   return (
@@ -211,10 +356,9 @@ export const ConnexionPage = (): JSX.Element => {
 
                           {/* Return to homepage link */}
                         <div className="mt-10 text-center">  
-                          <Link href="/"
-                            className="text-gray text-sm underline">
-                            Retour à la page d&apos;accueil
-                          </Link>
+                          <Button onClick={() => setStep(5)} variant={'link'} type="button" className="p-0 text-sm text-black underline">
+                            Créer un compte
+                          </Button>
                         </div>
                       </div>
                     </div>
@@ -261,6 +405,7 @@ export const ConnexionPage = (): JSX.Element => {
 
                       <div className="w-full">
                         <Button type="submit" className="w-full h-[50px] bg-blue rounded-[13px] text-base font-bold">
+                        { isLoading && <Loader className="w-5 h-5 mr-2" /> }
                           Suivant
                         </Button>
 
@@ -283,7 +428,7 @@ export const ConnexionPage = (): JSX.Element => {
                 <div className="flex flex-col justify-center items-center space-y-4">
                   <h1 className="font-bold text-3xl text-blue">Mot de passe oublié</h1>
                   <div>
-                    <p className="text-gray text-center">Un code de vérification a été envoyé à votre adresse <span className="font-semibold text-blue">xxxxx@gmail.com</span></p>
+                    <p className="text-gray text-center">Un code de vérification a été envoyé à votre adresse <span className="font-semibold text-blue">{formTwo.getValues('email')}</span></p>
                   </div>
                 </div>
                 <Form {...formThree}>
@@ -298,12 +443,12 @@ export const ConnexionPage = (): JSX.Element => {
                             name="codeotp"
                             render={({ field }) => (
                               <FormItem className="w-full">
-                                <FormLabel>Entrez le code à 4 chiffres</FormLabel>
+                                <FormLabel>Entrez le code à 6 caractères</FormLabel>
                                 <FormControl>
                                   <Input
                                     id="opt"
                                     {...field}
-                                    type="number"
+                                    type="text"
                                     className="h-12 rounded-[13px] px-3 py-3.5 border border-neutral-200 self-stretch w-full"
                                     placeholder="Entrez votre code OTP"
                                   />
@@ -317,6 +462,7 @@ export const ConnexionPage = (): JSX.Element => {
 
                       <div className="w-full">
                         <Button type="submit" className="w-full h-[50px] bg-blue rounded-[13px] text-base font-bold">
+                          { isLoading && <Loader className="w-5 h-5 mr-2" /> }
                           Suivant
                         </Button>
 
@@ -387,7 +533,7 @@ export const ConnexionPage = (): JSX.Element => {
                                 <FormControl>
                                   <div className="relative w-full">
                                     <Input
-                                      id="password"
+                                      id="confirmPassword"
                                       {...field}
                                       type={showPassword ? 'text': 'password'}
                                       className="h-12 rounded-[13px] px-3 py-3.5 border border-neutral-200 self-stretch w-full"
@@ -413,6 +559,145 @@ export const ConnexionPage = (): JSX.Element => {
                         <Button type="submit" className="w-full h-[50px] bg-blue rounded-[13px] text-base font-bold">
                           { isLoading && <Loader className="w-5 h-5 mr-2" /> }
                           Changer mot de passe
+                        </Button>
+
+                          {/* Return to homepage link */}
+                        <div className="mt-10 text-center">  
+                          <Link href="/"
+                            className="text-gray text-sm underline">
+                            Retour à la page d&apos;accueil
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </Form>
+              </>
+            }
+
+            {/** Register a new user */}
+            {
+              ( step === 5) &&
+              <>
+                {/* Notice box */}
+                <Card className="w-full bg-[#f2f2f9] rounded-xl">
+                  <CardContent className="px-2 md:px-[15px] py-2.5">
+                    <p className="font-body-3 text-blue text-center">
+                      Cette espace est reservé uniquement aux membres du
+                      diocèse de Moncton
+                    </p>
+                  </CardContent>
+                </Card>
+                <Form {...formFive}>
+                  <form onSubmit={formFive.handleSubmit(handleCreateUser)} className="space-y-4">
+                    {/* Form fields */}
+                    <div className="flex flex-col items-start gap-10 relative self-stretch w-full">
+                      <div className="flex flex-col items-start gap-4 relative self-stretch w-full">
+                        <div className="flex flex-col items-start gap-4 relative self-stretch w-full">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                            {/* First name field */}
+                            <FormField
+                              control={formFive.control}
+                              name="nom"
+                              render={({ field }) => (
+                                <FormItem className="w-full">
+                                  <FormLabel>Nom</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      id="nom"
+                                      {...field}
+                                      type="text"
+                                      className="h-12 rounded-[13px] px-3 py-3.5 border border-neutral-200 self-stretch w-full"
+                                      placeholder="Entrez votre nom"
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            {/* Last name field */}
+                            <FormField
+                              control={formFive.control}
+                              name="prenom"
+                              render={({ field }) => (
+                                <FormItem className="w-full">
+                                  <FormLabel>Prénom</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      id="prenom"
+                                      {...field}
+                                      type="text"
+                                      className="h-12 rounded-[13px] px-3 py-3.5 border border-neutral-200 self-stretch w-full"
+                                      placeholder="Entrez votre prénom"
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+
+                          {/* Email field */}
+                          <FormField
+                            control={formFive.control}
+                            name="email"
+                            render={({ field }) => (
+                              <FormItem className="w-full">
+                                <FormLabel>Email</FormLabel>
+                                <FormControl>
+                                  <Input
+                                    id="email"
+                                    {...field}
+                                    type="email"
+                                    className="h-12 rounded-[13px] px-3 py-3.5 border border-neutral-200 self-stretch w-full"
+                                    placeholder="Entrez votre email"
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          {/* Password field */}
+                          <FormField
+                            control={formFive.control}
+                            name="password"
+                            render={({ field }) => (
+                              <FormItem className="w-full">
+                                <FormLabel>Mot de passe</FormLabel>
+                                <FormControl>
+                                  <div className="relative w-full">
+                                    <Input
+                                      id="password"
+                                      {...field}
+                                      type={showPassword ? 'text': 'password'}
+                                      className="h-12 rounded-[13px] px-3 py-3.5 border border-neutral-200 self-stretch w-full"
+                                      placeholder="Entrez votre mot de passe"
+                                    />
+                                    {
+                                      showPassword ?
+                                      <EyeClosed onClick={() => setShowPassword(prev => !prev) } className="absolute w-5 h-5 top-3.5 right-3.5 text-gray-400 cursor-pointer" /> :
+                                      <EyeIcon onClick={() => setShowPassword(prev => !prev) } className="absolute w-5 h-5 top-3.5 right-3.5 text-gray-400 cursor-pointer" /> 
+                                    }
+                                  </div>
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                        </div>
+
+                        <Button onClick={() => setStep(1)} variant={'link'} type="button" className="p-0 text-sm text-black underline">
+                          Se connecter ?
+                        </Button>
+                      </div>
+
+                      <div className="w-full">
+                        {/* Login button */}
+                        <Button type="submit" className="w-full h-[50px] bg-blue rounded-[13px] text-base font-bold">
+                          { isLoading && <Loader className="w-5 h-5 mr-2" /> }
+                          Créer un compte
                         </Button>
 
                           {/* Return to homepage link */}

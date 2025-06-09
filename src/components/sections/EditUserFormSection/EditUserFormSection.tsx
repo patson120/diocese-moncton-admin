@@ -57,9 +57,9 @@ export const EditUserFormSection = ({user}: { user: User}): JSX.Element => {
       nom: values.nom,
       email: values.email,
       role_id: roles.find((role: any) => role.sigle === values.role)?.id,
-      password: '1234',
+      password: '0000',
       statut: values.statut === 'actif' ? 1 : 0,
-    };
+    }
     try {
       const response: any = await apiClient.put(`/api/administrateurs/${user.id}`, data);
       if (response.id ) {
@@ -81,7 +81,7 @@ export const EditUserFormSection = ({user}: { user: User}): JSX.Element => {
       setIsLoading(false)
       toast.error(
         <div className='p-3 bg-red-500 text-white rounded-md'>
-          Erreur lors de la mise à jour de l'utilisateur {JSON.stringify(error)}
+          Erreur lors de la mise à jour de l'utilisateur {JSON.stringify(error.message)}
         </div>
       )
     }

@@ -30,8 +30,8 @@ api.interceptors.request.use(async (config) => {
         // }
 
         // Add token to all request except login route
-        if (!config.url?.includes("login")){
-            config.headers['Authorization'] = `Bearer ${userJson?.token}`;
+        if (!config.url?.includes("auth") && !config.url?.endsWith("/api/administrateurs") ) {
+           config.headers['Authorization'] = `Bearer ${userJson?.token}`;
         }
         return config;
     } catch (error) {

@@ -61,7 +61,7 @@ export const AddUserFormSection = (): JSX.Element => {
     };
     try {
       const response: any = await apiClient.post("/api/administrateurs", data);
-      if (response.id ) {
+      if (response.infos.id ) {
         toast.success('Utilisateur ajouté avec succès');
         setTimeout(() => {
           window.location.reload();
@@ -80,7 +80,7 @@ export const AddUserFormSection = (): JSX.Element => {
       setIsLoading(false)
       toast.error(
         <div className='p-3 bg-red-500 text-white rounded-md'>
-          Erreur lors de l'ajout de l'utilisateur {JSON.stringify(error)}
+          Erreur lors de l'ajout de l'utilisateur {JSON.stringify(error.message)}
         </div>
       )
     }
