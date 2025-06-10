@@ -25,16 +25,16 @@ export function PreviewPanel({ page }: PreviewPanelProps) {
   const sortedComponents = [...page.components].sort((a, b) => a.order - b.order);
   
   const renderComponent = (component: Component) => {
-    const props = { ...component.props, deviceView }
+    const props = { ...component.props, deviceView: 'desktop' as const }
     switch (component.type) {
       case 'hero':
-        return <HeroComponent {...props} />;
+        return <HeroComponent title='' subtitle='' {...props} />;
       case 'feature':
-        return <FeatureComponent {...props} />;
+        return <FeatureComponent title='' description='' features={[]} {...props} />;
       case 'text':
-        return <TextComponent {...props} />;
+        return <TextComponent content='' {...props} />;
       case 'image':
-        return <ImageComponent {...props} />;
+        return <ImageComponent alt='' src='' {...props} />;
         
       default:
         return (
