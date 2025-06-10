@@ -15,7 +15,7 @@ export function TextComponent({
   marginTop = 0,
   marginBottom = 0,
   backgroundColor,
-  deviceView  = 'desktop'
+  deviceView
 }: TextComponentProps) {
   const alignmentClasses = {
     left: 'text-left',

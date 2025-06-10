@@ -60,11 +60,11 @@ export function BuilderCanvas({
         case 'feature':
           return <FeatureComponent title="" description="" features={[]} {...props} />;
         case 'text':
-          return <TextComponent {...props} />;
+          return <TextComponent content="" {...props} />;
         case 'image':
-          return <ImageComponent {...props} />;
+          return <ImageComponent src="" alt="" {...props} />;
       case 'columns':
-        return <ColumnsComponent {...props} />;
+        return <ColumnsComponent title="" description="" features={[]} {...props} />;
       default:
         const definition = getComponentDefinitionByType(component.type);
         return (

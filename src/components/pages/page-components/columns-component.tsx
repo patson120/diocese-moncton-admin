@@ -12,6 +12,7 @@ interface ColumnsComponentProps {
     title: string;
     description: string;
     features: Column[];
+    columns?: number;
     marginTop?: number;
     marginBottom?: number;
     backgroundColor?: string;
@@ -23,6 +24,7 @@ export default function ColumnsComponent({
     description,
     features,
     marginTop = 0,
+    columns = 2,
     marginBottom = 0,
     backgroundColor,
     deviceView = 'desktop',
