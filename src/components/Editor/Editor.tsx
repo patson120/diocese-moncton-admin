@@ -1,30 +1,27 @@
 "use client"
 
+import Highlight from '@tiptap/extension-highlight';
 import Image from '@tiptap/extension-image';
+import Link from '@tiptap/extension-link';
+import Placeholder from '@tiptap/extension-placeholder';
+import TextAlign from '@tiptap/extension-text-align';
+import Underline from '@tiptap/extension-underline';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import {
+  AlignCenter,
+  AlignLeft,
+  AlignRight,
   Bold,
   Italic,
-  Underline as UnderlineIcon,
-  Strikethrough,
-  AlignLeft,
-  AlignCenter,
-  AlignRight,
+  Link as LinkIcon,
   List,
   ListOrdered,
-  Link as LinkIcon,
-  Image as ImageIcon,
-  Type,
+  Strikethrough,
+  Underline as UnderlineIcon
 } from 'lucide-react';
 import { Button } from '../ui/button';
-import Underline from '@tiptap/extension-underline';
-import Link from '@tiptap/extension-link';
-import TextAlign from '@tiptap/extension-text-align';
-import Placeholder from '@tiptap/extension-placeholder';
-import Highlight from '@tiptap/extension-highlight';
 import { Separator } from '../ui/separator';
-import { ImageDialog } from '../test/editor/image-dialog';
 
 const MenuBar = ({ editor }: { editor: any }) => {
   if (!editor) {
@@ -212,7 +209,7 @@ export const Editor = ({ value, onChange, className }: RichTextEditorProps) => {
     },
     editorProps: {
       attributes: {
-        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[100px] p-4',
+        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-lg min-w-full focus:outline-none min-h-[100px] p-4',
       },
     },
   });
@@ -222,6 +219,5 @@ export const Editor = ({ value, onChange, className }: RichTextEditorProps) => {
       <MenuBar editor={editor} />
       <EditorContent editor={editor} />
     </div>
-    // <div dangerouslySetInnerHTML={{ __html: editor?.getHTML()! }}></div> 
   );
 };

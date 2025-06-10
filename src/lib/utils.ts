@@ -33,7 +33,7 @@ export const handleImageUpload = (file: File): Promise<string> => {
 };
 
 export const copyToClipboard = (text: string) => {
-  navigator.clipboard.writeText(text).then(() => {
+  navigator?.clipboard?.writeText(text).then(() => {
     toast.info("Texte copié dans le presse-papier !");
   }).catch((error) => {
     toast.error("Erreur lors de la copie dans le presse-papier :", error);

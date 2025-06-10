@@ -6,7 +6,7 @@ import { Loader } from '@/components/ui/loader'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { apiClient } from '@/lib/axios'
-import { createMessage } from '@/lib/data'
+import { copyToClipboard } from '@/lib/utils'
 import { TabsContent } from '@radix-ui/react-tabs'
 import { ArrowLeft, CopyIcon, ExternalLinkIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -14,6 +14,7 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 
 export default function CreateMessage() {
+  const [section, setSection] = useState<'french' | 'english'>('french');
 
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
@@ -122,17 +123,17 @@ export default function CreateMessage() {
               <TabsList className="flex justify-start w-full h-auto bg-[#f8f8f8] rounded-[0px_12px_0px_0px] p-0">
                 <TabsTrigger
                   value="french"
-                  className="flex items-center gap-2 p-3 data-[state=active]:bg-noir-dashboard data-[state=active]:text-white data-[state=inactive]:bg-white rounded-[12px_12px_0px_0px]"
-                >
+                  onClick={() => setSection('french')}
+                  className="flex items-center gap-2 p-3 data-[state=active]:bg-noir-dashboard data-[state=active]:text-white data-[state=inactive]:bg-white rounded-[12px_12px_0px_0px]">
                   <div className="relative w-3.5 h-3.5 rounded-[7px] border border-solid border-current">
                     {/* Filled circle for active tab */}
                     <div className="data-[state=active]:block hidden relative w-2.5 h-2.5 top-px left-px bg-current rounded-[4.9px]" />
                   </div>
                   <span className="font-body-3 text-sm">Version française</span>
                 </TabsTrigger>
-
                 <TabsTrigger
                   value="english"
+                  onClick={() => setSection('english')}
                   className="flex items-center gap-2 p-3 data-[state=active]:bg-noir-dashboard data-[state=active]:text-white data-[state=inactive]:bg-white rounded-[12px_12px_0px_0px]">
                   <div className="relative w-3.5 h-3.5 rounded-[7px] border border-solid border-current" />
                   <span className="font-body-3 text-sm">Version anglaise</span>
@@ -162,7 +163,7 @@ export default function CreateMessage() {
                 value="english"
                 className="mt-6 p-0 border-none">
                 <div className="flex flex-col p-10 items-start gap-6">
-                  <div className='w-full z-0'>
+                  <div className='w-full z-0 h-48 overflow-y-scroll'>
                     <label htmlFor="titre" className='text-lg text-gray font-semibold mb-2'>Title</label>
                     <Editor
                       value={title.english}
@@ -183,23 +184,33 @@ export default function CreateMessage() {
           </div>
         </div>
       </div>
+      
       {/* Floating action buttons */}
       <div className="flex flex-col w-[244px] items-start gap-2 fixed bottom-[62px] right-[38px]">
-        <Card className="shadow-[0px_4px_12px_#0000001a] rounded-lg">
+        <Card onClick={() => copyToClipboard(section == 'french' ? title.french : title.english)} className="shadow-[0px_4px_12px_#0000001a] rounded-lg cursor-pointer">
           <CardContent className="flex items-start gap-1 p-3">
             <CopyIcon className="w-5 h-5" />
             <span className="font-body-3 text-noir-dashboard text-sm">
-              Copier tout le texte
+              Copier le titre
             </span>
           </CardContent>
         </Card>
-
+        <Card onClick={() => copyToClipboard(section == 'french' ? content.french : content.english)} className="shadow-[0px_4px_12px_#0000001a] rounded-lg cursor-pointer">
+          <CardContent className="flex items-start gap-1 p-3">
+            <CopyIcon className="w-5 h-5" />
+            <span className="font-body-3 text-noir-dashboard text-sm">
+              Copier le contenu
+            </span>
+          </CardContent>
+        </Card>
         <Card className="shadow-[0px_4px_12px_#0000001a] rounded-lg w-full">
           <CardContent className="flex items-start gap-1 p-3">
             <ExternalLinkIcon className="w-5 h-5" />
-            <span className="font-body-3 text-noir-dashboard text-sm">
-              Traduire le texte sur Deepl
-            </span>
+            <a className='no-underline' href='https://www.deepl.com/fr/translator' target='_blank' >
+              <span className="font-body-3 text-noir-dashboard text-sm">
+                Traduire le texte sur Deepl
+              </span>
+            </a>
           </CardContent>
         </Card>
       </div>
