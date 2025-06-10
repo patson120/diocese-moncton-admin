@@ -1,8 +1,9 @@
 import { PageBuilder } from '@/components/pages/page-builder/page-builder';
 
-export default function BuilderPage({ params }: { params: { id: string } }) {
-  const id = params?.id! === 'new' ? 'new' : params.id;
-  
+export default async function BuilderPage(props: {
+  params: Promise<{ id: string }>,
+}) {
+  const { id } = await props.params;
   return <PageBuilder pageId={id} />;
 }
 
