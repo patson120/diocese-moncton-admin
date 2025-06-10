@@ -415,7 +415,7 @@ export default function ParishSection() {
                         <div className="flex flex-col gap-[34px]">
                             {/* Parish header with image and basic info */}
                             <section className="w-full flex items-center gap-6">
-                                <div className='relative shrink-0 w-[250px] h-[200px] overflow-hidden'>
+                                <div className='relative shrink-0 w-[250px] h-[200px] rounded-lg overflow-hidden'>
                                     <Image
                                         fill
                                         priority
