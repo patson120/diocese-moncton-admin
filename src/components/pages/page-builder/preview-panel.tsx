@@ -25,7 +25,7 @@ export function PreviewPanel({ page }: PreviewPanelProps) {
   const sortedComponents = [...page.components].sort((a, b) => a.order - b.order);
   
   const renderComponent = (component: Component) => {
-    const props = { ...component.props, deviceView: 'desktop' as const }
+    const props = { ...component.props, deviceView: deviceView  }
     switch (component.type) {
       case 'hero':
         return <HeroComponent title='' subtitle='' {...props} />;
