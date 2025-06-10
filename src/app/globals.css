@@ -300,7 +300,8 @@
 
 .device-frame-desktop {
   max-width: 100%;
-  height: 800px;
+   /* height: 800px;*/
+   @apply h-screen
 }
 
 /* Content editable elements */
