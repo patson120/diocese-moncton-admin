@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Un toit pour elles - Faites un don</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: auto;
+      font-family: math, Arial, sans-serif;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      font-family: math!important;
+    }
+
+    header {
+      background-color: #0b5539;
+      color: white;
+      padding: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .header-text {
+      max-width: 600px;
+    }
+
+    .header-text h1 {
+      margin: 0 0 1rem 0;
+      font-size: 2rem;
+    }
+
+    .header-text p {
+      margin: 0;
+    }
+
+    .header-images {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .header-images img {
+      border-radius: 12px;
+      width: 120px;
+      height: 160px;
+      object-fit: cover;
+    }
+
+    .content {
+      display: flex;
+      flex: 1;
+      background-color: #f4f4f4;
+      overflow: hidden;
+    }
+
+    .don-left {
+      flex: 1;
+      overflow-y: auto;
+      padding: 2rem;
+      background-color: white;
+    }
+
+    .don-left iframe {
+      border: none;
+      width: 100%;
+      height: 1200px;
+    }
+
+    .don-right {
+      flex: 1;
+      padding: 2rem;
+      background-color: #f9f9f9;
+      overflow-y: auto;
+    }
+
+    .don-right h2 {
+      margin-top: 0;
+    }
+
+    .info-box {
+      background-color: white;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    .info-box p {
+      margin: 0.5rem 0;
+    }
+
+    .footer-info {
+      font-size: 0.9rem;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <header>
+      <div class="header-text">
+        <h1>Un toit pour elles : Faites un don, changez une vie.</h1>
+        <p>Aidez-nous à financer la construction de logements abordables pour des femmes et mères monoparentales en situation précaire.</p>
+      </div>
+<!--       <div class="header-images">
+        <img src="img1.png" alt="Famille 1">
+        <img src="img2.png" alt="Famille 2">
+      </div> -->
+    </header>
+
+    <div class="content">
+      <div class="don-left">
+        <iframe title='Donation form powered by Zeffy'
+          src='https://www.zeffy.com/embed/donation-form/un-toit-pour-elles-faites-un-don-changez-une-vie'
+          allowpaymentrequest
+          allowTransparency="true">
+        </iframe>
+      </div>
+      <div class="don-right">
+        <h2>Ou donnez à votre manière.</h2>
+
+        <div class="info-box">
+          <p><strong>Transfert Électronique, Interac</strong><br>
+          Dépôt direct : <a href="mailto:donation@hforlife-hpourlavie.ca">donation@hforlife-hpourlavie.ca</a></p>
+        </div>
+
+        <div class="info-box">
+          <p><strong>Chèque à l’ordre de "Habitation pour la Vie, Inc."</strong><br>
+          Envoyer le chèque à cette adresse :<br>
+          305, avenue Dominion, Moncton, NB</p>
+        </div>
+
+        <div class="info-box">
+          <p><strong>Virement bancaire</strong><br>
+          Nom du compte : Habitation pour la Vie, Inc.<br>
+          Numéro IBAN : 75272 2818 RR0001</p>
+        </div>
+
+        <div class="info-box">
+          <p><strong>Dons en nature (matériaux, services professionnels)</strong><br>
+          Contactez-nous directement via cet adresse pour faire votre don :<br>
+          <a href="mailto:donation@hforlife-hpourlavie.ca">donation@hforlife-hpourlavie.ca</a></p>
+        </div>
+
+        <p class="footer-info">
+          Tous les dons sont déductibles d’impôts. Un reçu officiel vous sera envoyé.<br>
+          Numéro d’enregistrement de l’organisme : <strong>75272 2818 RR0001</strong>
+        </p>
+
+        <p class="footer-info">
+          Pour obtenir plus d’informations sur la façon dont vous pouvez faire un don, contactez :<br>
+          Secrétaire-trésorière : Aurea Cormier, tél : 5068540675<br>
+          Assistante Administrative : Rhada El Khiladi, tél : 5068540675
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
