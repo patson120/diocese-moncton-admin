@@ -404,13 +404,6 @@ export const ConnexionPage = (): JSX.Element => {
                           Suivant
                         </Button>
 
-                          {/* Return to homepage link */}
-                        <div className="mt-10 text-center">  
-                          <Link href="/"
-                            className="text-gray text-sm underline">
-                            Retour à la page d&apos;accueil
-                          </Link>
-                        </div>
                       </div>
                     </div>
                   </form>
@@ -463,9 +456,9 @@ export const ConnexionPage = (): JSX.Element => {
 
                         {/* Return to homepage link */}
                         <div className="mt-10 text-center">  
-                          <Link href="/"
+                          <Link href="/login"
                             className="text-gray text-sm underline">
-                            Retour à la page d&apos;accueil
+                            Se connecter ?
                           </Link>
                         </div>
                       </div>
@@ -546,7 +539,6 @@ export const ConnexionPage = (): JSX.Element => {
                             )}
                           />
                         </div>
-
                       </div>
 
                       <div className="w-full">
@@ -558,9 +550,9 @@ export const ConnexionPage = (): JSX.Element => {
 
                           {/* Return to homepage link */}
                         <div className="mt-10 text-center">  
-                          <Link href="/"
+                          <Link href="/login"
                             className="text-gray text-sm underline">
-                            Retour à la page d&apos;accueil
+                            Se connecter ?
                           </Link>
                         </div>
                       </div>
@@ -695,13 +687,6 @@ export const ConnexionPage = (): JSX.Element => {
                           Créer un compte
                         </Button>
 
-                          {/* Return to homepage link */}
-                        <div className="mt-10 text-center">  
-                          <Link href="/"
-                            className="text-gray text-sm underline">
-                            Retour à la page d&apos;accueil
-                          </Link>
-                        </div>
                       </div>
                     </div>
                   </form>
