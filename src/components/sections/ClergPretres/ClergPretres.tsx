@@ -104,7 +104,7 @@ export const ClergPretres = (): JSX.Element => {
               <ScrollArea className="w-full h-[calc(100vh-345px)] mt-6">
                 {/* Archevêque grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
-                  {members.map((member, index) => (
+                  { members.map((member, index) => (
                     <Card
                       onClick={() => {
                         setOpenModal(true)
@@ -576,7 +576,7 @@ export const ClergPretres = (): JSX.Element => {
                                 priority
                                 className="object-cover"
                                 alt="Vector"
-                                src="/clerge-1.png"
+                                src={ member.image ? `${process.env.NEXT_PUBLIC_API_URL}/${member.image}` : "/clerge-1.png"}
                               />
                             </div>
 
