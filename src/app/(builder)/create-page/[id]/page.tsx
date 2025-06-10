@@ -11,9 +11,3 @@ export default async function BuilderPage(props: {
 export async function generateStaticParams() {
   return [{ id: 'new' }];
 }
-
-// export default function page() {
-//   return (
-//     <div>page</div>
-//   )
-// }
