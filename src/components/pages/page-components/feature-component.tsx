@@ -26,7 +26,7 @@ export function FeatureComponent({
   marginBottom = 0,
   columns = 3,
   backgroundColor,
-  deviceView = 'desktop',
+  deviceView,
 }: FeatureComponentProps) {
   const style = {
     marginTop: `${marginTop}px`,

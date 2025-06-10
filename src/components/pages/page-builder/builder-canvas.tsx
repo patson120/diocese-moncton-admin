@@ -53,16 +53,16 @@ export function BuilderCanvas({
   };
   
   const renderComponent = (component: Component) => {
-    const props = {...component.props, deviceView: 'desktop' }
-    switch (component.type) {
-      case 'hero':
-        return <HeroComponent {...props} />;
-      case 'feature':
-        return <FeatureComponent {...props} />;
-      case 'text':
-        return <TextComponent {...props} />;
-      case 'image':
-        return <ImageComponent {...props} />;
+      const props = {...component.props, deviceView: 'desktop' as const}
+      switch (component.type) {
+        case 'hero':
+          return <HeroComponent title="" subtitle="" {...props} />;
+        case 'feature':
+          return <FeatureComponent title="" description="" features={[]} {...props} />;
+        case 'text':
+          return <TextComponent {...props} />;
+        case 'image':
+          return <ImageComponent {...props} />;
       case 'columns':
         return <ColumnsComponent {...props} />;
       default:

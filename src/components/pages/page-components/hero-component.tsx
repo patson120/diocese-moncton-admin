@@ -10,7 +10,7 @@ interface HeroComponentProps {
   marginTop?: number;
   marginBottom?: number;
   backgroundColor?: string;
-  deviceView?: string;
+  deviceView?: DeviceType;
 }
 
 export function HeroComponent({
@@ -23,7 +23,7 @@ export function HeroComponent({
   marginTop = 0,
   marginBottom = 0,
   backgroundColor,
-  deviceView = 'desktop'
+  deviceView
 }: HeroComponentProps) {
   const alignmentClasses = {
     left: 'text-left items-start',
