@@ -18,6 +18,7 @@ import { Member } from "../../../app/types";
 import AddMemberFormSection from "./AddMemberFormSection";
 import EditMemberFormSection from "./EditMemberFormSection";
 import SearchInput from "./SearchInput";
+import Text from "@/components/shared/Text";
 
 export const ClergPretres = (): JSX.Element => {
 
@@ -817,9 +818,9 @@ export const ClergPretres = (): JSX.Element => {
               </div>
               <div>
                 <h1 className="text-blue text-lg font-bold">Biographie</h1>
-                <p className="text-gray mt-2">
-                  {selectedMember?.description_fr}
-                </p>
+                <div className="mt-2">
+                  <Text className='text-gray' labelEn={selectedMember?.description_en} labelFr={selectedMember?.description_fr}  />
+                </div>
               </div>
             </div>
           </ScrollArea>
