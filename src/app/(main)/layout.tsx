@@ -31,7 +31,7 @@ export default function RootLayout({
             <Sidebar />
             <main className="flex-1 transition-all duration-300 bg-[#f0f0f4]">
               <HeaderSection />
-              <div className="h-[calc(100%-64px)] min-w-full overflow-y-scroll">
+              <div className="h-[calc(100%-64px)] min-w-full overflow-y-scroll [&::-webkit-scrollbar]:w-0">
                 {children}
               </div>
             </main>
