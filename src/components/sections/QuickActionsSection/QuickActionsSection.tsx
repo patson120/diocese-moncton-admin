@@ -7,10 +7,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { apiClient } from "@/lib/axios";
 import { formatDateToLocal } from "@/lib/utils";
 import { BookOpenText, Calendar1, CalendarPlus, Layers, MapPin } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { JSX, useEffect, useState } from "react";
 import { Event } from "../../../app/types";
+import Link from "next/link";
 
 const QuickActionsSection = (): JSX.Element => {
 
@@ -29,9 +29,8 @@ const QuickActionsSection = (): JSX.Element => {
   return (
     <div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 my-5">
-        <Link href={'/message'} >
-          <Card
-            className="bg-white rounded-xl shadow-none p-0">
+        <Card className="bg-white rounded-xl shadow-none p-0">
+          <Link href={'/message'} >
             <CardContent className="flex px-4 py-4 justify-stretch items-center">
               <div className="flex items-center gap-3">
                 {/* Icon placeholder */}
@@ -48,8 +47,8 @@ const QuickActionsSection = (): JSX.Element => {
                 </div>
               </div>
             </CardContent>
-          </Card>
-        </Link>
+          </Link>
+        </Card>
         <Card
           className="bg-white rounded-xl shadow-none p-0">
           <CardContent className="flex px-4 py-4 justify-stretch items-center">
@@ -74,28 +73,29 @@ const QuickActionsSection = (): JSX.Element => {
         </Card>
         <Card
           className="bg-white rounded-xl shadow-none p-0">
-          <CardContent className="flex px-4 py-4 justify-stretch items-center">
-            <div className="flex items-center gap-3">
-              {/* Icon placeholder */}
-              <div className="w-12 h-12 shrink-0 bg-green-light rounded-xl flex justify-center items-center">
-                <Layers className="h-6 w-6" />
+          <Link href={'/create-page/new'} >
+            <CardContent className="flex px-4 py-4 justify-stretch items-center">
+              <div className="flex items-center gap-3">
+                {/* Icon placeholder */}
+                <div className="w-12 h-12 shrink-0 bg-green-light rounded-xl flex justify-center items-center">
+                  <Layers className="h-6 w-6" />
+                </div>
+                <div className="flex flex-col items-start gap-1">
+                  <p className="font-semibold text-noir-dashboard leading-[25px] line-clamp-1">
+                    Créer une page
+                  </p>
+                  <p className="font-legend -mt-1 font-[number:var(--legend-font-weight)] text-gray text-xs tracking-[var(--legend-letter-spacing)] leading-[var(--legend-line-height)] [font-style:var(--legend-font-style)] line-clamp-1">
+                    Créer une nouvelle page pour le site
+                  </p>
+                </div>
               </div>
-              <div className="flex flex-col items-start gap-1">
-                <p className="font-semibold text-noir-dashboard leading-[25px] line-clamp-1">
-                  Créer une page
-                </p>
-                <p className="font-legend -mt-1 font-[number:var(--legend-font-weight)] text-gray text-xs tracking-[var(--legend-letter-spacing)] leading-[var(--legend-line-height)] [font-style:var(--legend-font-style)] line-clamp-1">
-                  Créer une nouvelle page pour le site
-                </p>
-              </div>
-            </div>
-          </CardContent>
+            </CardContent>
+          </Link>
         </Card>
       </div>
 
       <Card className="w-full rounded-2xl bg-white shadow-none">
         <CardContent className="p-4 lg:p-7 flex flex-col gap-4">
-
           <div className="flex items-center justify-between w-full">
             <div>
               <h2 className="font-heading-5 font-[number:var(--heading-5-font-weight)] text-blue text-[length:var(--heading-5-font-size)] tracking-[var(--heading-5-letter-spacing)] leading-[var(--heading-5-line-height)]">
