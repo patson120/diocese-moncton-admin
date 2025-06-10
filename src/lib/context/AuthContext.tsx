@@ -52,6 +52,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const response: any = await apiClient.post('/api/auth/login', formdata, {
         'Content-Type': 'multipart/form-data'
       });
+      
       if(response.id){
         loggedInUser = response as User
         setUser(loggedInUser);
@@ -62,8 +63,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       toast.error('Identifiants invalides');
       return null;
-    } catch (error: any) {
-      toast.error(`Erreur lors de la connexion: Vérifiez vos identifiants puis reessayer`);
+    } catch (error: any) {      
+      if (error?.response?.data?.message){
+        toast.error(`${error?.response?.data?.message}`);
+      }
+      else {
+        toast.error(`Erreur lors de la connexion: Vérifiez vos identifiants puis reessayer`);
+      }
       return null;
     }
   };
