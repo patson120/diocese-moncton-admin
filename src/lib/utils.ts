@@ -12,7 +12,7 @@ export const formatDateToLocal = (
   locale: string = 'fr-FR',
   pattern: "numeric" | "2-digit" | "long" | "short" | "narrow" = "short",
 ) => {
-  const date = new Date(dateStr);
+  const date = new Date(dateStr.replace(".000Z", ''));
   const options: Intl.DateTimeFormatOptions = {
       day: 'numeric',
       month: pattern,

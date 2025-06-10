@@ -78,11 +78,8 @@ export function CalendarGrid({
 
   const getDayEvents = (date: Date) => {
     return events.filter(event => {
-      // let start = new Date(`${event.date_event!}T00:00:00.000Z`);
-      // const end = new Date(`${event.date_event!}T13:59:59.000Z`);
-      let start = new Date(event.date_event);
-      const end = new Date(event.date_event);
-      start.setDate(start.getDate() - 1)
+      let start = new Date(`${event.date_event!}T00:00:00`);
+      let end = new Date(`${event.date_event!}T23:59:59`);
       return isWithinInterval(date, { start, end });
     });
   };
@@ -105,6 +102,7 @@ export function CalendarGrid({
                 const eventDate = new Date(`${event.date_event}T${event.heure_event}`);
                 return isSameDay(eventDate, currentDate) && getHours(eventDate) === hour;
               });
+              
 
               return (
                 <div key={hour} className="min-h-[60px] grid grid-cols-[80px_1fr] border-b">
@@ -185,7 +183,7 @@ export function CalendarGrid({
                           <div className="flex flex-col items-center">
                             <p className="w-full overflow-hidden truncate">
                               <span className="truncate text-base">{event.titre_fr}</span> <br />
-                              <span className="truncate text-base font-bold">{event.heure_event}</span>
+                              <span className="truncate text-base font-bold">{event.heure_event} </span>
                             </p>
                             {isMultiDayEvent(event) && (
                               <span className="text-xs opacity-75">{getEventDurationLabel(event)}</span>
@@ -217,60 +215,58 @@ export function CalendarGrid({
             {day}
           </div>
         ))}
-
         { 
           Array.from({length: (new Date(days[0])).getDay() - 1}).map((_, i) =>  (
             <div key={i} className="p-2 border transition-colors bg-[#f7f7f8]"></div>
           ))
         }
-
         {
           days.map((day) => {
-          const dayEvents = getDayEvents(day);
-          const holiday = isHoliday(day);
-          const holidayName = getHolidayName(day);
+            const dayEvents = getDayEvents(day);
+            const holiday = isHoliday(day);
+            const holidayName = getHolidayName(day);
 
-          return (
-            <div
-              key={day.toISOString()}
-              className={cn(
-                "min-h-[120px] p-2 border border-[#F1F3F6] transition-colors",
-                isToday(day) && "bg-teal-100/40 dark:bg-green-900/20",
-                !isSameMonth(day, currentDate) && "opacity-50",
-                holiday && "bg-red-50 dark:bg-red-900/20"
-              )}
-            >
-              <div className="font-medium flex items-center justify-between">
-                <span>{format(day, "d", { locale: fr })}</span>
-                {holiday && (
-                <span className="text-xs text-red-600 dark:text-red-400">
-                  {holidayName}
-                </span>
+            return (
+              <div
+                key={day.toISOString()}
+                className={cn(
+                  "min-h-[120px] p-2 border border-[#F1F3F6] transition-colors",
+                  isToday(day) && "bg-teal-100/40 dark:bg-green-900/20",
+                  !isSameMonth(day, currentDate) && "opacity-50",
+                  holiday && "bg-red-50 dark:bg-red-900/20"
                 )}
-              </div>
-              <div className="mt-1 space-y-1">
-                {dayEvents.map((event) => (
-                  <div
-                    key={event.id}
-                    className={cn("text-xs p-1.5 min-h-[80px]", getEventStyle(event))}
-                    onClick={() => handleEventClick(event)}
-                  >
-                    <div className="flex flex-col items-center">
-                      <p className="w-full overflow-hidden truncate">
-                        <span className="truncate text-base">{event.titre_fr}</span> <br />
-                        <span className="truncate text-base font-bold">{event.heure_event}</span>
-                      </p>
-                      {isMultiDayEvent(event) && (
-                        <span className="text-xs opacity-75 ml-1 shrink-0">
-                          {getEventDurationLabel(event)}
-                        </span>
-                      )}
+              >
+                <div className="font-medium flex items-center justify-between">
+                  <span>{format(day, "d", { locale: fr })}</span>
+                  {holiday && (
+                  <span className="text-xs text-red-600 dark:text-red-400">
+                    {holidayName}
+                  </span>
+                  )}
+                </div>
+                <div className="mt-1 space-y-1">
+                  {dayEvents.map((event) => (
+                    <div
+                      key={event.id}
+                      className={cn("text-xs p-1.5 min-h-[80px]", getEventStyle(event))}
+                      onClick={() => handleEventClick(event)}
+                    >
+                      <div className="flex flex-col items-center">
+                        <p className="w-full overflow-hidden truncate">
+                          <span className="truncate text-base">{event.titre_fr}</span> <br />
+                          <span className="truncate text-base font-bold">{event.heure_event}</span>
+                        </p>
+                        {isMultiDayEvent(event) && (
+                          <span className="text-xs opacity-75 ml-1 shrink-0">
+                            {getEventDurationLabel(event)}
+                          </span>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          );
+            );
         })}
       </div>   
       <EventDetailsDialog
