@@ -168,6 +168,7 @@ export default function EditMessageForm({message}: { message: Message }) {
                   </div>
                 </div>
               </TabsContent>
+              
               <TabsContent
                 value="english"
                 className="mt-6 p-0 border-none">
@@ -193,6 +194,8 @@ export default function EditMessageForm({message}: { message: Message }) {
           </div>
         </div>
       </div>
+
+
       {/* Floating action buttons */}
       <div className="flex flex-col w-[244px] items-start gap-2 fixed bottom-[62px] right-[38px]">
         <Card onClick={() => copyToClipboard(section == 'french' ? title.french : title.english)} className="shadow-[0px_4px_12px_#0000001a] rounded-lg cursor-pointer">
