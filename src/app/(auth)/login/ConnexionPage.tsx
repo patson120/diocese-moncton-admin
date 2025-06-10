@@ -12,7 +12,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeClosed, EyeIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { JSX, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -23,6 +22,7 @@ const formSchemaOne = z.object({
   password: z.string().min(1, "Le mot de passe est requis"),
   email: z.string().email("L'adresse email n'est pas valide"),
 });
+
 const formSchemaTwo = z.object({
   email: z.string().email("L'adresse email n'est pas valide"),
 });
@@ -30,6 +30,7 @@ const formSchemaTwo = z.object({
 const formSchemaThree = z.object({
   codeotp: z.string().length(6, 'Code OTP invalide'),
 });
+
 const formSchemaFour = z.object({
   password: z.string().min(1, "Le nouveau mot de passe est requis"),
   confirmPassword: z.string().min(1, "Confirmez le nouveau mot de passe"),
@@ -48,7 +49,6 @@ export const ConnexionPage = (): JSX.Element => {
   const [step, setStep] = useState(1)
   const [error, setError] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  const router =  useRouter() 
   const { login } = useAuth()
 
   const formOne = useForm<z.infer<typeof formSchemaOne>>({
@@ -58,12 +58,14 @@ export const ConnexionPage = (): JSX.Element => {
       password: "",
     },
   });
+
   const formTwo = useForm<z.infer<typeof formSchemaTwo>>({
     resolver: zodResolver(formSchemaTwo),
     defaultValues: {
       email: "",  
     },
   });
+
   const formThree = useForm<z.infer<typeof formSchemaThree>>({
     resolver: zodResolver(formSchemaThree),
     defaultValues: {
@@ -122,8 +124,6 @@ export const ConnexionPage = (): JSX.Element => {
       const response: any = await apiClient.post('/api/auth/checkemail', formdata, {
         'Content-Type': 'multipart/form-data'
       });
-      console.log(response);
-      
       setStep(3)
     } catch (error: any) {
       console.log(error);
@@ -147,10 +147,7 @@ export const ConnexionPage = (): JSX.Element => {
       const response: any = await apiClient.post('/api/auth/verif_code', formdata, {
         'Content-Type': 'multipart/form-data'
       });
-      if (response.id){
-        setUser(response);
-        console.log(response);
-      }
+      if (response.id){ setUser(response)}
       setStep(4)
     } catch (error: any) {
       toast.warning(
@@ -159,9 +156,7 @@ export const ConnexionPage = (): JSX.Element => {
         </div>
       )
     }
-    finally{
-      setIsLoading(false)
-    }
+    finally{ setIsLoading(false) }
   }
 
   const handleForgotPassword = async (values: z.infer<typeof formSchemaTwo>) => {
