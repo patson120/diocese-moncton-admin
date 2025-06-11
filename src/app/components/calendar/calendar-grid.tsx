@@ -8,6 +8,7 @@ import {
   endOfMonth,
   endOfWeek,
   format,
+  getDate,
   getDay,
   getHours,
   isSameDay,
@@ -208,13 +209,12 @@ export function CalendarGrid({
     )
   }
 
-  const EmptyBoxes = () => {
+  const EmptyBox = () => {
     const valsOfDay = [1, 2, 3, 4, 5, 6, 0]
     const index = valsOfDay.findIndex(v => v === getDay(days[0]))
-    return valsOfDay.map((_, i) => {
-      if (i === index) return 
-      return (<div key={i} className="p-2 border transition-colors bg-[#f7f7f8]"></div>)
-    })
+    return valsOfDay.slice(0, index).map((_, i) =>(
+      <div key={i} className="p-2 border transition-colors bg-[#f7f7f8]"></div>
+    ))
   }
   
   return (
@@ -225,7 +225,7 @@ export function CalendarGrid({
             {day}
           </div>
         ))}
-        { EmptyBoxes() }
+        { EmptyBox() }
         {
           days.map((day) => {
             const dayEvents = getDayEvents(day);
@@ -240,8 +240,7 @@ export function CalendarGrid({
                   isToday(day) && "bg-teal-100/40 dark:bg-green-900/20",
                   !isSameMonth(day, currentDate) && "opacity-50",
                   holiday && "bg-red-50 dark:bg-red-900/20"
-                )}
-              >
+                )}>
                 <div className="font-medium flex items-center justify-between">
                   <span>{format(day, "d", { locale: fr })}</span>
                   {holiday && (
