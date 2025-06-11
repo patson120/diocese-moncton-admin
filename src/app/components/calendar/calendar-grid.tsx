@@ -8,6 +8,7 @@ import {
   endOfMonth,
   endOfWeek,
   format,
+  getDay,
   getHours,
   isSameDay,
   isSameMonth,
@@ -17,7 +18,7 @@ import {
   setHours,
   setMinutes,
   startOfMonth,
-  startOfWeek
+  startOfWeek,
 } from "date-fns";
 import { fr } from "date-fns/locale";
 import React, { useState } from "react";
@@ -41,7 +42,7 @@ export function CalendarGrid({
   const days = (() => {
     if (view === "month") {
       const start = startOfMonth(currentDate);
-      const end = endOfMonth(currentDate);
+      const end = endOfMonth(currentDate);      
       return eachDayOfInterval({ start, end });
     } else if (view === "week") {
       const start = startOfWeek(currentDate, { weekStartsOn: 1 });
@@ -207,6 +208,15 @@ export function CalendarGrid({
     )
   }
 
+  const EmptyBoxes = () => {
+    const valsOfDay = [1, 2, 3, 4, 5, 6, 0]
+    const index = valsOfDay.findIndex(v => v === getDay(days[0]))
+    return valsOfDay.map((_, i) => {
+      if (i === index) return 
+      return (<div key={i} className="p-2 border transition-colors bg-[#f7f7f8]"></div>)
+    })
+  }
+  
   return (
     <>
       <div className="grid grid-cols-7">
@@ -215,11 +225,7 @@ export function CalendarGrid({
             {day}
           </div>
         ))}
-        { 
-          Array.from({length: (new Date(days[0])).getDay() - 1}).map((_, i) =>  (
-            <div key={i} className="p-2 border transition-colors bg-[#f7f7f8]"></div>
-          ))
-        }
+        { EmptyBoxes() }
         {
           days.map((day) => {
             const dayEvents = getDayEvents(day);
