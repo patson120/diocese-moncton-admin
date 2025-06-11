@@ -167,10 +167,14 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
   }
 
   const onSubmitFive = async (values: z.infer<typeof formSchemaFive>) => {
+    if (formFive.getValues("jour") && formFive.getValues("selectedHours").length  ){
+      handleValidateHours()
+    }
     setStep(6)
   }
 
-  const handleValidateHours = () => {
+  const 
+  handleValidateHours = () => {
     const selectedHours = formFive.getValues("selectedHours");
     const selectedDay = formFive.getValues("jour");
 
@@ -273,7 +277,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
   const editHoraire = (index: number) => {
     formFive.setValue("jour", horaires[index].jour);
     formFive.setValue("selectedHours", [ ...horaires[index].heures[0].split(";") ])
-    setHoraires(prev =>(prev.filter(horaire => horaire.jour !== horaires[index].jour)))
+    // setHoraires(prev =>(prev.filter(horaire => horaire.jour !== horaires[index].jour)))
   }
 
   return (
@@ -598,21 +602,32 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
                   render={({ field }) => (
                     <FormItem>
                       <div className="flex flex-col space-y-2">
-                        <FormLabel>Jour de messe</FormLabel>
-                        <Select 
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}>
-                          <SelectTrigger className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200 text-[#454545]">
-                            <SelectValue placeholder="Sélectionnez un jour de messe" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {
-                              jours.map((jour) => (
-                                <SelectItem key={jour.value} value={jour.value}>{jour.label}</SelectItem>
-                              ))
-                            }
-                          </SelectContent>
-                        </Select>
+                        <FormLabel>Jour de messe </FormLabel>
+                        <select name="jour" id="jour" onChange={field.onChange} className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200 text-[#454545]">
+                          <option value="" disabled selected={false} >Sélectionnez un jour de messe</option>
+                          {
+                            jours.map((jour) => (
+                              <option selected={field.value===jour.value} key={jour.value} value={jour.value}>{jour.label}</option>
+                            ))
+                          }
+                        </select>
+                        {/** 
+                          <Select 
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
+                            <SelectTrigger className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200 text-[#454545]">
+                              <SelectValue placeholder="Sélectionnez un jour de messe" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {
+                                jours.map((jour) => (
+                                  <SelectItem key={jour.value} value={jour.value}>{jour.label}</SelectItem>
+                                ))
+                              }
+                            </SelectContent>
+                          </Select>
+                         */}
                       </div>
                       <FormMessage />
                     </FormItem>
