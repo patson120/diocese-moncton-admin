@@ -224,6 +224,16 @@ export default function EditMessageForm({message}: { message: Message }) {
             </a>
           </CardContent>
         </Card>
+        <Card className="shadow-[0px_4px_12px_#0000001a] rounded-lg w-full">
+          <CardContent className="flex items-start gap-1 p-3">
+            <ExternalLinkIcon className="w-5 h-5" />
+            <a className='no-underline' href={'https://www.scribens.fr/'} target='_blank' >
+              <span className="font-body-3 text-noir-dashboard text-sm">
+                Correction orthographique
+              </span>
+            </a>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )
