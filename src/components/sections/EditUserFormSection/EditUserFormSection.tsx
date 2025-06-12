@@ -21,7 +21,7 @@ import { User } from "../../../app/types";
 const formSchema = z.object({
   nom: z.string().min(1, "Le nom est requis"),
   email: z.string().email("L'adresse email n'est pas valide"),
-  role: z.enum(["admin", "moderateur", "editeur", "viewer"]),
+  role: z.enum(["admin", "moderateur", "editeur", "lecteur"]),
   statut: z.enum(["actif", "inactif"]),
 });
 
@@ -45,7 +45,7 @@ export const EditUserFormSection = ({user}: { user: User}): JSX.Element => {
     defaultValues: {
       nom: user.nom,
       email: user.email,
-      role: user.role.sigle as "admin" | "moderateur" | "editeur" | "viewer",
+      role: user.role.sigle as "admin" | "moderateur" | "editeur" | "lecteur",
       statut: user.statut === 1 ? 'actif' : 'inactif',
     },
   });

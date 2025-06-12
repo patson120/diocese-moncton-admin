@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { Loader } from '@/components/ui/loader';
 import { EditEventFormSection } from '@/components/sections/EventSection/EditEventFormSection';
 import { MapContainer } from '@/components/sections/MapSection/map-container';
+import { PhoneIcon } from 'lucide-react';
 
 interface EventDetailsDialogProps {
   event: Event | null;
@@ -106,6 +107,18 @@ export default function EventDetailsDialog({ event, open, onOpenChange }: EventD
                   <h3 className='font-bold'>Type évènement</h3>
                   <span className='px-4 py-2 border border-black/20 rounded-xl text-gray'>{event.categorie.intitule_fr}</span>
                 </div>
+                {/* Parish office contact info */}
+                <section className="flex flex-col gap-4">
+                  <h2 className="font-heading-5 text-[#1c0004]">
+                      Contact
+                  </h2>
+                  <div className="flex items-center gap-2.5 w-full">
+                    <PhoneIcon className="w-5 h-5" />
+                    <p className="flex-1 font-body-2 text-gray">
+                        {event?.contact}
+                    </p>
+                  </div>
+                </section>
                 <div className='flex flex-col space-y-2'>
                   <h3 className='font-bold text-2xl'>Lieu</h3>
                   <p className='text-gray'>{event.lieu}</p>

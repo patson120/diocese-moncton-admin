@@ -44,7 +44,7 @@ export const AddUserFormSection = (): JSX.Element => {
     defaultValues: {
       nom: "",
       email: "",
-      role: "viewer",
+      role: "lecteur",
       statut: 'actif',
     },
   });
