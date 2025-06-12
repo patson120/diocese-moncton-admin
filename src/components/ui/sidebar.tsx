@@ -22,10 +22,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { Button } from './button';
 import { ScrollArea } from './scroll-area';
-import { toast } from 'sonner';
-import { useAuth } from '@/lib/context/AuthContext';
 
 interface SidebarProps {
   className?: string;
@@ -63,7 +62,7 @@ export function Sidebar({ className }: SidebarProps) {
         },
         {
           icon: Images,
-          label: "Gestion des média",
+          label: "Médiathèque",
           active: false,
           href: "/mediatheque",
         },

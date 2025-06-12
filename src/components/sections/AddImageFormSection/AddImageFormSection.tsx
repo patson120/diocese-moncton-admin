@@ -113,7 +113,7 @@ export const AddImageFormSection = (): JSX.Element => {
                   />
                   <div className="text-center">
                     <h4 className="font-bold">Ajouter une image</h4>
-                    <p className="text-gray">jpg, png... ajoutez des images optimisées</p>
+                    <p className="text-gray">png, jpg, jpeg, svg, gif, webp. ajoutez des images optimisées</p>
                   </div>
                 </div>        
               </div>
@@ -129,7 +129,7 @@ export const AddImageFormSection = (): JSX.Element => {
             </div>
           </div>
           <Input
-            accept="image/png,jpg,jpeg"
+            accept="image/png,image/jpg,image/jpeg,image/svg,image/gif,image/webp"
             type="file"
             onChange={handleCoverImageChange}
             className="h-full w-full absolute cursor-pointer inset-0 opacity-0 z-[3]"
