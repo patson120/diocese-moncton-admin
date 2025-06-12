@@ -107,7 +107,7 @@ export default function EventDetailsDialog({ event, open, onOpenChange }: EventD
                   <h3 className='font-bold'>Type évènement</h3>
                   <span className='px-4 py-2 border border-black/20 rounded-xl text-gray'>{event.categorie.intitule_fr}</span>
                 </div>
-                {/* Parish office contact info */}
+                {/* Event office contact info */}
                 <section className="flex flex-col gap-4">
                   <h2 className="font-heading-5 text-[#1c0004]">
                       Contact
