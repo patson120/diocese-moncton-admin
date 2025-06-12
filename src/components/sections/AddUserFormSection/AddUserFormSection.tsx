@@ -20,7 +20,7 @@ import * as z from "zod";
 const formSchema = z.object({
   nom: z.string().min(1, "Le nom est requis"),
   email: z.string().email("L'adresse email n'est pas valide"),
-  role: z.enum(["admin", "moderateur", "editeur", "viewer"]),
+  role: z.enum(["admin", "moderateur", "editeur", "lecteur"]),
   statut: z.enum(["actif", "inactif"]),
 });
 
