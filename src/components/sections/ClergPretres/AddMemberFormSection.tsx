@@ -134,7 +134,9 @@ export default function AddMemberFormSection(){
     formdata.append("poste", `${fonctions.find((f) => f.id === parseInt(data.poste))?.intitule_fr}`);
     formdata.append("coordonnees", `${data.coordonnees}`);
     formdata.append("etat", `${status}`);
-    formdata.append("image", fileImage!);
+    if (fileImage){
+      formdata.append("image", fileImage!);
+    }
     if (data.etablissement){
       formdata.append("etablissement_id", `${data.etablissement},`); 
     }
