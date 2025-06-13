@@ -116,12 +116,12 @@ export const ClergPretres = (): JSX.Element => {
                       <CardContent className="p-0 space-y-3">
                         <div className="relative w-full h-[250px] shrink-0 bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
                           <Image
-                          fill
-                          priority
-                          className="object-cover"
-                          alt="Vector"
-                          src={ member.image ? `${process.env.NEXT_PUBLIC_API_URL}/${member.image}` : "/vector.svg"}
-                        />    
+                            fill
+                            priority
+                            className="object-cover"
+                            alt="Vector"
+                            src={ member.image ? `${process.env.NEXT_PUBLIC_API_URL}/${member.image}` : "/vector.svg"}
+                          />    
                         </div>
 
                         <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
