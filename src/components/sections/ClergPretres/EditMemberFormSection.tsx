@@ -135,7 +135,9 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
     if (fileImage){
       formdata.append("image", fileImage!);
     }
-    formdata.append("etablissement_id", `${data.etablissement},`);
+    if (data.etablissement){
+      formdata.append("etablissement_id", `${data.etablissement},`); 
+    }
     formdata.append("description_fr", `${data.description_fr}`);
     formdata.append("description_en", `${data.description_en}`);
 
@@ -258,33 +260,37 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={formOne.control}
-                  name="etablissement"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Établissement lié</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}>
-                        <FormControl className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200">
-                          <SelectTrigger className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200 text-[#454545]">
-                            <SelectValue placeholder="Sélectionnez un établissement" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {/* Establishment options would go here */}
-                          {
-                            unitePastorales.map(unite => (
-                              <SelectItem key={unite.id} value={`${unite.id}`}>{unite.intitule_fr}</SelectItem>
-                            ))
-                          }
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {
+                  formOne.watch("fonction") && 
+                  !fonctions.find(fonction => `${fonction.id}` == formOne.watch("fonction"))!.intitule_fr.toLowerCase().includes('archevêque') &&
+                  <FormField
+                    control={formOne.control}
+                    name="etablissement"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Unité pastorale</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}>
+                          <FormControl className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200">
+                            <SelectTrigger className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200 text-[#454545]">
+                              <SelectValue placeholder="Sélectionnez un établissement" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {/* Establishment options would go here */}
+                            {
+                              unitePastorales.map(unite => (
+                                <SelectItem key={unite.id} value={`${unite.id}`}>{unite.intitule_fr}</SelectItem>
+                              ))
+                            }
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                }
                 <div className="flex flex-col space-y-2">
                   <label className="text-sm font-body-3 leading-[var(--body-3-line-height)] tracking-[var(--body-3-letter-spacing)]">
                     Statut
