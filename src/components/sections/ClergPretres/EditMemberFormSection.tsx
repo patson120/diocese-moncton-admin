@@ -56,7 +56,7 @@ const formSchemaOne = z.object({
     .refine((val) => fonctionIds.includes(val), {
       message: "La fonction est invalide",
     }),
-  etablissement: z.string().min(1, "L'établissement est requis"),
+  etablissement: z.string().optional() // .min(1, "L'établissement est requis"),
 });
 
 const formSchemaTwo = z.object({
@@ -170,7 +170,7 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
       ...member,
       nom: values.nom,
       poste: values.fonction,
-      etablissement: values.etablissement,
+      etablissement: values.etablissement || "",
       statut: status,
     }
     setMember(newMember)

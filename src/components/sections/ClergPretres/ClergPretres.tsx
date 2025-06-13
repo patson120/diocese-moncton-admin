@@ -131,7 +131,8 @@ export const ClergPretres = (): JSX.Element => {
                             </span>
                           </div>
                           <p className="relative self-stretch font-body-3 text-gray text-sm tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
-                            {member.unites.map((unite) => unite.intitule_fr || unite.intitule_en).join(', ')}
+                            {/*member.unites.map((unite) => unite.intitule_fr || unite.intitule_en).join(', ')*/}
+                            { member.coordonnees }
                           </p>
                         </div>
                       </CardContent>
