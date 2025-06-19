@@ -435,6 +435,12 @@ export default function ParishSection() {
                                     <div className="w-auto border-t border-b border-neutral-200 py-3.5">
                                         <div className="flex flex-wrap gap-[16px_35px]">
                                             <p className="font-body-3 whitespace-nowrap">
+                                                <span className="text-[#575757] whitespace-nowrap">Langue</span>
+                                                <span className="text-[#1c0004]">
+                                                    &nbsp;<span className='font-bold'>{selecteParish?.langue == 'fr' ? 'Français': 'Anglais'}</span>
+                                                </span>
+                                            </p>
+                                            <p className="font-body-3 whitespace-nowrap">
                                                 <span className="text-[#575757] whitespace-nowrap">Établi en</span>
                                                 <span className="text-[#1c0004]">
                                                     &nbsp;<span className='font-bold'>{selecteParish?.etabli_le}</span>

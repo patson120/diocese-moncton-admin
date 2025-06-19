@@ -57,6 +57,7 @@ const formSchemaThree = z.object({
   etabli_le: z.string().min(1, { message: "Date d'établissement requise" }),
   ordonne_le: z.string().min(1, { message: "Date d'ordination requise" }),
   premier_cure: z.string().min(1, { message: "Date du premier curé requise" }),
+  langue: z.string().min(1, { message: "La langue principale est requise" }),
 })
 
 const formSchemaFour = z.object({
@@ -130,6 +131,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
       etabli_le: `${parish.etabli_le}-01-01`,
       ordonne_le: `${parish.ordonne_le}-01-01`,
       premier_cure: `${parish.premier_cure}-01-01`,
+      langue: `${parish.langue}`,
     },
   });
 
@@ -226,6 +228,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
     formdata.append("etabli_le", formThree.getValues("etabli_le").split('-')[0])
     formdata.append("ordonne_le", formThree.getValues("ordonne_le").split('-')[0])
     formdata.append("premier_cure", formThree.getValues("premier_cure").split('-')[0])
+    formdata.append("langue", formThree.getValues("langue"))
     formdata.append("gps", `${location?.lat};${location?.lng}`)
     formdata.append("statut", `${parish.statut}`)
     formdata.append("galerie_id", `${selectedImage?.id}`)
@@ -255,10 +258,10 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
           </div>
         )
       }
-    } catch (error) {
+    } catch (error: any) {
       toast.error(
         <div className='p-3 bg-red-500 text-white rounded-md'>
-          Erreur lors de l'ajout de la paroisse {JSON.stringify(error)}
+          Erreur lors de l'ajout de la paroisse {JSON.stringify(error.message)}
         </div>
       )
     }finally {
@@ -443,6 +446,29 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
                     </FormItem>
                   )}
                 />
+                <FormField
+                  control={formThree.control}
+                  name="langue"
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className="flex flex-col space-y-2">
+                        <FormLabel>Langue principale</FormLabel>
+                        <Select 
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}>
+                          <SelectTrigger className="h-11 px-3 py-3.5 rounded-lg border border-neutral-200 text-[#454545]">
+                            <SelectValue placeholder="Sélectionnez une langue" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value='fr'>Français</SelectItem> 
+                            <SelectItem value='en'>Anglais</SelectItem> 
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <div className='grid grid-cols-2 gap-3 w-full'>
                   <FormField
                     control={formThree.control}
@@ -557,7 +583,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
                   )}
                 />
                 <div className="flex flex-col space-y-2">
-                  <Label htmlFor="categorie" className="mb-2">Image de couverture de la paroisse</Label>
+                  <Label htmlFor="categorie" className="mb-2">Image de la paroisse</Label>
                   <GaleryPopup setSelectedImage={setSelectedImage} >
                     <div className="h-44 w-full bg-[#f0f0f0] rounded-md overflow-hidden relative flex justify-center items-center cursor-pointer">
                       {
