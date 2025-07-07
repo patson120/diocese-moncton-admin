@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader } from '@/components/ui/loader';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { fetchCategories } from '@/lib/data';
+import { apiClient } from '@/lib/axios';
 import { MonitorUp, Timer } from 'lucide-react';
 import Image from 'next/image';
 import { ChangeEvent, useEffect, useState } from 'react';
@@ -60,16 +60,14 @@ export default function EditActuDialog(
 
     useEffect(() => {
         const getCategories = async () => {
-            const result: Category[] = await fetchCategories(
-                // `?menu=actualite`
-            )
+            const result: Category[] = await apiClient.get(`/api/categories`)
             if (result.length > 0) {
                 setCategorie(result.find(cat => cat.id === actualite.categorie_id));
                 setCategories(result)
             }
         }
         getCategories()
-    }, [])
+    }, [actualite.categorie_id])
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
