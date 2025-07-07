@@ -65,7 +65,7 @@ export type Paroisse = {
     gps: string;
     histoire: string;
     histoire_en: string;
-    langue: string;
+    langue: string | null;
     created_at: string;
     updated_at: string;
     galerie: Image[];

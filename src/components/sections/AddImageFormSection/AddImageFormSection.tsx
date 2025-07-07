@@ -60,7 +60,8 @@ export const AddImageFormSection = (): JSX.Element => {
         }, 1500);
         setOpenModal(false)
       }
-    } catch (error: any) {
+    } 
+    catch (error: any) {
       toast.error(
         <div className='p-3 bg-red-500 text-white rounded-md'>
           Une erreur est survenue. Erreur:  {JSON.stringify(error.message)}
