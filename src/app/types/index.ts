@@ -85,7 +85,6 @@ export type TypeParoisse = {
     updated_at: string;
     paroisses: Paroisse[]
 }
-
 export type Horaire = {
     id: number;
     paroisse_id: number;
@@ -143,7 +142,6 @@ export type Member = {
     updated_at: string;
     categorie: Category;
 }
-
 export type Role = {
     id: number;
     intitule: string;
@@ -151,7 +149,6 @@ export type Role = {
     created_at: string;
     updated_at: string;
 }
-
 export type User = {
     id: number;
     nom: string;
@@ -165,15 +162,13 @@ export type User = {
     role: Role;
     token: string;
 }
-
 export type Location = {
     placeId: string;
     name: string;
     address: string;
     lat: number;
     lng: number;
-};
-
+}
 export type Ressource = {
     id: number;
     categorie_id: number | null;

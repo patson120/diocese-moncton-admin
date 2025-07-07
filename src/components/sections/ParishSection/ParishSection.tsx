@@ -10,7 +10,6 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { apiClient } from '@/lib/axios';
-import { fetchParoisses } from '@/lib/data';
 import { formatDateToLocal } from '@/lib/utils';
 import { Church, LayoutGridIcon, ListFilter, MailIcon, MapPinIcon, PhoneIcon, SearchIcon } from 'lucide-react';
 import Image from 'next/image';
@@ -19,10 +18,10 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useDebouncedCallback } from 'use-debounce';
 import { Paroisse, TypeParoisse } from '../../../app/types';
+import { MapContainer } from '../MapSection/map-container';
 import { AddParishFormSection } from './AddParishFormSection';
 import { AddUnitePastoraleFormSection } from './AddUnitePastoraleFormSection';
 import { EditParishFormSection } from './EditParishFormSection';
-import { MapContainer } from '../MapSection/map-container';
 
 export default function ParishSection() {
     const router = useRouter()
@@ -66,11 +65,11 @@ export default function ParishSection() {
     }
 
     useEffect(() => {
-        const getActualites = async () => {
-            const response = await fetchParoisses(`?paginate=200&statut=${statut}&nom=${query}`)
+        const getParishes = async () => {
+            const response: any = await apiClient.get(`?paginate=200&statut=${statut}&nom=${query}`)
             setParishes(response.data)
         }
-        getActualites()
+        getParishes()
     }, [statut, query])
 
     const handleSearch = useDebouncedCallback((event: ChangeEvent<HTMLInputElement>) => {
