@@ -2,16 +2,16 @@
 import { HTMLContent } from '@/components/shared/html-content';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Loader } from '@/components/ui/loader';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { fetchCategories } from '@/lib/data';
+import { apiClient } from '@/lib/axios';
+import { MonitorUp, Timer } from 'lucide-react';
 import Image from 'next/image';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { Category } from '../../types';
-import { MonitorUp, Timer } from 'lucide-react';
-import { Label } from '@/components/ui/label';
 
 export default function ActuDialog(
     {
@@ -60,9 +60,7 @@ export default function ActuDialog(
 
     useEffect(() => {
         const getCategories = async () => {
-            const result: Category[] = await fetchCategories(
-                // `?menu=actualite`
-            )
+            const result: Category[] = await apiClient.get(`/categories`)
             if (result.length > 0) {
                 setCategorie(result[0]);
                 setCategories(result)
