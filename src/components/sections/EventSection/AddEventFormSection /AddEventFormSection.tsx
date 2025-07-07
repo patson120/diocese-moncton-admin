@@ -1,24 +1,24 @@
 
 'use client'
 
+import { Category, Image as ImageType, Location } from "@/app/types";
+import { MapContainer } from "@/components/sections/MapSection/map-container";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader } from "@/components/ui/loader";
 import { Textarea } from "@/components/ui/textarea";
 import { apiClient } from "@/lib/axios";
-import { cn, handleImageUpload } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusIcon } from "lucide-react";
 import Image from "next/image";
 import { JSX, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Category, Image as ImageType, Location } from "@/app/types";
-import { MapContainer } from "@/components/sections/MapSection/map-container";
 import { GaleryPopup } from "../../GaleryPopup";
 
 const defaultEvent = {
