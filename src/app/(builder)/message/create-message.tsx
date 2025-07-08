@@ -1,12 +1,14 @@
 "use client"
+import { Image } from '@/app/types'
 import { Editor } from '@/components/Editor/Editor'
+import { GaleryPopup } from '@/components/sections/GaleryPopup'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Loader } from '@/components/ui/loader'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { apiClient } from '@/lib/axios'
-import { copyToClipboard } from '@/lib/utils'
+import { cn, copyToClipboard } from '@/lib/utils'
 import { TabsContent } from '@radix-ui/react-tabs'
 import { ArrowLeft, CopyIcon, ExternalLinkIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -14,7 +16,8 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 
 export default function CreateMessage() {
-  const [section, setSection] = useState<'french' | 'english'>('french');
+  const [section, setSection] = useState<'french' | 'english'>('french')
+  const [selectedImage, setSelectedImage] = useState<Image | undefined>()
 
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
@@ -49,6 +52,7 @@ export default function CreateMessage() {
       titre_en: title.english,
       message_fr: content.french,
       message_en: content.english,
+      galerie_id: selectedImage?.id!,
       archeveque_id: 16,
       etat: 1,
     })
@@ -142,6 +146,35 @@ export default function CreateMessage() {
 
               <TabsContent value="french" className="w-full mt-6 p-0 border-none">
                 <div className="flex flex-col p-10 items-start gap-6">
+                  <Card className="relative w-full bg-white rounded">
+                    <CardContent className="w-full p-0">
+                      {/* Image upload area */}
+                      <div className="h-[250px] w-full relative bg-[#f8f8f8] rounded-xl overflow-hidden border border-solid border-[#d9d9d9]"
+                        style={{
+                          backgroundImage: selectedImage ? `url(${selectedImage.path})` : 'none',
+                          backgroundPosition: "center center",
+                          backgroundRepeat: "no-repeat",
+                        }}>
+                        <div className={cn('absolute inset-0 w-full h-full flex justify-center items-center',
+                          selectedImage && 'bg-black/30'
+                        )}>
+                          <div className='w-auto h-min flex flex-col'>
+                            <GaleryPopup setSelectedImage={setSelectedImage} >
+                              <Button
+                                variant="ghost"
+                                className={cn('rounded-xl py-1 border',
+                                  selectedImage ? 'border-white' : 'border-gray'
+                                )}>
+                                <p className={cn(selectedImage ? 'text-white' : 'text-gray'
+                                )}>Insérer une image de couverture</p>
+                              </Button>
+                            </GaleryPopup>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                  
                   <div className='w-full z-0 '>
                     <label htmlFor="titre" className='text-lg text-gray font-semibold mb-2'>Titre</label>
                     <Editor
@@ -163,6 +196,34 @@ export default function CreateMessage() {
                 value="english"
                 className="mt-6 p-0 border-none">
                 <div className="flex flex-col p-10 items-start gap-6">
+                  <Card className="relative w-full bg-white rounded">
+                    <CardContent className="w-full p-0">
+                      {/* Image upload area */}
+                      <div className="h-[250px] w-full relative bg-[#f8f8f8] rounded-xl overflow-hidden border border-solid border-[#d9d9d9]"
+                        style={{
+                          backgroundImage: selectedImage ? `url(${selectedImage.path})` : 'none',
+                          backgroundPosition: "center center",
+                          backgroundRepeat: "no-repeat",
+                        }}>
+                        <div className={cn('absolute inset-0 w-full h-full flex justify-center items-center',
+                          selectedImage && 'bg-black/30'
+                        )}>
+                          <div className='w-auto h-min flex flex-col'>
+                            <GaleryPopup setSelectedImage={setSelectedImage} >
+                              <Button
+                                variant="ghost"
+                                className={cn('rounded-xl py-1 border',
+                                  selectedImage ? 'border-white' : 'border-gray'
+                                )}>
+                                <p className={cn(selectedImage ? 'text-white' : 'text-gray'
+                                )}>Insérer une image de couverture</p>
+                              </Button>
+                            </GaleryPopup>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
                   <div className='w-full z-0 h-48 overflow-y-scroll'>
                     <label htmlFor="titre" className='text-lg text-gray font-semibold mb-2'>Title</label>
                     <Editor
