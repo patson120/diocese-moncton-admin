@@ -66,7 +66,7 @@ export default function ParishSection() {
 
     useEffect(() => {
         const getParishes = async () => {
-            const response: any = await apiClient.get(`?paginate=200&statut=${statut}&nom=${query}`)
+            const response: any = await apiClient.get(`/api/paroisses?paginate=200&statut=${statut}&nom=${query}`)
             setParishes(response.data)
         }
         getParishes()
