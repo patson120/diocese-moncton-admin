@@ -2,7 +2,6 @@
 import { formatDateToLocal } from "@/lib/utils"
 import { Message } from "../../app/types"
 import Text from "./Text"
-import Image from "next/image"
 
 const MessageComp = ({ message, onClick }: { message: Message, onClick?: (e: any) => void }) => {
     return (
