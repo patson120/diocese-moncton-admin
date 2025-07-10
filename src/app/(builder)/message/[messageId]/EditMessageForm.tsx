@@ -81,7 +81,7 @@ export default function EditMessageForm({message}: { message: Message }) {
       setTitle({ french: '', english: '', })
       setContent({ french: '', english: '', })
       setTimeout(() => {
-        router.back()
+        router.back() 
       }, 1500);
     }
     else {
