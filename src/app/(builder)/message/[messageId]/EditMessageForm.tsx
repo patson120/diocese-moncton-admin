@@ -72,9 +72,9 @@ export default function EditMessageForm({message}: { message: Message }) {
       etat: message.etat,
     }
     if (selectedImage?.id){
-      body = { ...body, galerie_id: selectedImage?.id}
+      body = { ...body, galerie_id: selectedImage?.id }
     }
-    const response: any = await apiClient.put(`/api/mot_archeve/${message.id}`, {...body})
+    const response: any = await apiClient.put(`/api/mot_archeve/${message.id}`, { ...body })
 
     if (response.titre_fr) {
       toast.success("Message modifié avec succès !")
