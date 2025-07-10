@@ -2,23 +2,36 @@
 "use client"
 
 import { Editor } from '@/components/Editor/Editor'
+import { GaleryPopup } from '@/components/sections/GaleryPopup'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Loader } from '@/components/ui/loader'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { apiClient } from '@/lib/axios'
-import { copyToClipboard } from '@/lib/utils'
+import { cn, copyToClipboard } from '@/lib/utils'
 import { TabsContent } from '@radix-ui/react-tabs'
 import { ArrowLeft, CopyIcon, ExternalLinkIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { Message } from '../../../types'
+import { Image, Message } from '../../../types'
 
 export default function EditMessageForm({message}: { message: Message }) {
   const [section, setSection] = useState<'french' | 'english'>('french');
   const [isLoading, setIsLoading] = useState(false)
+  const [selectedImage, setSelectedImage] = useState<Image | undefined>({
+    id: 0,
+    label: "",
+    path: message?.image ? `${process.env.NEXT_PUBLIC_API_URL}/${message?.image}` : '',
+    path_en: message?.image ? `${process.env.NEXT_PUBLIC_API_URL}/${message?.image}` : '',
+    comment: "",
+    titre: "",
+    value: 0,
+    created_at: "",
+    updated_at: "",
+
+  })
 
   const router = useRouter()
 
@@ -50,15 +63,18 @@ export default function EditMessageForm({message}: { message: Message }) {
     }
 
     setIsLoading(true)
-    const response: any = await apiClient.put(`/api/mot_archeve/${message.id}`, {
-        titre_fr: title.french,
-        titre_en: title.english,
-        message_fr: content.french,
-        message_en: content.english,
-        archeveque_id: 16,
-        etat: message.etat,
-        // message: "Aliquid eveniet ex et porro similique totam. Officia fugiat eos et iure. Aut minus fugiat ipsa illum. Ipsa voluptas vel ut. Possimus ex voluptatem similique pariatur autem assumenda. Maiores enim quo accusamus adipisci.",
-    })
+    let body: any = {
+      titre_fr: title.french,
+      titre_en: title.english,
+      message_fr: content.french,
+      message_en: content.english,
+      archeveque_id: 16,
+      etat: message.etat,
+    }
+    if (selectedImage?.id){
+      body = { ...body, galerie_id: selectedImage?.id}
+    }
+    const response: any = await apiClient.put(`/api/mot_archeve/${message.id}`, {...body})
 
     if (response.titre_fr) {
       toast.success("Message modifié avec succès !")
@@ -151,6 +167,34 @@ export default function EditMessageForm({message}: { message: Message }) {
 
               <TabsContent value="french" className="w-full mt-6 p-0 border-none">
                 <div className="flex flex-col p-10 items-start gap-6">
+                  <Card className="relative w-full bg-white rounded">
+                    <CardContent className="w-full p-0">
+                      {/* Image upload area */}
+                      <div className="h-[250px] w-full relative bg-[#f8f8f8] rounded-xl overflow-hidden border border-solid border-[#d9d9d9]"
+                        style={{
+                          backgroundImage: selectedImage ? `url(${selectedImage.path})` : 'none',
+                          backgroundPosition: "center center",
+                          backgroundRepeat: "no-repeat",
+                        }}>
+                        <div className={cn('absolute inset-0 w-full h-full flex justify-center items-center',
+                          selectedImage && 'bg-black/30'
+                        )}>
+                          <div className='w-auto h-min flex flex-col'>
+                            <GaleryPopup setSelectedImage={setSelectedImage} >
+                              <Button
+                                variant="ghost"
+                                className={cn('rounded-xl py-1 border',
+                                  selectedImage ? 'border-white' : 'border-gray'
+                                )}>
+                                <p className={cn(selectedImage ? 'text-white' : 'text-gray'
+                                )}>Insérer une image de couverture</p>
+                              </Button>
+                            </GaleryPopup>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
                   <div className='w-full z-0 '>
                     <label htmlFor="titre" className='text-lg text-gray font-semibold mb-2'>Titre</label>
                     <Editor
@@ -173,6 +217,34 @@ export default function EditMessageForm({message}: { message: Message }) {
                 value="english"
                 className="mt-6 p-0 border-none">
                 <div className="flex flex-col p-10 items-start gap-6">
+                <Card className="relative w-full bg-white rounded">
+                    <CardContent className="w-full p-0">
+                      {/* Image upload area */}
+                      <div className="h-[250px] w-full relative bg-[#f8f8f8] rounded-xl overflow-hidden border border-solid border-[#d9d9d9]"
+                        style={{
+                          backgroundImage: selectedImage ? `url(${selectedImage.path})` : 'none',
+                          backgroundPosition: "center center",
+                          backgroundRepeat: "no-repeat",
+                        }}>
+                        <div className={cn('absolute inset-0 w-full h-full flex justify-center items-center',
+                          selectedImage && 'bg-black/30'
+                        )}>
+                          <div className='w-auto h-min flex flex-col'>
+                            <GaleryPopup setSelectedImage={setSelectedImage} >
+                              <Button
+                                variant="ghost"
+                                className={cn('rounded-xl py-1 border',
+                                  selectedImage ? 'border-white' : 'border-gray'
+                                )}>
+                                <p className={cn(selectedImage ? 'text-white' : 'text-gray'
+                                )}>Insérer une image de couverture</p>
+                              </Button>
+                            </GaleryPopup>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
                   <div className='w-full z-0'>
                     <label htmlFor="titre" className='text-lg text-gray font-semibold mb-2'>Title</label>
                     <Editor

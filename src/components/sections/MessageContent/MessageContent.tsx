@@ -235,6 +235,17 @@ export default function MessageContent(
                     {/* Scrollable content area */}
                     <ScrollArea className="w-full h-[calc(100%-80px)] mt-24 px-7">
                         <div className='flex flex-col gap-4 '>
+                            {
+                                selectedMessage?.image === null ?
+                                <section
+                                    className="w-full h-[260px] aspect-auto rounded-2xl bg-cover bg-center bg-no-repeat"
+                                    style={{ backgroundImage: `url("/vector.svg")` }}
+                                /> :
+                                <section
+                                    className="w-full h-[260px] aspect-auto rounded-2xl bg-cover bg-center bg-no-repeat"
+                                    style={{ backgroundImage: `url(${process.env.NEXT_PUBLIC_API_URL}/${selectedMessage?.image})` }}
+                                />
+                            }
                             {selectedMessage?.created_at &&
                                 <p className='body-3 whitespace-nowrap text-gray text-sm'>
                                     Publié le
