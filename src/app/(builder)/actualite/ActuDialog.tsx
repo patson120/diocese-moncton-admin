@@ -21,6 +21,7 @@ export default function ActuDialog(
         isLoading,
         handlePublish,
         open,
+        onOpenChange
     }:
         {
             imageUrl: string;
@@ -29,6 +30,7 @@ export default function ActuDialog(
             isLoading: boolean;
             handlePublish: (data: any) => void;
             open: boolean;
+            onOpenChange: (val: boolean) => void;
         }
 ) {
 
@@ -60,7 +62,7 @@ export default function ActuDialog(
 
     useEffect(() => {
         const getCategories = async () => {
-            const result: Category[] = await apiClient.get(`/categories`)
+            const result: Category[] = await apiClient.get(`/api/categories`)
             if (result.length > 0) {
                 setCategorie(result[0]);
                 setCategories(result)
@@ -71,7 +73,7 @@ export default function ActuDialog(
 
 
     return (
-        <Dialog open={open}>
+        <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent aria-describedby={undefined} className="w-min h-[550px] p-0 rounded-2xl">
                 <DialogClose className="absolute border-none w-5 h-5 top-[14px] right-[14px]">
                 </DialogClose>

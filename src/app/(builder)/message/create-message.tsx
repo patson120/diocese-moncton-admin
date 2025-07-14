@@ -95,16 +95,15 @@ export default function CreateMessage() {
           </Button>
 
           <Separator orientation="vertical" className="h-[34px]" />
-
-          <Button
-            variant="outline"
-            className="h-10 px-3.5 py-0 border-[#d9d9d9] rounded-[7px] cursor-not-allowed"
-          >
-            <span className="font-body-3 text-noir-dashboard whitespace-nowrap">
-              Planifier
-            </span>
-          </Button>
-
+          {/* 
+            <Button
+              variant="outline"
+              className="h-10 px-3.5 py-0 border-[#d9d9d9] rounded-[7px] cursor-not-allowed">
+              <span className="font-body-3 text-noir-dashboard whitespace-nowrap">
+                Planifier
+              </span>
+            </Button>
+          */}
           <Button onClick={handlePublish} className="h-10 px-3.5 py-0 bg-blue text-white rounded-[7px]">
             {
               isLoading && <Loader className='w-5 h-5 mr-2' />

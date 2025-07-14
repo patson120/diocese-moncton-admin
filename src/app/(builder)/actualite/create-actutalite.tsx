@@ -439,6 +439,7 @@ export default function CreateActutalite() {
         content={content}
         handlePublish={handlePublish}
         open={openPublishModal}
+        onOpenChange={setOpenPublishModal}
       />
     </div>
   )
