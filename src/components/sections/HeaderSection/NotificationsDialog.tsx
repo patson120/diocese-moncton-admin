@@ -2,6 +2,7 @@
 
 'use client'
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import { formatDateToLocal } from '@/lib/utils'
@@ -44,7 +45,10 @@ export default function NotificationsDialog() {
   return (
     <Sheet open={open} onOpenChange={onChange} >
         <SheetTrigger asChild className='cursor-pointer'>
+          <div className='relative'>
             <BellIcon className="w-6 h-6 text-noir-dashboard" />
+            <div className='w-3 h-3 bg-red-600 rounded-full absolute top-0 right-0' />
+          </div>
         </SheetTrigger>
         <SheetContent className="max-w-3xl min-w-3xl">
         <SheetHeader>

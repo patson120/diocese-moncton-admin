@@ -3,19 +3,34 @@ import { useEffect, useState } from "react";
 import { apiClient } from "@/lib/axios";
 
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { CalendarDays, Coins, Users } from "lucide-react";
+import { CalendarDays, Church, Coins, File, Notebook, Users } from "lucide-react";
 import { JSX } from "react";
 import Link from "next/link";
 
 export const DashboardSection = (): JSX.Element => {
 
   const [totalEvent, setTotalEvent] = useState(0)
+  const [totalNews, setTotalNews] = useState(0)
+  const [totalParishes, setTotalParishes] = useState(0)
+
+  const getEvents = async () => {
+    const response: any = await apiClient.get('/api/evenements?paginate=1')
+    setTotalEvent(response.total);
+  }
+  const getNews = async () => {
+    const response: any = await apiClient.get('/api/actualites?paginate=1')
+    setTotalNews(response.total);
+  }
+
+  const getParishes = async () => {
+    const response: any = await apiClient.get('/api/paroisses?paginate=1')
+    setTotalParishes(response.total);
+  }
 
   useEffect(() => {
-    ( async () => {
-      const response: any = await apiClient.get('/api/evenements?paginate=1')
-      setTotalEvent(response.total);
-    })()
+    getEvents()
+    getNews()
+    getParishes()
   }, [])
 
   return (
@@ -54,14 +69,14 @@ export const DashboardSection = (): JSX.Element => {
         <CardContent className="p-0">
           {/* Icon placeholder */}
           <div className="w-11 h-11 mt-5 ml-5 bg-[#F4E6E8] rounded-xl flex justify-center items-center">
-            <Coins className="h-6 w-6" />
+            <Notebook className="h-6 w-6" />
           </div>
 
           {/* Card content */}
           <div className="flex flex-col items-start gap-0.5 mt-9 ml-5">
-            <div className="text-gray text-xs">Dons collectés</div>
+            <div className="text-gray text-xs">Actaulités</div>
             <div className="font-heading-5 font-bold text-noir-dashboard text-xl leading-[28.6px]">
-              873$
+              {totalNews}
             </div>
           </div>
         </CardContent>
@@ -72,25 +87,28 @@ export const DashboardSection = (): JSX.Element => {
             <div className="font-normal text-gray text-xs">
               Durant février
             </div>
-            <div className="font-normal text-noir-dashboard text-xs text-right cursor-pointer">
-              <span className="font-bold">Voir plus</span>
-            </div>
+            <Link href={"/contents"}>
+              <div className="font-normal text-noir-dashboard text-xs text-right cursor-pointer">
+                <span className="font-bold">Voir plus</span>
+              </div>
+            </Link>
           </div>
         </CardFooter>
       </Card>
+      
 
       <Card className="h-[200px] rounded-2xl overflow-hidden bg-green-light relative">
         <CardContent className="p-0">
           {/* Icon placeholder */}
           <div className="w-11 h-11 mt-5 ml-5 bg-[#E6EAEF] rounded-xl flex justify-center items-center" >
-            <Users className="h-6 w-6" />
+            <Church className="h-6 w-6" />
           </div>
 
           {/* Card content */}
           <div className="flex flex-col items-start gap-0.5 mt-9 ml-5">
-            <div className="text-gray text-xs">Nombre de visite sur le site</div>
+            <div className="text-gray text-xs">Paroisses de l'archidiocèse</div>
             <div className="font-heading-5 font-bold text-noir-dashboard text-xl leading-[28.6px]">
-              345 visites
+              {totalParishes}
             </div>
           </div>
         </CardContent>
@@ -101,9 +119,11 @@ export const DashboardSection = (): JSX.Element => {
             <div className="font-normal text-gray text-xs">
               Durant février
             </div>
-            <div className="font-normal text-noir-dashboard text-xs text-right cursor-pointer">
-              <span className="font-bold">Voir plus</span>
-            </div>
+            <Link href={"/parishes"}>
+              <div className="font-normal text-noir-dashboard text-xs text-right cursor-pointer">
+                <span className="font-bold">Voir plus</span>
+              </div>
+            </Link>
           </div>
         </CardFooter>
       </Card>
