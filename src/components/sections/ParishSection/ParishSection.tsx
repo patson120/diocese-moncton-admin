@@ -11,7 +11,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { apiClient } from '@/lib/axios';
 import { formatDateToLocal } from '@/lib/utils';
-import { Church, LayoutGridIcon, ListFilter, MailIcon, MapPinIcon, PhoneIcon, SearchIcon } from 'lucide-react';
+import { Church, LayoutGridIcon, ListFilter, MailIcon, MapPinIcon, MoreHorizontalIcon, PhoneIcon, SearchIcon } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { ChangeEvent, useEffect, useState } from 'react';
@@ -23,6 +23,7 @@ import { AddParishFormSection } from './AddParishFormSection';
 import { AddUnitePastoraleFormSection } from './AddUnitePastoraleFormSection';
 import { EditParishFormSection } from './EditParishFormSection';
 import { AddBulletinFormSection } from './AddBulletinFormSection';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
 export default function ParishSection() {
     const router = useRouter()
@@ -539,6 +540,56 @@ export default function ParishSection() {
                                 </div>
                             </section>
 
+                            <section>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 gap-3">
+                                    {/* Document cards grid */}
+                                    {selecteParish?.bulletin.map((doc, index) => (
+                                    <Card
+                                        key={index}
+                                        className="bg-[#f9f9f0] rounded-2xl">
+                                        <CardContent className="p-0">
+                                        <div className="mt-2 mx-auto">
+                                            <div className="flex flex-row justify-end items-center px-3">
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild >
+                                                <Button
+                                                    variant="ghost"
+                                                    className="w-[18px] h-[18px] p-0">
+                                                    <MoreHorizontalIcon className="w-[18px] h-[18px]" />
+                                                </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent>
+                                                    {/* Dropdown menu items would go here */}
+                                                    <DropdownMenuItem className="text-gray">
+                                                        <a href={`${process.env.NEXT_PUBLIC_API_URL}/${doc.document}`} target="_blank" >Consulter</a>
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem onClick={() => {}}
+                                                    className="text-red-500">
+                                                    { (isDeleting ) &&
+                                                    <Loader className="w-4 h-4 mr-2" />
+                                                    }
+                                                    Supprimer</DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                                
+                                            </DropdownMenu>
+                                            </div>
+
+                                            <div className="flex flex-col items-center gap-3 my-4">
+                                            <div className="w-[100px] h-20 bg-white rounded-2xl border border-solid border-[#d9d9d9] flex items-center justify-center">
+                                                <span className="font-body-3 text-[length:var(--body-3-font-size)] uppercase text-gray text-center">
+                                                {doc.document.split(".")[1]}
+                                                </span>
+                                            </div>
+                                            <p className="font-body-3 text-[length:var(--body-3-font-size)] text-noir-dashboard text-center">
+                                                {doc.titre_fr}
+                                            </p>
+                                            </div>
+                                        </div>
+                                        </CardContent>
+                                    </Card>
+                                    ))}
+                                </div>
+                            </section>
                             <AddBulletinFormSection paroisse_id={selecteParish?.id!} />
 
                             {/* Map section */}
