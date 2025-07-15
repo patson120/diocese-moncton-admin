@@ -545,9 +545,9 @@ export default function ParishSection() {
                             <section>
                                 {
                                     selecteParish?.bulletins.length &&
-                                        <h2 className="font-heading-5 text-2xl text-[#1c0004] mb-3 font-bold">
-                                            Bulletins paroissiaux
-                                        </h2>
+                                    <h2 className="font-heading-5 text-2xl text-[#1c0004] mb-3 font-bold">
+                                        Bulletins paroissiaux
+                                    </h2>
                                 }
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 gap-3">
                                     {/* Document cards grid */}
