@@ -19,7 +19,7 @@ import { GaleryPopup } from "../../GaleryPopup";
 import { MapContainer } from "../../MapSection/map-container";
 import { Image as ImageType } from "@/app/types";
 
-interface EditEventDialogProps { eventData: Event }
+interface EditEventDialogProps { eventData: Event, duplicated?: boolean }
 
 const defaultEvent = {
   paroisse_id: 1,
@@ -61,7 +61,7 @@ const formSchemaFour = z.object({
   // date_planification: z.string().optional(),
 })
 
-export const EditEventFormSection = ({ eventData} : EditEventDialogProps): JSX.Element => {
+export const EditEventFormSection = ({ eventData, duplicated = false} : EditEventDialogProps): JSX.Element => {
 
   const [isLoading, setIsloading] = useState(false)
   const [openModal, setOpenModal] = useState(false)
@@ -101,7 +101,7 @@ export const EditEventFormSection = ({ eventData} : EditEventDialogProps): JSX.E
     resolver: zodResolver(formSchemaThree),
     defaultValues: {
       heure_event: eventData.heure_event,
-      date_event: eventData.date_event,
+      date_event: (Number(eventData.date_event.split("-")[0]) + 1).toString() + eventData.date_event.slice(4, )  // eventData.date_event,
     },
   });
 
@@ -129,14 +129,28 @@ export const EditEventFormSection = ({ eventData} : EditEventDialogProps): JSX.E
     if (isLoading) return
     setIsloading(true)
     try {
-      const response: any = await apiClient.put(`/api/evenements/${eventData.id}`, {
-        ...event,
-        categorie_id: selectedCategory?.id,
-        contact: formFour.getValues('contact'),
-        gps: `${location?.lat};${location?.lng}`,
-        lieu: `${location?.name};${location?.address}`,
-        galerie_id: selectedImage?.id,
-      })
+      let response: any;
+      if (duplicated) {
+        response= await apiClient.post('/api/evenements', {
+          ...event,
+          categorie_id: selectedCategory?.id,
+          contact: formFour.getValues('contact'),
+          gps: `${location?.lat};${location?.lng}`,
+          lieu: `${location?.name};${location?.address}`,
+          galerie_id: selectedImage?.id,
+        })
+      }else{
+        response= await apiClient.put(`/api/evenements/${eventData.id}`, {
+          ...event,
+          categorie_id: selectedCategory?.id,
+          contact: formFour.getValues('contact'),
+          gps: `${location?.lat};${location?.lng}`,
+          lieu: `${location?.name};${location?.address}`,
+          galerie_id: selectedImage?.id,
+        })
+      }
+
+
       if (response.id) {
         toast.success("Evènement modifié avec succès !")
         // formOne.reset()
@@ -211,13 +225,14 @@ export const EditEventFormSection = ({ eventData} : EditEventDialogProps): JSX.E
     <Dialog open={openModal} onOpenChange={setOpenModal}>
       <DialogTrigger asChild>
         <Button onClick={() => setOpenModal(true)} className="h-10 bg-blue text-white hover:bg-blue/90">
-          Modifier
+          { duplicated ? "Dupliquer" : "Modifier" }
         </Button>
       </DialogTrigger>
       <DialogContent aria-describedby={undefined} className="w-[500px] p-0 gap-0 rounded-2xl overflow-hidden">
         <DialogHeader className="border-b border-neutral-200 p-4 rounded-t-2xl">
           <DialogTitle className="text-lg font-bold leading-7">
-            Editer l'évènement
+          { duplicated ? "Dupliquer l'évènement": "Editer l'évènement" }
+            
           </DialogTitle>
         </DialogHeader>
         {
@@ -485,7 +500,8 @@ export const EditEventFormSection = ({ eventData} : EditEventDialogProps): JSX.E
                   </Button>
                   <Button type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
                     { isLoading && <Loader className='text-white mr-2' /> }
-                    Mettre à jour l'évènement
+                    { duplicated ? "Enregistrer l'évènement": "Mettre à jour l'évènement"}
+                    
                   </Button>
                 </div>
               </form>

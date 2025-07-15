@@ -61,6 +61,7 @@ export default function EventDetailsDialog({ event, open, onOpenChange }: EventD
       onOpenChange(false); // Close the dialog after deletion
     }
   }
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange} >
       <SheetContent aria-describedby={undefined} className="max-w-3xl min-w-[620px]">
@@ -74,7 +75,8 @@ export default function EventDetailsDialog({ event, open, onOpenChange }: EventD
               Fermer
             </Button>
             <div className="flex gap-2">
-              <EditEventFormSection eventData={event}/>
+              <EditEventFormSection eventData={event} duplicated={true} />
+              <EditEventFormSection eventData={event} />
               <Button onClick={handleDeleteEvent} className="h-10 bg-red-500 text-white hover:bg-blue/90">
                 { isDeleting && <Loader className='h-5 w-5, mr-2' /> }
                 Supprimer
