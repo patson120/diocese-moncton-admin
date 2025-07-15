@@ -22,6 +22,7 @@ import { MapContainer } from '../MapSection/map-container';
 import { AddParishFormSection } from './AddParishFormSection';
 import { AddUnitePastoraleFormSection } from './AddUnitePastoraleFormSection';
 import { EditParishFormSection } from './EditParishFormSection';
+import { AddBulletinFormSection } from './AddBulletinFormSection';
 
 export default function ParishSection() {
     const router = useRouter()
@@ -537,6 +538,8 @@ export default function ParishSection() {
                                     </div>
                                 </div>
                             </section>
+
+                            <AddBulletinFormSection paroisse_id={selecteParish?.id!} />
 
                             {/* Map section */}
                             <section className="w-full">
