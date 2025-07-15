@@ -40,37 +40,40 @@ const MenuBar = ({ editor }: { editor: any }) => {
 
       <Button
         variant="ghost"
+        type='button'
         size="sm"
-        onClick={() => editor.chain().focus().toggleBold().run()}
-        className={editor.isActive('bold') ? 'bg-muted' : ''}
-      >
+        onClick={(e) => {
+          // e.preventDefault()
+          editor.chain().focus().toggleBold().run()
+        }}
+        className={editor.isActive('bold') ? 'bg-muted' : ''}>
         <Bold className="h-4 w-4" />
       </Button>
 
       <Button
         variant="ghost"
+        type='button'
         size="sm"
         onClick={() => editor.chain().focus().toggleItalic().run()}
-        className={editor.isActive('italic') ? 'bg-muted' : ''}
-      >
+        className={editor.isActive('italic') ? 'bg-muted' : ''}>
         <Italic className="h-4 w-4" />
       </Button>
 
       <Button
         variant="ghost"
+        type='button'
         size="sm"
         onClick={() => editor.chain().focus().toggleUnderline().run()}
-        className={editor.isActive('underline') ? 'bg-muted' : ''}
-      >
+        className={editor.isActive('underline') ? 'bg-muted' : ''}>
         <UnderlineIcon className="h-4 w-4" />
       </Button>
 
       <Button
         variant="ghost"
+        type='button'
         size="sm"
         onClick={() => editor.chain().focus().toggleStrike().run()}
-        className={editor.isActive('strike') ? 'bg-muted' : ''}
-      >
+        className={editor.isActive('strike') ? 'bg-muted' : ''}>
         <Strikethrough className="h-4 w-4" />
       </Button>
 
@@ -78,15 +81,16 @@ const MenuBar = ({ editor }: { editor: any }) => {
 
       <Button
         variant="ghost"
+        type='button'
         size="sm"
         onClick={() => editor.chain().focus().setTextAlign('left').run()}
-        className={editor.isActive({ textAlign: 'left' }) ? 'bg-muted' : ''}
-      >
+        className={editor.isActive({ textAlign: 'left' }) ? 'bg-muted' : ''}>
         <AlignLeft className="h-4 w-4" />
       </Button>
 
       <Button
         variant="ghost"
+        type='button'
         size="sm"
         onClick={() => editor.chain().focus().setTextAlign('center').run()}
         className={editor.isActive({ textAlign: 'center' }) ? 'bg-muted' : ''}
@@ -96,10 +100,10 @@ const MenuBar = ({ editor }: { editor: any }) => {
 
       <Button
         variant="ghost"
+        type='button'
         size="sm"
         onClick={() => editor.chain().focus().setTextAlign('right').run()}
-        className={editor.isActive({ textAlign: 'right' }) ? 'bg-muted' : ''}
-      >
+        className={editor.isActive({ textAlign: 'right' }) ? 'bg-muted' : ''}>
         <AlignRight className="h-4 w-4" />
       </Button>
 
@@ -107,19 +111,19 @@ const MenuBar = ({ editor }: { editor: any }) => {
 
       <Button
         variant="ghost"
+        type='button'
         size="sm"
         onClick={() => editor.chain().focus().toggleBulletList().run()}
-        className={editor.isActive('bulletList') ? 'bg-muted' : ''}
-      >
+        className={editor.isActive('bulletList') ? 'bg-muted' : ''}>
         <List className="h-4 w-4" />
       </Button>
 
       <Button
         variant="ghost"
+        type='button'
         size="sm"
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
-        className={editor.isActive('orderedList') ? 'bg-muted' : ''}
-      >
+        className={editor.isActive('orderedList') ? 'bg-muted' : ''}>
         <ListOrdered className="h-4 w-4" />
       </Button>
 
@@ -127,6 +131,7 @@ const MenuBar = ({ editor }: { editor: any }) => {
 
       <Button
         variant="ghost"
+        type='button'
         size="sm"
         onClick={() => {
           const url = window.prompt('URL du lien:');
@@ -134,8 +139,7 @@ const MenuBar = ({ editor }: { editor: any }) => {
             editor.chain().focus().setLink({ href: url }).run();
           }
         }}
-        className={editor.isActive('link') ? 'bg-muted' : ''}
-      >
+        className={editor.isActive('link') ? 'bg-muted' : ''}>
         <LinkIcon className="h-4 w-4" />
       </Button>
 
@@ -215,7 +219,7 @@ export const Editor = ({ value, onChange, className }: RichTextEditorProps) => {
   });
 
   return (
-    <div className={`w-full border rounded-md ${className}`}>
+    <div className={`w-full border overflow-y-scroll v-scroll rounded-md ${className}`}>
       <MenuBar editor={editor} />
       <EditorContent editor={editor} />
     </div>

@@ -14,7 +14,7 @@ import { apiClient } from "@/lib/axios";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTrigger } from "@radix-ui/react-dialog";
-import { PlusIcon } from "lucide-react";
+import { Divide, PlusIcon } from "lucide-react";
 import { JSX, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -23,6 +23,7 @@ import { MapContainer } from "../../MapSection/map-container";
 import { Label } from "@radix-ui/react-label";
 import { GaleryPopup } from "../../GaleryPopup";
 import Image from "next/image";
+import { Editor } from "@/components/Editor/Editor";
 
 
 // Generate hours from 00:00 to 23:59 in 30-minute intervals
@@ -55,9 +56,10 @@ const formSchemaTwo = z.object({
 })
 const formSchemaThree = z.object({
   unite_pastorale: z.string().min(1, { message: "Unité pastorale requise" }),
-  etabli_le: z.string().min(1, { message: "Date d'établissement requise" }),
-  ordonne_le: z.string().min(1, { message: "Date d'ordination requise" }),
-  premier_cure: z.string().min(1, { message: "Date du premier curé requise" }),
+  // etabli_le: z.string().min(1, { message: "Date d'établissement requise" }),
+  // ordonne_le: z.string().min(1, { message: "Date d'ordination requise" }),
+  // premier_cure: z.string().min(1, { message: "Date du premier curé requise" }),
+  horaire_bureau: z.string().min(1, { message: "Veuillez renseigner les horaires de bureau" }),
   langue: z.string().min(1, { message: "La langue principale est requise" }),
 })
 const formSchemaFour = z.object({
@@ -77,6 +79,8 @@ export const AddParishFormSection = (): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false)
   const [unitePastorales, setUnitePastorales] = useState<TypeParoisse[]>([])
   const [selectedImage, setSelectedImage] = useState<ImageType | undefined>();
+  const [horairesBureau, setHorairesBureau] = useState("")
+
 
   const [location, setLocation] = useState<Location | null>(null);
 
@@ -111,9 +115,10 @@ export const AddParishFormSection = (): JSX.Element => {
     resolver: zodResolver(formSchemaThree),
     defaultValues: {
       unite_pastorale: "",
-      etabli_le: "",
-      ordonne_le: "",
-      premier_cure: "",
+      // etabli_le: "",
+      // ordonne_le: "",
+      // premier_cure: "",
+      horaire_bureau: "",
       langue: "fr",
     },
   });
@@ -147,7 +152,10 @@ export const AddParishFormSection = (): JSX.Element => {
 
   const onSubmitThree = async (values: z.infer<typeof formSchemaThree>) => {
     // console.log(values);
-    setStep(4)
+    if (!horairesBureau.trim()){
+      formThree.setError("horaire_bureau", { message: "Veuillez renseigner les horaires de bureau"})
+    }
+    else {setStep(4)}
   }
 
   const onSubmitFour = async (values: z.infer<typeof formSchemaFour>) => {
@@ -211,9 +219,10 @@ export const AddParishFormSection = (): JSX.Element => {
     formdata.append("email", formFour.getValues("email"))
     formdata.append("site_web", formFour.getValues("site_web"))
     formdata.append("horaires", horaires.map(item => `${item.jour}=${item.heures.join(";")}`).join(","))
-    formdata.append("etabli_le", formThree.getValues("etabli_le").split('-')[0])
-    formdata.append("ordonne_le", formThree.getValues("ordonne_le").split('-')[0])
-    formdata.append("premier_cure", formThree.getValues("premier_cure").split('-')[0])
+    // formdata.append("etabli_le", formThree.getValues("etabli_le").split('-')[0])
+    // formdata.append("ordonne_le", formThree.getValues("ordonne_le").split('-')[0])
+    // formdata.append("premier_cure", formThree.getValues("premier_cure").split('-')[0]) 
+    formdata.append("horaire_bureau", horairesBureau)
     formdata.append("langue", formThree.getValues("langue"))
     formdata.append("gps", `${location?.lat};${location?.lng}`)
     formdata.append("statut", '1')
@@ -262,6 +271,10 @@ export const AddParishFormSection = (): JSX.Element => {
       })()
   }, [])
 
+  useEffect(() => {
+    formThree.setValue("horaire_bureau", horairesBureau)
+}, [horairesBureau])
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -270,7 +283,7 @@ export const AddParishFormSection = (): JSX.Element => {
           <span className="font-body-3 text-sm">Ajouter une paroisse</span>
         </Button>
       </DialogTrigger>
-      <DialogContent aria-describedby={undefined} className="w-[500px] p-0 gap-0 rounded-2xl overflow-hidden">
+      <DialogContent aria-describedby={undefined} className="min-w-[500px] w-min p-0 gap-0 rounded-2xl overflow-hidden">
         <DialogHeader className="border-b border-neutral-200 p-4 rounded-t-2xl">
           <DialogTitle className="text-lg font-bold leading-7">
             Créer une paroisse
@@ -450,13 +463,47 @@ export const AddParishFormSection = (): JSX.Element => {
                     </FormItem>
                   )}
                 />
-                <div className='grid grid-cols-2 gap-3 w-full'>
+                {/* 
+                  <div className='grid grid-cols-2 gap-3 w-full'>
+                    <FormField
+                      control={formThree.control}
+                      name="etabli_le"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Etabli en</FormLabel>
+                          <FormControl>
+                            <Input {...field}
+                              className="h-11 inline-block px-3 py-3.5 rounded-lg border border-neutral-200"
+                              type="date"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={formThree.control}
+                      name="ordonne_le"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Date ordination</FormLabel>
+                          <FormControl>
+                            <Input {...field}
+                              className="h-11 inline-block px-3 py-3.5 rounded-lg border border-neutral-200"
+                              type="date"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                   <FormField
                     control={formThree.control}
-                    name="etabli_le"
+                    name="premier_cure"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Etabli en</FormLabel>
+                        <FormLabel>Date premier curé</FormLabel>
                         <FormControl>
                           <Input {...field}
                             className="h-11 inline-block px-3 py-3.5 rounded-lg border border-neutral-200"
@@ -467,44 +514,30 @@ export const AddParishFormSection = (): JSX.Element => {
                       </FormItem>
                     )}
                   />
+                */}
+                
+                <div className='w-min relative'>
                   <FormField
                     control={formThree.control}
-                    name="ordonne_le"
+                    name="horaire_bureau"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Date ordination</FormLabel>
-                        <FormControl>
-                          <Input {...field}
-                            className="h-11 inline-block px-3 py-3.5 rounded-lg border border-neutral-200"
-                            type="date"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <FormField
-                  control={formThree.control}
-                  name="premier_cure"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Date premier curé</FormLabel>
-                      <FormControl>
-                        <Input {...field}
-                          className="h-11 inline-block px-3 py-3.5 rounded-lg border border-neutral-200"
-                          type="date"
+                        <label htmlFor="titre" className='mb-2'>Heure de bureau</label>
+                        <Editor
+                          {...field}
+                          value={horairesBureau}
+                          onChange={(text: string) => setHorairesBureau(text)}
+                          className='h-52'
                         />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                </div> 
                 <div className="flex flex-row gap-4">
                   <Button variant={'outline'} onClick={() => setStep(2)} className="w-min px-8 mt-8 h-12 rounded-lg">
                     Retour
                   </Button>
-                  <Button type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
+                  <Button disabled={!horairesBureau.trim()} type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
                     Suivant
                   </Button>
                 </div>
