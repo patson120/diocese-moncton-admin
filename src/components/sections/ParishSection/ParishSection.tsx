@@ -472,18 +472,20 @@ export default function ParishSection() {
 
                             {/* History section */}
                             <section className="flex flex-col gap-2 ">
-                                <h2 className="font-heading-5 text-noir-dashboard">Histoire</h2>
+                                <h2 className="font-heading-5 text-2xl text-[#1c0004] mb-3 font-bold">Histoire</h2>
                                 <p className="text-gray leading-[26px]">
                                     {selecteParish?.histoire}{" "}
-                                    {/* <span className="font-body-3 text-[#11112e] cursor-pointer">
-                                        voir plus
-                                    </span> */}
+                                    {/*
+                                        <span className="font-body-3 text-[#11112e] cursor-pointer">
+                                            voir plus
+                                        </span> 
+                                    */}
                                 </p>
                             </section>
 
                             {/* Mass schedule section */}
                             <section className="flex flex-col gap-2 w-full">
-                                <h2 className="font-heading-5 text-[#1c0004]">
+                                <h2 className="font-heading-5 text-2xl text-[#1c0004] mb-3 font-bold">
                                     Heure des messes
                                 </h2>
                                 <div className="flex flex-wrap gap-[12px_16px]">
@@ -515,7 +517,7 @@ export default function ParishSection() {
 
                             {/* Parish office contact info */}
                             <section className="flex flex-col gap-4">
-                                <h2 className="font-heading-5 text-[#1c0004]">
+                                <h2 className="font-heading-5 text-2xl text-[#1c0004] mb-3 font-bold">
                                     Secrétariat paroissial
                                 </h2>
                                 <div className="flex flex-col gap-1.5 w-full">
@@ -541,9 +543,15 @@ export default function ParishSection() {
                             </section>
 
                             <section>
+                                {
+                                    selecteParish?.bulletins.length &&
+                                        <h2 className="font-heading-5 text-2xl text-[#1c0004] mb-3 font-bold">
+                                            Bulletins paroissiaux
+                                        </h2>
+                                }
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 gap-3">
                                     {/* Document cards grid */}
-                                    {selecteParish?.bulletin.map((doc, index) => (
+                                    {selecteParish?.bulletins.map((doc, index) => (
                                     <Card
                                         key={index}
                                         className="bg-[#f9f9f0] rounded-2xl">

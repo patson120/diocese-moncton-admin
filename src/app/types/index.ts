@@ -71,7 +71,7 @@ export type Paroisse = {
     created_at: string;
     updated_at: string;
     galerie: Image[];
-    bulletin: Bulletin[];
+    bulletins: Bulletin[];
     type: TypeParoisse;
     horaireparoisses: Horaire[];
     etabli_le: number | null,
