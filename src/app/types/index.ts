@@ -74,17 +74,14 @@ export type Paroisse = {
     bulletins: Bulletin[];
     type: TypeParoisse;
     horaireparoisses: Horaire[];
-    etabli_le: number | null,
-    ordonne_le: number | null,
-    premier_cure: number | null,
 }
 export type Bulletin = {
-    id: Number;
-    paroisse_id: Number;
+    id: number;
+    paroisse_id: number;
     titre_fr: string;
     titre_en: string;
     document: string;
-    mois: Number;
+    mois: number;
     created_at: string;
     updated_at: string;
 }

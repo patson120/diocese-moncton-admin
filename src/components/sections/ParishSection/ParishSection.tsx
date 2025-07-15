@@ -123,9 +123,9 @@ export default function ParishSection() {
         formdata.append("email", selecteParish?.email!)
         formdata.append("site_web", selecteParish?.site_web!)
         formdata.append("horaires", `${selecteParish?.horaireparoisses.map(item => `${item.jour}=${item.heure}`).join(",")}`)
-        formdata.append("etabli_le", `${selecteParish?.etabli_le!}`)
-        formdata.append("ordonne_le", `${selecteParish?.ordonne_le!}`)
-        formdata.append("premier_cure", `${selecteParish?.premier_cure!}`)
+        // formdata.append("etabli_le", `${selecteParish?.etabli_le!}`)
+        // formdata.append("ordonne_le", `${selecteParish?.ordonne_le!}`)
+        // formdata.append("premier_cure", `${selecteParish?.premier_cure!}`)
         formdata.append("gps", selecteParish?.gps!)
         formdata.append("statut", `${ selecteParish?.statut === 1 ? '0': '1' }`)
         formdata.append("adresse", selecteParish?.adresse!)
@@ -544,12 +544,12 @@ export default function ParishSection() {
 
                             <section>
                                 {
-                                    selecteParish?.bulletins.length &&
+                                    selecteParish?.bulletins.length! > 0 &&
                                     <h2 className="font-heading-5 text-2xl text-[#1c0004] mb-3 font-bold">
                                         Bulletins paroissiaux
                                     </h2>
                                 }
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 gap-3">
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                                     {/* Document cards grid */}
                                     {selecteParish?.bulletins.map((doc, index) => (
                                     <Card
