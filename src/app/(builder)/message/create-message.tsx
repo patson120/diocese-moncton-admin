@@ -4,6 +4,7 @@ import { Editor } from '@/components/Editor/Editor'
 import { GaleryPopup } from '@/components/sections/GaleryPopup'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Loader } from '@/components/ui/loader'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -21,6 +22,8 @@ export default function CreateMessage() {
 
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  const [isSavingAsDraft, setIsSavingAsDraft] = useState(false)
+  const [emptyMessage, setEmptyMessage] = useState(false)
 
   const [title, setTitle] = useState({
     french: '',
@@ -67,8 +70,53 @@ export default function CreateMessage() {
     else {
       toast.error(JSON.stringify(response))
     }
-
   }
+
+  const saveAsDraft = async () => {
+    if (isSavingAsDraft) return
+    setIsSavingAsDraft(true)
+    if (title.french.trim() == '' || title.english.trim() == '') {
+      toast.warning(
+        <div className='p-3 bg-red-500 text-white rounded-md'>
+          Veuillez renseigner les titres dans les deux langues
+        </div>
+      )
+      return;
+    }
+    if (content.french.trim() == '' || content.english.trim() == '') {
+      toast.warning("Veuillez renseigner les contenus dans les deux langues")
+      return;
+    }
+    const response: any = await apiClient.post('/api/mot_archeve', {
+      titre_fr: title.french,
+      titre_en: title.english,
+      message_fr: content.french,
+      message_en: content.english,
+      galerie_id: selectedImage?.id!,
+      archeveque_id: 16,
+      etat: 0,
+    })
+    if (response.titre_fr) {
+      toast.success("Message enregistré avec succès !")
+      setTitle({ french: '', english: '', })
+      setContent({ french: '', english: '', })
+      setTimeout(() => {
+        window.location.reload()
+      }, 1500);
+    }
+    else {
+      toast.error(JSON.stringify(response))
+    }
+  }
+
+  const verifyContents = () => {
+    const val = title.french.trim() && title.english.trim() && content.french.trim() && content.english.trim() 
+    if (!val){
+      setEmptyMessage(true)
+    }
+    else { saveAsDraft() }
+  }
+
   return (
     <div className="relative w-full h-screen bg-[#f0f0f4] overflow-x-hidden">
 
@@ -78,8 +126,7 @@ export default function CreateMessage() {
         <Button
           onClick={() => router.back()}
           variant="ghost"
-          className="h-10 gap-2 px-3.5 py-0 bg-white rounded-[7px]"
-        >
+          className="h-10 gap-2 px-3.5 py-0 bg-white rounded-[7px]">
           <ArrowLeft className='w-[18px] h-[18px]' />
           <span className="font-body-3 text-noir-dashboard whitespace-nowrap">
             Retour à l&apos;accueil
@@ -88,7 +135,10 @@ export default function CreateMessage() {
 
         {/* Action buttons */}
         <div className="flex items-center gap-3">
-          <Button variant="ghost" className="h-10 px-3.5 py-0">
+          <Button onClick={verifyContents}  variant="ghost" className="h-10 px-3.5 py-0">
+            {
+              isSavingAsDraft && <Loader className='w-5 h-5 mr-2' />
+            }
             <span className="font-body-3 text-noir-dashboard whitespace-nowrap">
               Sauvegarder brouillon
             </span>
@@ -284,6 +334,24 @@ export default function CreateMessage() {
           </CardContent>
         </Card>
       </div>
+
+
+      <Dialog open={emptyMessage} onOpenChange={setEmptyMessage} >
+        <DialogContent aria-describedby={undefined} className="max-w-sm p-10 text-center rounded-2xl">
+          <DialogClose onClick={() => setEmptyMessage(false)} className="absolute border-none w-5 h-5 top-[14px] right-[14px]">
+          </DialogClose>
+          <DialogHeader className='hidden'>
+            <DialogTitle></DialogTitle>
+          </DialogHeader>
+          <h1 className='text-xl font-bold'>Message incomplèt</h1>
+          <p className='text-gray text-sm'>Veuillez remplir toutes les données</p>
+          <Button onClick={() => setEmptyMessage(prev => !prev)} className="px-3.5 py-0 bg-blue text-white rounded-[7px]">
+            <span className="font-body-3 whitespace-nowrap">
+              Compléter le message
+            </span>
+          </Button>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

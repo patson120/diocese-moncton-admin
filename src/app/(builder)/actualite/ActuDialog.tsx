@@ -21,7 +21,8 @@ export default function ActuDialog(
         isLoading,
         handlePublish,
         open,
-        onOpenChange
+        onOpenChange,
+        onDataChange
     }:
         {
             imageUrl: string;
@@ -31,6 +32,7 @@ export default function ActuDialog(
             handlePublish: (data: any) => void;
             open: boolean;
             onOpenChange: (val: boolean) => void;
+            onDataChange: (data: any) => void;
         }
 ) {
 
@@ -42,13 +44,14 @@ export default function ActuDialog(
     const [isPlan, setIsPlan] = useState(false)
 
     const handlePublishActualite = async () => {
-        handlePublish({
+        const data = {
             categorie_id: categorie?.id!,
             motcles: motcles ? motcles.split(',') : [],
             is_planifier: isPlan ? 1 : 0,
             date_planification: `${date}`,
             // date_planification: `${date}T${hour}:00.000000Z`
-        })
+        }
+        handlePublish(data)
     }
 
     const handleSelectedDate = (e: ChangeEvent<HTMLInputElement>) => {
@@ -70,6 +73,16 @@ export default function ActuDialog(
         }
         getCategories()
     }, [])
+
+    useEffect(() => {
+        onDataChange({
+            categorie_id: categorie?.id!,
+            motcles: motcles ? motcles.split(',') : [],
+            is_planifier: isPlan ? 1 : 0,
+            date_planification: `${date}`,
+            // date_planification: `${date}T${hour}:00.000000Z`
+        })
+    }, [ categorie?.id!, motcles, isPlan, date ])
 
 
     return (

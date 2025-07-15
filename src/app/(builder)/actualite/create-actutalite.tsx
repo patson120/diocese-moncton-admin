@@ -20,6 +20,7 @@ import ActuDialog from './ActuDialog'
 import { ActualitePreview } from '@/app/(builder)/components/ActualitePreview'
 
 export default function CreateActutalite() {
+
   const router = useRouter()
   const [isSave, setIsSave] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -29,12 +30,16 @@ export default function CreateActutalite() {
   const [openPublishModal, setOpenPublishModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState<Image | undefined>();
   const [section, setSection] = useState<'french' | 'english'>('french');
-  const [previewData, setPreviewData] = useState<Actualite>()
+  const [isSavingAsDraft, setIsSavingAsDraft] = useState(false)
+  const [additionalData, setAdditionalData] = useState<any>({})
+  const [isEmptyData, setIsEmptyData] = useState(false)
+
 
   const [title, setTitle] = useState({
     french: '',
     english: '',
   })
+
   const [content, setContent] = useState({
     french: '',
     english: '',
@@ -150,6 +155,66 @@ export default function CreateActutalite() {
     motcles: []
   }
 
+  const verifyContents = () => {
+    const val = title.french.trim() && title.english.trim() && content.french.trim() && content.english.trim() 
+    if (!val){
+      setIsEmptyActu(true)
+    }
+    else { saveAsDraft() } 
+  }
+
+  const saveAsDraft = async () => {
+
+    if(!additionalData.categorie_id){
+      setIsEmptyData(true)
+      return
+    }
+
+    if (isSavingAsDraft) return
+    setIsSavingAsDraft(true)
+
+    try {
+      const response: any = await apiClient.post('/api/actualites', {
+        titre_fr: title.french,
+        titre_en: title.english,
+        description_fr: content.french,
+        description_en: content.english,
+        is_brouillon: 1,
+        is_actif: 0, // Un actualité créée est dabord au statut attente
+        galerie_id: selectedImage?.id!,
+        ...additionalData
+      })
+  
+      if (response.id) {
+        setTitle({french: '',english: '',})
+        setContent({french: '',english: '',})
+        setOpenPublishModal(false)
+        setIsSave(1)
+        setAlertModal("")
+        toast.success("Actualité enregistré avec succès !")
+        setTimeout(() => {
+          window.location.reload()
+        }, 1500);
+      }
+      else {
+        toast.error(
+          <div className='p-3 bg-red-500 text-white rounded-md'>
+            {JSON.stringify(response)}
+          </div>
+        )
+      }
+    } catch (error: any) {
+      toast.error(
+        <div className='p-3 bg-red-500 text-white rounded-md'>
+          {JSON.stringify(error.message)}
+        </div>
+      )
+    }
+    finally{
+      setIsSavingAsDraft(false)
+    }
+  }
+
   return (
     <div className="relative w-full h-screen bg-[#f0f0f4] overflow-x-hidden">
       {/* Secondary navigation bar */}
@@ -158,8 +223,7 @@ export default function CreateActutalite() {
         <Button
           onClick={goback}
           variant="ghost"
-          className="h-10 gap-2 px-3.5 py-0 bg-white rounded-[7px]"
-        >
+          className="h-10 gap-2 px-3.5 py-0 bg-white rounded-[7px]">
           <ArrowLeft className='w-[18px] h-[18px]' />
           <span className="font-body-3 text-noir-dashboard whitespace-nowrap">
             Retour à l&apos;accueil
@@ -168,14 +232,15 @@ export default function CreateActutalite() {
 
         {/* Action buttons */}
         <div className="flex items-center gap-3">
-          <Button variant="ghost" className="h-10 px-3.5 py-0">
+          <Button onClick={verifyContents} variant="ghost" className="h-10 px-3.5 py-0">
+            { isSavingAsDraft && <Loader className='w-5 h-5 mr-2' /> }
             <span className="font-body-3 text-noir-dashboard whitespace-nowrap">
               Sauvegarder brouillon
             </span>
           </Button>
 
           <Separator orientation="vertical" className="h-[34px]" />
-
+            
           <ActualitePreview actualite={actualite}>
             <Button
               variant="outline"
@@ -187,7 +252,7 @@ export default function CreateActutalite() {
           </ActualitePreview>
 
           <Button onClick={verifyEnglishContent} className="h-10 px-3.5 py-0 bg-blue text-white rounded-[7px]">
-            {isLoading && <Loader className='text-white mr-2' />}
+            { isLoading && <Loader className='text-white mr-2' /> }
             <span className="font-body-3 whitespace-nowrap">
               Publier actualité
             </span>
@@ -385,7 +450,7 @@ export default function CreateActutalite() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={isEmptyActu}>
+      <Dialog open={isEmptyActu} onOpenChange={setIsEmptyActu}>
         <DialogContent aria-describedby={undefined} className="max-w-sm p-10 text-center rounded-2xl">
           <DialogClose onClick={() => setIsEmptyActu(false)} className="absolute border-none w-5 h-5 top-[14px] right-[14px]">
           </DialogClose>
@@ -440,7 +505,26 @@ export default function CreateActutalite() {
         handlePublish={handlePublish}
         open={openPublishModal}
         onOpenChange={setOpenPublishModal}
+        onDataChange={setAdditionalData}
       />
+
+
+      <Dialog open={isEmptyData} onOpenChange={setIsEmptyData} >
+        <DialogContent aria-describedby={undefined} className="max-w-sm p-10 text-center rounded-2xl">
+          <DialogClose onClick={() => setIsEmptyData(false)} className="absolute border-none w-5 h-5 top-[14px] right-[14px]">
+          </DialogClose>
+          <DialogHeader className='hidden'>
+            <DialogTitle></DialogTitle>
+          </DialogHeader>
+          <h1 className='text-xl font-bold'>Actualité incomplète</h1>
+          <p className='text-gray text-sm'>Veuillez remplir toutes les données</p>
+          <Button onClick={() => setIsEmptyData(prev => !prev)} className="px-3.5 py-0 bg-blue text-white rounded-[7px]">
+            <span className="font-body-3 whitespace-nowrap">
+              Compléter l'actualité
+            </span>
+          </Button>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
