@@ -41,7 +41,7 @@ export default function page() {
       ],
     },
     {
-      title: "Viewer",
+      title: "Lecteur",
       description: [
         "Consulter les rapports, statistiques, logs",
         "Aucun pouvoir d'édition ou d'action sur le contenu",
