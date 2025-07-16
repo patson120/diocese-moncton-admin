@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 import { User } from "../../../app/types";
+import useRole from "@/hooks/use-role";
 
 
 const formSchema = z.object({
@@ -26,6 +27,8 @@ const formSchema = z.object({
 });
 
 export const EditUserFormSection = ({user}: { user: User}): JSX.Element => {
+
+  const { canUpdateUser } = useRole()
 
   const [isLoading, setIsLoading] = useState(false)
  
@@ -51,6 +54,9 @@ export const EditUserFormSection = ({user}: { user: User}): JSX.Element => {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (!canUpdateUser()){ 
+      return toast.success("Vous n'avez pas le droit d'effectuer cette opération !")
+    }
     if (isLoading) return 
     setIsLoading(true)
     const data = {

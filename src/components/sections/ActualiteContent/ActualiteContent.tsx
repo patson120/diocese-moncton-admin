@@ -11,6 +11,7 @@ import { EyeIcon, Trash2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Actualite } from '../../../app/types';
+import useRole from '@/hooks/use-role';
 
 export default function ActualiteContent(
     { is_actif, query, ordre , displayMode}: 
@@ -21,6 +22,8 @@ export default function ActualiteContent(
     const [openModal, setOpenModal] = useState(false) 
     const [isDeleting, setIsDeleting] = useState(false)
     const [isUpdateStatus, setIsUpdateStatus] = useState(false)
+
+    const { canUpdateNews, canDeleteNews} = useRole()
 
     useEffect(() => {
         const getActualites = async () => {
@@ -254,17 +257,26 @@ export default function ActualiteContent(
                                 Fermer
                             </Button>
                             <div className="flex gap-2">
-                                <Button onClick={handleUpdateStatus} variant="outline" className="h-10">
-                                    { isUpdateStatus && <Loader className='h-5 w-5, mr-2' /> }
-                                    { selectedActualite?.is_actif === 1 ? 'Désactiver' : 'Activer' }
-                                </Button>
-                                <Button onClick={handleEditActualite} className="h-10 bg-blue text-white hover:bg-blue/90">
-                                    Modifier
-                                </Button>
-                                <Button onClick={handleDeleteActualite} className="h-10 bg-red-500 text-white hover:bg-blue/90">
-                                    { isDeleting && <Loader className='h-5 w-5, mr-2' /> }
-                                    Supprimer
-                                </Button>
+                                {
+                                    canUpdateNews() &&
+                                    <Button onClick={handleUpdateStatus} variant="outline" className="h-10">
+                                        { isUpdateStatus && <Loader className='h-5 w-5, mr-2' /> }
+                                        { selectedActualite?.is_actif === 1 ? 'Désactiver' : 'Activer' }
+                                    </Button>
+                                }
+                                {
+                                    canUpdateNews() &&
+                                    <Button onClick={handleEditActualite} className="h-10 bg-blue text-white hover:bg-blue/90">
+                                        Modifier
+                                    </Button>
+                                }
+                                {
+                                    canDeleteNews() &&
+                                    <Button onClick={handleDeleteActualite} className="h-10 bg-red-500 text-white hover:bg-blue/90">
+                                        { isDeleting && <Loader className='h-5 w-5, mr-2' /> }
+                                        Supprimer
+                                    </Button>
+                                }
                             </div>
                         </header>
                     </div>

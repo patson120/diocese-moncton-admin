@@ -19,8 +19,11 @@ import AddMemberFormSection from "./AddMemberFormSection";
 import EditMemberFormSection from "./EditMemberFormSection";
 import SearchInput from "./SearchInput";
 import Text from "@/components/shared/Text";
+import useRole from "@/hooks/use-role";
 
 export const ClergPretres = (): JSX.Element => {
+
+  const { canUpdateClergy, canDeleteClergy} = useRole()
 
   const [openModal, setOpenModal] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
@@ -776,11 +779,17 @@ export const ClergPretres = (): JSX.Element => {
                     Désactiver
                   </Button>
                  */}
-                <EditMemberFormSection memberData={selectedMember!} />
-                <Button onClick={handleDeleteMember} className="h-10 bg-red-500 text-white hover:bg-blue/90">
-                { isDeleting && <Loader className='h-5 w-5, mr-2' /> }
-                  Supprimer
-                </Button>
+                {
+                  canUpdateClergy() &&
+                  <EditMemberFormSection memberData={selectedMember!} />
+                }
+                {
+                  canDeleteClergy() &&
+                  <Button onClick={handleDeleteMember} className="h-10 bg-red-500 text-white hover:bg-blue/90">
+                    { isDeleting && <Loader className='h-5 w-5, mr-2' /> }
+                    Supprimer
+                  </Button>
+                }
               </div>
             </header>
           </div>

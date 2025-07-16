@@ -2,6 +2,7 @@ import { Ressource } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Loader } from "@/components/ui/loader";
+import useRole from "@/hooks/use-role";
 import { apiClient } from "@/lib/axios";
 import { InfoIcon, MoreHorizontalIcon, PlusIcon } from "lucide-react";
 import React, { useState } from "react";
@@ -13,6 +14,8 @@ interface AudioPlayerProps {
 }
 
 export const AudioPlayer: React.FC<AudioPlayerProps> = ({ audio, setRessources }) => {
+
+  const { canDeleteAudio } = useRole()
   
   const [openModal, setOpenModal] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
@@ -21,6 +24,9 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ audio, setRessources }
   // const embedUrl = video.media.replace("watch?v=", "v/");
 
   const deleteRessources = async (idRessource: number) => {
+    if (!canDeleteAudio()){ 
+      return toast.success("Vous n'avez pas le droit d'effectuer cette opération !")
+    }
     if (isDeleting) return
     setIsDeleting(true)
     try {

@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/ui/loader";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import useRole from "@/hooks/use-role";
 import { apiClient } from "@/lib/axios";
 import { cn, handleImageUpload } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -83,6 +84,8 @@ export default function AddMemberFormSection(){
   const [member, setMember] = useState(defaultMember)
   const [fileImage, setFileImage] = useState<File | undefined>()
   const [unitePastorales, setUnitePastorales] = useState<TypeParoisse[]>([])
+
+  const {canAddClergy } = useRole()
 
   const formOne = useForm<z.infer<typeof formSchemaOne>>({
     resolver: zodResolver(formSchemaOne),
@@ -204,6 +207,9 @@ export default function AddMemberFormSection(){
           setUnitePastorales(response)
       })()
   }, [])
+
+
+  if (!canAddClergy()) return <></>
 
   return (
     <Dialog>

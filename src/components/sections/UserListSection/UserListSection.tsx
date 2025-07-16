@@ -21,9 +21,12 @@ import { JSX, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Role, User } from "../../../app/types";
 import { EditUserFormSection } from "../EditUserFormSection";
+import useRole from "@/hooks/use-role";
 
 
 export const UserListSection = (): JSX.Element => {
+
+  const { canDeleteUser } = useRole()
 
   // Role filter options
   const roleFilters = [
@@ -72,11 +75,15 @@ export const UserListSection = (): JSX.Element => {
   }, [selectedRole.sigle])
 
   const handleDeletUser = async (user: any) => {
+    if (!canDeleteUser()){
+      return toast.success("Vous n'avez pas le droit d'effectuer cette opération !");
+    }
     setSelectedUser(user)
     setOpenModal(true)
   }
 
   const handleDelete = async () => {
+
     if (isDeleting) return
     setIsDeleting(true)
     try {
@@ -179,8 +186,7 @@ export const UserListSection = (): JSX.Element => {
                         <Button
                           onClick={() => handleDeletUser(user)}
                           variant="ghost"
-                          className="h-auto p-0 flex items-center gap-1"
-                        >
+                          className="h-auto p-0 flex items-center gap-1">
                           <Trash2 className="w-4 h-4 mr-1" />
                           <span className="font-body-3 font-[number:var(--body-3-font-weight)] text-noir-dashboard text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
                             Supprimer

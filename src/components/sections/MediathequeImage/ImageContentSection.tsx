@@ -10,8 +10,12 @@ import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import { Eye, InfoIcon, Trash2Icon } from 'lucide-react';
 import { Loader } from '@/components/ui/loader';
+import useRole from '@/hooks/use-role';
+import { toast } from 'sonner';
 
 export default function ImageContentSection() {
+  
+  const { canDeleteImage } = useRole()
     
    const [images, setImages] = useState<ImageType[]>([])
    const [selectedImage, setSelectedImage] = useState<ImageType | undefined>()
@@ -25,6 +29,9 @@ export default function ImageContentSection() {
     }, [])
 
     const handleDeleteImage = async (img?: ImageType) => {
+      if (!canDeleteImage()){ 
+        return toast.success("Vous n'avez pas le droit d'effectuer cette opération !")
+      }
       if (isDeleting) return;
       if (img) {
         setIsDeleting(true);

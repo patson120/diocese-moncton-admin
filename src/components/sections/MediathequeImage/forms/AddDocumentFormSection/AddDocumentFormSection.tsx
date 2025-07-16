@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/ui/loader";
+import useRole from "@/hooks/use-role";
 import { apiClient } from "@/lib/axios";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { PlusIcon } from "lucide-react";
@@ -13,6 +14,8 @@ import { JSX, useState } from "react";
 import { toast } from "sonner";
 
 export const AddDocumentFormSection = (): JSX.Element => {
+
+  const { canAddDocument} = useRole()
  
   const [fileName, setFileName] = useState("")
   const [file, setFile] = useState<File | undefined>();
@@ -70,6 +73,7 @@ export const AddDocumentFormSection = (): JSX.Element => {
     }
   }
 
+  if (!canAddDocument()) return <></>
 
   return (
     <Dialog open={openModal} onOpenChange={setOpenModal}>

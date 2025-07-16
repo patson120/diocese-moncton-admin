@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/ui/loader";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import useRole from "@/hooks/use-role";
 import { apiClient } from "@/lib/axios";
 import { formatDateToLocal } from "@/lib/utils";
 import {
@@ -24,6 +25,8 @@ import { toast } from "sonner";
 import { useDebouncedCallback } from "use-debounce";
 
 export const DocumentContentSection = (): JSX.Element => {
+
+  const { canDeleteDocument,  } = useRole()
 
   const [dislayMode, setDislayMode] = useState<'list' | 'grid'>('grid')
   const [isDeleting, setisDeleting] = useState(false)
@@ -46,6 +49,9 @@ export const DocumentContentSection = (): JSX.Element => {
   }
   
   const deleteRessources = async (idRessource: number) => {
+    if (!canDeleteDocument()){ 
+      return toast.success("Vous n'avez pas le droit d'effectuer cette opération !")
+    }
     if (isDeleting) return
     setisDeleting(true)
     try {

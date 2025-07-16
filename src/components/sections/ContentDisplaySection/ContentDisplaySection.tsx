@@ -11,8 +11,11 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import ActualiteContent from "../ActualiteContent/ActualiteContent";
 import MessageContent from "../MessageContent/MessageContent";
+import useRole from "@/hooks/use-role";
 
 export default function ContentDisplaySection() {
+
+  const { canAddNews} = useRole()
   const [displayMode, setDisplayMode] = useState<'list' | 'grid'>('grid')
 
   const searchParams = useSearchParams()
@@ -100,7 +103,7 @@ export default function ContentDisplaySection() {
               </TabsList>
             </div>
           </div>
-          {(selectedItem) &&
+          {(selectedItem && canAddNews()) &&
             <Button onClick={() => router.push(selectedItem.route)} className="h-10 gap-2 px-3.5 py-0 bg-blue rounded-[7px] text-white">
               <PlusIcon className="w-5 h-5" />
               <span className="font-body-3 text-sm">Ajouter {selectedItem.labelRouter}</span>

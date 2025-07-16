@@ -2,6 +2,7 @@ import { Ressource } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Loader } from "@/components/ui/loader";
+import useRole from "@/hooks/use-role";
 import { apiClient } from "@/lib/axios";
 import { InfoIcon, MoreHorizontalIcon, PlusIcon } from "lucide-react";
 import React, { useState } from "react";
@@ -16,10 +17,15 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({ video, setRessources }
   const [openModal, setOpenModal] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
 
+  const { canDeleteVideo } = useRole()
+
   const embedUrl = video.media.replace("watch?v=", "embed/"); // Convertir l'URL en URL d'intégration
   // const embedUrl = video.media.replace("watch?v=", "v/");
 
   const deleteRessources = async (idRessource: number) => {
+    if (!canDeleteVideo()){ 
+      return toast.success("Vous n'avez pas le droit d'effectuer cette opération !")
+    }
     if (isDeleting) return
     setIsDeleting(true)
     try {

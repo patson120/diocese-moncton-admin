@@ -13,9 +13,10 @@ import { cn, copyToClipboard } from '@/lib/utils'
 import { TabsContent } from '@radix-ui/react-tabs'
 import { ArrowLeft, CopyIcon, ExternalLinkIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { Image, Message } from '../../../types'
+import useRole from '@/hooks/use-role'
 
 export default function EditMessageForm({message}: { message: Message }) {
   const [section, setSection] = useState<'french' | 'english'>('french');
@@ -23,6 +24,7 @@ export default function EditMessageForm({message}: { message: Message }) {
   const [selectedImage, setSelectedImage] = useState<Image | undefined>({
     id: 0,
     label: "",
+    dossier_id: 0,
     path: message?.image ? `${process.env.NEXT_PUBLIC_API_URL}/${message?.image}` : '',
     path_en: message?.image ? `${process.env.NEXT_PUBLIC_API_URL}/${message?.image}` : '',
     comment: "",
@@ -34,6 +36,7 @@ export default function EditMessageForm({message}: { message: Message }) {
   })
 
   const router = useRouter()
+  const { canAddMessage } = useRole()
 
   const [title, setTitle] = useState({
     french: message.titre_fr,
@@ -92,6 +95,11 @@ export default function EditMessageForm({message}: { message: Message }) {
     setIsLoading(false)
 
   }
+
+  useEffect(() => {
+    if (!canAddMessage()) { router.back()}
+  }, [message.id])
+
   return (
     <div className="relative w-full h-screen bg-[#f0f0f4] overflow-x-hidden">
 

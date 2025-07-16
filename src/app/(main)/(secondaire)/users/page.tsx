@@ -5,8 +5,10 @@ import { UserListSection } from '@/components/sections/UserListSection/UserListS
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import useRole from '@/hooks/use-role';
 
 export default function page() {
+
   // Data for tabs
   const tabItems = [
     { id: "utilisateurs", label: "Utilisateurs" },
@@ -71,7 +73,7 @@ export default function page() {
             </TabsList>
           </div>
           {/* Add user button */}
-          <AddUserFormSection />
+          <AddUserFormSection /> 
           
         </div>
       </header>

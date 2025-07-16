@@ -24,6 +24,7 @@ import { Label } from "@radix-ui/react-label";
 import { GaleryPopup } from "../../GaleryPopup";
 import Image from "next/image";
 import { Editor } from "@/components/Editor/Editor";
+import useRole from "@/hooks/use-role";
 
 
 // Generate hours from 00:00 to 23:59 in 30-minute intervals
@@ -74,6 +75,9 @@ const formSchemaFive = z.object({
 });
 
 export const AddParishFormSection = (): JSX.Element => {
+
+  const { canAddParish } = useRole()
+
   const [step, setStep] = useState(1)
   const [horaires, setHoraires] = useState<{[key: string]: any}[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -270,7 +274,9 @@ export const AddParishFormSection = (): JSX.Element => {
 
   useEffect(() => {
     formThree.setValue("horaire_bureau", horairesBureau)
-}, [horairesBureau])
+  }, [horairesBureau])
+
+  if (!canAddParish()){return <></>}
 
   return (
     <Dialog>

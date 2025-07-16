@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/ui/loader";
+import useRole from "@/hooks/use-role";
 import { apiClient } from "@/lib/axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTrigger } from "@radix-ui/react-dialog";
@@ -23,6 +24,8 @@ const formSchema = z.object({
 
 
 export default function AddVideoFormSection(){
+
+  const { canAddVideo } = useRole()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -65,6 +68,8 @@ export default function AddVideoFormSection(){
       setIsloading(false)
     }
   }
+
+  if (!canAddVideo()) return <></>
 
   return (
     <Dialog>

@@ -24,9 +24,12 @@ import { AddUnitePastoraleFormSection } from './AddUnitePastoraleFormSection';
 import { EditParishFormSection } from './EditParishFormSection';
 import { AddBulletinFormSection } from './AddBulletinFormSection';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import useRole from '@/hooks/use-role';
 
 export default function ParishSection() {
     const router = useRouter()
+
+    const { canUpdateParish, canDeleteParish, canDeleteParishUnit } = useRole()
 
     const [isStatutLoading, setIsStatutLoading] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
@@ -91,6 +94,9 @@ export default function ParishSection() {
     }, 800)
 
     const handleDeleteParish = async () => {
+        if (!canDeleteParish()){ 
+            return toast.success("Vous n'avez pas le droit d'effectuer cette opération !")
+        }
         if (isDeleting) return
         setIsDeleting(true)
         try {
@@ -110,6 +116,7 @@ export default function ParishSection() {
     }
 
     const handleChangeStatus =  async () => {
+
         if (isStatutLoading) return
         setIsStatutLoading(true)        
         const formdata = new FormData()
@@ -464,15 +471,24 @@ export default function ParishSection() {
                                 Fermer
                             </Button>
                             <div className="flex gap-2">
-                                <Button onClick={handleChangeStatus} variant="outline" className="h-10">
-                                    { isStatutLoading && <Loader className='h-5 w-5, mr-2' /> }
-                                    {selecteParish?.statut === 1 ? 'Désactiver': 'Activer'}
-                                </Button>
-                                <EditParishFormSection parish={selecteParish!}  />
-                                <Button onClick={handleDeleteParish} className="h-10 bg-red-500 text-white hover:bg-blue/90">
-                                    { isDeleting && <Loader className='h-5 w-5, mr-2' /> }
-                                    Supprimer
-                                </Button>
+                                {
+                                    canUpdateParish() &&
+                                    <Button onClick={handleChangeStatus} variant="outline" className="h-10">
+                                        { isStatutLoading && <Loader className='h-5 w-5, mr-2' /> }
+                                        {selecteParish?.statut === 1 ? 'Désactiver': 'Activer'}
+                                    </Button>
+                                }
+                                {
+                                    canUpdateParish() &&
+                                    <EditParishFormSection parish={selecteParish!}  />
+                                }
+                                {
+                                    canDeleteParish() &&
+                                    <Button onClick={handleDeleteParish} className="h-10 bg-red-500 text-white hover:bg-blue/90">
+                                        { isDeleting && <Loader className='h-5 w-5, mr-2' /> }
+                                        Supprimer
+                                    </Button>
+                                }
                             </div>
                         </header>
                     </div>
@@ -723,13 +739,18 @@ export default function ParishSection() {
                                 {/**
                                     <EditParishFormSection parish={selecteParish!} />
                                  */}
-                                <Button className="h-10 bg-blue text-white hover:bg-blue/90">
-                                    Modifier
-                                </Button>
-                                <Button onClick={handleDeleteUnitePastorale} className="h-10 bg-red-500 text-white hover:bg-blue/90">
-                                    { isDeleting && <Loader className='h-5 w-5, mr-2' /> }
-                                    Supprimer
-                                </Button>
+                                 {/* 
+                                    <Button className="h-10 bg-blue text-white hover:bg-blue/90">
+                                        Modifier
+                                    </Button>
+                                 */}
+                                {
+                                    canDeleteParishUnit() &&
+                                    <Button onClick={handleDeleteUnitePastorale} className="h-10 bg-red-500 text-white hover:bg-blue/90">
+                                        { isDeleting && <Loader className='h-5 w-5, mr-2' /> }
+                                        Supprimer
+                                    </Button>
+                                }
                             </div>
                         </header>
                     </div>

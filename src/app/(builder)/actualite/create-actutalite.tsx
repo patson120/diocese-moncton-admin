@@ -14,12 +14,15 @@ import { cn, copyToClipboard } from '@/lib/utils'
 import { TabsContent } from '@radix-ui/react-tabs'
 import { ArrowLeft, CopyIcon, ExternalLinkIcon, } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import ActuDialog from './ActuDialog'
 import { ActualitePreview } from '@/app/(builder)/components/ActualitePreview'
+import useRole from '@/hooks/use-role'
 
 export default function CreateActutalite() {
+
+  const { canAddNews} = useRole()
 
   const router = useRouter()
   const [isSave, setIsSave] = useState(0);
@@ -132,6 +135,7 @@ export default function CreateActutalite() {
       {
         id: 36,
         titre: null,
+        dossier_id: 0,
         path: `${selectedImage?.path}`,
         path_en: null,
         label: '',
@@ -214,6 +218,11 @@ export default function CreateActutalite() {
       setIsSavingAsDraft(false)
     }
   }
+
+  useEffect(() => {
+    if (!canAddNews()) { goback()}
+  }, [])
+  
 
   return (
     <div className="relative w-full h-screen bg-[#f0f0f4] overflow-x-hidden">

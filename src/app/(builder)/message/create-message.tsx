@@ -8,17 +8,20 @@ import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from '@
 import { Loader } from '@/components/ui/loader'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import useRole from '@/hooks/use-role'
 import { apiClient } from '@/lib/axios'
 import { cn, copyToClipboard } from '@/lib/utils'
 import { TabsContent } from '@radix-ui/react-tabs'
 import { ArrowLeft, CopyIcon, ExternalLinkIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
 export default function CreateMessage() {
   const [section, setSection] = useState<'french' | 'english'>('french')
   const [selectedImage, setSelectedImage] = useState<Image | undefined>()
+
+  const { canAddMessage } = useRole()
 
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
@@ -116,6 +119,11 @@ export default function CreateMessage() {
     }
     else { saveAsDraft() }
   }
+
+  useEffect(() => {
+    if (!canAddMessage()){ router.back()}
+  }, [])
+  
 
   return (
     <div className="relative w-full h-screen bg-[#f0f0f4] overflow-x-hidden">

@@ -13,6 +13,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { EyeIcon, Trash2Icon } from 'lucide-react';
+import useRole from '@/hooks/use-role';
 
 export default function MessageContent(
     { 
@@ -29,6 +30,8 @@ export default function MessageContent(
     const [messages, setMessages] = useState<Message[]>([])
     const [selectedMessage, setSelectedMessage] = useState<Message | undefined>()
     const [openModal, setOpenModal] = useState(false)
+
+    const { canUpdateMessage, canDeleteMessage } = useRole()
 
     const [isDeleting, setIsDeleting] = useState(false)
     const [isStatusChanging, setIsStatusChanging] = useState(false)
@@ -213,21 +216,30 @@ export default function MessageContent(
                                 Fermer
                             </Button>
                             <div className="flex gap-2">
-                                <Button
-                                    onClick={handleChangeStatus}
-                                    variant="outline" className="h-10">
-                                    { isStatusChanging && <Loader className='w-5 h-5 mr-2' /> }
-                                    {
-                                        selectedMessage?.etat === 1 ? 'Désactiver' : 'Activer'
-                                    }
-                                </Button>
-                                <Button onClick={handleEditMessage} className="h-10 bg-blue text-white hover:bg-blue/90">
-                                    Modifier
-                                </Button>
-                                <Button onClick={handleDeleteMessage} className="h-10 bg-red-500 text-white hover:bg-blue/90">
-                                    { isDeleting && <Loader className='h-5 w-5, mr-2' /> }
-                                    Supprimer
-                                </Button>
+                                {
+                                    canUpdateMessage() &&
+                                    <Button
+                                        onClick={handleChangeStatus}
+                                        variant="outline" className="h-10">
+                                        { isStatusChanging && <Loader className='w-5 h-5 mr-2' /> }
+                                        {
+                                            selectedMessage?.etat === 1 ? 'Désactiver' : 'Activer'
+                                        }
+                                    </Button>
+                                }
+                                {
+                                    canUpdateMessage() &&
+                                    <Button onClick={handleEditMessage} className="h-10 bg-blue text-white hover:bg-blue/90">
+                                        Modifier
+                                    </Button>
+                                }
+                                {
+                                    canDeleteMessage() &&
+                                    <Button onClick={handleDeleteMessage} className="h-10 bg-red-500 text-white hover:bg-blue/90">
+                                        { isDeleting && <Loader className='h-5 w-5, mr-2' /> }
+                                        Supprimer
+                                    </Button>
+                                }
                             </div>
                         </header>
                     </div>

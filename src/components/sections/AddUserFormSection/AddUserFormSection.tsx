@@ -7,6 +7,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/ui/loader";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import useRole from "@/hooks/use-role";
 import { apiClient } from "@/lib/axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTrigger } from "@radix-ui/react-dialog";
@@ -25,6 +26,8 @@ const formSchema = z.object({
 });
 
 export const AddUserFormSection = (): JSX.Element => {
+
+  const { canAddUser } = useRole()
 
   const [isLoading, setIsLoading] = useState(false)
  
@@ -85,6 +88,10 @@ export const AddUserFormSection = (): JSX.Element => {
       )
     }
     form.reset();
+  }
+
+  if (!canAddUser()){
+    return <></>
   }
 
   return (

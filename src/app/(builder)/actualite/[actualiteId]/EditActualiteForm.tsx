@@ -15,10 +15,11 @@ import { cn, copyToClipboard } from '@/lib/utils'
 import { TabsContent } from '@radix-ui/react-tabs'
 import { ArrowLeft, CopyIcon, ExternalLinkIcon, } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { ActualitePreview } from '../../components/ActualitePreview'
 import EditActuDialog from './EditActuDialog'
+import useRole from '@/hooks/use-role'
 
 export default function EditActualiteForm({actualite}: { actualite: Actualite }) {
   const router = useRouter()
@@ -28,6 +29,8 @@ export default function EditActualiteForm({actualite}: { actualite: Actualite })
   const [isEnglishVersion, setIsEnglishVersion] = useState(false);
   const [isEmptyActu, setIsEmptyActu] = useState(false);
   const [openPublishModal, setOpenPublishModal] = useState(false);
+
+  const { canAddNews } = useRole()
 
   const [selectedImage, setSelectedImage] = useState<Image | undefined>( actualite.galerie.length > 0 ? 
     { ...actualite.galerie[0], path: `${process.env.NEXT_PUBLIC_API_URL}/${actualite.galerie[0].path}`} 
@@ -61,6 +64,7 @@ export default function EditActualiteForm({actualite}: { actualite: Actualite })
         {
           id: 36,
           titre: null,
+          dossier_id: 0,
           path: `${selectedImage?.path}`,
           path_en: null,
           label: '',
@@ -141,6 +145,10 @@ export default function EditActualiteForm({actualite}: { actualite: Actualite })
       router.back()
     }
   }
+
+   useEffect(() => {
+      if (!canAddNews()) { goback()}
+    }, [actualite.id])
 
   return (
     <div className="relative w-full h-screen bg-[#f0f0f4] overflow-x-hidden">

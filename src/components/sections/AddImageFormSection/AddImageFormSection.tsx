@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/ui/loader";
+import useRole from "@/hooks/use-role";
 import { apiClient } from "@/lib/axios";
 import { handleImageUpload } from "@/lib/utils";
 import { DialogTrigger } from "@radix-ui/react-dialog";
@@ -14,6 +15,8 @@ import { JSX, useState } from "react";
 import { toast } from "sonner";
 
 export const AddImageFormSection = (): JSX.Element => {
+
+  const { canAddImage} = useRole()
  
   const [fileName, setFileName] = useState("")
   const [coverImage, setCoverImage] = useState('')
@@ -72,6 +75,8 @@ export const AddImageFormSection = (): JSX.Element => {
       setIsLoading(false)
     }
   }
+
+  if (!canAddImage()) return <></>
 
   return (
     <Dialog open={openModal} onOpenChange={setOpenModal}>

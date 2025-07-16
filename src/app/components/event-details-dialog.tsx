@@ -11,6 +11,7 @@ import { Loader } from '@/components/ui/loader';
 import { EditEventFormSection } from '@/components/sections/EventSection/EditEventFormSection';
 import { MapContainer } from '@/components/sections/MapSection/map-container';
 import { PhoneIcon } from 'lucide-react';
+import useRole from '@/hooks/use-role';
 
 interface EventDetailsDialogProps {
   event: Event | null;
@@ -21,6 +22,9 @@ interface EventDetailsDialogProps {
 export default function EventDetailsDialog({ event, open, onOpenChange }: EventDetailsDialogProps) {
   const [isDeleting, setIsDeleting] = useState(false)
   const [isStatusChanging, setIsStatusChanging] = useState(false)
+  const { canAddEvent, canUpdateEvent, canDeleteEvent} =  useRole()
+
+
   if (!event) return null;
 
   // Function to handle event deletion
@@ -75,12 +79,21 @@ export default function EventDetailsDialog({ event, open, onOpenChange }: EventD
               Fermer
             </Button>
             <div className="flex gap-2">
-              <EditEventFormSection eventData={event} duplicated={true} />
-              <EditEventFormSection eventData={event} />
-              <Button onClick={handleDeleteEvent} className="h-10 bg-red-500 text-white hover:bg-blue/90">
-                { isDeleting && <Loader className='h-5 w-5, mr-2' /> }
-                Supprimer
-              </Button>
+              {
+                canAddEvent() &&
+                <EditEventFormSection eventData={event} duplicated={true} />
+              }
+              {
+                canUpdateEvent() &&
+                <EditEventFormSection eventData={event} />
+              }
+              {
+                canDeleteEvent() &&
+                <Button onClick={handleDeleteEvent} className="h-10 bg-red-500 text-white hover:bg-blue/90">
+                  { isDeleting && <Loader className='h-5 w-5, mr-2' /> }
+                  Supprimer
+                </Button>
+              }
             </div>
           </header>
         </div>

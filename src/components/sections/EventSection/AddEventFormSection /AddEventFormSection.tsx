@@ -21,6 +21,7 @@ import { toast } from "sonner";
 import * as z from "zod";
 import { GaleryPopup } from "../../GaleryPopup";
 import { AddCategoryFormSection } from "../AddCategoryFormSection";
+import useRole from "@/hooks/use-role";
 
 const defaultEvent = {
   paroisse_id: 1,
@@ -56,13 +57,11 @@ const formSchemaThree = z.object({
 
 const formSchemaFour = z.object({
   contact: z.string().min(1, {message: "Un contact est requis"}),
-  // gps: z.string().min(1, {message: "Un GPS est requis"}),
-  // lieu: z.string().min(1, {message: "Un lieu est requis"}),
-  // is_planifier: z.number().min(0, {message: "Un plan est requis"}),
-  // date_planification: z.string().optional(),
 })
 
 export const AddEventFormSection = (): JSX.Element => {
+
+  const { canAddEvent} = useRole()
  
   const [isLoading, setIsloading] = useState(false)
   const [openModal, setOpenModal] = useState(false)
@@ -118,6 +117,11 @@ export const AddEventFormSection = (): JSX.Element => {
   }, [])
 
   const handleCreateEvent = async () => {
+
+    if (!canAddEvent()){ 
+      return toast.success("Vous n'avez pas le droit d'effectuer cette opération !")
+    }
+
     // Vérifier si les coordonnées de la paroisse sont fournies
     if (!location){
       toast.error(
@@ -228,6 +232,9 @@ export const AddEventFormSection = (): JSX.Element => {
       }
     }
   }
+
+  if (!canAddEvent()) return <></>
+
   return (
     <Dialog open={openModal} onOpenChange={setOpenModal}>
       <DialogTrigger asChild>

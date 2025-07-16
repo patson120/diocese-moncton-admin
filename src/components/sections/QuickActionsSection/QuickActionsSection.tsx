@@ -1,16 +1,15 @@
 "use client"
 
-import { AddEventFormSection } from "@/components/sections/EventSection/AddEventFormSection ";
 import Text from "@/components/shared/Text";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { apiClient } from "@/lib/axios";
 import { formatDateToLocal } from "@/lib/utils";
 import { BookOpenText, Calendar1, CalendarPlus, Layers, MapPin } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { JSX, useEffect, useState } from "react";
 import { Event } from "../../../app/types";
-import Link from "next/link";
 
 const QuickActionsSection = (): JSX.Element => {
 
@@ -51,25 +50,24 @@ const QuickActionsSection = (): JSX.Element => {
         </Card>
         <Card
           className="bg-white rounded-xl shadow-none p-0">
-          <CardContent className="flex px-4 py-4 justify-stretch items-center">
-            <div className="flex items-center gap-3">
-              {/* Icon placeholder */}
-              <div className="w-12 h-12 shrink-0 bg-red-light rounded-xl flex justify-center items-center">
-                <CalendarPlus className="h-6 w-6" />
-              </div>
-              <div className="relative flex flex-col items-start gap-1">
-                <p className="font-semibold text-noir-dashboard leading-[25px] line-clamp-1">
-                  Créer un évènement
-                </p>
-                <p className="font-legend -mt-1 font-[number:var(--legend-font-weight)] text-gray text-xs tracking-[var(--legend-letter-spacing)] leading-[var(--legend-line-height)] [font-style:var(--legend-font-style)] line-clamp-1">
-                  Programmer un nouvel évènement à venir
-                </p>
-                <div className="w-full h-full absolute opacity-0">
-                  <AddEventFormSection />
+          <Link href={'/actualite'} >
+            <CardContent className="flex px-4 py-4 justify-stretch items-center">
+              <div className="flex items-center gap-3">
+                {/* Icon placeholder */}
+                <div className="w-12 h-12 shrink-0 bg-red-light rounded-xl flex justify-center items-center">
+                  <CalendarPlus className="h-6 w-6" />
                 </div>
+                <div className="flex flex-col items-start gap-1 ">
+                  <p className="font-semibold text-noir-dashboard leading-[25px] line-clamp-1">
+                    Créer une actualté
+                  </p>
+                  <p className="font-legend -mt-1 font-[number:var(--legend-font-weight)] text-gray text-xs tracking-[var(--legend-letter-spacing)] leading-[var(--legend-line-height)] [font-style:var(--legend-font-style)] line-clamp-1">
+                    Ajouter une actualité rapidement
+                  </p>
+                </div>              
               </div>
-            </div>
-          </CardContent>
+            </CardContent>
+          </Link>
         </Card>
         <Card
           className="bg-white rounded-xl shadow-none p-0">
