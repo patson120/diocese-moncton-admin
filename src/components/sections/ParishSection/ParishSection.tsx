@@ -11,7 +11,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sh
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { apiClient } from '@/lib/axios';
 import { formatDateToLocal } from '@/lib/utils';
-import { Church, LayoutGridIcon, ListFilter, MailIcon, MapPinIcon, MoreHorizontalIcon, PhoneIcon, SearchIcon } from 'lucide-react';
+import { Church, LayoutGridIcon, ListFilter, MailIcon, MapPinIcon, MoreHorizontalIcon, PhoneIcon, PlusIcon, SearchIcon } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { ChangeEvent, useEffect, useState } from 'react';
@@ -123,9 +123,8 @@ export default function ParishSection() {
         formdata.append("email", selecteParish?.email!)
         formdata.append("site_web", selecteParish?.site_web!)
         formdata.append("horaires", `${selecteParish?.horaireparoisses.map(item => `${item.jour}=${item.heure}`).join(",")}`)
-        // formdata.append("etabli_le", `${selecteParish?.etabli_le!}`)
-        // formdata.append("ordonne_le", `${selecteParish?.ordonne_le!}`)
-        // formdata.append("premier_cure", `${selecteParish?.premier_cure!}`)
+        formdata.append("langue", `${selecteParish?.langue}`)
+        formdata.append("horaire_bureau", `${selecteParish?.horaire_bureau}`)
         formdata.append("gps", selecteParish?.gps!)
         formdata.append("statut", `${ selecteParish?.statut === 1 ? '0': '1' }`)
         formdata.append("adresse", selecteParish?.adresse!)
@@ -186,6 +185,73 @@ export default function ParishSection() {
         }
     }
 
+    const handleAddImage = async () => {
+        // if (isDeleting) return
+        // setIsDeleting(true)
+        try {
+            const response = await apiClient.post(`/api/add_media`, {
+                // fichier: 29,
+                galerie_id: 40,
+                paroisse_id: selecteParish?.id
+            });
+            // setOpenModal(false)
+            console.log(JSON.stringify(response, null, 2));
+        } catch (error) {
+            toast.error(
+                <div className='p-3 bg-red-500 text-white rounded-md'>
+                    Error adding image: {JSON.stringify(error)}
+                </div>
+            )
+        } finally {
+            // setIsDeleting(false)
+        }
+    }
+
+    const handleAddFolder = async () => {
+        // if (isDeleting) return
+        // setIsDeleting(true)
+        try {
+            const response = await apiClient.post(`/api/dossiers`, {
+                parent_id: 0,
+                titre_fr: "Paroisses",
+                titre_en: "Parishes",
+            });
+            // setOpenModal(false)
+            console.log(JSON.stringify(response, null, 2));
+        } catch (error) {
+            toast.error(
+                <div className='p-3 bg-red-500 text-white rounded-md'>
+                    Error adding folder: {JSON.stringify(error)}
+                </div>
+            )
+        } finally {
+            // setIsDeleting(false)
+        }
+    }
+    
+    const handleAddCategory = async () => {
+        // if (isDeleting) return
+        // setIsDeleting(true)
+        try {
+            const response = await apiClient.post(`/api/categories`, {
+                parent_id: 0,
+                intitule_fr: "Mariage",
+                intitule_en: "Wedding",
+                menu: "event",
+            });
+            // setOpenModal(false)
+            console.log(JSON.stringify(response, null, 2));
+        } catch (error) {
+            toast.error(
+                <div className='p-3 bg-red-500 text-white rounded-md'>
+                    Error adding category: {JSON.stringify(error)}
+                </div>
+            )
+        } finally {
+            // setIsDeleting(false)
+        }
+    }
+    
     return (
         <main>
             <Tabs defaultValue="paroisses" >
@@ -402,7 +468,7 @@ export default function ParishSection() {
                                     { isStatutLoading && <Loader className='h-5 w-5, mr-2' /> }
                                     {selecteParish?.statut === 1 ? 'Désactiver': 'Activer'}
                                 </Button>
-                                <EditParishFormSection parish={selecteParish!} />
+                                <EditParishFormSection parish={selecteParish!}  />
                                 <Button onClick={handleDeleteParish} className="h-10 bg-red-500 text-white hover:bg-blue/90">
                                     { isDeleting && <Loader className='h-5 w-5, mr-2' /> }
                                     Supprimer
@@ -599,6 +665,17 @@ export default function ParishSection() {
                                 </div>
                             </section>
                             <AddBulletinFormSection paroisse_id={selecteParish?.id!} />
+                            {/* 
+                                <Button onClick={handleAddImage} className="h-10 bg-primary text-white hover:bg-blue/90  gap-2">
+                                    <PlusIcon className="w-5 h-5" />
+                                    Ajouter un photo
+                                </Button>
+
+                                <Button onClick={handleAddFolder} className="h-10 bg-primary text-white hover:bg-blue/90  gap-2">
+                                    <PlusIcon className="w-5 h-5" />
+                                    Ajouter un repertoire
+                                </Button>
+                            */}
 
                             {/* Map section */}
                             <section className="w-full">

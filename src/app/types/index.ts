@@ -71,6 +71,7 @@ export type Paroisse = {
     created_at: string;
     updated_at: string;
     galerie: Image[];
+    media: Image[];
     bulletins: Bulletin[];
     type: TypeParoisse;
     horaireparoisses: Horaire[];
@@ -85,7 +86,6 @@ export type Bulletin = {
     created_at: string;
     updated_at: string;
 }
-
 export type TypeParoisse = {
     id: number;
     intitule_fr: string;
@@ -134,6 +134,7 @@ export type Image = {
     label: string;
     value: number;
     comment: string;
+    dossier_id: number | null
     created_at: string;
     updated_at: string;
 }

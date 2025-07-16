@@ -1,11 +1,10 @@
 'use client';
 
-import React from 'react'
-import { UserListSection } from '@/components/sections/UserListSection/UserListSection'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { AddUserFormSection } from '@/components/sections/AddUserFormSection'
+import { AddUserFormSection } from '@/components/sections/AddUserFormSection';
+import { UserListSection } from '@/components/sections/UserListSection/UserListSection';
 import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function page() {
   // Data for tabs
@@ -73,6 +72,7 @@ export default function page() {
           </div>
           {/* Add user button */}
           <AddUserFormSection />
+          
         </div>
       </header>
 

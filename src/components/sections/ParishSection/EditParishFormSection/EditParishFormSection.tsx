@@ -89,7 +89,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
     : undefined
   )
 
-  const [horairesBureau, setHorairesBureau] = useState("")
+  const [horairesBureau, setHorairesBureau] = useState(parish.horaire_bureau!)
 
   const [location, setLocation] = useState<Location | null>({
     address: `${parish?.adresse.split(";")[1]}`,
@@ -302,7 +302,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
           Modifier
         </Button>
       </DialogTrigger>
-      <DialogContent aria-describedby={undefined} className="w-[500px] p-0 gap-0 rounded-2xl overflow-hidden">
+      <DialogContent aria-describedby={undefined} className="min-w-[500px] w-min p-0 gap-0 rounded-2xl overflow-hidden">
         <DialogHeader className="border-b border-neutral-200 p-4 rounded-t-2xl">
           <DialogTitle className="text-lg font-bold leading-7">
             Mettre à jour la paroisse

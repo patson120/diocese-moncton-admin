@@ -72,10 +72,6 @@ export const AddBulletinFormSection = ( {paroisse_id}: { paroisse_id: number}): 
     }
   }
 
-  console.log("Month", getMonth(new Date()) + 1);
-  
-
-
   return (
     <Dialog open={openModal} onOpenChange={setOpenModal}>
       <DialogTrigger asChild>
