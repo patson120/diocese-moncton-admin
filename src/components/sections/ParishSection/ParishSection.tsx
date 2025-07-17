@@ -29,7 +29,7 @@ import useRole from '@/hooks/use-role';
 export default function ParishSection() {
     const router = useRouter()
 
-    const { canUpdateParish, canDeleteParish, canDeleteParishUnit } = useRole()
+    const { canUpdateParish, canDeleteParish, canDeleteBulletin, canDeleteParishUnit } = useRole()
 
     const [isStatutLoading, setIsStatutLoading] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
@@ -192,6 +192,22 @@ export default function ParishSection() {
         }
     }
 
+
+    const handleDeleteRessource = async (id: number) => {
+        if (!canDeleteBulletin()){ 
+            return toast.success("Vous n'avez pas le droit d'effectuer cette opération !")
+        }
+        try {
+            await apiClient.delete(`/api/bulletin_paroissial/${id}`);
+            toast.success("Bulletin enregistré avec succès !")
+        } catch (error: any) {
+            toast.warning(
+                <div className='p-3 bg-red-500 text-white rounded-md'>
+                Une erreur est survenue. Erreur:  {JSON.stringify(error.message)}
+                </div>
+            )
+        }
+    }
     const handleAddImage = async () => {
         // if (isDeleting) return
         // setIsDeleting(true)
@@ -653,10 +669,10 @@ export default function ParishSection() {
                                                     <DropdownMenuItem className="text-gray">
                                                         <a href={`${process.env.NEXT_PUBLIC_API_URL}/${doc.document}`} target="_blank" >Consulter</a>
                                                     </DropdownMenuItem>
-                                                    <DropdownMenuItem onClick={() => {}}
+                                                    <DropdownMenuItem onClick={() => handleDeleteRessource(doc.id)}
                                                     className="text-red-500">
                                                     { (isDeleting ) &&
-                                                    <Loader className="w-4 h-4 mr-2" />
+                                                        <Loader className="w-4 h-4 mr-2" />
                                                     }
                                                     Supprimer</DropdownMenuItem>
                                                 </DropdownMenuContent>

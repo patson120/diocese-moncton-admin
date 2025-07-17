@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/ui/loader";
+import useRole from "@/hooks/use-role";
 import { apiClient } from "@/lib/axios";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { getMonth } from "date-fns";
@@ -14,6 +15,8 @@ import { JSX, useState } from "react";
 import { toast } from "sonner";
 
 export const AddBulletinFormSection = ( {paroisse_id}: { paroisse_id: number}): JSX.Element => {
+
+  const { canAddBulletin, canDeleteBulletin } = useRole()
  
   const [fileName, setFileName] = useState("")
   const [file, setFile] = useState<File | undefined>();
@@ -29,6 +32,10 @@ export const AddBulletinFormSection = ( {paroisse_id}: { paroisse_id: number}): 
   };
 
   const handleAddRessource = async () => {
+
+    if (!canAddBulletin()){ 
+      return toast.success("Vous n'avez pas le droit d'effectuer cette opération !")
+  }
     if (isLoading) return
     if (!file) {
       toast.warning(
@@ -75,7 +82,7 @@ export const AddBulletinFormSection = ( {paroisse_id}: { paroisse_id: number}): 
   return (
     <Dialog open={openModal} onOpenChange={setOpenModal}>
       <DialogTrigger asChild>
-        <Button onClick={( ) => setOpenModal(true)} className="bg-blue hover:bg-blue/90 text-white gap-2">
+        <Button disabled={!canAddBulletin()} onClick={( ) => setOpenModal(true) } className="bg-blue hover:bg-blue/90 text-white gap-2">
           <PlusIcon className="w-5 h-5" />
           Ajouter un bulletin
         </Button>

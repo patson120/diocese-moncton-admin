@@ -237,6 +237,29 @@ const useRole = () => {
 
     const canDeleteMessage = (): boolean => canUpdateMessage()
 
+    const canAddBulletin = (): boolean => {
+        switch (userJson?.role?.sigle!) {
+            case "admin": return true
+            case "editeur": return false
+            case "lecteur": return false
+            case "moderateur": return false
+            case "bulletin": return false
+            default: return false
+        }
+    }
+    const canUpdateBulletin = (): boolean => {
+        switch (userJson?.role?.sigle!) {
+            case "admin": return true
+            case "editeur": return false
+            case "lecteur": return false
+            case "moderateur": return false
+            case "bulletin": return false
+            default: return false
+        }
+    }
+
+    const canDeleteBulletin = (): boolean => canUpdateMessage()
+
 
     return {
         canAddUser,
@@ -281,7 +304,11 @@ const useRole = () => {
 
         canAddMessage,
         canUpdateMessage,
-        canDeleteMessage
+        canDeleteMessage,
+
+        canAddBulletin,
+        canUpdateBulletin,
+        canDeleteBulletin
     }
 }
 
