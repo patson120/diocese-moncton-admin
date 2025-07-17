@@ -153,8 +153,7 @@ export function EventForm({ onSubmit }: EventFormProps) {
               {locationSuggestions.map((suggestion) => (
                 <CommandItem
                   key={suggestion.place_id}
-                  onSelect={() => handleLocationSelect(suggestion.description)}
-                >
+                  onSelect={() => handleLocationSelect(suggestion.description)}>
                   {suggestion.description}
                 </CommandItem>
               ))}
