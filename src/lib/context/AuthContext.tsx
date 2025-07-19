@@ -4,7 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { getCurrentUser, logout as logoutUser, setCurrentUser } from '../localStorage';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
-import { User } from '@/app/types';
+import { Role, User } from '@/app/types';
 import { apiClient } from '../axios';
 import { toast } from 'sonner';
 
@@ -51,10 +51,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       formdata.append("password", password);
       const response: any = await apiClient.post('/api/auth/login', formdata, {
         'Content-Type': 'multipart/form-data'
-      });
+      })
       
       if(response.id){
         loggedInUser = response as User
+        const role: Role = await apiClient.get(`/api/roles/${response.role_id}`);
+        loggedInUser.role = role
+        
         setUser(loggedInUser);
         setCurrentUser(loggedInUser)
         Cookies.set('user', JSON.stringify(loggedInUser), { expires: 7 });

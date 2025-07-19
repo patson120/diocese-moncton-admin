@@ -12,6 +12,7 @@ import { Eye, InfoIcon, Trash2Icon } from 'lucide-react';
 import { Loader } from '@/components/ui/loader';
 import useRole from '@/hooks/use-role';
 import { toast } from 'sonner';
+import Folders from './components/Folders';
 
 export default function ImageContentSection() {
   
@@ -78,6 +79,8 @@ export default function ImageContentSection() {
                             </Card>
                         ))}
                     </div>
+
+                    <Folders />
                 </ScrollArea>
             </div>
 
