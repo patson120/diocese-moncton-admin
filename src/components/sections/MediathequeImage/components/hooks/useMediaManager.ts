@@ -370,12 +370,14 @@ export const useMediaManager = () => {
     }
     
     return files.sort((a, b) => {
-      let aValue: any = a[state.sortBy];
-      let bValue: any = b[state.sortBy];
+      let aValue, bValue;
       
       if (state.sortBy === 'date') {
         aValue = a.createdAt.getTime();
         bValue = b.createdAt.getTime();
+      } else {
+        aValue = a[state.sortBy as keyof Pick<MediaFile, 'name' | 'size' | 'type'>];
+        bValue = b[state.sortBy as keyof Pick<MediaFile, 'name' | 'size' | 'type'>];
       }
       
       const modifier = state.sortOrder === 'asc' ? 1 : -1;
