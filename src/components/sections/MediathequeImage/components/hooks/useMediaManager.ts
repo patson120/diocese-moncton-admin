@@ -138,6 +138,7 @@ const folders = [
 ]
 
 export const useMediaManager = () => {
+  const [dossiers, setDossiers] = useState<MediaFolder[]>([])
   const [state, setState] = useState<MediaManagerState>({
     folders: [],
     currentFolder: null,
@@ -156,8 +157,9 @@ export const useMediaManager = () => {
   }, []);
 
   const updateFolderInTree = (folders: MediaFolder[], folderId: string, updates: Partial<MediaFolder>): MediaFolder[] => {
-    return folders.map(folder => {
+    return folders.map((folder) => {
       if (folder.id === folderId) {
+        putFolder(Number(folderId), Number(folder.parentId), updates.name!)
         return { ...folder, ...updates };
       }
       if (folder.children.length > 0) {
@@ -170,7 +172,7 @@ export const useMediaManager = () => {
     });
   };
 
-  const createFolder = useCallback((parentId: string, name: string) => {
+  const createFolder = useCallback( async(parentId: string, name: string) => {
     const newFolder: MediaFolder = {
       id: Date.now().toString(),
       name,
@@ -184,25 +186,28 @@ export const useMediaManager = () => {
       color: '#6b7280'
     };
     if (parentId){
+      const id = await postFolder(Number(parentId), name)
       setState(prev => ({
         ...prev,
-        folders: addFolderToTree(prev.folders, parentId, newFolder)
+        folders: addFolderToTree(prev.folders, parentId, {...newFolder, id})
       }))
     }
     else {
+      const id = await postFolder(0, name,)
       setState(prev => ({
         ...prev,
-        folders: prev.folders.concat(newFolder)
+        folders: prev.folders.concat({...newFolder, id})
       }))
     }
 
   }, []);
 
   const fetchFolders = async () => {
-    const response: any[] = await apiClient.get(`https://diocese.wds-project.com/api/dossiers?parent_id=0`)
+    const response: any[] = await apiClient.get(`/api/dossiers?parent_id=0`)
+    let data: MediaFolder[] = []
     response.forEach(dossier => {
       const newFolder: MediaFolder = {
-        id: Date.now().toString(),
+        id: dossier.id,
         name: dossier.titre_fr,
         path: dossier.parent_id ? `${dossier.parent_id}/${dossier.titre_fr}` : `/${dossier.titre_fr}`,
         parentId: dossier.parent_id,
@@ -212,18 +217,37 @@ export const useMediaManager = () => {
         modifiedAt: new Date(),
         isExpanded: false,
         color: '#6b7280'
-      };
-
-      setState(prev => ({
-        ...prev,
-        folders: prev.folders.concat(newFolder)
-      }))
+      }
+      data = [ ...data, newFolder]
     });
+    setState(prev => ({
+      ...prev,
+      folders: data
+    }))
+  }
+
+  const postFolder = async (parent_id: number, titre: string) => {
+    const response: any = await apiClient.post(`/api/dossiers`, {
+      parent_id: parent_id,
+      titre_fr: titre,
+      titre_en: titre,
+    })
+    return response.id
+  }
+
+  const putFolder = async (folder_id: number, parent_id: number, titre: string) => {
+    await apiClient.put(`/api/dossiers/${folder_id}`, {
+      parent_id: parent_id,
+      titre_fr: titre,
+      titre_en: titre,
+    })
+  }
+
+  const dropFolder = async (folder_id: number) => {
+    await apiClient.delete(`/api/dossiers/${folder_id}`)
   }
 
   useEffect(() => {
-    console.log("Hello world");
-    
     fetchFolders()
   }, [])
 
@@ -246,7 +270,8 @@ export const useMediaManager = () => {
     });
   };
 
-  const deleteFolder = useCallback((folderId: string) => {
+  const deleteFolder = useCallback( async (folderId: string) => {
+    await dropFolder(Number(folderId))
     setState(prev => ({
       ...prev,
       folders: removeFolderFromTree(prev.folders, folderId),
