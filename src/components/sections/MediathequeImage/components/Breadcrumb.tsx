@@ -31,7 +31,7 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
     while (current) {
       path.unshift(current);
       if (current.parentId) {
-        current = getFolderById(folders, current.parentId);
+        current = getFolderById(folders, current.parentId)!;
       } else {
         current = null;
       }
