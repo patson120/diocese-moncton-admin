@@ -10,7 +10,6 @@ import { VideoContentSection } from "./VideoContentSection";
 import { AddDocumentFormSection } from "./forms/AddDocumentFormSection";
 import AddVideoFormSection from "./forms/AddVideoFormSection";
 import AddAudioFormSection from "./forms/AddAudioFormSection";
-import Hello from "./components/Hello";
 
 export default function MediathequeImage(): JSX.Element {
 

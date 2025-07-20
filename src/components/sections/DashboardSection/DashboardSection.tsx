@@ -74,7 +74,7 @@ export const DashboardSection = (): JSX.Element => {
 
           {/* Card content */}
           <div className="flex flex-col items-start gap-0.5 mt-9 ml-5">
-            <div className="text-gray text-xs">Actaulités</div>
+            <div className="text-gray text-xs">Actualités</div>
             <div className="font-heading-5 font-bold text-noir-dashboard text-xl leading-[28.6px]">
               {totalNews}
             </div>

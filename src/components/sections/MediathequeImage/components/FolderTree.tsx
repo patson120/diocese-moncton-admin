@@ -1,20 +1,5 @@
 "use client";
 
-import React, { useState } from 'react';
-import { 
-  Folder, 
-  FolderOpen, 
-  ChevronRight, 
-  ChevronDown, 
-  Plus,
-  MoreHorizontal,
-  Edit2,
-  Trash2,
-  FolderPlus,
-  Star,
-  Clock,
-  Home
-} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -24,6 +9,19 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+import {
+  ChevronDown,
+  ChevronRight,
+  Edit2,
+  Folder,
+  FolderOpen,
+  FolderPlus,
+  Home,
+  MoreHorizontal,
+  Plus,
+  Trash2
+} from 'lucide-react';
+import React, { useState } from 'react';
 import { MediaFolder } from './types/media';
 
 interface FolderTreeProps {
