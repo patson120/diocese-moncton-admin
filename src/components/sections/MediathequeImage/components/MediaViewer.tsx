@@ -1,32 +1,39 @@
 "use client";
 
-import React from 'react';
-import { 
-  Image, 
-  Video, 
-  FileText, 
-  Music, 
-  Grid3X3, 
-  List,
-  Heart,
-  Download,
-  Share2,
-  MoreHorizontal,
-  ArrowUpDown,
-  CheckSquare,
-  Square
-} from 'lucide-react';
+import { Image as ImageType } from '@/app/types';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuTrigger,
   DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Loader } from '@/components/ui/loader';
+import useRole from '@/hooks/use-role';
+import { apiClient } from '@/lib/axios';
 import { cn } from '@/lib/utils';
+import {
+  CheckSquare,
+  Download,
+  Eye,
+  FileText,
+  Heart,
+  Image as ImageIcon,
+  InfoIcon,
+  MoreHorizontal,
+  Music,
+  Share2,
+  Square,
+  Trash2Icon,
+  Video
+} from 'lucide-react';
+import Image from 'next/image';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 import { MediaFile } from './types/media';
 
 interface MediaViewerProps {
@@ -55,7 +62,7 @@ const formatFileSize = (bytes: number): string => {
 
 const getFileIcon = (type: MediaFile['type']) => {
   switch (type) {
-    case 'image': return <Image className="h-4 w-4" />;
+    case 'image': return <ImageIcon className="h-4 w-4" />;
     case 'video': return <Video className="h-4 w-4" />;
     case 'audio': return <Music className="h-4 w-4" />;
     case 'document': return <FileText className="h-4 w-4" />;
@@ -319,13 +326,51 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
     }
   };
 
+
+
+  // Image
+
+  const { canDeleteImage } = useRole()
+    
+  const [images, setImages] = useState<ImageType[]>([])
+  const [selectedImage, setSelectedImage] = useState<ImageType | undefined>()
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  useEffect(() => {
+    ( async () => {
+      const response: ImageType[] = await apiClient.get('/api/galeries');
+      setImages(response)
+    }) ()
+  }, [])
+
+  const handleDeleteImage = async (img?: ImageType) => {
+    if (!canDeleteImage()){ 
+      return toast.success("Vous n'avez pas le droit d'effectuer cette opération !")
+    }
+    if (isDeleting) return;
+    if (img) {
+      setIsDeleting(true);
+      try {
+        await apiClient.delete(`/api/galeries/${ img.id}`);
+        setImages(images.filter(image => image.id !== img.id));
+        setSelectedImage(undefined);
+      } catch (error) {
+        console.error('Error deleting image:', error);
+      }
+      finally {
+        setIsDeleting(false);
+      }
+    }
+  }
+  
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <h2 className="text-lg font-semibold">{title}</h2>
           <div className="text-sm text-muted-foreground">
-            {files.length} fichier{files.length > 1 ? 's' : ''}
+            {images.length} fichier{images.length > 1 ? 's' : ''}
             {selectedFiles.length > 0 && (
               <span className="ml-2 text-blue-600">
                 • {selectedFiles.length} sélectionné{selectedFiles.length > 1 ? 's' : ''}
@@ -333,7 +378,7 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
             )}
           </div>
         </div>
-        
+        {/*
         <div className="flex items-center gap-2">
           {selectedFiles.length > 0 && (
             <Button variant="outline" size="sm" onClick={onClearSelection}>
@@ -393,12 +438,14 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
             </Button>
           </div>
         </div>
+         */}
       </div>
-      
-      {files.length === 0 ? (
+      {/* 
+      {
+        files.length === 0 ? (
         <div className="text-center py-16">
           <div className="text-gray-400 mb-4">
-            <Image className="h-16 w-16 mx-auto" />
+            <ImageIcon className="h-16 w-16 mx-auto" />
           </div>
           <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun fichier</h3>
           <p className="text-muted-foreground">Il n'y a aucun fichier dans cette section</p>
@@ -427,7 +474,85 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
             />
           ))}
         </div>
-      )}
+      )}*/} 
+
+      { 
+        images.length === 0 &&
+        <div className="text-center py-16">
+          <div className="text-gray-400 mb-4">
+            <ImageIcon className="h-16 w-16 mx-auto" />
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun fichier</h3>
+          <p className="text-muted-foreground">Il n'y a aucun fichier dans cette section</p>
+        </div>
+      }
+
+      {/* Image grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 gap-4">
+        { images.map((image, index) => (
+          <Card
+              key={index}
+              className="overflow-hidden rounded-lg border-none relative shrink-0 min-h-[150px] max-h-[200px]">
+              <Image
+                  alt={`Image ${index + 1}`}
+                  src={`${process.env.NEXT_PUBLIC_API_URL}/${image.path!}`}
+                  style={{ objectFit: 'cover' }}
+                  fill
+                  priority
+              />
+              <div className='absolute top-0 left-0 w-full h-full bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-all duration-300 ease-in-out'>
+                  <div className='flex items-center gap-2'>
+                    <button onClick={() => {setSelectedImage(image)}} className='h-10 w-10 rounded-full bg-white/20 text-white hover:bg-white hover:text-black flex items-center justify-center'>
+                      <Eye className='w-5 h-5'/>
+                    </button>
+                    <button onClick={() => handleDeleteImage(image)} className='h-10 w-10 rounded-full bg-white/20 text-white hover:bg-white hover:text-black flex items-center justify-center'>
+                      { isDeleting ? <Loader className="h-5 w-5" /> : <Trash2Icon className='w-5 h-5'/>}
+                    </button>
+                  </div>
+              </div>
+          </Card>
+        ))}
+      </div>
+      <Dialog open={selectedImage != undefined} onOpenChange={() => setSelectedImage(undefined)}>
+          <DialogContent aria-describedby={undefined} className="max-w-4xl p-3 rounded-2xl">
+            <DialogClose onClick={() => setSelectedImage(undefined)} className="absolute border-none w-5 h-5 top-[14px] right-[14px]">
+            </DialogClose>
+            <DialogHeader className='hidden'>
+                <DialogTitle></DialogTitle>
+            </DialogHeader>
+            <div className='w-full h-[calc(70vh)] relative rounded-xl overflow-hidden'>
+              <Image
+                alt={`Image details`}
+                src={`${process.env.NEXT_PUBLIC_API_URL}/${selectedImage?.path!}`}
+                style={{ objectFit: 'cover' }}
+                fill
+                priority
+              />
+            </div>
+            <div className='flex justify-between items-center gap-3'>
+              <div className='flex gap-3'>
+                <Button onClick={() => setSelectedImage(undefined)} className="px-3.5 py-0 bg-blue text-white rounded-[7px]">
+                  <span className="font-body-3 whitespace-nowrap">
+                    Fermer
+                  </span>
+                </Button>
+                <Button
+                  onClick={() => handleDeleteImage(selectedImage)}
+                  variant="outline"
+                  className=" p-3.5 bg-white rounded-lg border border-solid border-[#d9d9d9]">
+                  { isDeleting && <Loader className="h-5 w-5 mr-2" />}
+                  <span className="font-body-3 text-noir-dashboard whitespace-nowrap">
+                      Supprimer
+                  </span>
+                </Button>
+              </div>
+              <div className='flex items-center gap-1'>
+                <InfoIcon className='h-5 w-5' />
+                <p className='text-gray'>{selectedImage?.path.split('/')[selectedImage?.path.split('/').length - 1]}</p>
+              </div>
+            </div>
+          </DialogContent>
+      </Dialog>
     </div>
   );
 };

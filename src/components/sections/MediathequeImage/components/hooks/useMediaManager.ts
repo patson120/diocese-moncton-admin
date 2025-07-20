@@ -1,142 +1,145 @@
-import { useState, useCallback, useMemo } from 'react';
-import { MediaFolder, MediaFile, MediaManagerState } from '@/types/media';
+import { useState, useCallback, useMemo, useEffect } from 'react';
+import { MediaFile, MediaFolder, MediaManagerState } from '../types/media';
+import { apiClient } from '@/lib/axios';
 
-export const useMediaManager = () => {
-  const [state, setState] = useState<MediaManagerState>({
-    folders: [
+const folders = [
+  {
+    id: '1',
+    name: 'Photos',
+    path: '/photos',
+    children: [
       {
-        id: '1',
-        name: 'Photos',
-        path: '/photos',
-        children: [
+        id: '2',
+        name: 'Vacances 2024',
+        path: '/photos/vacances-2024',
+        parentId: '1',
+        children: [],
+        files: [
           {
-            id: '2',
-            name: 'Vacances 2024',
-            path: '/photos/vacances-2024',
-            parentId: '1',
-            children: [],
-            files: [
-              {
-                id: 'f1',
-                name: 'plage.jpg',
-                type: 'image',
-                size: 2048000,
-                url: 'https://images.pexels.com/photos/457882/pexels-photo-457882.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-                thumbnail: 'https://images.pexels.com/photos/457882/pexels-photo-457882.jpeg?auto=compress&cs=tinysrgb&dpr=1&h=200&w=300',
-                createdAt: new Date('2024-01-15'),
-                modifiedAt: new Date('2024-01-15'),
-                tags: ['vacances', 'plage'],
-                isFavorite: true
-              },
-              {
-                id: 'f2',
-                name: 'montagne.jpg',
-                type: 'image',
-                size: 1536000,
-                url: 'https://images.pexels.com/photos/346529/pexels-photo-346529.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-                thumbnail: 'https://images.pexels.com/photos/346529/pexels-photo-346529.jpeg?auto=compress&cs=tinysrgb&dpr=1&h=200&w=300',
-                createdAt: new Date('2024-01-16'),
-                modifiedAt: new Date('2024-01-16'),
-                tags: ['vacances', 'montagne'],
-                isFavorite: false
-              },
-              {
-                id: 'f6',
-                name: 'coucher-soleil.jpg',
-                type: 'image',
-                size: 1800000,
-                url: 'https://images.pexels.com/photos/158163/clouds-cloudporn-weather-lookup-158163.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-                thumbnail: 'https://images.pexels.com/photos/158163/clouds-cloudporn-weather-lookup-158163.jpeg?auto=compress&cs=tinysrgb&dpr=1&h=200&w=300',
-                createdAt: new Date('2024-01-17'),
-                modifiedAt: new Date('2024-01-17'),
-                tags: ['vacances', 'coucher-soleil'],
-                isFavorite: true
-              }
-            ],
+            id: 'f1',
+            name: 'plage.jpg',
+            type: 'image',
+            size: 2048000,
+            url: 'https://images.pexels.com/photos/457882/pexels-photo-457882.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+            thumbnail: 'https://images.pexels.com/photos/457882/pexels-photo-457882.jpeg?auto=compress&cs=tinysrgb&dpr=1&h=200&w=300',
             createdAt: new Date('2024-01-15'),
-            modifiedAt: new Date('2024-01-16'),
-            isExpanded: false,
-            color: '#3b82f6'
+            modifiedAt: new Date('2024-01-15'),
+            tags: ['vacances', 'plage'],
+            isFavorite: true
           },
           {
-            id: '3',
-            name: 'Famille',
-            path: '/photos/famille',
-            parentId: '1',
-            children: [],
-            files: [
-              {
-                id: 'f3',
-                name: 'reunion.jpg',
-                type: 'image',
-                size: 1024000,
-                url: 'https://images.pexels.com/photos/1128318/pexels-photo-1128318.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-                thumbnail: 'https://images.pexels.com/photos/1128318/pexels-photo-1128318.jpeg?auto=compress&cs=tinysrgb&dpr=1&h=200&w=300',
-                createdAt: new Date('2024-01-10'),
-                modifiedAt: new Date('2024-01-10'),
-                tags: ['famille'],
-                isFavorite: true
-              }
-            ],
-            createdAt: new Date('2024-01-10'),
-            modifiedAt: new Date('2024-01-10'),
-            isExpanded: false,
-            color: '#059669'
+            id: 'f2',
+            name: 'montagne.jpg',
+            type: 'image',
+            size: 1536000,
+            url: 'https://images.pexels.com/photos/346529/pexels-photo-346529.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+            thumbnail: 'https://images.pexels.com/photos/346529/pexels-photo-346529.jpeg?auto=compress&cs=tinysrgb&dpr=1&h=200&w=300',
+            createdAt: new Date('2024-01-16'),
+            modifiedAt: new Date('2024-01-16'),
+            tags: ['vacances', 'montagne'],
+            isFavorite: false
+          },
+          {
+            id: 'f6',
+            name: 'coucher-soleil.jpg',
+            type: 'image',
+            size: 1800000,
+            url: 'https://images.pexels.com/photos/158163/clouds-cloudporn-weather-lookup-158163.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+            thumbnail: 'https://images.pexels.com/photos/158163/clouds-cloudporn-weather-lookup-158163.jpeg?auto=compress&cs=tinysrgb&dpr=1&h=200&w=300',
+            createdAt: new Date('2024-01-17'),
+            modifiedAt: new Date('2024-01-17'),
+            tags: ['vacances', 'coucher-soleil'],
+            isFavorite: true
           }
         ],
-        files: [],
-        createdAt: new Date('2024-01-01'),
+        createdAt: new Date('2024-01-15'),
         modifiedAt: new Date('2024-01-16'),
-        isExpanded: true,
+        isExpanded: false,
         color: '#3b82f6'
       },
       {
-        id: '4',
-        name: 'Vidéos',
-        path: '/videos',
+        id: '3',
+        name: 'Famille',
+        path: '/photos/famille',
+        parentId: '1',
         children: [],
         files: [
           {
-            id: 'f4',
-            name: 'demo.mp4',
-            type: 'video',
-            size: 10485760,
-            url: '#',
-            createdAt: new Date('2024-01-20'),
-            modifiedAt: new Date('2024-01-20'),
-            tags: ['demo'],
-            isFavorite: false
+            id: 'f3',
+            name: 'reunion.jpg',
+            type: 'image',
+            size: 1024000,
+            url: 'https://images.pexels.com/photos/1128318/pexels-photo-1128318.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
+            thumbnail: 'https://images.pexels.com/photos/1128318/pexels-photo-1128318.jpeg?auto=compress&cs=tinysrgb&dpr=1&h=200&w=300',
+            createdAt: new Date('2024-01-10'),
+            modifiedAt: new Date('2024-01-10'),
+            tags: ['famille'],
+            isFavorite: true
           }
         ],
-        createdAt: new Date('2024-01-20'),
-        modifiedAt: new Date('2024-01-20'),
+        createdAt: new Date('2024-01-10'),
+        modifiedAt: new Date('2024-01-10'),
         isExpanded: false,
-        color: '#ea580c'
-      },
-      {
-        id: '5',
-        name: 'Documents',
-        path: '/documents',
-        children: [],
-        files: [
-          {
-            id: 'f5',
-            name: 'rapport.pdf',
-            type: 'document',
-            size: 512000,
-            url: '#',
-            createdAt: new Date('2024-01-25'),
-            modifiedAt: new Date('2024-01-25'),
-            tags: ['travail'],
-            isFavorite: false
-          }
-        ],
-        createdAt: new Date('2024-01-25'),
-        modifiedAt: new Date('2024-01-25'),
-        isExpanded: false,
-        color: '#7c3aed'
+        color: '#059669'
       }
     ],
+    files: [],
+    createdAt: new Date('2024-01-01'),
+    modifiedAt: new Date('2024-01-16'),
+    isExpanded: true,
+    color: '#3b82f6'
+  },
+  {
+    id: '4',
+    name: 'Actualités',
+    path: '/actualites',
+    children: [],
+    files: [
+      {
+        id: 'f4',
+        name: 'demo.mp4',
+        type: 'video',
+        size: 10485760,
+        url: '#',
+        createdAt: new Date('2024-01-20'),
+        modifiedAt: new Date('2024-01-20'),
+        tags: ['demo'],
+        isFavorite: false
+      }
+    ],
+    createdAt: new Date('2024-01-20'),
+    modifiedAt: new Date('2024-01-20'),
+    isExpanded: false,
+    color: '#ea580c'
+  },
+  {
+    id: '5',
+    name: 'Evènements',
+    path: '/evenements',
+    children: [],
+    files: [
+      {
+        id: 'f5',
+        name: 'rapport.pdf',
+        type: 'document',
+        size: 512000,
+        url: '#',
+        createdAt: new Date('2024-01-25'),
+        modifiedAt: new Date('2024-01-25'),
+        tags: ['travail'],
+        isFavorite: false
+      }
+    ],
+    createdAt: new Date('2024-01-25'),
+    modifiedAt: new Date('2024-01-25'),
+    isExpanded: false,
+    color: '#7c3aed'
+  }
+]
+
+export const useMediaManager = () => {
+  const [state, setState] = useState<MediaManagerState>({
+    folders: [],
     currentFolder: null,
     selectedFiles: [],
     searchQuery: '',
@@ -171,7 +174,7 @@ export const useMediaManager = () => {
     const newFolder: MediaFolder = {
       id: Date.now().toString(),
       name,
-      path: `${parentId}/${name}`,
+      path: parentId ? `${parentId}/${name}` : `/${name}`,
       parentId,
       children: [],
       files: [],
@@ -180,12 +183,49 @@ export const useMediaManager = () => {
       isExpanded: false,
       color: '#6b7280'
     };
+    if (parentId){
+      setState(prev => ({
+        ...prev,
+        folders: addFolderToTree(prev.folders, parentId, newFolder)
+      }))
+    }
+    else {
+      setState(prev => ({
+        ...prev,
+        folders: prev.folders.concat(newFolder)
+      }))
+    }
 
-    setState(prev => ({
-      ...prev,
-      folders: addFolderToTree(prev.folders, parentId, newFolder)
-    }));
   }, []);
+
+  const fetchFolders = async () => {
+    const response: any[] = await apiClient.get(`https://diocese.wds-project.com/api/dossiers?parent_id=0`)
+    response.forEach(dossier => {
+      const newFolder: MediaFolder = {
+        id: Date.now().toString(),
+        name: dossier.titre_fr,
+        path: dossier.parent_id ? `${dossier.parent_id}/${dossier.titre_fr}` : `/${dossier.titre_fr}`,
+        parentId: dossier.parent_id,
+        children: [],
+        files: [],
+        createdAt: new Date(),
+        modifiedAt: new Date(),
+        isExpanded: false,
+        color: '#6b7280'
+      };
+
+      setState(prev => ({
+        ...prev,
+        folders: prev.folders.concat(newFolder)
+      }))
+    });
+  }
+
+  useEffect(() => {
+    console.log("Hello world");
+    
+    fetchFolders()
+  }, [])
 
   const addFolderToTree = (folders: MediaFolder[], parentId: string, newFolder: MediaFolder): MediaFolder[] => {
     return folders.map(folder => {
