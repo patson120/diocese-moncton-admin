@@ -2,7 +2,7 @@ import { apiClient } from '@/lib/axios';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { MediaFile, MediaFolder, MediaManagerState } from '../types/media';
 
-const folders = [
+const folders: MediaFolder[] = [
   {
     id: '1',
     name: 'Photos',
@@ -138,7 +138,6 @@ const folders = [
 ]
 
 export const useMediaManager = () => {
-  const [dossiers, setDossiers] = useState<MediaFolder[]>([])
   const [state, setState] = useState<MediaManagerState>({
     folders: [],
     currentFolder: null,
@@ -202,30 +201,6 @@ export const useMediaManager = () => {
 
   }, [])
 
-  const fetchFolders = async () => {
-    const response: any[] = await apiClient.get(`/api/dossiers?parent_id=0`)
-    let data: MediaFolder[] = []
-    response.forEach(dossier => {
-      const newFolder: MediaFolder = {
-        id: dossier.id,
-        name: dossier.titre_fr,
-        path: dossier.parent_id ? `${dossier.parent_id}/${dossier.titre_fr}` : `/${dossier.titre_fr}`,
-        parentId: dossier.parent_id,
-        children: [],
-        files: [],
-        createdAt: new Date(),
-        modifiedAt: new Date(),
-        isExpanded: false,
-        color: '#6b7280'
-      }
-      data = [ ...data, newFolder]
-    });
-    setState(prev => ({
-      ...prev,
-      folders: data
-    }))
-  }
-
   const postFolder = async (parent_id: number, titre: string) => {
     const response: any = await apiClient.post(`/api/dossiers`, {
       parent_id: parent_id,
@@ -247,6 +222,33 @@ export const useMediaManager = () => {
     await apiClient.delete(`/api/dossiers/${folder_id}`)
   }
 
+  const getFolderList = (list: any[]) => {
+    return list.map(dossier => ({
+      id: dossier.id,
+      name: dossier.titre_fr,
+      path: dossier.parent_id ? `${dossier.parent_id}/${dossier.titre_fr}` : `/${dossier.titre_fr}`,
+      parentId: dossier.parent_id,
+      children: [],
+      files: [],
+      createdAt: new Date(),
+      modifiedAt: new Date(),
+      isExpanded: false,
+      color: '#6b7280'
+    }) ) as MediaFolder[]
+  }
+
+  const folderApiCall = async (parent_id: string="0") => {
+    return await apiClient.get(`/api/dossiers?parent_id=${parent_id}`)
+  }
+
+  const fetchFolders = async () => {
+    const response = await folderApiCall() as any[]
+    setState(prev => ({
+      ...prev,
+      folders: getFolderList(response)
+    }))
+  }
+
   useEffect(() => {
     fetchFolders()
   }, [])
@@ -258,7 +260,7 @@ export const useMediaManager = () => {
           ...folder,
           children: [...folder.children, newFolder],
           modifiedAt: new Date()
-        };
+        }
       }
       if (folder.children.length > 0) {
         return {
@@ -299,8 +301,36 @@ export const useMediaManager = () => {
     return null;
   };
 
-  const setCurrentFolder = useCallback((folder: MediaFolder | null) => {
-    setState(prev => ({ ...prev, currentFolder: folder }));
+  const setCurrentFolder = useCallback( async (folder: MediaFolder | null) => {
+    {/*     
+      setState(prev => ({ 
+        ...prev,
+        currentFolder: folder,
+      }))
+    */}
+    
+    const data = await folderApiCall(folder?.id) as any[]
+    if (!folder) {
+      setState(prev => ({ 
+        ...prev,
+        currentFolder: folder,
+      }));
+      return
+    }
+
+    const newFolder: MediaFolder = {
+      ...folder,
+      id : `${folder.id}`,
+      isExpanded: true,
+      children: getFolderList(data)
+    }
+
+    setState(prev => ({ 
+      ...prev, 
+      folders: addFolderToTree(prev.folders, folder?.id, newFolder) , //state.folders.map(f => f.id === folder.id ? newFolder : f),
+      currentFolder: newFolder,
+    }))
+
   }, [])
 
   const setSearchQuery = useCallback((query: string) => {
