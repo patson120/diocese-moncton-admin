@@ -46,11 +46,11 @@ export default function MediathequeImage(): JSX.Element {
           </div>
         </div>
 
-        {selectedItem.value === 'images' &&  <AddImageFormSection /> }
-        {selectedItem.value === 'documents' &&  <AddDocumentFormSection /> }
-        {selectedItem.value === 'videos' &&  <AddVideoFormSection /> }
-        {selectedItem.value === 'audio' &&  <AddAudioFormSection /> }
-
+          { selectedItem.value === 'images' &&  <AddImageFormSection /> }
+          { selectedItem.value === 'documents' &&  <AddDocumentFormSection /> }
+          { selectedItem.value === 'videos' &&  <AddVideoFormSection /> }
+          { selectedItem.value === 'audio' &&  <AddAudioFormSection /> }
+          
       </div>
 
       <TabsContent

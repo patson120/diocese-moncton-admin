@@ -2,8 +2,6 @@ import MediathequeImage from '@/components/sections/MediathequeImage/Mediatheque
 
 export default function page() {
     return (
-        <>
-            <MediathequeImage />
-        </>
+        <MediathequeImage />
     )
 }

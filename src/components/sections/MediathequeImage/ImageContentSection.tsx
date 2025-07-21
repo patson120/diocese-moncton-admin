@@ -15,7 +15,7 @@ import { MediaViewer } from './components/MediaViewer';
 type ViewType = 'folder' | 'favorites' | 'recent';
 
 export default function ImageContentSection() {
-   const {
+  const {
       state,
       createFolder,
       deleteFolder,
@@ -35,52 +35,53 @@ export default function ImageContentSection() {
       recentFiles,
       getFolderById,
       updateFolder
-    } = useMediaManager();
+  } = useMediaManager();
   
-    const [currentView, setCurrentView] = useState<ViewType>('folder');
+  const [currentView, setCurrentView] = useState<ViewType>('folder');
   
-    const handleShowFavorites = () => {
-      setCurrentView('favorites');
-      setCurrentFolder(null);
-    };
+  const handleShowFavorites = () => {
+    setCurrentView('favorites');
+    setCurrentFolder(null);
+  }
   
-    const handleShowRecent = () => {
-      setCurrentView('recent');
-      setCurrentFolder(null);
-    };
+  const handleShowRecent = () => {
+    setCurrentView('recent');
+    setCurrentFolder(null);
+  }
   
-    const handleFolderSelect = (folder: any) => {
-      setCurrentView('folder');
-      setCurrentFolder(folder);
-    };
+  const handleFolderSelect = (folder: any) => {
+    setCurrentView('folder');
+    setCurrentFolder(folder);
+  }
   
-    const getCurrentFiles = () => {
-      switch (currentView) {
-        case 'favorites':
-          return favoriteFiles;
-        case 'recent':
-          return recentFiles;
-        default:
-          return filteredFiles;
-      }
-    };
+  const getCurrentFiles = () => {
+    switch (currentView) {
+      case 'favorites':
+        return favoriteFiles;
+      case 'recent':
+        return recentFiles;
+      default:
+        return filteredFiles;
+    }
+  }
   
-    const getCurrentTitle = () => {
-      switch (currentView) {
-        case 'favorites':
-          return 'Favoris';
-        case 'recent':
-          return 'Fichiers récents';
-        default:
-          return state.currentFolder ? state.currentFolder.name : 'Tous les fichiers';
-      }
-    };
+  const getCurrentTitle = () => {
+    switch (currentView) {
+      case 'favorites':
+        return 'Favoris';
+      case 'recent':
+        return 'Fichiers récents';
+      default:
+        return state.currentFolder ? state.currentFolder.name : 'Tous les fichiers';
+    }
+  }
   
   const totalSize = allFiles.reduce((acc, file) => acc + file.size, 0);
   const formatTotalSize = (bytes: number) => {
     const gb = bytes / (1024 * 1024 * 1024);
     return `${gb.toFixed(1)} GB`;
   }
+
   return (
       <section className="w-full flex-1 p-6">
           <div className="flex flex-col bg-white w-full items-start gap-6 rounded-2xl p-6">

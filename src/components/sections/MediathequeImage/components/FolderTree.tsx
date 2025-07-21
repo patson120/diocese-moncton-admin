@@ -260,41 +260,41 @@ export const FolderTree: React.FC<FolderTreeProps> = ({
           <Home className="h-4 w-4 mr-2" />
           Tous les fichiers
         </Button>
-        {/*
+
+        {/* 
         
-          <Button
-            variant="ghost"
-            size="sm"
-            className="w-full justify-start h-9"
-            onClick={onShowFavorites}>
-            <Star className="h-4 w-4 mr-2" />
-            Favoris
-            {
-              favoriteCount > 0 && (
-                <span className="ml-auto text-xs bg-muted px-1.5 py-0.5 rounded-full">
-                  {favoriteCount}
-                </span>
-              )
-            }
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="w-full justify-start h-9"
-            onClick={onShowRecent}>
-            <Clock className="h-4 w-4 mr-2" />
-            Récents
-            {
-              recentCount > 0 && (
-                <span className="ml-auto text-xs bg-muted px-1.5 py-0.5 rounded-full">
-                  {recentCount}
-                </span>
-              )
-            }
-          </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="w-full justify-start h-9"
+          onClick={onShowFavorites}>
+          <Star className="h-4 w-4 mr-2" />
+          Favoris
+          {
+            favoriteCount > 0 && (
+              <span className="ml-auto text-xs bg-muted px-1.5 py-0.5 rounded-full">
+                {favoriteCount}
+              </span>
+            )
+          }
+        </Button>
+        
+        <Button
+          variant="ghost"
+          size="sm"
+          className="w-full justify-start h-9"
+          onClick={onShowRecent}>
+          <Clock className="h-4 w-4 mr-2" />
+          Récents
+          {
+            recentCount > 0 && (
+              <span className="ml-auto text-xs bg-muted px-1.5 py-0.5 rounded-full">
+                {recentCount}
+              </span>
+            )
+          }
+        </Button>
         */}
-        
-        
       </div>
 
       <div className="h-px bg-border my-3" />
@@ -302,9 +302,9 @@ export const FolderTree: React.FC<FolderTreeProps> = ({
       {/* Folder Tree */}
       <div className="space-y-1">
         {
-          folders.map((folder) => (
+          folders.map((folder: MediaFolder, index) => (
             <FolderNode
-              key={folder.id}
+              key={`${folder.id}-${index}`}
               folder={folder}
               level={0}
               isSelected={currentFolder?.id === folder.id}
