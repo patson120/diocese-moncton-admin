@@ -229,28 +229,6 @@ export default function ParishSection() {
             // setIsDeleting(false)
         }
     }
-
-    const handleAddFolder = async () => {
-        // if (isDeleting) return
-        // setIsDeleting(true)
-        try {
-            const response = await apiClient.post(`/api/dossiers`, {
-                parent_id: 0,
-                titre_fr: "Paroisses",
-                titre_en: "Parishes",
-            });
-            // setOpenModal(false)
-            console.log(JSON.stringify(response, null, 2));
-        } catch (error) {
-            toast.error(
-                <div className='p-3 bg-red-500 text-white rounded-md'>
-                    Error adding folder: {JSON.stringify(error)}
-                </div>
-            )
-        } finally {
-            // setIsDeleting(false)
-        }
-    }
     
     const handleAddCategory = async () => {
         // if (isDeleting) return
@@ -832,6 +810,5 @@ export default function ParishSection() {
                 </SheetContent>
             </Sheet>
         </main>
-    );
-
+    )
 }

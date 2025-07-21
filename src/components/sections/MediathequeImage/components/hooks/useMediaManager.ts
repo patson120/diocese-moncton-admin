@@ -147,14 +147,14 @@ export const useMediaManager = () => {
     viewMode: 'grid',
     sortBy: 'name',
     sortOrder: 'asc'
-  });
+  })
 
   const updateFolder = useCallback((folderId: string, updates: Partial<MediaFolder>) => {
     setState(prev => ({
       ...prev,
       folders: updateFolderInTree(prev.folders, folderId, updates)
     }));
-  }, []);
+  }, [])
 
   const updateFolderInTree = (folders: MediaFolder[], folderId: string, updates: Partial<MediaFolder>): MediaFolder[] => {
     return folders.map((folder) => {
@@ -170,7 +170,7 @@ export const useMediaManager = () => {
       }
       return folder;
     });
-  };
+  }
 
   const createFolder = useCallback( async(parentId: string, name: string) => {
     const newFolder: MediaFolder = {
@@ -200,7 +200,7 @@ export const useMediaManager = () => {
       }))
     }
 
-  }, []);
+  }, [])
 
   const fetchFolders = async () => {
     const response: any[] = await apiClient.get(`/api/dossiers?parent_id=0`)
@@ -268,7 +268,7 @@ export const useMediaManager = () => {
       }
       return folder;
     });
-  };
+  }
 
   const deleteFolder = useCallback( async (folderId: string) => {
     await dropFolder(Number(folderId))
@@ -276,8 +276,8 @@ export const useMediaManager = () => {
       ...prev,
       folders: removeFolderFromTree(prev.folders, folderId),
       currentFolder: prev.currentFolder?.id === folderId ? null : prev.currentFolder
-    }));
-  }, []);
+    }))
+  }, [])
 
   const removeFolderFromTree = (folders: MediaFolder[], folderId: string): MediaFolder[] => {
     return folders.filter(folder => folder.id !== folderId).map(folder => ({
@@ -288,7 +288,7 @@ export const useMediaManager = () => {
 
   const toggleFolder = useCallback((folderId: string) => {
     updateFolder(folderId, { isExpanded: !getFolderById(state.folders, folderId)?.isExpanded });
-  }, [state.folders, updateFolder]);
+  }, [state.folders, updateFolder])
 
   const getFolderById = (folders: MediaFolder[], folderId: string): MediaFolder | null => {
     for (const folder of folders) {
@@ -301,23 +301,23 @@ export const useMediaManager = () => {
 
   const setCurrentFolder = useCallback((folder: MediaFolder | null) => {
     setState(prev => ({ ...prev, currentFolder: folder }));
-  }, []);
+  }, [])
 
   const setSearchQuery = useCallback((query: string) => {
     setState(prev => ({ ...prev, searchQuery: query }));
-  }, []);
+  }, [])
 
   const setViewMode = useCallback((mode: 'grid' | 'list') => {
     setState(prev => ({ ...prev, viewMode: mode }));
-  }, []);
+  }, [])
 
   const setSortBy = useCallback((sortBy: 'name' | 'date' | 'size' | 'type') => {
     setState(prev => ({ ...prev, sortBy }));
-  }, []);
+  }, [])
 
   const setSortOrder = useCallback((sortOrder: 'asc' | 'desc') => {
     setState(prev => ({ ...prev, sortOrder }));
-  }, []);
+  }, [])
 
   const toggleFileSelection = useCallback((fileId: string) => {
     setState(prev => ({
@@ -326,18 +326,18 @@ export const useMediaManager = () => {
         ? prev.selectedFiles.filter(id => id !== fileId)
         : [...prev.selectedFiles, fileId]
     }));
-  }, []);
+  }, [])
 
   const selectAllFiles = useCallback(() => {
     setState(prev => ({
       ...prev,
       selectedFiles: filteredFiles.map(file => file.id)
     }));
-  }, []);
+  }, [])
 
   const clearSelection = useCallback(() => {
     setState(prev => ({ ...prev, selectedFiles: [] }));
-  }, []);
+  }, [])
 
   const toggleFileFavorite = useCallback((fileId: string) => {
     setState(prev => ({
@@ -355,7 +355,7 @@ export const useMediaManager = () => {
         }))
       }))
     }));
-  }, []);
+  }, [])
 
   const filteredFiles = useMemo(() => {
     if (!state.currentFolder) return [];
@@ -386,7 +386,7 @@ export const useMediaManager = () => {
       if (aValue > bValue) return 1 * modifier;
       return 0;
     });
-  }, [state.currentFolder, state.searchQuery, state.sortBy, state.sortOrder]);
+  }, [state.currentFolder, state.searchQuery, state.sortBy, state.sortOrder])
 
   const allFiles = useMemo(() => {
     const getAllFiles = (folders: MediaFolder[]): MediaFile[] => {
@@ -400,17 +400,17 @@ export const useMediaManager = () => {
       return files;
     };
     return getAllFiles(state.folders);
-  }, [state.folders]);
+  }, [state.folders])
 
   const favoriteFiles = useMemo(() => {
     return allFiles.filter(file => file.isFavorite);
-  }, [allFiles]);
+  }, [allFiles])
 
   const recentFiles = useMemo(() => {
     return [...allFiles]
       .sort((a, b) => b.modifiedAt.getTime() - a.modifiedAt.getTime())
       .slice(0, 10);
-  }, [allFiles]);
+  }, [allFiles])
 
   return {
     state,
@@ -432,5 +432,5 @@ export const useMediaManager = () => {
     favoriteFiles,
     recentFiles,
     getFolderById
-  };
+  }
 };

@@ -1,17 +1,21 @@
 
 'use client'
 
+import { Dossier } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Loader } from "@/components/ui/loader";
+import { Select, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import useRole from "@/hooks/use-role";
 import { apiClient } from "@/lib/axios";
 import { handleImageUpload } from "@/lib/utils";
 import { DialogTrigger } from "@radix-ui/react-dialog";
+import { SelectContent } from "@radix-ui/react-select";
 import { PlusIcon } from "lucide-react";
 import Image from "next/image";
-import { JSX, useState } from "react";
+import { JSX, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export const AddImageFormSection = (): JSX.Element => {
@@ -24,10 +28,15 @@ export const AddImageFormSection = (): JSX.Element => {
   const [openModal, setOpenModal] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
+  const [folders, setFolders] = useState<Dossier[]>([]);
+  const [folderId, setFolderId] = useState("0");
+
   const handleCoverImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const imageUrl = await handleImageUpload(file);
+      setFileName(file.name)
+      const imageUrl = await handleImageUpload(file)
+      
       setFileImage(file)
       setCoverImage(imageUrl);
     }
@@ -49,10 +58,13 @@ export const AddImageFormSection = (): JSX.Element => {
     const formdata = new FormData();
     formdata.append("titre", fileName);
     formdata.append("fichier", fileImage!);
+    if (folderId !== "0"){
+      formdata.append("dossier_id", folderId );
+    }
     try {
       const result: any = await apiClient.post('/api/galeries', formdata, {
         'Content-Type': 'multipart/form-data'
-      });
+      })
   
       if (result.id) {
         toast.success("Image enregistrée avec succès !")
@@ -76,6 +88,13 @@ export const AddImageFormSection = (): JSX.Element => {
     }
   }
 
+  useEffect(() => {
+    (async () => {
+      const response: Dossier[] = await apiClient.get("/api/dossiers")
+      setFolders(response)
+    })()
+  }, [])
+
   if (!canAddImage()) return <></>
 
   return (
@@ -93,13 +112,14 @@ export const AddImageFormSection = (): JSX.Element => {
             <DialogTitle></DialogTitle>
         </DialogHeader>
         
-        <div className='w-full h-[calc(70vh)] z-[5] bg-[#f0f0f0] self-stretch relative rounded-xl overflow-hidden'>
+        <div className='w-full h-[calc(60vh)] z-[5] bg-[#f0f0f0] self-stretch relative rounded-xl overflow-hidden'>
           <Button 
             onClick={( ) => setOpenModal(false)}
             variant={'outline'} 
             className="bg-white p-0 absolute z-10 top-2 right-2 h-10 w-10 justify-center items-center rounded-full">
             <PlusIcon className="w-5 h-5 rotate-45" />  
           </Button>
+          
           { 
             (coverImage) ?
               <Image
@@ -141,6 +161,25 @@ export const AddImageFormSection = (): JSX.Element => {
             className="h-full w-full absolute cursor-pointer inset-0 opacity-0 z-[3]"
           />
         </div>
+
+        <div className="flex flex-col space-y-2 z-[10]">
+          <Label className="mb-1">Mettre l'image dans... </Label>
+          <Select 
+              onValueChange={setFolderId}
+              defaultValue={folderId}>
+              <SelectTrigger className="h-11 px-3 py-3.5 rounded-lg border border-neutral-200 text-[#454545]">
+                <SelectValue placeholder="Sélectionnez un dossier" />
+              </SelectTrigger>
+              <SelectContent className="bg-white h-[180px] overflow-y-scroll v-scroll border border-neutral-200 rounded-md">
+                <SelectItem disabled value="0">Aucun</SelectItem>
+                {
+                  folders && folders.map(f => (
+                    <SelectItem className="w-full px-6" key={f.id} value={`${f.id}`}>{f.titre_fr}</SelectItem>
+                  ))
+                }
+              </SelectContent>
+          </Select>
+        </div>
         
         <div className='flex justify-center items-center  my-4 gap-3'>
           <Button onClick={handleAddImage} className="px-3.5 py-0 bg-blue text-white rounded-[7px]">
@@ -148,8 +187,7 @@ export const AddImageFormSection = (): JSX.Element => {
             <span className="font-body-3 font-bold whitespace-nowrap">
                 Ajouter l'image
             </span>
-          </Button>  
-                    
+          </Button>         
         </div>
       </DialogContent>
     </Dialog>

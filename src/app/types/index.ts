@@ -194,3 +194,12 @@ export type Ressource = {
     updated_at: string;
     categorie: any;
 }
+
+export type Dossier = {
+    id: number;
+    parent_id: number;
+    titre_fr: string;
+    titre_en: string;
+    created_at: string;
+    updated_at: string;
+}
