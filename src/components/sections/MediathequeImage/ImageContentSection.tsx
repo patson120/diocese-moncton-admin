@@ -137,16 +137,6 @@ export default function ImageContentSection() {
                             isSpecialView={currentView !== 'folder'}
                             specialViewTitle={currentView === 'favorites' ? 'Favoris' : currentView === 'recent' ? 'Récents' : undefined}
                           />
-                          
-                            {/*<div className="flex items-center gap-2">
-                            <Button variant="outline" size="sm">
-                              <Upload className="h-4 w-4 mr-2" />
-                              Importer
-                            </Button>
-                            <Button variant="outline" size="sm">
-                              <RefreshCw className="h-4 w-4" />
-                            </Button>
-                          </div>*/}
                         </div>
                       </CardHeader>
                       
@@ -173,6 +163,7 @@ export default function ImageContentSection() {
                       </CardContent>
                     </Card>
                   </div>
+                  
                 </div>
               </ScrollArea>
           </div>

@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { ChevronRight, Home } from 'lucide-react';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { MediaFolder } from './types/media';
 
 interface BreadcrumbProps {
@@ -20,30 +20,34 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
   onFolderSelect,
   getFolderById,
   isSpecialView = false,
-  specialViewTitle
+  specialViewTitle,
 }) => {
-  const getPath = (folder: MediaFolder | null): MediaFolder[] => {
-    if (!folder) return [];
-    
-    const path: MediaFolder[] = [];
-    let current = folder;
-    
-    while (current) {
-      path.unshift(current);
-      if (current.parentId) {
-        current = getFolderById(folders, current.parentId)!;
-      } else {
-        current ;
-      }
-    }
-    
-    return path;
-  };
+  // Optimisation : Calculer le chemin uniquement lorsque `currentFolder` ou `folders` change
+  const path = useMemo(() => {
+    if (!currentFolder) return [];
 
-  const path = getPath(currentFolder);
+    const path: MediaFolder[] = [];
+    let current: MediaFolder | null = currentFolder;
+
+    const visited = new Set<string>(); // Pour éviter les boucles infinies
+
+    while (current) {
+      if (visited.has(current.id)) {
+        console.warn("Référence circulaire détectée dans les dossiers.");
+        break;
+      }
+      visited.add(current.id);
+
+      path.unshift(current);
+      current = current.parentId ? getFolderById(folders, current.parentId) : null;
+    }
+
+    return path;
+  }, [currentFolder, folders, getFolderById]);
 
   return (
     <div className="flex items-center gap-2 text-sm">
+      {/* Bouton pour revenir à la racine */}
       <Button
         variant="ghost"
         size="sm"
@@ -52,7 +56,8 @@ export const Breadcrumb: React.FC<BreadcrumbProps> = ({
       >
         <Home className="h-4 w-4" />
       </Button>
-      
+
+      {/* Vue spéciale ou chemin normal */}
       {isSpecialView ? (
         <>
           <ChevronRight className="h-4 w-4 text-muted-foreground" />
