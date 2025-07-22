@@ -4,32 +4,33 @@ import Text from '@/components/shared/Text';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Loader } from '@/components/ui/loader';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import useRole from '@/hooks/use-role';
 import { apiClient } from '@/lib/axios';
 import { formatDateToLocal } from '@/lib/utils';
-import { Church, LayoutGridIcon, ListFilter, MailIcon, MapPinIcon, MoreHorizontalIcon, PhoneIcon, PlusIcon, SearchIcon } from 'lucide-react';
+import { Church, LayoutGridIcon, ListFilter, MailIcon, MapPinIcon, MoreHorizontalIcon, PhoneIcon, PlusIcon, SaveAll, SearchIcon, Trash2Icon } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useDebouncedCallback } from 'use-debounce';
-import { Paroisse, TypeParoisse } from '../../../app/types';
+import { Image as ImageType, Paroisse, TypeParoisse } from '../../../app/types';
+import { GaleryPopup } from '../GaleryPopup';
 import { MapContainer } from '../MapSection/map-container';
+import { AddBulletinFormSection } from './AddBulletinFormSection';
 import { AddParishFormSection } from './AddParishFormSection';
 import { AddUnitePastoraleFormSection } from './AddUnitePastoraleFormSection';
 import { EditParishFormSection } from './EditParishFormSection';
-import { AddBulletinFormSection } from './AddBulletinFormSection';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import useRole from '@/hooks/use-role';
 
 export default function ParishSection() {
     const router = useRouter()
 
-    const { canUpdateParish, canDeleteParish, canDeleteBulletin, canDeleteParishUnit } = useRole()
+    const { canUpdateParish, canDeleteImage, canDeleteParish, canDeleteBulletin, canDeleteParishUnit } = useRole()
 
     const [isStatutLoading, setIsStatutLoading] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
@@ -43,16 +44,22 @@ export default function ParishSection() {
     const [selectedItem, setSelectedItem] = useState<any>('paroisses')
 
     const [query, setQuery] = useState('')
+    const [selectedImage, setSelectedImage] = useState<ImageType | undefined>();
+    const [images, setImages] = useState<ImageType[]>([]);
+    const [newImages, setNewImages] = useState<ImageType[]>([]);
+
+
+    const [isLoading, setIsLoading] = useState(false)
+
     
     const searchParams = useSearchParams()
     const pathname = usePathname()
 
     // parish tabs data
-    const clergyTabs = [
+    const parishTabs = [
         { value: "paroisses", label: "Paroisses", active: true },
         { value: "unites-paroissiales", label: "Unités pastorales", active: false },
     ];
-
 
     useEffect(() => {
         // Récupérer les unités paroitiales depuis l'api
@@ -192,7 +199,6 @@ export default function ParishSection() {
         }
     }
 
-
     const handleDeleteRessource = async (id: number) => {
         if (!canDeleteBulletin()){ 
             return toast.success("Vous n'avez pas le droit d'effectuer cette opération !")
@@ -208,48 +214,71 @@ export default function ParishSection() {
             )
         }
     }
-    const handleAddImage = async () => {
-        // if (isDeleting) return
-        // setIsDeleting(true)
+    const handleAddImage = async (galerie_id: number) => {
+        return await apiClient.post(`/api/add_media`, {
+            galerie_id: galerie_id,
+            paroisse_id: selecteParish?.id
+        })
+    }
+
+    useEffect(() => {
+      if(selectedImage && !images.find(img => img.id === selectedImage.id) ){
+        setImages(prev =>([...prev, selectedImage]))
+        setNewImages(prev =>([...prev, selectedImage]))
+      }
+    }, [selectedImage])
+
+    useEffect(() => {
+        const imgs: ImageType[] = (selecteParish?.media ?? []).map(img => (
+        { 
+            ...img, 
+            path: `${process.env.NEXT_PUBLIC_API_URL}/${img.path}`
+        }))
+        setImages(imgs)
+    }, [selecteParish])
+    
+
+    const handleSaveImages = () => {
+        if (isLoading) return
+        setIsLoading(true)
         try {
-            const response = await apiClient.post(`/api/add_media`, {
-                // fichier: 29,
-                galerie_id: 40,
-                paroisse_id: selecteParish?.id
-            });
-            // setOpenModal(false)
-            console.log(JSON.stringify(response, null, 2));
-        } catch (error) {
+            newImages.forEach( async img => {
+                await handleAddImage(img.id)
+            })
+            setNewImages([])
+            toast.success("Images(s) ajoutée(s) avec succès !")
+        }
+        catch (error) {
             toast.error(
                 <div className='p-3 bg-red-500 text-white rounded-md'>
                     Error adding image: {JSON.stringify(error)}
                 </div>
             )
-        } finally {
-            // setIsDeleting(false)
-        }
+        } 
+        finally { setIsLoading(false) }
     }
-    
-    const handleAddCategory = async () => {
-        // if (isDeleting) return
-        // setIsDeleting(true)
-        try {
-            const response = await apiClient.post(`/api/categories`, {
-                parent_id: 0,
-                intitule_fr: "Mariage",
-                intitule_en: "Wedding",
-                menu: "event",
-            });
-            // setOpenModal(false)
-            console.log(JSON.stringify(response, null, 2));
-        } catch (error) {
+
+    const handleDeleteImage = async (img?: ImageType) => {
+        if (!canDeleteImage()){ 
+          return toast.success("Vous n'avez pas le droit d'effectuer cette opération !")
+        }
+        if (isDeleting) return;
+        if (img) {
+          setIsDeleting(true);
+          try {
+            await apiClient.delete(`/api/delete_media/${ img.id}`);
+            setImages(images.filter(image => image.id !== img.id));
+            setNewImages(newImages.filter(image => image.id !== img.id));
+          } catch (error) {
             toast.error(
                 <div className='p-3 bg-red-500 text-white rounded-md'>
-                    Error adding category: {JSON.stringify(error)}
+                    Error deleting image: {JSON.stringify(error)}
                 </div>
             )
-        } finally {
-            // setIsDeleting(false)
+          }
+          finally {
+            setIsDeleting(false);
+          }
         }
     }
     
@@ -263,7 +292,7 @@ export default function ParishSection() {
                                 GESTION DES PAROISSES
                             </h3>
                             <TabsList className="bg-transparent p-0 h-auto">
-                                {clergyTabs.map((item) => (
+                                {parishTabs.map((item) => (
                                     <TabsTrigger
                                         key={item.value}
                                         value={item.value}
@@ -332,8 +361,7 @@ export default function ParishSection() {
 
                                                 <Button
                                                     variant="outline"
-                                                    className="w-11 h-11 p-0 flex items-center justify-center border border-[#d9d9d9] rounded-lg"
-                                                >
+                                                    className="w-11 h-11 p-0 flex items-center justify-center border border-[#d9d9d9] rounded-lg">
                                                     <LayoutGridIcon className="w-5 h-5" />
                                                 </Button>
                                             </div>
@@ -349,6 +377,7 @@ export default function ParishSection() {
                                                     className="w-full border-none shadow-none cursor-pointer"
                                                     onClick={() => {
                                                         setOpenModal(true)
+                                                        setImages(parish.media!)
                                                         setSelectedParish(parish)
                                                     }}>
                                                     <CardContent className="p-0 w-full h-full space-y-2 bg-[#F9F9F0] rounded-xl flex flex-col justify-between gap-[10px] px-5 py-6">
@@ -675,17 +704,53 @@ export default function ParishSection() {
                                 </div>
                             </section>
                             <AddBulletinFormSection paroisse_id={selecteParish?.id!} />
-                            {/* 
-                                <Button onClick={handleAddImage} className="h-10 bg-primary text-white hover:bg-blue/90  gap-2">
-                                    <PlusIcon className="w-5 h-5" />
-                                    Ajouter un photo
-                                </Button>
 
-                                <Button onClick={handleAddFolder} className="h-10 bg-primary text-white hover:bg-blue/90  gap-2">
-                                    <PlusIcon className="w-5 h-5" />
-                                    Ajouter un repertoire
-                                </Button>
-                            */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                { 
+                                    images.map((image, index) => (
+                                    <Card
+                                        key={index}
+                                        onClick={() => {}}
+                                        className="overflow-hidden rounded-lg border-none relative shrink-0 h-[140px] cursor-pointer">
+                                        <Image
+                                            alt={`Image ${index + 1}`}
+                                            src={`${image.path!}`}
+                                            style={{ objectFit: 'cover' }}
+                                            fill
+                                            priority
+                                        />
+                                        <div className='absolute top-0 left-0 w-full h-full bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-all duration-300 ease-in-out'>
+                                            <div className='flex items-center gap-2'>
+                                                <button onClick={() => handleDeleteImage(image)} className='h-10 w-10 rounded-full bg-white/20 text-white hover:bg-white hover:text-black flex items-center justify-center'>
+                                                { isDeleting ? <Loader className="h-5 w-5" /> : <Trash2Icon className='w-5 h-5'/>}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </Card>
+                                ))
+                                }
+                            </div>
+
+                            <div className='flex gap-4'>
+                                <GaleryPopup setSelectedImage={setSelectedImage} >
+                                    <Button className="h-10 w-min bg-primary text-white hover:bg-blue/90  gap-2">
+                                        <PlusIcon className="w-5 h-5" />
+                                        Ajouter un photo
+                                    </Button>
+                                </GaleryPopup>
+                                { 
+                                    (newImages.length > 0 ) &&
+                                    <Button onClick={handleSaveImages} className="h-10 bg-blue text-white hover:bg-blue/90  gap-2">
+                                        {
+                                            isLoading ? 
+                                            <Loader className="w-5 h-5" /> :
+                                            <SaveAll className="w-5 h-5" />
+                                        }
+                                        Enregistrer
+                                    </Button>
+                                }
+                            </div>
+
 
                             {/* Map section */}
                             <section className="w-full">

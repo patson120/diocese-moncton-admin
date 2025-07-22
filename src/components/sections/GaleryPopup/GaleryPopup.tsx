@@ -5,11 +5,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { apiClient } from "@/lib/axios";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { JSX, useEffect, useState } from "react";
-import { Image as ImageType } from '@/app/types';
+import { Dossier, Image as ImageType } from '@/app/types';
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
 import { Loader } from "@/components/ui/loader";
+import { Label } from "@radix-ui/react-label";
+import { Select, SelectContent, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { SelectItem } from "@radix-ui/react-select";
 
 
 export const GaleryPopup = ({ children, setSelectedImage }: {
@@ -20,13 +23,23 @@ export const GaleryPopup = ({ children, setSelectedImage }: {
   const [open, setOpen] = useState(false)
   const [images, setImages] = useState<ImageType[]>([])
 
+  const [folders, setFolders] = useState<Dossier[]>([]);
+  const [folderId, setFolderId] = useState("0");
+
   useEffect(() => {
     ( async () => {
       setIsLoading(true)
-      const response: ImageType[] = await apiClient.get('/api/galeries');
+      const response: ImageType[] = await apiClient.get( folderId =="0" ?  `/api/galeries` : `/api/galeries?dossier_id=${folderId}`);
       setImages(response)
       setIsLoading(false)
     }) ()
+  }, [folderId])
+
+  useEffect(() => {
+    (async () => {
+      const response: Dossier[] = await apiClient.get("/api/dossiers")
+      setFolders(response)
+    })()
   }, [])
 
   const handleSelectedImage = (img: ImageType) => {
@@ -36,7 +49,6 @@ export const GaleryPopup = ({ children, setSelectedImage }: {
     } as ImageType)
     setOpen(false)
   }
-
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -51,9 +63,28 @@ export const GaleryPopup = ({ children, setSelectedImage }: {
         </DialogHeader>
 
         <section className="flex flex-col w-full p-8 pt-2 space-y-4">
-          <p className="text-gray">Choisir une image</p>
-          <div className="flex flex-col bg-white w-full items-start gap-6 rounded-2xl">
-              <ScrollArea className="w-full h-[calc(70vh)]">
+          <div className="flex flex-col bg-white w-full items-start gap-4 rounded-2xl">
+            <div className="flex flex-col w-full space-y-2 z-50 mx-1 mb-3">
+                <Label className="mb-1">Choisir un repertoire...</Label>
+                <Select 
+                    onValueChange={setFolderId}
+                    defaultValue={folderId}>
+                    <SelectTrigger className="h-11 px-3 py-3.5 rounded-lg border border-neutral-200 text-[#454545]">
+                      <SelectValue placeholder="Sélectionnez un dossier" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white h-[180px] overflow-y-scroll v-scroll border border-neutral-200 rounded-md">
+                      <SelectItem className="w-full px-6" value="0">Tous</SelectItem>
+                      {
+                        folders && folders.map(f => (
+                          <SelectItem className="w-full text-black px-6" key={f.id} value={`${f.id}`}>{f.titre_fr}</SelectItem>
+                        ))
+                      }
+                    </SelectContent>
+                </Select>
+              </div>
+              
+              <p className="text-gray mb-3">Choisir une image ({images.length} fichiers ) </p>
+              <ScrollArea className="w-full h-[calc(50vh)]">
                   <>
                       {
                         isLoading ? 
@@ -63,7 +94,8 @@ export const GaleryPopup = ({ children, setSelectedImage }: {
                         </div> :
                         // {/* Image grid */}
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                          {images.map((image, index) => (
+                          {
+                            images.map((image, index) => (
                               <Card
                                   key={index}
                                   onClick={() => handleSelectedImage(image) }
@@ -77,7 +109,8 @@ export const GaleryPopup = ({ children, setSelectedImage }: {
                                   />
                                   
                               </Card>
-                          ))}
+                            ))
+                          }
                         </div>
                       }
                   </>
