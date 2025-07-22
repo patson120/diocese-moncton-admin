@@ -146,6 +146,7 @@ export default function ImageContentSection() {
                         <div className="h-full">
                           <MediaViewer
                             files={getCurrentFiles()}
+                            currentFolder={state.currentFolder}
                             viewMode={state.viewMode}
                             selectedFiles={state.selectedFiles}
                             sortBy={state.sortBy}

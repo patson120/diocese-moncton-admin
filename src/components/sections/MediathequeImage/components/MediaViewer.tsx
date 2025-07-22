@@ -34,10 +34,11 @@ import {
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { MediaFile } from './types/media';
+import { MediaFile, MediaFolder } from './types/media';
 
 interface MediaViewerProps {
   files: MediaFile[];
+  currentFolder: MediaFolder | null;
   viewMode: 'grid' | 'list';
   selectedFiles: string[];
   sortBy: 'name' | 'date' | 'size' | 'type';
@@ -303,6 +304,7 @@ const FileRow: React.FC<{
 
 export const MediaViewer: React.FC<MediaViewerProps> = ({
   files,
+  currentFolder,
   viewMode,
   selectedFiles,
   sortBy,
@@ -338,10 +340,11 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
 
   useEffect(() => {
     ( async () => {
-      const response: ImageType[] = await apiClient.get('/api/galeries');
+      const url = currentFolder?.id! ? `/api/galeries?dossier_id=${currentFolder?.id!}` : '/api/galeries'
+      const response: ImageType[] = await apiClient.get(url);
       setImages(response)
     }) ()
-  }, [])
+  }, [currentFolder?.id])
 
   const handleDeleteImage = async (img?: ImageType) => {
     if (!canDeleteImage()){ 
@@ -363,7 +366,6 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
     }
   }
   
-
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">

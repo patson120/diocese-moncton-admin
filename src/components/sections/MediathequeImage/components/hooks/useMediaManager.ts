@@ -151,6 +151,8 @@ export const useMediaManager = () => {
     sortOrder: 'asc'
   })
 
+  const [selectedFolder, setSelectedFolder] = useState<MediaFolder | null>(null)
+
   const updateFolder = useCallback((folderId: string, updates: Partial<MediaFolder>) => {
     putFolder(Number(folderId), updates.name!)
     setState(prev => ({
@@ -247,22 +249,7 @@ export const useMediaManager = () => {
       console.error("Erreur lors du chargement des dossiers :", error);
       return [];
     }
-  };
-
-  useEffect(() => {
-    const fetchFolders = async () => {
-      try {
-        const folderList = await fetchFoldersFromApi();
-        setState(prev => ({
-          ...prev,
-          folders: folderList
-        }));
-      } catch (error) {
-        console.error("Erreur lors du chargement des dossiers :", error);
-      }
-    }
-    fetchFolders();
-  }, []);
+  }
 
   const addFolderToTree = (folders: MediaFolder[], parentId: string, newFolder: MediaFolder): MediaFolder[] => {
     return folders.map(folder => {
@@ -313,19 +300,20 @@ export const useMediaManager = () => {
     return null;
   };
 
-
-
   const setCurrentFolder = useCallback( async(folder: MediaFolder | null) => {
-    if (!folder) return;
-    const childrenFolders = await fetchFoldersFromApi(folder.id);
+    setState(prev => ({
+      ...prev,
+      currentFolder: folder
+    }))
+    if(!folder) return
 
+    const childrenFolders = await fetchFoldersFromApi(folder.id);
     const updatedFolder: MediaFolder = {
       ...folder,
       children: childrenFolders,
       isExpanded: true,
       modifiedAt: new Date()
     }
-    
     setState(prev => {
       let newList = prev.folders
       childrenFolders.forEach(item => {
@@ -333,7 +321,7 @@ export const useMediaManager = () => {
       })
       return {
         ...prev,
-        folders: newList, // prev.folders.map(f => (f.id === folder.id ? updatedFolder : f)),
+        folders: newList,
         currentFolder: updatedFolder
       }
     })
@@ -447,6 +435,23 @@ export const useMediaManager = () => {
       .sort((a, b) => b.modifiedAt.getTime() - a.modifiedAt.getTime())
       .slice(0, 10);
   }, [allFiles])
+
+  
+
+  useEffect(() => {
+    const fetchFolders = async () => {
+      try {
+        const folderList = await fetchFoldersFromApi();
+          setState(prev => ({
+            ...prev,
+            folders: folderList
+        }))
+      } catch (error) {
+        console.error("Erreur lors du chargement des dossiers :", error);
+      }
+    }
+    fetchFolders()
+  }, [])
 
   return {
     state,
