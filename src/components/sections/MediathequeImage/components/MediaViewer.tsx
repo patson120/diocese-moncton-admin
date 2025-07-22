@@ -35,6 +35,7 @@ import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { MediaFile, MediaFolder } from './types/media';
+import { LoadingSpinner } from '../../MapSection/loading-spinner';
 
 interface MediaViewerProps {
   files: MediaFile[];
@@ -333,6 +334,8 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
   // Image
 
   const { canDeleteImage } = useRole()
+
+  const [loading, setLoading] = useState(false)
     
   const [images, setImages] = useState<ImageType[]>([])
   const [selectedImage, setSelectedImage] = useState<ImageType | undefined>()
@@ -340,9 +343,17 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
 
   useEffect(() => {
     ( async () => {
-      const url = currentFolder?.id! ? `/api/galeries?dossier_id=${currentFolder?.id!}` : '/api/galeries'
-      const response: ImageType[] = await apiClient.get(url);
-      setImages(response)
+      setLoading(true)
+      try {
+        const url = currentFolder?.id! ? `/api/galeries?dossier_id=${currentFolder?.id!}` : '/api/galeries'
+        const response: ImageType[] = await apiClient.get(url);
+        setImages(response)
+      } catch (error) {
+        console.log(error);
+      }
+      finally {
+        setLoading(false)
+      }
     }) ()
   }, [currentFolder?.id])
 
@@ -479,7 +490,7 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
       )}*/} 
 
       { 
-        images.length === 0 &&
+        (images.length === 0 && !loading) &&
         <div className="text-center py-16">
           <div className="text-gray-400 mb-4">
             <ImageIcon className="h-16 w-16 mx-auto" />
@@ -488,10 +499,17 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
           <p className="text-muted-foreground">Il n'y a aucun fichier dans cette section</p>
         </div>
       }
+      {
+        (loading) &&
+        <div className='py-16 flex flex-col justify-center items-center'>
+          <LoadingSpinner />
+          <p className="text-muted-foreground">Chargement...</p>
+        </div>
+      }
 
       {/* Image grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 gap-4">
-        { images.map((image, index) => (
+        { !loading && images.map((image, index) => (
           <Card
               key={index}
               className="overflow-hidden rounded-lg border-none relative shrink-0 min-h-[150px] max-h-[200px]">
