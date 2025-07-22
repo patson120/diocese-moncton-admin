@@ -142,7 +142,7 @@ const folders: MediaFolder[] = [
 
 export const useMediaManager = () => {
   const [state, setState] = useState<MediaManagerState>({
-    folders: folders,
+    folders: [],
     currentFolder: null,
     selectedFiles: [],
     searchQuery: '',
@@ -152,6 +152,7 @@ export const useMediaManager = () => {
   })
 
   const updateFolder = useCallback((folderId: string, updates: Partial<MediaFolder>) => {
+    putFolder(Number(folderId), updates.name!)
     setState(prev => ({
       ...prev,
       folders: updateFolderInTree(prev.folders, folderId, updates)
@@ -161,7 +162,6 @@ export const useMediaManager = () => {
   const updateFolderInTree = (folders: MediaFolder[], folderId: string, updates: Partial<MediaFolder>): MediaFolder[] => {
     return folders.map((folder) => {
       if (folder.id === folderId) {
-        putFolder(Number(folderId), Number(folder.parentId), updates.name!)
         return { ...folder, ...updates };
       }
       if (folder.children.length > 0) {
@@ -213,9 +213,8 @@ export const useMediaManager = () => {
     return response.id
   }
 
-  const putFolder = async (folder_id: number, parent_id: number, titre: string) => {
+  const putFolder = async (folder_id: number, titre: string) => {
     await apiClient.put(`/api/dossiers/${folder_id}`, {
-      parent_id: parent_id,
       titre_fr: titre,
       titre_en: titre,
     })
@@ -270,6 +269,7 @@ export const useMediaManager = () => {
       if (folder.id === parentId) {
         return {
           ...folder,
+          isExpanded: true,
           children: [...folder.children, newFolder],
           modifiedAt: new Date()
         }
@@ -313,26 +313,31 @@ export const useMediaManager = () => {
     return null;
   };
 
+
+
   const setCurrentFolder = useCallback( async(folder: MediaFolder | null) => {
-
     if (!folder) return;
-
     const childrenFolders = await fetchFoldersFromApi(folder.id);
-  
+
     const updatedFolder: MediaFolder = {
       ...folder,
       children: childrenFolders,
       isExpanded: true,
       modifiedAt: new Date()
     }
-  
-    setState(prev => ({
-      ...prev,
-      folders: prev.folders.map(f => (f.id === folder.id ? updatedFolder : f)),
-      currentFolder: updatedFolder
-    }))
+    
+    setState(prev => {
+      let newList = prev.folders
+      childrenFolders.forEach(item => {
+        newList = addFolderToTree(newList, folder.id, item)
+      })
+      return {
+        ...prev,
+        folders: newList, // prev.folders.map(f => (f.id === folder.id ? updatedFolder : f)),
+        currentFolder: updatedFolder
+      }
+    })
   }, [])
-
 
   const setSearchQuery = useCallback((query: string) => {
     setState(prev => ({ ...prev, searchQuery: query }));
