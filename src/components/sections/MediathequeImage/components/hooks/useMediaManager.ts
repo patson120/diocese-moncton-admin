@@ -151,8 +151,6 @@ export const useMediaManager = () => {
     sortOrder: 'asc'
   })
 
-  const [selectedFolder, setSelectedFolder] = useState<MediaFolder | null>(null)
-
   const updateFolder = useCallback((folderId: string, updates: Partial<MediaFolder>) => {
     putFolder(Number(folderId), updates.name!)
     setState(prev => ({
