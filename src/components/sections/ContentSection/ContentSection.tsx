@@ -64,21 +64,21 @@ export const ContentSection = (): JSX.Element => {
     <section className="w-full mx-auto">
       <Card className="bg-white w-full rounded-2xl">
         <CardContent className="p-4 lg:p-7">
-          <Tabs defaultValue="actives" className="w-full">
+          <Tabs defaultValue="pages" className="w-full">
             <div className="flex justify-between items-center">
               <TabsList className="justify-start h-12 p-0 bg-[#F1F3F6] rounded-md px-3 py-2">
                 <TabsTrigger
                   value="actives"
                   className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
                   <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                    Pages actives
+                    Assignées
                   </span>
                 </TabsTrigger>
                 <TabsTrigger
                   value="inactives"
                   className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
                   <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                    Pages inactives
+                    Non assignées
                   </span>
                 </TabsTrigger>
               </TabsList>

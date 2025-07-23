@@ -13,8 +13,7 @@ export const PageMenuSection = (): JSX.Element => {
 
   // Define tab items for better maintainability
   const tabItems = [
-    { id: "active", label: "Pages actives" },
-    { id: "inactive", label: "Pages desactivées" },
+    { id: "pages", label: "Pages" },
     { id: "components", label: "Composants" },
     { id: "links", label: "Gestion des liens" },
   ];
@@ -26,7 +25,7 @@ export const PageMenuSection = (): JSX.Element => {
           <h3 className="font-legend text-xs text-gray tracking-[0] leading-normal ml-2.5">
             GESTION DES PAGES
           </h3>
-          <Tabs defaultValue="active" className="w-full">
+          <Tabs defaultValue="pages" className="w-full">
             <TabsList className="bg-transparent p-0 h-auto gap-0">
               {tabItems.map((tab) => (
                 <TabsTrigger
@@ -41,7 +40,7 @@ export const PageMenuSection = (): JSX.Element => {
             </TabsList>
           </Tabs>
         </div>
-        
+
         {
           canAddPage() &&
           <Link href={`/create-page/new`} className="bg-blue rounded-[7px] flex justify-center items-center h-10 gap-2 px-3.5 py-0">
