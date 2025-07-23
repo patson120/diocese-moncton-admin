@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PlusIcon } from "lucide-react";
+import Link from "next/link";
 import React, { JSX } from "react";
+
 
 export const PageMenuSection = (): JSX.Element => {
   // Define tab items for better maintainability
@@ -35,12 +37,12 @@ export const PageMenuSection = (): JSX.Element => {
           </Tabs>
         </div>
 
-        <Button className="bg-blue rounded-[7px] h-10 gap-2 px-3.5 py-0">
-          <PlusIcon className="w-5 h-5" />
-          <span className="font-body-3 font-[number:var(--body-3-font-weight)] text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
+        <Link href={`/create-page/new`} className="bg-blue rounded-[7px] flex justify-center items-center h-10 gap-2 px-3.5 py-0">
+          <PlusIcon className="w-5 h-5 text-white" />
+          <span className="font-body-3 text-white font-[number:var(--body-3-font-weight)] text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
             Créer une page
           </span>
-        </Button>
+        </Link>
       </div>
     </section>
   );

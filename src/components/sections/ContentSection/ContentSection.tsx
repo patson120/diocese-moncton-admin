@@ -151,7 +151,6 @@ export const ContentSection = (): JSX.Element => {
               </ScrollArea>
             </TabsContent>
           </Tabs>
-
         </CardContent>
       </Card>
     </section>
