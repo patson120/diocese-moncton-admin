@@ -28,7 +28,7 @@ const formSchema = z.object({
 
 export const EditUserFormSection = ({user}: { user: User}): JSX.Element => {
 
-  const { canUpdateUser } = useRole()
+  const { canUpdateUser, isCurrentUser } = useRole()
 
   const [isLoading, setIsLoading] = useState(false)
  
@@ -146,34 +146,37 @@ export const EditUserFormSection = ({user}: { user: User}): JSX.Element => {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="role"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Rôle</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}>
-                      <FormControl className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200">
-                        <SelectTrigger>
-                          <SelectValue placeholder="Sélectionnez son rôle" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {
-                          roles && roles.map((role: any) => (
-                            <SelectItem key={role.id} value={role.sigle}>
-                              {role.intitule}
-                            </SelectItem>
-                          ))
-                        }
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {
+                !isCurrentUser(user.id) &&
+                <FormField
+                  control={form.control}
+                  name="role"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Rôle</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}>
+                        <FormControl className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200">
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sélectionnez son rôle" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {
+                            roles && roles.map((role: any) => (
+                              <SelectItem key={role.id} value={role.sigle}>
+                                {role.intitule}
+                              </SelectItem>
+                            ))
+                          }
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              }
 
               <FormField
                 control={form.control}

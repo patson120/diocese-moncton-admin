@@ -261,6 +261,9 @@ const useRole = () => {
     const canDeleteBulletin = (): boolean => canUpdateMessage()
 
 
+    const isCurrentUser = (userId: number): boolean => userJson?.id! === userId
+
+
     return {
         canAddUser,
         canUpdateUser,
@@ -308,7 +311,9 @@ const useRole = () => {
 
         canAddBulletin,
         canUpdateBulletin,
-        canDeleteBulletin
+        canDeleteBulletin,
+
+        isCurrentUser
     }
 }
 

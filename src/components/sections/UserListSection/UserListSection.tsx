@@ -26,7 +26,7 @@ import useRole from "@/hooks/use-role";
 
 export const UserListSection = (): JSX.Element => {
 
-  const { canDeleteUser } = useRole()
+  const { canDeleteUser, isCurrentUser } = useRole()
 
   // Role filter options
   const roleFilters = [
@@ -83,6 +83,10 @@ export const UserListSection = (): JSX.Element => {
   }
 
   const handleDelete = async () => {
+    if (isCurrentUser(selectedUser?.id!)){
+      toast.success("Vous ne pouvez pas supprimer votre propre compte !");
+      return
+    }
 
     if (isDeleting) return
     setIsDeleting(true)

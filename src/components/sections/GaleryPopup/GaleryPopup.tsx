@@ -72,18 +72,18 @@ export const GaleryPopup = ({ children, setSelectedImage }: {
                     <SelectTrigger className="h-11 px-3 py-3.5 rounded-lg border border-neutral-200 text-[#454545]">
                       <SelectValue placeholder="Sélectionnez un dossier" />
                     </SelectTrigger>
-                    <SelectContent className="bg-white h-[180px] overflow-y-scroll v-scroll border border-neutral-200 rounded-md">
+                    <SelectContent className="bg-white h-[180px] overflow-y-scroll v-scroll border border-neutral-200 rounded-md cursor-pointer">
                       <SelectItem className="w-full px-6" value="0">Tous</SelectItem>
                       {
                         folders && folders.map(f => (
-                          <SelectItem className="w-full text-black px-6" key={f.id} value={`${f.id}`}>{f.titre_fr}</SelectItem>
+                          <SelectItem className="w-full text-black px-6 cursor-pointer" key={f.id} value={`${f.id}`}>{f.titre_fr}</SelectItem>
                         ))
                       }
                     </SelectContent>
                 </Select>
               </div>
               
-              <p className="text-gray mb-3">Choisir une image ({images.length} fichiers ) </p>
+              <p className="text-gray mb-3">Liste des fichiers ({images.length} fichiers ) </p>
               <ScrollArea className="w-full h-[calc(50vh)]">
                   <>
                       {
