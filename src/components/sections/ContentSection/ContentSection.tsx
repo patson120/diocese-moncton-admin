@@ -1,7 +1,13 @@
+
+'use client'
+
+import { Page } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { apiClient } from "@/lib/axios";
 import {
   FileTextIcon,
   LayoutGridIcon,
@@ -9,32 +15,28 @@ import {
   MoreVerticalIcon,
   SearchIcon
 } from "lucide-react";
-import { JSX } from "react";
+import { JSX, useEffect, useState } from "react";
 
 export const ContentSection = (): JSX.Element => {
   // Page data for mapping
-  const pages = [
+  const pagess = [
     { title: "Page d'accueil", description: "Archidiocèse de Mo..." },
     { title: "Mouvements", description: "Lorem ipsum dolor si..." },
     { title: "À propos", description: "Lorem ipsum dolor si..." },
-    { title: "Sacrements", description: "Lorem ipsum dolor si..." },
-    { title: "Contact", description: "Lorem ipsum dolor si..." },
-    { title: "Évêques", description: "Archidiocèse de Mo..." },
-    { title: "Message de l'évêque", description: "Lorem ipsum dolor si..." },
-    { title: "Sacrements Mariages", description: "Lorem ipsum dolor si..." },
-    { title: "Clergé", description: "Lorem ipsum dolor si..." },
-    { title: "Évènements", description: "Lorem ipsum dolor si..." },
-    { title: "Page d'accueil", description: "Archidiocèse de Mo..." },
-    { title: "Sacrements baptême", description: "Lorem ipsum dolor si..." },
-    { title: "À propos", description: "Lorem ipsum dolor si..." },
-    { title: "Évènements", description: "Lorem ipsum dolor si..." },
-    { title: "Évènements", description: "Lorem ipsum dolor si..." },
-    { title: "Page d'accueil", description: "Archidiocèse de Mo..." },
-    { title: "Sacrements baptême", description: "Lorem ipsum dolor si..." },
-    { title: "À propos", description: "Lorem ipsum dolor si..." },
-    { title: "Évènements", description: "Lorem ipsum dolor si..." },
-    { title: "Évènements", description: "Lorem ipsum dolor si..." },
   ];
+
+  const [pages, setPages] = useState<Page[]>([])
+
+
+
+  useEffect(() => {
+    const fetchPages = async () => {
+      const response: Page[] = await apiClient.get("/api/pages")
+      setPages(response);
+    }
+    fetchPages()
+  }, [])
+  
 
   return (
     <section className="w-full mx-auto">
@@ -86,66 +88,73 @@ export const ContentSection = (): JSX.Element => {
               </div>
             </div>
             <TabsContent value="actives" className="mt-6 space-y-6">
-              <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {pages.map((page, index) => (
-                  <Card
-                    key={index}
-                    className="bg-[#F9F9F0] rounded-xl border-none"
-                  >
-                    <CardContent className="p-2 flex justify-start items-center">
+              <ScrollArea className="w-full h-[calc(63vh)]">
+                <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {pages.map((page, index) => (
+                    <Card
+                      key={index}
+                      className="bg-[#F9F9F0] rounded-xl border-none"
+                    >
+                      <CardContent className="p-2 flex justify-start items-center">
 
-                      <FileTextIcon className="w-5 h-5 mx-1" />
+                        <FileTextIcon className="w-5 h-5 mx-1" />
 
-                      <div className="flex flex-1 flex-col ml-2 gap-0.5">
-                        <h3 className="font-body-3 font-semibold text-noir-dashboard text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)] line-clamp-1">
-                          {page.title}
-                        </h3>
-                        <p className="font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)] line-clamp-1">
-                          {page.description}
-                        </p>
-                      </div>
+                        <div className="flex flex-1 flex-col ml-2 gap-0.5">
+                          <h3 className="font-body-3 font-semibold text-noir-dashboard text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)] line-clamp-1">
+                            {page.titre}
+                          </h3>
+                          <p className="font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)] line-clamp-1">
+                            {/* page.description */}
+                            Lorem ipsum dolor si...
+                          </p>
+                        </div>
 
-                      <Button
-                        variant="ghost"
-                        size="icon">
-                        <MoreVerticalIcon className="w-[16px] h-[16px]" />
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                        <Button
+                          variant="ghost"
+                          size="icon">
+                          <MoreVerticalIcon className="w-[16px] h-[16px]" />
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </ScrollArea>
             </TabsContent>
             <TabsContent value="inactives" className="mt-6 space-y-6">
-              <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {pages.slice(7, 13).map((page, index) => (
-                  <Card
-                    key={index}
-                    className="bg-[#F9F9F0] rounded-xl border-none"
-                  >
-                    <CardContent className="p-2 flex justify-start items-center">
+              <ScrollArea className="w-full h-[calc(63vh)]">
+                <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {pages.slice(7, 13).map((page, index) => (
+                    <Card
+                      key={index}
+                      className="bg-[#F9F9F0] rounded-xl border-none"
+                    >
+                      <CardContent className="p-2 flex justify-start items-center">
 
-                      <FileTextIcon className="w-5 h-5 mx-1" />
+                        <FileTextIcon className="w-5 h-5 mx-1" />
 
-                      <div className="flex flex-1 flex-col ml-2 gap-0.5">
-                        <h3 className="font-body-3 font-semibold text-noir-dashboard text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)] line-clamp-1">
-                          {page.title}
-                        </h3>
-                        <p className="font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)] line-clamp-1">
-                          {page.description}
-                        </p>
-                      </div>
+                        <div className="flex flex-1 flex-col ml-2 gap-0.5">
+                          <h3 className="font-body-3 font-semibold text-noir-dashboard text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)] line-clamp-1">
+                            {page.titre}
+                          </h3>
+                          <p className="font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)] line-clamp-1">
+                            {/* page.description */}
+                            Lorem ipsum dolor si...
+                          </p>
+                        </div>
 
-                      <Button
-                        variant="ghost"
-                        size="icon">
-                        <MoreVerticalIcon className="w-[16px] h-[16px]" />
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+                        <Button
+                          variant="ghost"
+                          size="icon">
+                          <MoreVerticalIcon className="w-[16px] h-[16px]" />
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </ScrollArea>
             </TabsContent>
           </Tabs>
+
         </CardContent>
       </Card>
     </section>

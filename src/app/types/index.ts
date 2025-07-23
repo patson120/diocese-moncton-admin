@@ -203,3 +203,16 @@ export type Dossier = {
     created_at: string;
     updated_at: string;
 }
+
+export type Page = {
+    id: number;
+    titre: string;
+    is_planifier: number;
+    description: string;
+    data: string;
+    html: string;
+    date_planification: string | null;
+    contenus: any[],
+    created_at: string;
+    updated_at: string;
+}
