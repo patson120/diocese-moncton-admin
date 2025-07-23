@@ -358,6 +358,7 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
   }, [currentFolder?.id])
 
   const handleDeleteImage = async (img?: ImageType) => {
+    if (!window.confirm("Voulez-vous vraiment supprimer cette image ?")) return
     if (!canDeleteImage()){ 
       return toast.success("Vous n'avez pas le droit d'effectuer cette opération !")
     }

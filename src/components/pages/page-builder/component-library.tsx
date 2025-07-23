@@ -1,14 +1,13 @@
 "use client";
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Input } from '@/components/ui/input';
 import { Component, ComponentType } from '@/components/pages/lib/types';
 import { v4 as uuidv4 } from '@/components/pages/lib/uuid';
-import { Search, Layout, Type, Image as ImageIcon, Grid, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Search, X } from 'lucide-react';
+import { useState } from 'react';
 import { componentRegistry, getComponentIcon } from '../lib/components/registry';
 
 interface ComponentLibraryProps {
@@ -51,7 +50,6 @@ export function ComponentLibrary({ onAdd }: ComponentLibraryProps) {
       order: 9999, // Will be re-ordered when added
       children: [],
     };
-  
     onAdd(newComponent);
   };
 
@@ -69,16 +67,17 @@ export function ComponentLibrary({ onAdd }: ComponentLibraryProps) {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        {searchTerm && (
+        {
+          searchTerm && (
             <Button
               variant="ghost"
               size="icon"
               className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6"
-              onClick={handleClearSearch}
-            >
+              onClick={handleClearSearch}>
               <X className="h-3 w-3" />
             </Button>
-          )}
+          )
+        }
       </div>
       
       <Tabs defaultValue="all" value={activeCategory} onValueChange={setActiveCategory} className='max-w-[270px]'>

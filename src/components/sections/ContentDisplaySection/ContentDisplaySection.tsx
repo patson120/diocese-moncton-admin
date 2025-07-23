@@ -173,7 +173,7 @@ export default function ContentDisplaySection() {
                   </div>
                 </div>
               </div>
-              <ScrollArea className="w-full h-[calc(80vh)] mt-6">
+              <ScrollArea className="w-full h-[calc(63vh)] mt-6">
                 <TabsContent value="published" className="mt-6 space-y-6">
                   <ActualiteContent 
                     is_actif={1} 
@@ -261,7 +261,7 @@ export default function ContentDisplaySection() {
                 </div>
               </div>
 
-              <ScrollArea className="w-full h-[calc(80vh)] mt-6">
+              <ScrollArea className="w-full h-[calc(63vh)] mt-6">
                 <TabsContent value="published" className="mt-6 space-y-6">
                   {/* Content for published tab */}
                   <MessageContent 
@@ -300,13 +300,13 @@ export default function ContentDisplaySection() {
           </TabsContent>
 
           <TabsContent value="communautes" className="mt-6 p-0 border-none">
-            <div className="flex items-center justify-center h-[400px]">
+            <div className="flex items-center justify-center h-[70vh]">
               <p className="text-gray">Aucune communauté</p>
             </div>
           </TabsContent>
 
           <TabsContent value="mouvements" className="mt-6 p-0 border-none">
-            <div className="flex items-center justify-center h-[400px]">
+            <div className="flex items-center justify-center h-[70vh]">
               <p className="text-gray">Aucun mouvement</p>
             </div>
           </TabsContent>
