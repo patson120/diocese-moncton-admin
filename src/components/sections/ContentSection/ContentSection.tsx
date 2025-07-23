@@ -27,8 +27,6 @@ export const ContentSection = (): JSX.Element => {
 
   const [pages, setPages] = useState<Page[]>([])
 
-
-
   useEffect(() => {
     const fetchPages = async () => {
       const response: Page[] = await apiClient.get("/api/pages")
@@ -36,7 +34,6 @@ export const ContentSection = (): JSX.Element => {
     }
     fetchPages()
   }, [])
-  
 
   return (
     <section className="w-full mx-auto">
