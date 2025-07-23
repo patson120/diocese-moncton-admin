@@ -4,9 +4,12 @@
 import { Page } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { Loader } from "@/components/ui/loader";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import useRole from "@/hooks/use-role";
 import { apiClient } from "@/lib/axios";
 import {
   FileTextIcon,
@@ -15,9 +18,15 @@ import {
   MoreVerticalIcon,
   SearchIcon
 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { JSX, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export const ContentSection = (): JSX.Element => {
+
+  const { canDeletePage} = useRole()
+
   // Page data for mapping
   const pagess = [
     { title: "Page d'accueil", description: "Archidiocèse de Mo..." },
@@ -26,6 +35,7 @@ export const ContentSection = (): JSX.Element => {
   ];
 
   const [pages, setPages] = useState<Page[]>([])
+  const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
     const fetchPages = async () => {
@@ -34,6 +44,21 @@ export const ContentSection = (): JSX.Element => {
     }
     fetchPages()
   }, [])
+
+  const handleDeletePage = async (page: Page) => {
+    if(isDeleting) return
+    if (window.confirm(`Voulez-vous vraiment supprimer la page "${page.titre}" ? \nCette action est irreversible ! `)){
+      setIsDeleting(true)
+      try {
+        await apiClient.delete(`/api/pages/${page.id}`)
+        toast.success(`La page ${page.titre} a été supprimée avec succès !`)
+        setPages(prev => (prev.filter(p => p.id !== page.id)) )
+      } catch (error) {
+        console.log("Erreur", error)
+      }
+      finally{ setIsDeleting(true)}
+    }
+  }
 
   return (
     <section className="w-full mx-auto">
@@ -105,12 +130,31 @@ export const ContentSection = (): JSX.Element => {
                             Lorem ipsum dolor si...
                           </p>
                         </div>
-
-                        <Button
-                          variant="ghost"
-                          size="icon">
-                          <MoreVerticalIcon className="w-[16px] h-[16px]" />
-                        </Button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild >
+                          <Button
+                            variant="ghost"
+                            size="icon">
+                            <MoreVerticalIcon className="w-[16px] h-[16px]" />
+                          </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent>
+                              {/* Dropdown menu items would go here */}
+                              <DropdownMenuItem className="text-gray">
+                                  <Link href={`/render/${page.id}`} target="_blank">Consulter</Link>
+                              </DropdownMenuItem>
+                              {
+                                canDeletePage() &&
+                                <DropdownMenuItem onClick={() => handleDeletePage(page)}
+                                  className="text-red-500">
+                                  { (isDeleting ) &&
+                                      <Loader className="w-4 h-4 mr-2" />
+                                  }
+                                  Supprimer
+                                </DropdownMenuItem>
+                              }
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </CardContent>
                     </Card>
                   ))}

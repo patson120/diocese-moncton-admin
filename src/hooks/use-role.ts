@@ -258,10 +258,33 @@ const useRole = () => {
         }
     }
 
-    const canDeleteBulletin = (): boolean => canUpdateMessage()
-
+    const canDeleteBulletin = (): boolean => canUpdateBulletin()
 
     const isCurrentUser = (userId: number): boolean => userJson?.id! === userId
+
+    const canAddPage = (): boolean => {
+        switch (userJson?.role?.sigle!) {
+            case "admin": return true
+            case "editeur": return false
+            case "lecteur": return false
+            case "moderateur": return false
+            case "bulletin": return false
+            default: return false
+        }
+    }
+    const canUpdatePage = (): boolean => {
+        switch (userJson?.role?.sigle!) {
+            case "admin": return true
+            case "editeur": return false
+            case "lecteur": return false
+            case "moderateur": return false
+            case "bulletin": return false
+            default: return false
+        }
+    }
+
+    const canDeletePage = (): boolean => canUpdatePage()
+
 
 
     return {
@@ -313,7 +336,11 @@ const useRole = () => {
         canUpdateBulletin,
         canDeleteBulletin,
 
-        isCurrentUser
+        isCurrentUser,
+
+        canAddPage,
+        canUpdatePage,
+        canDeletePage,
     }
 }
 

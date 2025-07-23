@@ -4,10 +4,12 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { Page, Component, PageStatus } from '@/components/pages/lib/types';
 import { v4 as uuidv4 } from '@/components/pages/lib/uuid';
+import { apiClient } from '@/lib/axios';
+import { generatePageHtml } from '../lib/utils/html-generator';
 
 interface PagesState {
   pages: Page[];
-  addPage: (page: Omit<Page, 'id' | 'createdAt' | 'updatedAt'>) => string;
+  addPage: (page: Omit<Page, 'id' | 'createdAt' | 'updatedAt'>) => Promise<string>;
   updatePage: (id: string, data: Partial<Page>) => void;
   deletePage: (id: string) => void;
   getPage: (id: string) => Page | undefined;
@@ -20,16 +22,39 @@ interface PagesState {
   exportPageHtml: (pageId: string) => string;
 }
 
+
+const handleCreatePage = async (page: Page) => {
+  try {
+    return await apiClient.post("/api/pages", {
+      titre: page.title,
+      description: generatePageHtml(page)
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const handleUpdatePage = async (page: Page) => {
+  try {
+    return await apiClient.put(`/api/pages/${page.id}`, {
+      titre: page.title,
+      description: generatePageHtml(page)
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 export const usePagesStore = create<PagesState>()(
   persist(
     (set, get) => ({
       pages: [],
       
-      addPage: (pageData) => {
-        const id = uuidv4();
+      addPage: async (pageData) => {
+        const id = "1"; //uuidv4();
         const now = new Date().toISOString();
         
-        const page: Page = {
+        let page: Page = {
           id,
           title: pageData.title,
           description: pageData.description,
@@ -41,22 +66,28 @@ export const usePagesStore = create<PagesState>()(
           preview: pageData.preview,
           publishedVersions: pageData.publishedVersions || [],
           metaData: pageData.metaData || {},
-        };
+        }
+        const response: any = await handleCreatePage(page)
         
         set((state) => ({
-          pages: [...state.pages, page],
+          pages: [...state.pages, {...page, id: response.id }],
         }));
         
-        return id;
+        return response.id;
       },
       
       updatePage: (id, data) => {
         set((state) => ({
           pages: state.pages.map((page) => 
-            page.id === id
-              ? { ...page, ...data, updatedAt: new Date().toISOString() }
-              : page
-          ),
+          { 
+            if (page.id === id){
+              handleUpdatePage(page)
+              return { ...page, ...data, updatedAt: new Date().toISOString() }
+            }
+            else {
+              return page
+            }
+          }),
         }));
       },
       
@@ -67,7 +98,7 @@ export const usePagesStore = create<PagesState>()(
       },
       
       getPage: (id) => {
-        return get().pages.find((page) => page.id === id);
+        return get().pages.find((page) => page.id == id);
       },
       
       duplicatePage: (id) => {

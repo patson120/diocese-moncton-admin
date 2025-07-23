@@ -1,11 +1,16 @@
-import { Button } from "@/components/ui/button";
+"use client"
+
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import useRole from "@/hooks/use-role";
 import { PlusIcon } from "lucide-react";
 import Link from "next/link";
-import React, { JSX } from "react";
+import { JSX } from "react";
 
 
 export const PageMenuSection = (): JSX.Element => {
+
+  const { canAddPage } = useRole()
+
   // Define tab items for better maintainability
   const tabItems = [
     { id: "active", label: "Pages actives" },
@@ -29,20 +34,23 @@ export const PageMenuSection = (): JSX.Element => {
                   value={tab.id}
                   className="p-2.5 rounded-none font-body-3 text-sm data-[state=active]:border-b-[3px] data-[state=active]:border-blue data-[state=active]:text-blue data-[state=active]:shadow-none data-[state=inactive]:text-gray data-[state=inactive]:bg-transparent">
                   <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                    {tab.label}
+                    {tab.label} 
                   </span>
                 </TabsTrigger>
               ))}
             </TabsList>
           </Tabs>
         </div>
-
-        <Link href={`/create-page/new`} className="bg-blue rounded-[7px] flex justify-center items-center h-10 gap-2 px-3.5 py-0">
-          <PlusIcon className="w-5 h-5 text-white" />
-          <span className="font-body-3 text-white font-[number:var(--body-3-font-weight)] text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-            Créer une page
-          </span>
-        </Link>
+        
+        {
+          canAddPage() &&
+          <Link href={`/create-page/new`} className="bg-blue rounded-[7px] flex justify-center items-center h-10 gap-2 px-3.5 py-0">
+            <PlusIcon className="w-5 h-5 text-white" />
+            <span className="font-body-3 text-white font-[number:var(--body-3-font-weight)] text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
+              Créer une page
+            </span>
+          </Link>
+        }
       </div>
     </section>
   );

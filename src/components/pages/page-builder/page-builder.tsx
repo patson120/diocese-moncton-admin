@@ -1,23 +1,20 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { DashboardShell } from '@/components/pages/dashboard-shell';
-import { DashboardHeader } from '@/components/pages/dashboard-header';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ComponentLibrary } from '@/components/pages/page-builder/component-library';
+import { Component, Page } from '@/components/pages/lib/types';
 import { BuilderCanvas } from '@/components/pages/page-builder/builder-canvas';
 import { ComponentEditor } from '@/components/pages/page-builder/component-editor';
+import { ComponentLibrary } from '@/components/pages/page-builder/component-library';
 import { PreviewPanel } from '@/components/pages/page-builder/preview-panel';
 import { usePagesStore } from '@/components/pages/stores/pages-store';
-import { Page, Component } from '@/components/pages/lib/types';
-import { ArrowLeft, Save, Eye, Globe, Code } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
-import { toast } from 'sonner';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { ArrowLeft, Code, Eye, Globe, Save } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 interface PageBuilderProps {
   pageId: string;
@@ -52,6 +49,7 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
     } else {
       // Load existing page
       const existingPage = getPage(pageId);
+      
       if (existingPage) {
         setPage(existingPage);
         setTitle(existingPage.title);
@@ -78,14 +76,14 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
       if (page.id === 'temp') {
         // Create new page
         const slug = title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-        const newPageId = addPage({
+        const newPageId = await addPage({
           title,
           slug,
           status: 'draft',
           components: page.components,
           description: '',
         });
-        
+      
         toast.success('Page created successfully');
         router.push(`/create-page/${newPageId}`);
       } else {

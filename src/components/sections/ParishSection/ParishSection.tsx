@@ -687,7 +687,6 @@ export default function ParishSection() {
                                                     }
                                                     Supprimer</DropdownMenuItem>
                                                 </DropdownMenuContent>
-                                                
                                             </DropdownMenu>
                                             </div>
 
