@@ -23,7 +23,7 @@ export default function EventSection(): JSX.Element {
   const [view, setView] = useState<"day" | "week" | "month">("month");
 
   const getEvents = async () => {
-    const response: any = await apiClient.get("/api/evenements?paginate=200")
+    const response: any = await apiClient.get("/api/evenements?paginate=20000")
     setEvenements(response.data)
   }
 
