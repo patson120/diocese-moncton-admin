@@ -27,7 +27,7 @@ export default function ActualiteContent(
 
     useEffect(() => {
         const getActualites = async () => {
-            let params = `?paginate=200&is_actif=${is_actif}`
+            let params = `?paginate=20000&is_actif=${is_actif}`
             if (query) { params += `&intitule=${query}` }
             if (ordre) { params += `&ordre=${ordre}` }
             const response: any = await apiClient.get(`/api/actualites${params}`)
