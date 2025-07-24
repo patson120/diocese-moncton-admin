@@ -303,7 +303,7 @@ export const useMediaManager = () => {
       ...prev,
       currentFolder: folder
     }))
-    if(!folder) return
+    if(!folder || folder.children.length) return
 
     const childrenFolders = await fetchFoldersFromApi(folder.id);
     const updatedFolder: MediaFolder = {

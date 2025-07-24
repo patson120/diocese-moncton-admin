@@ -102,26 +102,49 @@ function generateComponentHtml(component: Component): string {
         </section>`;
 
     case 'columns':
-      return `
-        <div style="
-          display: flex;
-          flex-wrap: wrap;
-          gap: ${component.props.gap || '16px'};
-          background-color: ${component.props.backgroundColor || 'transparent'};
-          padding: ${component.props.padding || '16px'};">
-          <div style="flex: 1; min-width: 300px;">
-            <!-- Left column content -->
-            <div style="height: 100px; background-color: #f3f4f6; display: flex; align-items: center; justify-content: center; border-radius: 4px;">
-              Left Column Content
+      try {
+        const features = typeof component.props.features === 'string' 
+          ? JSON.parse(component.props.features) 
+          : component.props.features || [];
+          
+        return `
+          <section className="py-16 px-6 rounded-lg" 
+            style="text-align: center; ${marginClasses}">
+            <div className="max-w-4xl mx-auto text-center mb-12">
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+                ${component.props.title || 'Our Features'}
+              </h2>
+              <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
+                ${component.props.description || 'Discover what makes our product special'}
+              </p>
             </div>
-          </div>
-          <div style="flex: 1; min-width: 300px;">
-            <!-- Right column content -->
-            <div style="height: 100px; background-color: #f3f4f6; display: flex; align-items: center; justify-content: center; border-radius: 4px;">
-              Right Column Content
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto"> 
+              ${features.map((feature: { title: string, description: string, icon: string }) => `
+                <div className="rounded-lg p-6 shadow-sm">
+                  <!-- Icon representation -->
+                  <div style="background-color: #f0fdfa;" className="mx-auto mb-4 h-12 w-12 rounded-full flex items-center justify-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      style="color: #0d9488;"
+                      className="h-6 w-6">
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2">${feature.title}</h3>
+                  <p className="text-muted-foreground">${feature.description}</p>
+                </div>`
+              ).join('')}
             </div>
-          </div>
-        </div>`;
+          </section>`;
+      } catch (e) {
+        return '<div>Error rendering features</div>';
+      }
 
     case 'gallery':
       try {
