@@ -1,36 +1,34 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { User } from '@/app/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { useForm } from 'react-hook-form';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { apiClient } from '@/lib/axios';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
 import Cookies from 'js-cookie';
-import { 
-  User as UserIcon, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Calendar, 
-  Edit, 
-  Save, 
-  X, 
-  Lock,
-  Eye,
-  EyeOff,
-  Check,
-  Camera
+import {
+    Calendar,
+    Camera,
+    Check,
+    Edit,
+    Eye,
+    EyeOff,
+    Lock,
+    Mail,
+    Save,
+    User as UserIcon,
+    X
 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { User } from '@/app/types';
+import * as z from 'zod';
 
 // Schemas de validation
 const profileSchema = z.object({
@@ -73,18 +71,78 @@ export default function ProfilePage() {
         },
     })
 
-    const handleProfileSubmit = (data: ProfileFormData) => {
-        setUser(prev => ({ ...prev!, ...data }));
-        setIsEditing(false);
-        toast.success('Profil mis à jour avec succès !');
-    };
+    const handleProfileSubmit = async (data: ProfileFormData) => {
+        setIsEditing(true)
+        try {
+            const updateUser = {
+                role_id: user?.role_id,
+                nom: data.nom!,
+                email: data.email,
+                statut: user?.statut
+            }
+            const response: any = await apiClient.put(`/api/administrateurs/${user?.id}`, updateUser)
+            if (response.id ) {
+                toast.success('Profil mis à jour avec succès !');
+                setUser({...response, role: user?.role });
+                Cookies.set('user', JSON.stringify({...response, role: user?.role }), { expires: 7 });
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1200);
+            }
+            else  {
+                toast.error(
+                    <div className='p-3 bg-red-500 text-white rounded-md'>
+                        Une erreur est survenue lors de la mise à jour de l'utilisateur
+                    </div>
+                )
+            }
+        }
+        catch (error: any) {
+            toast.error(
+                <div className='p-3 bg-red-500 text-white rounded-md'>
+                    Erreur lors de la mise à jour de l'utilisateur {JSON.stringify(error.message)}
+                </div>
+            )
+        }
+        finally { setIsEditing(false) }
+    }
 
-    const handlePasswordSubmit = (data: PasswordFormData) => {
+    const handlePasswordSubmit = async (data: PasswordFormData) => {
         // Ici vous feriez l'appel à l'API pour changer le mot de passe
-        console.log('Changement de mot de passe:', data);
-        passwordForm.reset();
-        toast.success('Mot de passe modifié avec succès !');
-    };
+        const body = {
+          id: user?.id,
+          nom: user?.nom,
+          email: user?.email,
+          role_id: user?.role_id,
+          password: data.newPassword.trim(),
+          statut: user?.statut,
+        };
+        try {
+            const response: any = await apiClient.put(`/api/administrateurs/${user?.id}`, body);
+            if (response.id ) {
+                toast.success('Mot de passe modifié avec succès !');
+                window.localStorage.clear()
+                Cookies.remove('user');
+                setTimeout(() => {
+                    window.location.reload()
+                }, 1200);
+            }
+            else  {
+                toast.error(
+                <div className='p-3 bg-red-500 text-white rounded-md'>
+                    Une erreur est survenue lors de la mise à jour de l'utilisateur
+                </div>
+                )
+            }
+        }
+        catch (error: any) {
+          toast.error(
+            <div className='p-3 bg-red-500 text-white rounded-md'>
+              Erreur lors de la mise à jour de l'utilisateur {JSON.stringify(error)}
+            </div>
+          )
+        }
+    }
 
     const handleCancel = () => {
         profileForm.reset(user!);
@@ -100,6 +158,8 @@ export default function ProfilePage() {
             profileForm.setValue("email", profile?.email!)
         }       
     }, [])
+
+
 
     return (
         <div className="min-h-screen overflow-y-scroll v-scroll bg-gradient-to-br from-slate-50 to-slate-100 p-4">
@@ -361,7 +421,7 @@ export default function ProfilePage() {
                             </ul>
                         </div>
 
-                        <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
+                        <Button type="submit" className="w-full bg-blue hover:bg-blue-700">
                             <Lock className="w-4 h-4 mr-2" />
                             Changer le mot de passe
                         </Button>
