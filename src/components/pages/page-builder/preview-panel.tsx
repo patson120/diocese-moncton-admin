@@ -33,7 +33,7 @@ export function PreviewPanel({ page }: PreviewPanelProps) {
       case 'feature':
         return <FeatureComponent title='' description='' features={[]} {...props} />;
       case 'text':
-        return <TextComponent content='' {...props} />;
+        return <TextComponent title='' content='' {...props} />;
       case 'image':
         return <ImageComponent alt='' src='' {...props} />;
       case 'columns':

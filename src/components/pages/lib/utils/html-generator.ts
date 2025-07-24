@@ -61,8 +61,11 @@ function generateComponentHtml(component: Component): string {
 
     case 'text':
       return `
-        <div style="padding: ${component.props.padding || '16px'}; ${marginClasses}" className="flex flex-col ${alignmentClasses[component.props.alignment]}">
-          ${component.props.content || `<p className="text-${component.props.textAlign || 'left'}">This is a paragraph of text. You can edit this text to add your own content.</p>`}
+          <div style="padding: ${component.props.padding*8 || '16px'}; ${marginClasses}" className="rounded-lg">
+            <h1 style="color: ${component.props.textColor}" className="${alignmentClasses[component.props.alignment]} text-4xl font-bold pb-3">${component.props.title}</h1>
+            <div style="${marginClasses}" className="flex flex-col ${alignmentClasses[component.props.alignment]}">
+              ${component.props.content || `<p className="text-${component.props.textAlign || 'left'}">This is a paragraph of text. You can edit this text to add your own content.</p>`}
+            </div>
           </div>`;
 
     case 'contactForm':
@@ -144,7 +147,7 @@ function generateComponentHtml(component: Component): string {
           </section>`;
       } catch (e) {
         return '<div>Error rendering features</div>';
-      }
+    }
 
     case 'gallery':
       try {
@@ -171,7 +174,7 @@ function generateComponentHtml(component: Component): string {
           </div>`;
       } catch (e) {
         return '<div>Error rendering gallery</div>';
-      }
+    }
 
     case 'testimonial':
       return `

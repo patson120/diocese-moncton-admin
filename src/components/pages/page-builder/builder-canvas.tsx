@@ -62,7 +62,7 @@ export function BuilderCanvas({
         case 'columns':
             return <ColumnsComponent title="" description="" features={[]} {...props} />;
         case 'text':
-          return <TextComponent content="" {...props} />;
+          return <TextComponent title="" content="" {...props} />;
         case 'image':
           return <ImageComponent src="" alt="" {...props} />;
       default:
