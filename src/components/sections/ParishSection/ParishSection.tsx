@@ -264,25 +264,25 @@ export default function ParishSection() {
         }
         if (isDeleting) return;
         if (img) {
-          setIsDeleting(true);
-          try {
-            const formdata = new FormData();
-            formdata.append("id", `${img.id}`);
-            await apiClient.post(`/api/delete_media`, formdata, { 'Content-Type': 'multipart/form-data' });
+            setIsDeleting(true);
+            try {
+                const formdata = new FormData();
+                formdata.append("id", `${img.id}`);
+                await apiClient.post(`/api/delete_media`, formdata, { 'Content-Type': 'multipart/form-data' });
 
-            setImages(images.filter(image => image.id !== img.id));
-            setNewImages(newImages.filter(image => image.id !== img.id));
-            toast.success("Image rétirée avec succès !")
-          } catch (error) {
-            toast.error(
-                <div className='p-3 bg-red-500 text-white rounded-md'>
-                    Error deleting image: {JSON.stringify(error)}
-                </div>
-            )
-          }
-          finally {
-            setIsDeleting(false);
-          }
+                setImages(images.filter(image => image.id !== img.id));
+                setNewImages(newImages.filter(image => image.id !== img.id));
+                toast.success("Image rétirée avec succès !")
+            } catch (error) {
+                toast.error(
+                    <div className='p-3 bg-red-500 text-white rounded-md'>
+                        Error deleting image: {JSON.stringify(error)}
+                    </div>
+                )
+            }
+            finally {
+                setIsDeleting(false);
+            }
         }
     }
     

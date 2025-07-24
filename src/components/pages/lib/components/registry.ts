@@ -26,7 +26,7 @@ export const componentRegistry: ComponentDefinition[] = [
       title: 'Welcome to our website',
       subtitle: 'Discover our amazing products and services',
       backgroundImage: 'https://images.pexels.com/photos/3184418/pexels-photo-3184418.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      textColor: '#ffffff',
+      textColor: '#000000', //  '#ffffff',
       backgroundColor: '#ffffff',
       alignment: 'center',
       buttonText: 'Learn More',

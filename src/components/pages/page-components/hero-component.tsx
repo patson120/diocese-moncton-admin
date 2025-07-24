@@ -9,6 +9,7 @@ interface HeroComponentProps {
   alignment?: 'left' | 'center' | 'right';
   marginTop?: number;
   marginBottom?: number;
+  textColor?: string;
   backgroundColor?: string;
   deviceView?: DeviceType;
 }
@@ -22,6 +23,7 @@ export function HeroComponent({
   alignment = 'center',
   marginTop = 0,
   marginBottom = 0,
+  textColor,
   backgroundColor,
   deviceView
 }: HeroComponentProps) {
@@ -34,10 +36,9 @@ export function HeroComponent({
   const style = {
     marginTop: `${marginTop}px`,
     marginBottom: `${marginBottom}px`,
+    textColor,
     backgroundColor,
   };
-
-  console.log(deviceView);
   
   return (
     <div className="relative py-20 px-6 overflow-hidden rounded-lg" style={style}>
@@ -49,8 +50,8 @@ export function HeroComponent({
       )}
       
       <div className={`relative z-10 flex flex-col ${alignmentClasses[alignment]} gap-6 max-w-4xl mx-auto`}>
-        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">{title}</h1>
-        <p className="text-xl text-gray-600 dark:text-gray-200 max-w-3xl">{subtitle}</p>
+        <h1 style={{ color: textColor }} className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">{title}</h1>
+        <p style={{ color: textColor }} className="text-xl text-gray-600 dark:text-gray-200 max-w-3xl">{subtitle}</p>
         {
           (buttonText && buttonLink) && (
             <div>

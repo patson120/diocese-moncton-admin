@@ -24,8 +24,8 @@ function generateComponentHtml(component: Component): string {
           `}
           
           <div className="relative z-10 h-full flex flex-col ${alignmentClasses[component.props.alignment]} gap-6 max-w-4xl mx-auto">
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">${component.props.title}</h1>
-            <p className="text-xl text-gray-600 dark:text-gray-200 max-w-3xl">${component.props.subtitle}</p>
+            <h1 style="color: ${component.props.textColor}" className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">${component.props.title}</h1>
+            <p style="color: ${component.props.textColor}" className="text-xl text-gray-600 dark:text-gray-200 max-w-3xl">${component.props.subtitle}</p>
             ${(component.props.buttonText && component.props. buttonLink) ? (
               `<div>
                 <a href=${component.props.buttonLink}

@@ -25,7 +25,7 @@ export function ComponentLibrary({ onAdd }: ComponentLibraryProps) {
     c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     c.type.toLowerCase().includes(searchTerm.toLowerCase())
   )
-  : componentRegistry;
+  : componentRegistry
   
   // const componentDefinitions = getComponentDefinitions();
 
@@ -51,11 +51,11 @@ export function ComponentLibrary({ onAdd }: ComponentLibraryProps) {
       children: [],
     };
     onAdd(newComponent);
-  };
+  }
 
   const handleClearSearch = () => {
     setSearchTerm('');
-  };
+  }
   
   return (
     <div className="space-y-4">

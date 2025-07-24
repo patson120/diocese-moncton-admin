@@ -302,7 +302,17 @@ export function ComponentEditor({ component, onUpdate, onClose }: ComponentEdito
                 </div>
               </div>
             </div>
-            
+
+            <div className="space-y-2">
+              <Label>Foreground</Label>
+              <Input
+                type="color"
+                value={component.props.textColor || '#ffffff'}
+                onChange={(e) => updateProps('textColor', e.target.value)}
+                className="h-10 w-full p-1"
+              />
+            </div>
+
             <div className="space-y-2">
               <Label>Background</Label>
               <Input
