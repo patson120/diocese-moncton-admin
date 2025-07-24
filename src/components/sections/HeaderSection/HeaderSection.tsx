@@ -18,7 +18,7 @@ export default function HeaderSection (): JSX.Element  {
 
   return (
     <header className="w-full h-16 bg-white flex items-center justify-between px-9">
-      <div className="flex items-center gap-2">
+      <Link href={`/profile`} className="flex items-center gap-2">
         <Avatar className="w-10 h-10 rounded-full flex justify-center items-center overflow-hidden">
           <AvatarImage src="/assets/img/image.png" alt="Profile" />
           <AvatarFallback className="text-lg font-bold border border-gray-600 rounded-full uppercase">{user?.nom?.slice(0, 1)}</AvatarFallback>
@@ -31,7 +31,7 @@ export default function HeaderSection (): JSX.Element  {
             {user?.email}
           </p>
         </div>
-      </div>
+      </Link>
       <div className="flex items-center gap-6">
         <Link href={"https://diocese-de-moncton.vercel.app/"} target="_blank" >
           <Button

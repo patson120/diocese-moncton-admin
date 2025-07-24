@@ -164,8 +164,7 @@ export function Sidebar({ className }: SidebarProps) {
         variant="ghost"
         size="icon"
         className="md:hidden fixed top-4 left-4 z-50"
-        onClick={() => setIsCollapsed(!isCollapsed)}
-      >
+        onClick={() => setIsCollapsed(!isCollapsed)}>
         {isCollapsed ? <Menu /> : <X />}
       </Button>
 
@@ -181,8 +180,7 @@ export function Sidebar({ className }: SidebarProps) {
               className={cn(
                 'font-bold transition-all duration-300',
                 isCollapsed && 'md:hidden'
-              )}
-            >
+              )}>
               {/* Header with logo and collapse button */}
               <div className='relative shrink-0 w-[79px] h-12'>
                 <Image
@@ -198,8 +196,7 @@ export function Sidebar({ className }: SidebarProps) {
               variant="ghost"
               size="icon"
               className="hidden md:flex"
-              onClick={() => setIsCollapsed(!isCollapsed)}
-            >
+              onClick={() => setIsCollapsed(!isCollapsed)}>
               <ChevronRight
                 className={cn(
                   'h-4 w-4 transition-all duration-300',
