@@ -272,6 +272,7 @@ export default function ParishSection() {
 
             setImages(images.filter(image => image.id !== img.id));
             setNewImages(newImages.filter(image => image.id !== img.id));
+            toast.success("Image rétirée avec succès !")
           } catch (error) {
             toast.error(
                 <div className='p-3 bg-red-500 text-white rounded-md'>
@@ -492,8 +493,7 @@ export default function ParishSection() {
                     <div className='absolute top-0 left-0 right-0 z-[1] bg-white'>
                         {/* Header with action buttons */}
                         <header className="w-full h-20 border-b border-[#d9d9d9] flex items-center justify-between px-12">
-                            <Button variant="outline" className="h-10"
-                                onClick={() => setOpenModal(false)}>
+                            <Button variant="outline" className="h-10" onClick={() => setOpenModal(false)}>
                                 Fermer
                             </Button>
                             <div className="flex gap-2">
@@ -540,7 +540,6 @@ export default function ParishSection() {
                                         </div>
                                         <Text className='text-sm text-gray' labelFr={selecteParish?.type?.intitule_fr} labelEn={selecteParish?.type?.intitule_en} />
                                     </div>
-
                                     <div className="w-auto border-t border-b border-neutral-200 py-3.5">
                                         <div className="flex flex-wrap gap-[16px_35px]">
                                             <p className="font-body-3 whitespace-nowrap">
