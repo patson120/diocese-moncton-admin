@@ -104,7 +104,7 @@ export default function ImageContentSection() {
                         </div>
                       </CardHeader>
                       <CardContent className="pt-0">
-                        <div className="overflow-y-auto h-[61vh] v-scroll">
+                        <div className="overflow-y-auto max-h-[61vh] v-scroll">
                           <FolderTree
                             folders={state.folders}
                             currentFolder={state.currentFolder}
@@ -141,7 +141,7 @@ export default function ImageContentSection() {
                       
                       <Separator />
                         <CardContent className="pt-4">
-                          <ScrollArea className="w-full h-[calc(58vh+12px)]">
+                          <ScrollArea className="w-full overflow-y-scroll v-scroll h-[calc(58vh+12px)]">
                             <MediaViewer
                                 files={getCurrentFiles()}
                                 currentFolder={state.currentFolder}
