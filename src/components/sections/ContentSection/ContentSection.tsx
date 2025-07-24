@@ -2,6 +2,7 @@
 'use client'
 
 import { Page } from "@/app/types";
+import { componentRegistry, getComponentIcon } from "@/components/pages/lib/components/registry";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -36,6 +37,17 @@ export const ContentSection = (): JSX.Element => {
 
   const [pages, setPages] = useState<Page[]>([])
   const [isDeleting, setIsDeleting] = useState(false)
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [activeCategory, setActiveCategory] = useState<string>('all');
+  const categories = ['all', 'layout', 'content', 'media', 'advanced'];  
+  
+  const filteredComponents = searchTerm
+  ? componentRegistry.filter(c => 
+    c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    c.type.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+  : componentRegistry
 
   useEffect(() => {
     const fetchPages = async () => {
@@ -94,8 +106,10 @@ export const ContentSection = (): JSX.Element => {
                   </span>
                 </Link>
               }
+
             </div>
         </section> 
+
         <div className="w-full p-6 mx-auto">
           <div className="bg-white w-full rounded-2xl">
             <TabsContent
@@ -239,9 +253,52 @@ export const ContentSection = (): JSX.Element => {
                 </Card>
             </TabsContent> 
             <TabsContent value="components" className="p-0 border-none">
-              <div className="flex items-center justify-center h-[76vh]">
-                <p className="text-gray">Aucun composant</p>
-              </div>
+              <Tabs defaultValue="all" value={activeCategory} onValueChange={setActiveCategory} className='max-w-full p-6'>
+                <TabsList className="flex justify-start gap-3 h-auto overflow-x-scroll h-scroll [&::-webkit-scrollbar]:h-0">
+                  {
+                    categories.map(category => (
+                      <TabsTrigger 
+                        key={category} 
+                        value={category}
+                        style={{ backgroundColor: 'white' }}
+                        className={`py-1 capitalize ${activeCategory === category ? 'bg-white text-secondary-foreground' : 'bg-transparent text-muted-foreground'}`}>
+                        {category}
+                      </TabsTrigger>  
+                    ))
+                  }
+                </TabsList>
+              </Tabs>
+              {
+                <ScrollArea className="h-[calc(100vh-80px)]">
+                  <div className="space-y-2 px-6">
+                    {filteredComponents.length === 0 ? (
+                      <div className="flex items-center justify-center h-[76vh]">
+                        <p className="text-gray">Aucun composant</p>
+                      </div>
+                    ) : (
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-3">
+                      {
+                        filteredComponents
+                        .filter(c => activeCategory === 'all' || c.category === activeCategory.toLowerCase())
+                        .map(component => {
+                          const ComponentIcon = getComponentIcon(component.type);
+                          return (
+                            <Button
+                              key={`${component.type}`}
+                              variant="outline"
+                              className="h-auto py-4 flex flex-col items-center justify-center gap-2 text-xs cursor-text"
+                              onClick={() => {}}>
+                              <ComponentIcon className="h-5 w-5" />
+                              {component.name}
+                            </Button>
+                          );
+                        })
+                      }
+                    </div>
+                  )}
+                  </div>
+                </ScrollArea>
+              }
             </TabsContent>
 
             <TabsContent value="links" className="p-0 border-none">
