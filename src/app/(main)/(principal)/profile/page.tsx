@@ -61,6 +61,13 @@ export default function ProfilePage() {
     useEffect(() => {
         const currentUser = Cookies.get('user');
         setUser(currentUser ? JSON.parse(currentUser!) : null)
+        setUserData(prev => ({
+            ...prev,
+            firstName: user?.nom!,
+            lastName: user?.nom!,
+            email: user?.nom!,
+            role: user?.role?.intitule
+        }))
     }, [])
 
     const [isEditing, setIsEditing] = useState(false);
@@ -70,15 +77,15 @@ export default function ProfilePage() {
 
     // Données utilisateur fictives
     const [userData, setUserData] = useState({
-        firstName: 'Jean',
-        lastName: 'Dupont',
-        email: 'jean.dupont@email.com',
+        firstName: user?.nom!,
+        lastName: user?.nom!,
+        email: user?.nom!,
         phone: '+33 1 23 45 67 89',
         bio: 'Développeur passionné par les nouvelles technologies et l\'innovation. J\'aime créer des solutions élégantes et efficaces.',
         location: 'Paris, France',
         avatar: 'https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&cs=tinysrgb&w=150',
         joinDate: '2023-01-15',
-        role: 'Développeur Senior'
+        role: user?.role?.intitule
     });
 
     const profileForm = useForm<ProfileFormData>({
