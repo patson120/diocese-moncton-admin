@@ -104,7 +104,8 @@ export function ComponentLibrary({ onAdd }: ComponentLibraryProps) {
             </p>
           ) : (
             <div className="grid grid-cols-2 gap-2">
-              {filteredComponents
+              {
+                filteredComponents
                 .filter(c => activeCategory === 'all' || c.category === activeCategory.toLowerCase())
                 .map(component => {
                   const ComponentIcon = getComponentIcon(component.type);

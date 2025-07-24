@@ -266,10 +266,9 @@ export default function ParishSection() {
         if (img) {
           setIsDeleting(true);
           try {
-            // const formdata = new FormData();
-            // formdata.append("galerie_id", `${img.id}`);
-            // await apiClient.post(`/api/delete_media/`, formdata, { 'Content-Type': 'multipart/form-data' });
-            await apiClient.post(`/api/delete_media/`, { galerie_id: img.id});
+            const formdata = new FormData();
+            formdata.append("id", `${img.id}`);
+            await apiClient.post(`/api/delete_media`, formdata, { 'Content-Type': 'multipart/form-data' });
 
             setImages(images.filter(image => image.id !== img.id));
             setNewImages(newImages.filter(image => image.id !== img.id));

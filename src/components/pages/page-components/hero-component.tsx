@@ -51,14 +51,16 @@ export function HeroComponent({
       <div className={`relative z-10 flex flex-col ${alignmentClasses[alignment]} gap-6 max-w-4xl mx-auto`}>
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">{title}</h1>
         <p className="text-xl text-gray-600 dark:text-gray-200 max-w-3xl">{subtitle}</p>
-        {buttonText && buttonLink && (
-          <div>
-            <a href={buttonLink}
-              className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-lg font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-              {buttonText}
-            </a>
-          </div>
-        )}
+        {
+          (buttonText && buttonLink) && (
+            <div>
+              <a href={buttonLink}
+                className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-lg font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                {buttonText}
+              </a>
+            </div>
+          )
+        }
       </div>
     </div>
   );

@@ -53,8 +53,9 @@ export const componentRegistry: ComponentDefinition[] = [
     icon: 'Type',
     category: 'content',
     defaultProps: {
+      title: 'Title',
       content: '<p>This is a paragraph of text. You can edit this text to add your own content.</p>',
-      textAlign: 'left',
+      textAlign: 'center',
       padding: '16px',
     },
     propDefinitions: [
@@ -212,11 +213,11 @@ export const componentRegistry: ComponentDefinition[] = [
       { name: 'textColor', label: 'Text Color', type: 'color', defaultValue: '#ffffff' },
     ]
   }
-];
+]
 
 export const getComponentDefinitionByType = (type: string): ComponentDefinition | undefined => {
   return componentRegistry.find(component => component.type === type);
-};
+}
 
 export const getComponentIcon = (type: ComponentType) => {
   switch(type) {
@@ -231,4 +232,4 @@ export const getComponentIcon = (type: ComponentType) => {
     case 'cta': return FileText;
     default: return Boxes;
   }
-};
+}

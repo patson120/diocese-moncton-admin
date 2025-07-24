@@ -59,12 +59,12 @@ export function BuilderCanvas({
           return <HeroComponent title="" subtitle="" {...props} />;
         case 'feature':
           return <FeatureComponent title="" description="" features={[]} {...props} />;
+        case 'columns':
+            return <ColumnsComponent title="" description="" features={[]} {...props} />;
         case 'text':
           return <TextComponent content="" {...props} />;
         case 'image':
           return <ImageComponent src="" alt="" {...props} />;
-      case 'columns':
-        return <ColumnsComponent title="" description="" features={[]} {...props} />;
       default:
         const definition = getComponentDefinitionByType(component.type);
         return (
@@ -133,12 +133,11 @@ export function BuilderCanvas({
               onClick={(e) => {
                 e.stopPropagation();
                 onDelete(component.id);
-              }}
-            >
+              }}>
               <Trash className="h-4 w-4" />
             </Button>
           </div>
-          {renderComponent(component)}
+          { renderComponent(component) }
         </div>
       ))}
     </div>

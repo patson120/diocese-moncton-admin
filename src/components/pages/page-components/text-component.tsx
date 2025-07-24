@@ -30,10 +30,18 @@ export function TextComponent({
   };
   
   return (
-    <div
-      className={`py-8 px-6 ${alignmentClasses[alignment]} rounded-lg`}
-      style={style}
-      dangerouslySetInnerHTML={{ __html: content }}
-    />
+    <>
+      {/*
+        <div
+          className={`py-8 px-6 ${alignmentClasses[alignment]} rounded-lg`}
+          style={style}
+          dangerouslySetInnerHTML={{ __html: content }}
+        />
+      */}
+      <div className={`py-8 px-6 ${alignmentClasses[alignment]} rounded-lg`}>
+        {content}
+      </div>
+    </>
+
   );
 }

@@ -29,12 +29,11 @@ export function ComponentEditor({ component, onUpdate, onClose }: ComponentEdito
         </div>
         <p className="text-muted-foreground">Component type not found: {component.type}</p>
       </div>
-    );
+    )
   }
   
   const updateProps = (key: string, value: any) => {
     // console.info(`Updating component prop: ${key} = ${value}`)
-    
     onUpdate({
       props: {
         ...component.props,
@@ -110,6 +109,14 @@ export function ComponentEditor({ component, onUpdate, onClose }: ComponentEdito
       case 'text':
         return (
           <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="title">Title</Label>
+              <Input
+                id="title"
+                value={component.props.title || ''}
+                onChange={(e) => updateProps('title', e.target.value)}
+              />
+            </div>
             <div className="space-y-2">
               <Label htmlFor="content">Content</Label>
               <Textarea
