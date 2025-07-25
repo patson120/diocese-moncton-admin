@@ -79,7 +79,7 @@ export const usePagesStore = create<PagesState>()(
         
         set((state) => ({
           pages: [...state.pages, {...page, id: response.id }],
-        }));
+        }))
         
         return response.id;
       },

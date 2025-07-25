@@ -33,7 +33,7 @@ export default function RenderPage({pageId}: { pageId: string }) {
                         <p className='text-center text-gray'>Chargement...</p>
                     </div>
                 </div> :
-                <HTMLContent html={page?.description!} className={`w-full`} />
+                <HTMLContent html={page?.contenu_html!} className={`w-full`} />
             }
         </>
     )

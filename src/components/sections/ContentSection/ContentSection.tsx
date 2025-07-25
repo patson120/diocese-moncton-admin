@@ -68,7 +68,7 @@ export const ContentSection = (): JSX.Element => {
       } catch (error) {
         console.log("Erreur", error)
       }
-      finally{ setIsDeleting(true)}
+      finally{ setIsDeleting(false)}
     }
   }
 
@@ -180,7 +180,7 @@ export const ContentSection = (): JSX.Element => {
                                       {page.titre}
                                     </h3>
                                     <p className="font-body-3 truncate overflow-hidden text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)] line-clamp-1">
-                                      {page.description ?? 'Lorem ipsum dolor si...'}
+                                      { page.description ?? 'Lorem ipsum dolor si...' }
                                     </p>
                                   </div>
                                   <DropdownMenu>
