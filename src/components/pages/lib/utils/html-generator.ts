@@ -125,7 +125,7 @@ function generateComponentHtml(component: Component): string {
               ${features.map((feature: { title: string, description: string, icon: string }) => `
                 <div className="rounded-lg p-6 shadow-sm">
                   <!-- Icon representation -->
-                  <div style="background-color: #f0fdfa;" className="mx-auto mb-4 h-12 w-12 rounded-full flex items-center justify-center">
+                  <div style="background-color: #ffffff;" className="mx-auto mb-4 h-12 w-12 rounded-full flex items-center justify-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -147,7 +147,7 @@ function generateComponentHtml(component: Component): string {
           </section>`;
       } catch (e) {
         return '<div>Error rendering features</div>';
-    }
+      }
 
     case 'gallery':
       try {
@@ -174,7 +174,7 @@ function generateComponentHtml(component: Component): string {
           </div>`;
       } catch (e) {
         return '<div>Error rendering gallery</div>';
-    }
+      }
 
     case 'testimonial':
       return `
@@ -244,7 +244,7 @@ function generateComponentHtml(component: Component): string {
           </section>`;
       } catch (e) {
         return '<div>Error rendering features</div>';
-    }
+      }
 
     case 'cta':
       return `
