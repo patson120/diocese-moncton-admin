@@ -208,9 +208,11 @@ export type Page = {
     id: number;
     titre: string;
     is_planifier: number;
+    is_publier: number;
     description: string;
     data: string;
-    html: string;
+    contenu_html: string | null;
+    contenu_json: string | null;
     date_planification: string | null;
     contenus: any[],
     created_at: string;

@@ -2,6 +2,7 @@ import { getComponentDefinitionByType } from "../components/registry";
 import { Component, Page } from "../types";
 
 
+
 function generateComponentHtml(component: Component): string {
   const definition = getComponentDefinitionByType(component.type);
   if (!definition) return '';

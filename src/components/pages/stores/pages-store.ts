@@ -26,8 +26,12 @@ interface PagesState {
 const handleCreatePage = async (page: Page) => {
   try {
     return await apiClient.post("/api/pages", {
+      is_publier: 1,
+      is_planifier: 0,
       titre: page.title,
-      description: generatePageHtml(page)
+      description: page.title,
+      contenu_html: generatePageHtml(page),
+      contenu_json: JSON.stringify(page)
     })
   } catch (error) {
     console.log(error)
@@ -37,8 +41,12 @@ const handleCreatePage = async (page: Page) => {
 const handleUpdatePage = async (page: Page) => {
   try {
     return await apiClient.put(`/api/pages/${page.id}`, {
+      is_publier: 1,
+      is_planifier: 0,
       titre: page.title,
-      description: generatePageHtml(page)
+      description: page.title,
+      contenu_html: generatePageHtml(page),
+      contenu_json: JSON.stringify(page)
     })
   } catch (error) {
     console.log(error)
