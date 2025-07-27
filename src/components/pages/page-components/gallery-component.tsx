@@ -39,15 +39,15 @@ export function GalleryComponent({
         {
           features.map((feature, index) => 
           <div key={index} className='space-y-3'>
-            <div className='!w-[260px] md:w-[416px] lg:w-full h-[280px] md:h-[400px] relative rounded-xl lg:rounded-3xl overflow-hidden'>
-              {
-                feature.src && (
+            {
+              feature.src && 
+              <div className='w-[260px] md:w-[416px] lg:w-full h-[280px] md:h-[400px] relative rounded-xl lg:rounded-3xl overflow-hidden'>
                 <div 
                     className={`absolute inset-0 z-0 bg-cover bg-center`}
                     style={{ backgroundImage: `url(${feature.src})` }}
                 />
-              )}
-            </div>
+              </div>
+            }
             <h1 className='heading-4'>{feature.title}</h1>
             <p className='body-2 text-gray'>{feature.description}</p>
           </div>)

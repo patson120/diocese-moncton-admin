@@ -76,7 +76,7 @@ function generateComponentHtml(component: Component): string {
       const rightOrder = component.props.imageAlignment == 'left' ? 'order-1 lg:order-2' : ''
       return `
           <section style="${marginClasses}" className="container max-margin py-0">
-            <div className='grid grid-cols-1 lg:grid-cols-5 gap-1 md:gap-6 lg:gap-12 md:py-4 lg:py-8'>
+            <div className='grid grid-cols-1 lg:grid-cols-5 gap-7 md:gap-6 lg:gap-12 md:py-4 lg:py-8'>
                 <div className="${leftOrder} col-span-full lg:col-span-2">
                     <div className='h-72 xl:h-80 relative rounded-xl md:rounded-[18px] overflow-hidden bg-gray-100'>
                       ${
@@ -91,8 +91,8 @@ function generateComponentHtml(component: Component): string {
                 </div>
                 <div className="${rightOrder} col-span-full lg:col-span-3 flex flex-col justify-center items-center">
                     <div>
-                        <h1 style="color: ${component.props.textColor}" className="${alignmentClasses[component.props.alignment]} heading-4 font-extrabold md:mb-4">${component.props.title}</h1>
-                        <div style="${marginClasses}" className="${alignmentClasses[component.props.alignment]} md:mt-4">
+                        <h1 style="color: ${component.props.textColor}" className="${alignmentClasses[component.props.alignment]} heading-4 font-extrabold mb-5">${component.props.title}</h1>
+                        <div className="${alignmentClasses[component.props.alignment]} md:mt-4">
                           ${component.props.content || `<p className="text-${component.props.textAlign || 'left'}">This is a paragraph of text. You can edit this text to add your own content.</p>`}
                         </div>
                     </div>
@@ -190,18 +190,17 @@ function generateComponentHtml(component: Component): string {
 
         return `
           <section style="${marginClasses}" className="container max-margin py-10 md:py-20">
-            <h2 className='heading-3 text-gray-900 mb-4'>${component.props.title}</h2>
-            <div className="flex flex-row items-start !overflow-x-scroll lg:overflow-x-hidden pb-8 lg:pb-0 space-x-4 lg:grid lg:gap-6 lg:grid-cols-3"> 
+            <h2 className='heading-3 mb-4'>${component.props.title}</h2>
+            <div className="flex flex-row items-start overflow-x-scroll lg:overflow-x-hidden pb-8 lg:pb-0 space-x-4 lg:grid lg:gap-6 lg:grid-cols-3"> 
               ${features.map((feature: { title: string, description: string, src: string }) => `
-                <div className='space-y-3 h-auto border-2 border-red-500'>
-                  <div className='relative !w-[260px] md:w-[416pxs] lg:w-full h-[280pxs] md:h-[400pxs] rounded-xl lg:rounded-3xl overflow-hidden'>
-                    ${ feature.src &&
-                      `<div 
-                        className="absolute inset-0 z-0 bg-cover bg-center"
-                        style="background-image: url(${feature.src})"
-                      />
-                    `}
-                  </div>
+                <div style="min-width: 260px" className='space-y-3'>
+                ${ feature.src &&
+                 `<div className='relative md:w-[416px] lg:w-full h-[280px] md:h-[400px] rounded-xl lg:rounded-3xl overflow-hidden'>
+                    <div 
+                      className="absolute inset-0 z-0 bg-cover bg-center"
+                      style="background-image: url(${feature.src})">
+                    </div>
+                  </div>`}
                   <h1 className='heading-4'>${feature.title}</h1>
                   <p className='body-2 text-gray'>${feature.description}</p>
                 </div>`
@@ -340,7 +339,7 @@ export function generatePageHtml(page: Page): string {
         }
       </style>
     </head>
-    <body>
+    <body class="overflow-hidden">
       ${componentsHtml.replaceAll('className', 'class')}
     </body>
     </html>`;
