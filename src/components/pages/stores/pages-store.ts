@@ -6,13 +6,14 @@ import { Page, Component, PageStatus } from '@/components/pages/lib/types';
 import { v4 as uuidv4 } from '@/components/pages/lib/uuid';
 import { apiClient } from '@/lib/axios';
 import { generatePageHtml } from '../lib/utils/html-generator';
+import { Page as PageType } from '@/app/types';
 
 interface PagesState {
   pages: Page[];
   addPage: (page: Omit<Page, 'id' | 'createdAt' | 'updatedAt'>) => Promise<string>;
   updatePage: (id: string, data: Partial<Page>) => void;
   deletePage: (id: string) => void;
-  getPage: (id: string) => Page | undefined;
+  getPage: (id: string) => Promise<Page | undefined>;
   duplicatePage: (id: string) => string;
   addComponent: (pageId: string, component: Omit<Component, 'id' | 'order'>) => void;
   updateComponent: (pageId: string, componentId: string, data: Partial<Component>) => void;
@@ -52,6 +53,17 @@ const handleUpdatePage = async (page: Page) => {
     console.log(error)
   }
 }
+
+const handleReadPage = async (pageId: string): Promise<PageType | undefined> => {
+  try {
+    return await apiClient.get(`/api/pages/${pageId}`) as PageType
+  } catch (error) {
+    console.log(error)
+    return undefined
+  }
+}
+
+
 
 export const usePagesStore = create<PagesState>()(
   persist(
@@ -105,7 +117,9 @@ export const usePagesStore = create<PagesState>()(
         }));
       },
       
-      getPage: (id) => {
+      getPage: async (id) => {
+        // const pageFound = await handleReadPage(id)
+        // console.log(JSON.stringify(pageFound, null, 2));
         return get().pages.find((page) => page.id == id);
       },
       

@@ -17,24 +17,26 @@ function generateComponentHtml(component: Component): string {
   switch (component.type) {
     case 'hero':
       return `
-        <div style="${marginClasses}" className="relative py-20 px-6 overflow-hidden">
+        <div style="${marginClasses}" className="h-[35vh] md:h-[50vh] w-full overflow-hidden relative bg-gray-200">
           ${ component.props.backgroundImage &&
             `<div 
               className="absolute inset-0 z-0 bg-cover bg-center opacity-70"
               style="background-image: url(${component.props.backgroundImage})"></div>
           `}
           
-          <div className="relative z-10 h-full flex flex-col ${alignmentClasses[component.props.alignment]} gap-6 max-w-4xl mx-auto">
-            <h1 style="color: ${component.props.textColor}" className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">${component.props.title}</h1>
-            <p style="color: ${component.props.textColor}" className="text-xl text-gray-600 dark:text-gray-200 max-w-3xl">${component.props.subtitle}</p>
-            ${(component.props.buttonText && component.props. buttonLink) ? (
-              `<div>
-                <a href=${component.props.buttonLink}
-                  className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-lg font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-                  ${component.props.buttonText}
-                </a>
-              </div>`
-            ): ''}
+          <div className="absolute inset-0 flex justify-center items-start bg-black bg-opacity-40 ${alignmentClasses[component.props.alignment]}">
+            <div className='container max-margin py-0 w-full h-full flex flex-col justify-center items-center'>
+              <h1 style="color: ${component.props.textColor}" className="heading-2 text-center text-white font-extrabold tracking-tight">${component.props.title}</h1>
+              <p style="color: ${component.props.textColor}" className="body-2 text-center text-white mt-3 max-w-3xl">${component.props.subtitle}</p>
+              ${(component.props.buttonText && component.props. buttonLink) ? (
+                `<div>
+                  <a href=${component.props.buttonLink}
+                    className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 mt-5 text-lg font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                    ${component.props.buttonText}
+                  </a>
+                </div>`
+              ): ''}
+            </div>
           </div>
         </div>`;
 
@@ -124,9 +126,9 @@ function generateComponentHtml(component: Component): string {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto"> 
               ${features.map((feature: { title: string, description: string, icon: string }) => `
-                <div className="rounded-lg p-6 shadow-sm">
+                <div className="bg-card rounded-lg p-6 shadow-sm">
                   <!-- Icon representation -->
-                  <div style="background-color: #ffffff;" className="mx-auto mb-4 h-12 w-12 rounded-full flex items-center justify-center">
+                  <div style="background-color: #f0fdfa;" className="mx-auto mb-4 h-12 w-12 rounded-full border border-[#0d9488-] flex items-center justify-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -221,9 +223,9 @@ function generateComponentHtml(component: Component): string {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-6xl mx-auto"> 
               ${features.map((feature: { title: string, description: string, icon: string }) => `
-                <div className="rounded-lg p-6 shadow-sm">
+                <div className="bg-card rounded-lg p-6 shadow-sm">
                   <!-- Icon representation -->
-                  <div style="background-color: #f0fdfa;" className="mx-auto mb-4 h-12 w-12 rounded-full flex items-center justify-center">
+                  <div style="background-color: #f0fdfa;" className="mx-auto mb-4 h-12 w-12 rounded-full border border-[#0d9488-] flex items-center justify-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"

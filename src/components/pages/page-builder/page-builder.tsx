@@ -33,7 +33,7 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
   // Initialize page data
-  useEffect(() => {
+  useEffect( () => {
     if (pageId === 'new') {
       // Start with a new page
       setTitle('New Page');
@@ -48,15 +48,15 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
       });
     } else {
       // Load existing page
-      const existingPage = getPage(pageId);
-      
-      if (existingPage) {
-        setPage(existingPage);
-        setTitle(existingPage.title);
-      } else {
-        // Handle invalid page ID
-        router.push('/create-page/new');
-      }
+      getPage(pageId).then(existingPage => {
+        if (existingPage) {
+          setPage(existingPage);
+          setTitle(existingPage.title);
+        } else {
+          // Handle invalid page ID
+          router.push('/create-page/new');
+        }
+      });
     }
   }, [pageId, getPage, router]);
 
