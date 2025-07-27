@@ -322,6 +322,129 @@ export function ComponentEditor({ component, onUpdate, onClose }: ComponentEdito
             updateProps={updateProps} 
           />
         );
+      
+      case 'gallery':
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="title">Section Title</Label>
+              <Input
+                id="title"
+                value={component.props.title || ''}
+                onChange={(e) => updateProps('title', e.target.value)}
+              />
+            </div>
+      
+            {/*
+              <div className="space-y-2">
+                <Label htmlFor="description">Section Description</Label>
+                <Textarea
+                  id="description"
+                  value={component.props.description || ''}
+                  onChange={(e) => updateProps('description', e.target.value)}
+                  rows={3}
+                />
+              </div>
+            */}
+
+            <div className="space-y-2">
+              <Label htmlFor='columns'>Columns</Label>
+              <Input
+                id='columns'
+                type="number"
+                value={component.props.columns || '1'}
+                onChange={(e) => updateProps('columns', parseInt(e.target.value) || 1)}
+                max={4}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label>Features</Label>
+              <div className="space-y-4">
+                {component.props.features?.map((feature: any, index: number) => (
+                  <div key={index} className="border rounded-md p-3">
+                    <div className="space-y-2">
+                      <Label htmlFor={`Image-${index}-title`}>Title</Label>
+                      <Input
+                        id={`Image-${index}-title`}
+                        value={feature.title || ''}
+                        onChange={(e) => {
+                          const updatedFeatures = [...component.props.features];
+                          updatedFeatures[index] = {
+                            ...updatedFeatures[index],
+                            title: e.target.value,
+                          };
+                          updateProps(`features`, updatedFeatures);
+                        }}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2 mt-2">
+                      <Label htmlFor={`Image-${index}-description`}>Description</Label>
+                      <Textarea
+                        id={`Image-${index}-description`}
+                        value={feature.description || ''}
+                        onChange={(e) => {
+                          const updatedFeatures = [...component.props.features];
+                          updatedFeatures[index] = {
+                            ...updatedFeatures[index],
+                            description: e.target.value,
+                          };
+                          console.log(e.target.value);
+                          
+                          updateProps(`features`, updatedFeatures);
+                        }}
+                        rows={2}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="src">Image URL</Label>
+                      <Input
+                        id="src"
+                        value={feature.src || ''}
+                        onChange={(e) => {
+                          const updatedFeatures = [...component.props.features];
+                          updatedFeatures[index] = {
+                            ...updatedFeatures[index],
+                            src: e.target.value,
+                          };
+                          updateProps(`features`, updatedFeatures);
+                        }}
+                      />
+                      {component.props.src && (
+                        <div className="mt-2 rounded overflow-hidden h-40 bg-muted">
+                          <img 
+                            src={component.props.src}
+                            alt="Image preview"
+                            className="h-full w-full object-contain"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+                
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const updatedFeatures = [...(component.props.features || [])];
+                    updatedFeatures.push({
+                      title: `New block`,
+                      description: 'Description goes here',
+                      icon: 'star',
+                    });
+                    updateProps(`features`, updatedFeatures);
+                  }}
+                >
+                  Add block
+                </Button>
+              </div>
+            </div>
+          </div>
+        );
         
       default:
         return (

@@ -1,27 +1,30 @@
+import { DeviceType } from "../lib/types";
+
 interface Image {
+  title: string,
+  description: string;
   src: string;
-  alt: string;
-  caption?: string;
 }
 
 interface GalleryComponentProps {
   title: string;
   description?: string;
-  images: Image[];
+  features: Image[];
   columns?: 2 | 3 | 4;
   backgroundColor?: string;
   marginTop?: number;
-  marginBottom?: number;
+  marginBottom?: number,
+  deviceView?: DeviceType
 }
 
 export function GalleryComponent({
   title,
-  description,
-  images,
-  columns = 3,
+  features,
   backgroundColor,
   marginTop = 0,
   marginBottom = 0,
+  columns = 3,
+  deviceView
 }: GalleryComponentProps) {
   const style = {
     marginTop: `${marginTop}px`,
@@ -30,36 +33,26 @@ export function GalleryComponent({
   };
 
   return (
-    <div className="py-16 px-6 rounded-lg" style={style}>
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
-            {title}
-          </h2>
-          {description && (
-            <p className="text-lg text-muted-foreground">{description}</p>
-          )}
-        </div>
-        
-        <div className={`grid grid-cols-1 md:grid-cols-${columns} gap-6`}>
-          {images.map((image, index) => (
-            <div key={index} className="group relative">
-              <div className="aspect-square overflow-hidden rounded-lg bg-muted">
-                <img
-                  src={image.src}
-                  alt={image.alt}
-                  className="h-full w-full object-cover transition-transform group-hover:scale-105"
+    <section style={style} className="container max-margin py-10 md:py-20">
+      <h2 className='heading-3 text-gray-900 mb-4'>{title}</h2>
+      <div className='flex flex-row overflow-x-scroll lg:overflow-x-hidden pb-8 lg:pb-0 space-x-4 lg:grid lg:gap-6 lg:grid-cols-3'>
+        {
+          features.map((feature, index) => 
+          <div key={index} className='space-y-3'>
+            <div className='!w-[260px] md:w-[416px] lg:w-full h-[280px] md:h-[400px] relative rounded-xl lg:rounded-3xl overflow-hidden'>
+              {
+                feature.src && (
+                <div 
+                    className={`absolute inset-0 z-0 bg-cover bg-center`}
+                    style={{ backgroundImage: `url(${feature.src})` }}
                 />
-              </div>
-              {image.caption && (
-                <p className="mt-2 text-sm text-muted-foreground text-center">
-                  {image.caption}
-                </p>
               )}
             </div>
-          ))}
-        </div>
+            <h1 className='heading-4'>{feature.title}</h1>
+            <p className='body-2 text-gray'>{feature.description}</p>
+          </div>)
+        }
       </div>
-    </div>
+    </section>
   );
 }

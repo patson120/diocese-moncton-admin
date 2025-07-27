@@ -64,9 +64,9 @@ export default function TextImageComponent({
                 </div>
                 <div className={`${rightOrder} col-span-full lg:col-span-3 flex flex-col justify-center items-center`}>
                     <div>
-                        <h1 style={{ color: textColor}} className={`${alignmentClasses[alignment]} heading-4 font-extrabold mb-4`}>{title}  </h1>
+                        <h1 style={{ color: textColor}} className={`${alignmentClasses[alignment]} heading-4 font-extrabold lg:mb-4`}>{title}  </h1>
                         <div
-                            className={`${alignmentClasses[alignment]} mt-4`}
+                            className={`${alignmentClasses[alignment]} lg:mt-4`}
                             dangerouslySetInnerHTML={{ __html: content }}
                         />
                     </div>

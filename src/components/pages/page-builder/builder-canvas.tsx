@@ -12,6 +12,7 @@ import { ImageComponent } from '@/components/pages/page-components/image-compone
 import ColumnsComponent from '../page-components/columns-component';
 import { getComponentDefinitionByType } from '../lib/components/registry';
 import TextImageComponent from '../page-components/text-image-component';
+import { GalleryComponent } from '../page-components/gallery-component';
 
 interface BuilderCanvasProps {
   components: Component[];
@@ -68,6 +69,8 @@ export function BuilderCanvas({
           return <TextComponent title="" content="" {...props} />;
         case 'image':
           return <ImageComponent src="" alt="" {...props} />;
+        case 'gallery':
+          return <GalleryComponent title="" features={[]} {...props} />;
       default:
         const definition = getComponentDefinitionByType(component.type);
         return (

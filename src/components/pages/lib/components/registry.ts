@@ -136,13 +136,28 @@ export const componentRegistry: ComponentDefinition[] = [
     icon: 'ImageDown',
     category: 'media',
     defaultProps: {
-      images: [
-        { src: 'https://images.pexels.com/photos/2325446/pexels-photo-2325446.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', alt: 'Gallery image 1' },
-        { src: 'https://images.pexels.com/photos/572897/pexels-photo-572897.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', alt: 'Gallery image 2' },
-        { src: 'https://images.pexels.com/photos/624015/pexels-photo-624015.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', alt: 'Gallery image 3' },
+      title: 'Le cœur de la communion chrétienne',
+      features: [
+        { 
+          title: 'La liturgie de la Parole', 
+          description: 'Dieu nous parle à travers les lectures de l’Ancien et du Nouveau Testament, l’Évangile, la prédication et les prières universelles.',
+          src: 'https://images.pexels.com/photos/2325446/pexels-photo-2325446.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', 
+          alt: 'La liturgie de la Parole'
+        },
+        { 
+          title: 'La liturgie de la Parole', 
+          description: 'Dieu nous parle à travers les lectures de l’Ancien et du Nouveau Testament, l’Évangile, la prédication et les prières universelles.',
+          src: 'https://images.pexels.com/photos/572897/pexels-photo-572897.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', 
+          alt: "La liturgie de la Parole"
+        },
+        { 
+          title: 'La liturgie de la Parole', 
+          description: 'Dieu nous parle à travers les lectures de l’Ancien et du Nouveau Testament, l’Évangile, la prédication et les prières universelles.',
+          src: 'https://images.pexels.com/photos/624015/pexels-photo-624015.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1', 
+          alt: "La liturgie de la Parole"
+        },
       ],
       columns: 3,
-      gap: '8px',
     },
     propDefinitions: [
       { name: 'images', label: 'Images', type: 'text', defaultValue: '[{"src":"https://images.pexels.com/photos/2325446/pexels-photo-2325446.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1","alt":"Gallery image 1"},{"src":"https://images.pexels.com/photos/572897/pexels-photo-572897.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1","alt":"Gallery image 2"},{"src":"https://images.pexels.com/photos/624015/pexels-photo-624015.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1","alt":"Gallery image 3"}]' },
