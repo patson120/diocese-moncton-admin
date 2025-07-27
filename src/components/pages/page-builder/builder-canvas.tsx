@@ -11,6 +11,7 @@ import { TextComponent } from '@/components/pages/page-components/text-component
 import { ImageComponent } from '@/components/pages/page-components/image-component';
 import ColumnsComponent from '../page-components/columns-component';
 import { getComponentDefinitionByType } from '../lib/components/registry';
+import TextImageComponent from '../page-components/text-image-component';
 
 interface BuilderCanvasProps {
   components: Component[];
@@ -61,6 +62,8 @@ export function BuilderCanvas({
           return <FeatureComponent title="" description="" features={[]} {...props} />;
         case 'columns':
             return <ColumnsComponent title="" description="" features={[]} {...props} />;
+        case 'text-image':
+          return <TextImageComponent title="" content='' {...props} />;
         case 'text':
           return <TextComponent title="" content="" {...props} />;
         case 'image':

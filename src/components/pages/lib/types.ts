@@ -17,6 +17,7 @@ export type ComponentType =
   | 'features'
   | 'columns'
   | 'two-columns'
+  | 'text-image'
 
 export type DeviceType = 'desktop' | 'tablet' | 'mobile';
 

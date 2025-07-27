@@ -39,7 +39,7 @@ const handleCreatePage = async (page: Page) => {
   }
 }
 
-const handleUpdatePage = async (page: Page) => {
+const handleUpdatePage = async (page: Page) => { 
   try {
     return await apiClient.put(`/api/pages/${page.id}`, {
       is_publier: 1,

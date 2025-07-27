@@ -13,6 +13,7 @@ import { TextComponent } from '@/components/pages/page-components/text-component
 import { ImageComponent } from '@/components/pages/page-components/image-component';
 import { generatePageHtml } from '../lib/utils/html-generator';
 import ColumnsComponent from '../page-components/columns-component';
+import TextImageComponent from '../page-components/text-image-component';
 
 interface PreviewPanelProps {
   page: Page;
@@ -34,6 +35,8 @@ export function PreviewPanel({ page }: PreviewPanelProps) {
         return <FeatureComponent title='' description='' features={[]} {...props} />;
       case 'text':
         return <TextComponent title='' content='' {...props} />;
+      case 'text-image':
+        return <TextImageComponent title="" content='' {...props} />;
       case 'image':
         return <ImageComponent alt='' src='' {...props} />;
       case 'columns':

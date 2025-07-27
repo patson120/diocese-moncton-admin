@@ -203,6 +203,108 @@ export function ComponentEditor({ component, onUpdate, onClose }: ComponentEdito
           </div>
         );
       
+      case 'text-image':
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="title">Title</Label>
+              <Input
+                id="title"
+                value={component.props.title || ''}
+                onChange={(e) => updateProps('title', e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="content">Content</Label>
+              <Textarea
+                id="content"
+                value={component.props.content || ''}
+                onChange={(e) => updateProps('content', e.target.value)}
+                rows={8}
+              />
+              <p className="text-xs text-muted-foreground">
+                You can use HTML tags like &lt;h1&gt;, &lt;p&gt;, &lt;strong&gt;, etc.
+              </p>
+            </div>
+            
+            <div className="space-y-2">
+              <Label>Alignment</Label>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant={component.props.alignment === 'left' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => updateProps('alignment', 'left')}
+                >
+                  Left
+                </Button>
+                <Button
+                  type="button"
+                  variant={component.props.alignment === 'center' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => updateProps('alignment', 'center')}
+                >
+                  Center
+                </Button>
+                <Button
+                  type="button"
+                  variant={component.props.alignment === 'right' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => updateProps('alignment', 'right')}
+                >
+                  Right
+                </Button>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="backgroundImage">Image URL</Label>
+              <Input
+                id="backgroundImage"
+                value={component.props.backgroundImage || ''}
+                onChange={(e) => updateProps('backgroundImage', e.target.value)}
+              />
+              {component.props.backgroundImage && (
+                <div className="mt-2 rounded overflow-hidden h-40 bg-muted">
+                  <img 
+                    src={component.props.backgroundImage}
+                    alt="Image preview"
+                    className="h-full w-full object-contain"
+                  />
+                </div>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label>Image Alignment</Label>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant={component.props.imageAlignment === 'left' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => updateProps('imageAlignment', 'left')}>
+                  Left
+                </Button>
+                
+                <Button
+                  type="button"
+                  variant={component.props.imageAlignment === 'right' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => updateProps('imageAlignment', 'right')}>
+                  Right
+                </Button>
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="alt">Alt Text</Label>
+              <Input
+                id="alt"
+                value={component.props.alt || ''}
+                onChange={(e) => updateProps('alt', e.target.value)}
+              />
+            </div>
+          </div>
+        );
+      
       case 'feature':
         return (
           <ColumnComponent 
