@@ -37,6 +37,7 @@ export const ContentSection = (): JSX.Element => {
 
   const [pages, setPages] = useState<Page[]>([])
   const [isDeleting, setIsDeleting] = useState(false)
+  const [isDuplicating, setIsDuplicating] = useState(false)
 
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState<string>('all');
@@ -69,6 +70,27 @@ export const ContentSection = (): JSX.Element => {
         console.log("Erreur", error)
       }
       finally{ setIsDeleting(false)}
+    }
+  }
+
+  const handleDuplicatePage = async (page: Page) => {
+    if (isDuplicating) return
+    if (window.confirm(`Voulez-vous vraiment créer une nouvelle page à partir de celle-ci ?`)){
+      setIsDuplicating(true)
+      try {
+        return await apiClient.post("/api/pages", {
+          is_publier: 1,
+          is_planifier: 0,
+          titre: page.titre,
+          description: page.description,
+          contenu_html: page.contenu_html,
+          contenu_json: page.contenu_json
+        })
+      } catch (error) {
+        toast.success(`Une erreur est survenue lors de cette opération !\n Veuillez réessayer plus tard.`)
+        console.log(error);
+      }
+      finally{ setIsDuplicating(false) }
     }
   }
 
@@ -196,6 +218,15 @@ export const ContentSection = (): JSX.Element => {
                                         <DropdownMenuItem className="text-gray">
                                             <Link href={`/render/${page.id}`} target="_blank">Consulter</Link>
                                         </DropdownMenuItem>
+                                        <DropdownMenuItem className="text-gray">
+                                            <Link href={`/create-page/${page.id}`} target="_blank">Editer</Link>
+                                        </DropdownMenuItem>
+                                        {
+                                          canAddPage() &&
+                                          <DropdownMenuItem className="text-gray" onClick={() => handleDuplicatePage(page)}>
+                                            Dupliquer
+                                          </DropdownMenuItem>
+                                        }
                                         {
                                           canDeletePage() &&
                                           <DropdownMenuItem onClick={() => handleDeletePage(page)}
