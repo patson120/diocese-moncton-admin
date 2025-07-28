@@ -64,7 +64,6 @@ const handleReadPage = async (pageId: string): Promise<PageType | undefined> => 
 }
 
 
-
 export const usePagesStore = create<PagesState>()(
   persist(
     (set, get) => ({
@@ -118,9 +117,11 @@ export const usePagesStore = create<PagesState>()(
       },
       
       getPage: async (id) => {
-        // const pageFound = await handleReadPage(id)
-        // console.log(JSON.stringify(pageFound, null, 2));
-        return get().pages.find((page) => page.id == id);
+        const pageFound = await handleReadPage(id)
+        if (!pageFound) {
+          return get().pages.find((page) => page.id == id); 
+        }
+        return JSON.parse(pageFound!.contenu_json!)
       },
       
       duplicatePage: (id) => {

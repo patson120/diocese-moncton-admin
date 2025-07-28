@@ -15,6 +15,7 @@ import { ArrowLeft, Code, Eye, Globe, Save } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { slugGenerator } from '../lib/utils/slug-generator';
 
 interface PageBuilderProps {
   pageId: string;
@@ -75,7 +76,7 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
     try {
       if (page.id === 'temp') {
         // Create new page
-        const slug = title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+        const slug = slugGenerator(title) // title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
         const newPageId = await addPage({
           title,
           slug,
@@ -90,6 +91,7 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
         // Update existing page
         updatePage(page.id, {
           title,
+          slug: slugGenerator(title),
           components: page.components,
           updatedAt: new Date().toISOString(),
         });
