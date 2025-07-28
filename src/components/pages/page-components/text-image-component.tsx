@@ -51,7 +51,7 @@ export default function TextImageComponent({
     return (
         <section style={style} className="container max-margin py-0">
             <div className={`grid ${gridVal} md:py-4 lg:py-8`}>
-                <div className={`${leftOrder} col-span-full lg:col-span-2`}>
+                <div className={`${leftOrder} col-span-full lg:col-span-2 mt-5 lg:mt-0`}>
                     <div className='h-72 xl:h-80 relative rounded-xl md:rounded-[18px] overflow-hidden'>
                         {
                             backgroundImage && (
@@ -64,7 +64,7 @@ export default function TextImageComponent({
                 </div>
                 <div className={`${rightOrder} col-span-full lg:col-span-3 flex flex-col justify-center items-center`}>
                     <div>
-                        <h1 style={{ color: textColor}} className={`${alignmentClasses[alignment]} heading-4 font-extrabold lg:mb-4`}>{title}  </h1>
+                        <h1 style={{ color: textColor}} className={`${alignmentClasses[alignment]} heading-4 font-extrabold mb-4`}>{title}  </h1>
                         <div
                             className={`${alignmentClasses[alignment]} lg:mt-4`}
                             dangerouslySetInnerHTML={{ __html: content }}

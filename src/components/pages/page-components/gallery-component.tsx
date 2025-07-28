@@ -32,10 +32,13 @@ export function GalleryComponent({
     backgroundColor,
   };
 
+  const conditionalClasses = deviceView === 'desktop' ? 'overflow-x-hidden pb-0 grid gap-6 grid-cols-3': 'flex flex-row overflow-x-scroll pb-8 space-x-4'
+  const widthClasses = deviceView === 'desktop' ?  'w-full ' : deviceView === 'tablet' ? 'w-[416px] h-[400px]' : 'w-[260px] ';
+
   return (
     <section style={style} className="container max-margin py-10 md:py-20">
       <h2 className='heading-3 text-gray-900 mb-4'>{title}</h2>
-      <div className='flex flex-row overflow-x-scroll lg:overflow-x-hidden pb-8 lg:pb-0 space-x-4 lg:grid lg:gap-6 lg:grid-cols-3'>
+      <div className={`flex flex-row overflow-x-scroll pb-8 space-x-4 lg:overflow-x-hidden lg:pb-0 lg:grid lg:gap-6 lg:grid-cols-3`}>
         {
           features.map((feature, index) => 
           <div key={index} className='space-y-3'>

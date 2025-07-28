@@ -78,14 +78,18 @@ export const ContentSection = (): JSX.Element => {
     if (window.confirm(`Voulez-vous vraiment créer une nouvelle page à partir de celle-ci ?`)){
       setIsDuplicating(true)
       try {
-        return await apiClient.post("/api/pages", {
+        await apiClient.post("/api/pages", {
           is_publier: 1,
           is_planifier: 0,
-          titre: page.titre,
-          description: page.description,
+          titre: `${page.titre} (Copie)`,
+          description: `${page.description} (Copie)`,
           contenu_html: page.contenu_html,
           contenu_json: page.contenu_json
         })
+        toast.success(`La page ${page.titre} a été dupliquée avec succès !`)
+        setTimeout(() => {
+          window.location.reload()
+        }, 3000);
       } catch (error) {
         toast.success(`Une erreur est survenue lors de cette opération !\n Veuillez réessayer plus tard.`)
         console.log(error);
