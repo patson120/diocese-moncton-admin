@@ -77,6 +77,7 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
     
     try {
       if (page.id === 'temp') {
+        
         // Create new page
         const slug = slugGenerator(title) // title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
         const newPageId = await addPage({
@@ -86,7 +87,7 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
           components: page.components,
           description: '',
         });
-      
+
         toast.success('Page created successfully');
         router.push(`/create-page/${newPageId}`);
       } else {

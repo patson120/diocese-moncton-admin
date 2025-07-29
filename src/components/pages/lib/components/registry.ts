@@ -173,24 +173,24 @@ export const componentRegistry: ComponentDefinition[] = [
       { name: 'gap', label: 'Gap Between Images', type: 'text', defaultValue: '8px' },
     ]
   },
-  {
-    type: 'testimonial',
-    name: 'Testimonial',
-    icon: 'Quote',
-    category: 'content',
-    defaultProps: {
-      quote: 'This product has completely transformed how we work. Highly recommended!',
-      author: 'Jane Smith',
-      company: 'Acme Inc.',
-      avatarUrl: '',
-    },
-    propDefinitions: [
-      { name: 'quote', label: 'Quote', type: 'textarea', defaultValue: 'This product has completely transformed how we work. Highly recommended!' },
-      { name: 'author', label: 'Author Name', type: 'text', defaultValue: 'Jane Smith' },
-      { name: 'company', label: 'Company', type: 'text', defaultValue: 'Acme Inc.' },
-      { name: 'avatarUrl', label: 'Avatar URL', type: 'text', defaultValue: '' },
-    ]
-  },
+  // {
+  //   type: 'testimonial',
+  //   name: 'Testimonial',
+  //   icon: 'Quote',
+  //   category: 'content',
+  //   defaultProps: {
+  //     quote: 'This product has completely transformed how we work. Highly recommended!',
+  //     author: 'Jane Smith',
+  //     company: 'Acme Inc.',
+  //     avatarUrl: '',
+  //   },
+  //   propDefinitions: [
+  //     { name: 'quote', label: 'Quote', type: 'textarea', defaultValue: 'This product has completely transformed how we work. Highly recommended!' },
+  //     { name: 'author', label: 'Author Name', type: 'text', defaultValue: 'Jane Smith' },
+  //     { name: 'company', label: 'Company', type: 'text', defaultValue: 'Acme Inc.' },
+  //     { name: 'avatarUrl', label: 'Avatar URL', type: 'text', defaultValue: '' },
+  //   ]
+  // },
   {
     type: 'feature',
     name: 'Feature Grid',
@@ -214,28 +214,28 @@ export const componentRegistry: ComponentDefinition[] = [
       { name: 'columns', label: 'Columns', type: 'number', defaultValue: 3 },
     ]
   },
-  {
-    type: 'cta',
-    name: 'Call to Action',
-    icon: 'FileText',
-    category: 'content',
-    defaultProps: {
-      title: 'Ready to get started?',
-      description: 'Join thousands of satisfied customers today.',
-      buttonText: 'Sign Up Now',
-      buttonUrl: '#',
-      backgroundColor: '#4f46e5',
-      textColor: '#ffffff',
-    },
-    propDefinitions: [
-      { name: 'title', label: 'Title', type: 'text', defaultValue: 'Ready to get started?' },
-      { name: 'description', label: 'Description', type: 'textarea', defaultValue: 'Join thousands of satisfied customers today.' },
-      { name: 'buttonText', label: 'Button Text', type: 'text', defaultValue: 'Sign Up Now' },
-      { name: 'buttonUrl', label: 'Button URL', type: 'text', defaultValue: '#' },
-      { name: 'backgroundColor', label: 'Background Color', type: 'color', defaultValue: '#4f46e5' },
-      { name: 'textColor', label: 'Text Color', type: 'color', defaultValue: '#ffffff' },
-    ]
-  },
+  // {
+  //   type: 'cta',
+  //   name: 'Call to Action',
+  //   icon: 'FileText',
+  //   category: 'content',
+  //   defaultProps: {
+  //     title: 'Ready to get started?',
+  //     description: 'Join thousands of satisfied customers today.',
+  //     buttonText: 'Sign Up Now',
+  //     buttonUrl: '#',
+  //     backgroundColor: '#4f46e5',
+  //     textColor: '#ffffff',
+  //   },
+  //   propDefinitions: [
+  //     { name: 'title', label: 'Title', type: 'text', defaultValue: 'Ready to get started?' },
+  //     { name: 'description', label: 'Description', type: 'textarea', defaultValue: 'Join thousands of satisfied customers today.' },
+  //     { name: 'buttonText', label: 'Button Text', type: 'text', defaultValue: 'Sign Up Now' },
+  //     { name: 'buttonUrl', label: 'Button URL', type: 'text', defaultValue: '#' },
+  //     { name: 'backgroundColor', label: 'Background Color', type: 'color', defaultValue: '#4f46e5' },
+  //     { name: 'textColor', label: 'Text Color', type: 'color', defaultValue: '#ffffff' },
+  //   ]
+  // },
   {
     type: 'text-image',
     name: 'Text Image Left',

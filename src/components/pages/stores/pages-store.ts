@@ -50,7 +50,7 @@ export const usePagesStore = create<PagesState>()(
            pages: [...state.pages, {...page, id: response.id }],
          }))
         
-        return id // response.id;
+        return response.id;
       },
       
       updatePage: (id, data) => {
