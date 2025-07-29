@@ -16,6 +16,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { slugGenerator } from '../lib/utils/slug-generator';
+import { v4 as uuidv4 } from '@/components/pages/lib/uuid';
 
 interface PageBuilderProps {
   pageId: string;
@@ -129,6 +130,27 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
     });
     
     setHasUnsavedChanges(true);
+  };
+
+  const handleComponentDuplicate = (componentId: string) => {
+    if (!page) return;
+
+    const findIndex = page.components.findIndex(c => c.id === componentId);
+    const component = page.components[findIndex]
+
+    // Duplicate the component
+    const newComponentId = uuidv4();
+    const newComponents = [ ...page.components.slice(0, findIndex + 1), { ...component, id:  newComponentId  }, ...page.components.slice(findIndex + 1, ) ]
+    
+    // Add the new component to the page
+    setSelectedComponentId(newComponentId);
+    setHasUnsavedChanges(true);
+    
+    setPage({
+      ...page,
+      components: newComponents,
+    });
+    
   };
 
   const handleComponentUpdate = (componentId: string, data: Partial<Component>) => {
@@ -267,6 +289,7 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
                       onSelect={handleComponentSelect}
                       onUpdate={handleComponentUpdate}
                       onDelete={handleComponentDelete}
+                      onDuplicate={handleComponentDuplicate}
                       onReorder={handleComponentReorder}
                     />
                   </div>

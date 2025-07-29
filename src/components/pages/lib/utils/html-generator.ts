@@ -77,26 +77,26 @@ function generateComponentHtml(component: Component): string {
       return `
           <section style="${marginClasses}" className="container max-margin py-0">
             <div className='grid grid-cols-1 lg:grid-cols-5 gap-7 md:gap-6 lg:gap-12 md:py-4 lg:py-8'>
-                <div className="${leftOrder} col-span-full lg:col-span-2">
-                    <div className='h-72 xl:h-80 relative rounded-xl md:rounded-[18px] overflow-hidden bg-gray-100'>
-                      ${
-                        component.props.backgroundImage && `
-                        <div 
-                          className="absolute inset-0 z-0 bg-cover bg-center"
-                          style="background-image: url(${component.props.backgroundImage})"
-                        />`
-                      }
-                    </div>
+              <div className="${leftOrder} col-span-full lg:col-span-2">
+                  <div className='h-72 xl:h-80 relative rounded-xl md:rounded-[18px] overflow-hidden bg-gray-100'>
+                    ${
+                      component.props.backgroundImage && `
+                      <div 
+                        className="absolute inset-0 z-0 bg-cover bg-center"
+                        style="background-image: url(${component.props.backgroundImage})"
+                      />`
+                    }
                   </div>
                 </div>
-                <div className="${rightOrder} col-span-full lg:col-span-3 flex flex-col justify-center items-start" >
-                    <div>
-                        <h1 style="color: ${component.props.textColor}" className="${alignmentClasses[component.props.alignment]} heading-4 font-extrabold mb-5">${component.props.title}</h1>
-                        <div className="${alignmentClasses[component.props.alignment]} md:mt-4">
-                          ${component.props.content || `<p className="text-${component.props.textAlign || 'left'}">This is a paragraph of text. You can edit this text to add your own content.</p>`}
-                        </div>
-                    </div>
+              </div>
+              <div className="${rightOrder} col-span-full lg:col-span-3 flex flex-col justify-center items-start" >
+                <div>
+                  <h1 style="color: ${component.props.textColor}" className="${alignmentClasses[component.props.alignment]} heading-4 font-extrabold mb-5">${component.props.title}</h1>
+                  <div className="${alignmentClasses[component.props.alignment]} md:mt-4">
+                    ${component.props.content || `<p className="text-${component.props.textAlign || 'left'}">This is a paragraph of text. You can edit this text to add your own content.</p>`}
+                  </div>
                 </div>
+              </div>
             </div>
         </section>
       `;

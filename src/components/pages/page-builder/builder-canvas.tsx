@@ -6,7 +6,7 @@ import { HeroComponent } from '@/components/pages/page-components/hero-component
 import { ImageComponent } from '@/components/pages/page-components/image-component';
 import { TextComponent } from '@/components/pages/page-components/text-component';
 import { Button } from '@/components/ui/button';
-import { Check, GripVertical, Pencil, Trash } from 'lucide-react';
+import { Check, CopySlash, GripVertical, Pencil, Trash } from 'lucide-react';
 import { useState } from 'react';
 import { getComponentDefinitionByType } from '../lib/components/registry';
 import { GalleryComponent } from '../page-components/gallery-component';
@@ -19,6 +19,7 @@ interface BuilderCanvasProps {
   onSelect: (componentId: string | null) => void;
   onUpdate: (componentId: string, data: Partial<Component>) => void;
   onDelete: (componentId: string) => void;
+  onDuplicate: (componentId: string) => void;
   onReorder: (startIndex: number, endIndex: number) => void;
 }
 
@@ -29,6 +30,7 @@ export function BuilderCanvas({
   onUpdate,
   onDelete,
   onReorder,
+  onDuplicate,
 }: BuilderCanvasProps) {
   const [draggedItem, setDraggedItem] = useState<number | null>(null);
   
@@ -130,6 +132,16 @@ export function BuilderCanvas({
                 ( <Check className="h-4 w-4" /> ) :
                 ( <Pencil className="h-4 w-4" /> ) 
               }
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDuplicate(component.id);
+              }}>
+              <CopySlash className="h-4 w-4" />
             </Button>
             <Button
               variant="ghost"
