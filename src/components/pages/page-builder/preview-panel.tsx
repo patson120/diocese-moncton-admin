@@ -14,6 +14,7 @@ import { generatePageHtml } from '../lib/utils/html-generator';
 import { GalleryComponent } from '../page-components/gallery-component';
 import TextImageComponent from '../page-components/text-image-component';
 import TowColumnsComponent from '../page-components/two-columns-component';
+import TextLeftComponent from '../page-components/text-left-component';
 
 interface PreviewPanelProps {
   page: Page;
@@ -35,6 +36,8 @@ export function PreviewPanel({ page }: PreviewPanelProps) {
         return <FeatureComponent title='' description='' features={[]} {...props} />;
       case 'text':
         return <TextComponent title='' content='' {...props} />;
+      case 'text-left':
+        return <TextLeftComponent title="" content="" {...props} />;
       case 'text-image':
         return <TextImageComponent title="" content='' {...props} />;
       case 'image':

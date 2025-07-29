@@ -25,7 +25,7 @@ export function TextComponent({
     left: 'text-left',
     center: 'text-center',
     right: 'text-right',
-  };
+  }
   
   const style = {
     marginTop: `${marginTop}px`,

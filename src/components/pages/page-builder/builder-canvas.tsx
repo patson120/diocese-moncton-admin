@@ -12,6 +12,7 @@ import { getComponentDefinitionByType } from '../lib/components/registry';
 import { GalleryComponent } from '../page-components/gallery-component';
 import TextImageComponent from '../page-components/text-image-component';
 import TwoColumnsComponent from '../page-components/two-columns-component';
+import TextLeftComponent from '../page-components/text-left-component';
 
 interface BuilderCanvasProps {
   components: Component[];
@@ -70,6 +71,8 @@ export function BuilderCanvas({
           return <TextImageComponent title="" content='' {...props} />;
         case 'text':
           return <TextComponent title="" content="" {...props} />;
+        case 'text-left':
+            return <TextLeftComponent title="" content="" {...props} />;
         case 'image':
           return <ImageComponent src="" alt="" {...props} />;
         case 'gallery':

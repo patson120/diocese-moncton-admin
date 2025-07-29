@@ -70,6 +70,28 @@ export const componentRegistry: ComponentDefinition[] = [
     ]
   },
   {
+    type: 'text-left',
+    name: 'Text Block left',
+    icon: 'Type',
+    category: 'content',
+    defaultProps: {
+      title: 'Vous avez des questions ?',
+      content: '<p>Pour en savoir plus sur le sacrement de l\'ordre ou pour discuter d\'une vocation, contactez votre paroisse ou le service diocésain des vocations.</p>',
+      textAlign: 'left',
+      padding: '16px',
+    },
+    propDefinitions: [
+      { name: 'content', label: 'Content', type: 'textarea', defaultValue: '<p>This is a paragraph of text. You can edit this text to add your own content.</p>' },
+      { name: 'textAlign', label: 'Text Alignment', type: 'select', defaultValue: 'left', options: [
+        { label: 'Left', value: 'left' },
+        { label: 'Center', value: 'center' },
+        { label: 'Right', value: 'right' },
+        { label: 'Justify', value: 'justify' }
+      ]},
+      { name: 'padding', label: 'Padding', type: 'text', defaultValue: '16px' },
+    ]
+  },
+  {
     type: 'image',
     name: 'Image',
     icon: 'ImageIcon',
@@ -89,26 +111,6 @@ export const componentRegistry: ComponentDefinition[] = [
       { name: 'rounded', label: 'Rounded Corners', type: 'boolean', defaultValue: false },
     ]
   },
-  // {
-  //   type: 'contactForm',
-  //   name: 'Contact Form',
-  //   icon: 'FormInput',
-  //   category: 'form',
-  //   defaultProps: {
-  //     title: 'Contact Us',
-  //     description: 'Fill out the form below to get in touch with us.',
-  //     submitButtonText: 'Send Message',
-  //     backgroundColor: '#f9fafb',
-  //     textColor: '#111827',
-  //   },
-  //   propDefinitions: [
-  //     { name: 'title', label: 'Form Title', type: 'text', defaultValue: 'Contact Us' },
-  //     { name: 'description', label: 'Description', type: 'textarea', defaultValue: 'Fill out the form below to get in touch with us.' },
-  //     { name: 'submitButtonText', label: 'Submit Button Text', type: 'text', defaultValue: 'Send Message' },
-  //     { name: 'backgroundColor', label: 'Background Color', type: 'color', defaultValue: '#f9fafb' },
-  //     { name: 'textColor', label: 'Text Color', type: 'color', defaultValue: '#111827' },
-  //   ]
-  // },
   {
     type: 'columns',
     name: 'Two Columns',
@@ -173,24 +175,6 @@ export const componentRegistry: ComponentDefinition[] = [
       { name: 'gap', label: 'Gap Between Images', type: 'text', defaultValue: '8px' },
     ]
   },
-  // {
-  //   type: 'testimonial',
-  //   name: 'Testimonial',
-  //   icon: 'Quote',
-  //   category: 'content',
-  //   defaultProps: {
-  //     quote: 'This product has completely transformed how we work. Highly recommended!',
-  //     author: 'Jane Smith',
-  //     company: 'Acme Inc.',
-  //     avatarUrl: '',
-  //   },
-  //   propDefinitions: [
-  //     { name: 'quote', label: 'Quote', type: 'textarea', defaultValue: 'This product has completely transformed how we work. Highly recommended!' },
-  //     { name: 'author', label: 'Author Name', type: 'text', defaultValue: 'Jane Smith' },
-  //     { name: 'company', label: 'Company', type: 'text', defaultValue: 'Acme Inc.' },
-  //     { name: 'avatarUrl', label: 'Avatar URL', type: 'text', defaultValue: '' },
-  //   ]
-  // },
   {
     type: 'feature',
     name: 'Feature Grid',
@@ -214,6 +198,65 @@ export const componentRegistry: ComponentDefinition[] = [
       { name: 'columns', label: 'Columns', type: 'number', defaultValue: 3 },
     ]
   },
+  {
+    type: 'text-image',
+    name: 'Text Image Left',
+    icon: 'Columns',
+    category: 'advanced',
+    defaultProps: {      
+      description: 'Discover how to create text with image at left',
+      backgroundImage: 'https://images.pexels.com/photos/208277/pexels-photo-208277.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+      alt: 'Image description',
+      imageAlignment: 'left',
+      width: '100%',
+      height: 'auto',
+      rounded: false,
+
+      title: 'L\'Eucharistie, troisième sacrement de l\'initiation chrétienne',
+      content: '<p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source.</p>',
+      textAlign: 'center',
+      padding: '16px',
+    },
+    propDefinitions: []
+  },
+  // {
+  //   type: 'testimonial',
+  //   name: 'Testimonial',
+  //   icon: 'Quote',
+  //   category: 'content',
+  //   defaultProps: {
+  //     quote: 'This product has completely transformed how we work. Highly recommended!',
+  //     author: 'Jane Smith',
+  //     company: 'Acme Inc.',
+  //     avatarUrl: '',
+  //   },
+  //   propDefinitions: [
+  //     { name: 'quote', label: 'Quote', type: 'textarea', defaultValue: 'This product has completely transformed how we work. Highly recommended!' },
+  //     { name: 'author', label: 'Author Name', type: 'text', defaultValue: 'Jane Smith' },
+  //     { name: 'company', label: 'Company', type: 'text', defaultValue: 'Acme Inc.' },
+  //     { name: 'avatarUrl', label: 'Avatar URL', type: 'text', defaultValue: '' },
+  //   ]
+  // },
+  // {
+  //   type: 'contactForm',
+  //   name: 'Contact Form',
+  //   icon: 'FormInput',
+  //   category: 'form',
+  //   defaultProps: {
+  //     title: 'Contact Us',
+  //     description: 'Fill out the form below to get in touch with us.',
+  //     submitButtonText: 'Send Message',
+  //     backgroundColor: '#f9fafb',
+  //     textColor: '#111827',
+  //   },
+  //   propDefinitions: [
+  //     { name: 'title', label: 'Form Title', type: 'text', defaultValue: 'Contact Us' },
+  //     { name: 'description', label: 'Description', type: 'textarea', defaultValue: 'Fill out the form below to get in touch with us.' },
+  //     { name: 'submitButtonText', label: 'Submit Button Text', type: 'text', defaultValue: 'Send Message' },
+  //     { name: 'backgroundColor', label: 'Background Color', type: 'color', defaultValue: '#f9fafb' },
+  //     { name: 'textColor', label: 'Text Color', type: 'color', defaultValue: '#111827' },
+  //   ]
+  // },
   // {
   //   type: 'cta',
   //   name: 'Call to Action',
@@ -236,27 +279,7 @@ export const componentRegistry: ComponentDefinition[] = [
   //     { name: 'textColor', label: 'Text Color', type: 'color', defaultValue: '#ffffff' },
   //   ]
   // },
-  {
-    type: 'text-image',
-    name: 'Text Image Left',
-    icon: 'Columns',
-    category: 'advanced',
-    defaultProps: {      
-      description: 'Discover how to create text with image at left',
-      backgroundImage: 'https://images.pexels.com/photos/208277/pexels-photo-208277.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      alt: 'Image description',
-      imageAlignment: 'left',
-      width: '100%',
-      height: 'auto',
-      rounded: false,
-
-      title: 'L\'Eucharistie, troisième sacrement de l\'initiation chrétienne',
-      content: '<p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source.</p>',
-      textAlign: 'center',
-      padding: '16px',
-    },
-    propDefinitions: []
-  },
+  
 ]
 
 export const getComponentDefinitionByType = (type: string): ComponentDefinition | undefined => {
@@ -267,8 +290,8 @@ export const getComponentIcon = (type: ComponentType) => {
   switch(type) {
     case 'hero': return LayoutIcon;
     case 'text': return Type;
+    case 'text-left': return Type;
     case 'image': return ImageIcon;
-    case 'contactForm': return FormInput;
     case 'columns': return Columns;
     case 'gallery': return ImageDown;
     case 'testimonial': return Quote;

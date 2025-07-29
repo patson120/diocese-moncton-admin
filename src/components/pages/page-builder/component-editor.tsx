@@ -162,7 +162,34 @@ export function ComponentEditor({ component, onUpdate, onClose }: ComponentEdito
             </div>
           </div>
         );
+      
+      case 'text-left':
+        return (
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="title">Title</Label>
+              <Input
+                id="title"
+                value={component.props.title || ''}
+                onChange={(e) => updateProps('title', e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="content">Content</Label>
+              <Textarea
+                id="content"
+                value={component.props.content || ''}
+                onChange={(e) => updateProps('content', e.target.value)}
+                rows={8}
+              />
+              <p className="text-xs text-muted-foreground">
+                You can use HTML tags like &lt;h1&gt;, &lt;p&gt;, &lt;strong&gt;, etc.
+              </p>
+            </div>
+          </div>
+        );
         
+
       case 'image':
         return (
           <div className="space-y-4">

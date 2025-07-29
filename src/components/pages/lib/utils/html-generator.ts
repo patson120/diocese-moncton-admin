@@ -64,12 +64,25 @@ function generateComponentHtml(component: Component): string {
 
     case 'text':
       return `
-          <div style="padding: ${component.props.padding*8 || '16px'}; ${marginClasses}" className="rounded-lg">
-            <h1 style="color: ${component.props.textColor}" className="${alignmentClasses[component.props.alignment]} text-4xl font-bold pb-3">${component.props.title}</h1>
-            <div style="${marginClasses}" className="flex flex-col ${alignmentClasses[component.props.alignment]}">
+        <div style="padding: ${component.props.padding*8 || '16px'}; ${marginClasses}" className="rounded-lg">
+          <h1 style="color: ${component.props.textColor}" className="${alignmentClasses[component.props.alignment]} text-4xl font-bold pb-3">${component.props.title}</h1>
+          <div style="${marginClasses}" className="flex flex-col ${alignmentClasses[component.props.alignment]}">
+            ${component.props.content || `<p className="text-${component.props.textAlign || 'left'}">This is a paragraph of text. You can edit this text to add your own content.</p>`}
+          </div>
+        </div>`;
+            
+    case 'text-left':
+      return `
+        <section style="${marginClasses}" className="container max-margin py-0">
+          <div className='w-full lg:w-1/2'>
+            <h2 style="color: ${component.props.textColor}" className='heading-3 text-gray-900 mb-4'>${component.props.title}</h2>
+            <div
+              className="body-2 text-gray"
+              style="color: ${component.props.textColor}">
               ${component.props.content || `<p className="text-${component.props.textAlign || 'left'}">This is a paragraph of text. You can edit this text to add your own content.</p>`}
             </div>
-          </div>`;
+          </div>
+        </section>`;
 
     case 'text-image':
       const leftOrder = component.props.imageAlignment == 'left' ? 'order-2 lg:order-1': 'order-1'
@@ -106,8 +119,7 @@ function generateComponentHtml(component: Component): string {
         <section style="
           background-color: ${component.props.backgroundColor || '#f9fafb'};
           color: ${component.props.textColor || '#111827'};
-          padding: 48px 16px;
-        ">
+          padding: 48px 16px;">
           <div style="max-width: 600px; margin: 0 auto;">
             <h2 style="font-size: 30px; margin-bottom: 16px; text-align: center;">${component.props.title || 'Contact Us'}</h2>
             <p style="margin-bottom: 32px; text-align: center;">${component.props.description || 'Fill out the form below to get in touch with us.'}</p>
