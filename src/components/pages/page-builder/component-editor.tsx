@@ -345,7 +345,7 @@ export function ComponentEditor({ component, onUpdate, onClose }: ComponentEdito
                   rows={3}
                 />
               </div>
-            */}
+            
 
             <div className="space-y-2">
               <Label htmlFor='columns'>Columns</Label>
@@ -357,12 +357,14 @@ export function ComponentEditor({ component, onUpdate, onClose }: ComponentEdito
                 max={4}
               />
             </div>
+            */}
             
             <div className="space-y-2">
               <Label>Features</Label>
               <div className="space-y-4">
-                {component.props.features?.map((feature: any, index: number) => (
-                  <div key={index} className="border rounded-md p-3">
+                {
+                  component.props.features?.map((feature: any, index: number) => (
+                  <div key={index} className="relative border rounded-md p-3">
                     <div className="space-y-2">
                       <Label htmlFor={`Image-${index}-title`}>Title</Label>
                       <Input
@@ -422,6 +424,20 @@ export function ComponentEditor({ component, onUpdate, onClose }: ComponentEdito
                         </div>
                       )}
                     </div>
+
+                    {/* Close button for each feature */}
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        const updatedFeatures = [...component.props.features];
+                        updatedFeatures.splice(index, 1);
+                        updateProps(`features`, updatedFeatures);
+                      }}
+                      className="absolute top-2 right-2 p-0 w-5 h-5">
+                      <X className="h-4 w-4" />
+                    </Button>
                   </div>
                 ))}
                 
@@ -434,6 +450,7 @@ export function ComponentEditor({ component, onUpdate, onClose }: ComponentEdito
                     updatedFeatures.push({
                       title: `New block`,
                       description: 'Description goes here',
+                      src: "https://images.pexels.com/photos/2325446/pexels-photo-2325446.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
                       icon: 'star',
                     });
                     updateProps(`features`, updatedFeatures);

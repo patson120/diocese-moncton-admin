@@ -51,8 +51,9 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
       // Load existing page
       getPage(pageId).then(existingPage => {
         if (existingPage) {
-          setPage(existingPage);
-          setTitle(existingPage.title);
+          const page: Page = {...existingPage!,id: pageId};
+          setPage(page!);
+          setTitle(page!.title);
         } else {
           // Handle invalid page ID
           router.push('/create-page/new');

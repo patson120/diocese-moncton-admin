@@ -1,12 +1,10 @@
 "use client";
 
+import { Component, Page, PageStatus } from '@/components/pages/lib/types';
+import { v4 as uuidv4 } from '@/components/pages/lib/uuid';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Page, Component, PageStatus } from '@/components/pages/lib/types';
-import { v4 as uuidv4 } from '@/components/pages/lib/uuid';
-import { apiClient } from '@/lib/axios';
-import { generatePageHtml } from '../lib/utils/html-generator';
-import { Page as PageType } from '@/app/types';
+import { handleCreatePage, handleReadPage, handleUpdatePage } from '../lib/utils';
 
 interface PagesState {
   pages: Page[];
@@ -21,46 +19,6 @@ interface PagesState {
   reorderComponents: (pageId: string, startIndex: number, endIndex: number) => void;
   updatePageStatus: (pageId: string, status: PageStatus) => void;
   exportPageHtml: (pageId: string) => string;
-}
-
-
-const handleCreatePage = async (page: Page) => {
-  try {
-    return await apiClient.post("/api/pages", {
-      is_publier: 1,
-      is_planifier: 0,
-      titre: page.title,
-      description: page.title,
-      contenu_html: generatePageHtml(page),
-      contenu_json: JSON.stringify(page)
-    })
-  } catch (error) {
-    console.log(error)
-  }
-}
-
-const handleUpdatePage = async (page: Page) => { 
-  try {
-    return await apiClient.put(`/api/pages/${page.id}`, {
-      is_publier: 1,
-      is_planifier: 0,
-      titre: page.title,
-      description: page.title,
-      contenu_html: generatePageHtml(page),
-      contenu_json: JSON.stringify(page)
-    })
-  } catch (error) {
-    console.log(error)
-  }
-}
-
-const handleReadPage = async (pageId: string): Promise<PageType | undefined> => {
-  try {
-    return await apiClient.get(`/api/pages/${pageId}`) as PageType
-  } catch (error) {
-    console.log(error)
-    return undefined
-  }
 }
 
 
@@ -88,26 +46,29 @@ export const usePagesStore = create<PagesState>()(
         }
         const response: any = await handleCreatePage(page)
         
-        set((state) => ({
-          pages: [...state.pages, {...page, id: response.id }],
-        }))
+         set((state) => ({
+           pages: [...state.pages, {...page, id: response.id }],
+         }))
         
-        return response.id;
+        return id // response.id;
       },
       
       updatePage: (id, data) => {
-        set((state) => ({
-          pages: state.pages.map((page) => 
-          { 
-            if (page.id === id){
-              handleUpdatePage(page)
-              return { ...page, ...data, updatedAt: new Date().toISOString() }
-            }
-            else {
-              return page
-            }
-          }),
-        }));
+        handleUpdatePage({...data, id: id} as Page);
+        // set((state) => ({
+        //   pages: state.pages.map((page) => 
+        //   { 
+        //     console.log("Updating page:", page, id);
+        //     
+        //     if (page.id === id){
+        //       handleUpdatePage(page)
+        //       return { ...page, ...data, updatedAt: new Date().toISOString() }
+        //     }
+        //     else {
+        //       return page
+        //     }
+        //   }),
+        // }));
       },
       
       deletePage: (id) => {
@@ -117,11 +78,7 @@ export const usePagesStore = create<PagesState>()(
       },
       
       getPage: async (id) => {
-        const pageFound = await handleReadPage(id)
-        if (!pageFound) {
-          return get().pages.find((page) => page.id == id); 
-        }
-        return JSON.parse(pageFound!.contenu_json!)
+        return await handleReadPage(id)
       },
       
       duplicatePage: (id) => {
