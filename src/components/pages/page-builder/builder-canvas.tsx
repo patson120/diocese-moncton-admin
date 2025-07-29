@@ -6,7 +6,7 @@ import { HeroComponent } from '@/components/pages/page-components/hero-component
 import { ImageComponent } from '@/components/pages/page-components/image-component';
 import { TextComponent } from '@/components/pages/page-components/text-component';
 import { Button } from '@/components/ui/button';
-import { Check, CopySlash, GripVertical, Pencil, Trash } from 'lucide-react';
+import { ArrowDown, ArrowUp, Check, CopySlash, GripVertical, Pencil, Trash } from 'lucide-react';
 import { useState } from 'react';
 import { getComponentDefinitionByType } from '../lib/components/registry';
 import { GalleryComponent } from '../page-components/gallery-component';
@@ -20,6 +20,7 @@ interface BuilderCanvasProps {
   onUpdate: (componentId: string, data: Partial<Component>) => void;
   onDelete: (componentId: string) => void;
   onDuplicate: (componentId: string) => void;
+  onMove: (componentId: string, direction: "up" | "down") => void;
   onReorder: (startIndex: number, endIndex: number) => void;
 }
 
@@ -31,6 +32,7 @@ export function BuilderCanvas({
   onDelete,
   onReorder,
   onDuplicate,
+  onMove,
 }: BuilderCanvasProps) {
   const [draggedItem, setDraggedItem] = useState<number | null>(null);
   
@@ -142,6 +144,26 @@ export function BuilderCanvas({
                 onDuplicate(component.id);
               }}>
               <CopySlash className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7"
+              onClick={(e) => {
+                e.stopPropagation();
+                onMove(component.id, 'down');
+              }}>
+              <ArrowDown className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7"
+              onClick={(e) => {
+                e.stopPropagation();
+                onMove(component.id, 'up');
+              }}>
+              <ArrowUp className="h-4 w-4" />
             </Button>
             <Button
               variant="ghost"

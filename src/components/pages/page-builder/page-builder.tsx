@@ -136,14 +136,45 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
     if (!page) return;
 
     const findIndex = page.components.findIndex(c => c.id === componentId);
-    const component = page.components[findIndex]
+    if (findIndex === -1) return;
 
     // Duplicate the component
     const newComponentId = uuidv4();
-    const newComponents = [ ...page.components.slice(0, findIndex + 1), { ...component, id:  newComponentId  }, ...page.components.slice(findIndex + 1, ) ]
+    const newComponents = [ 
+      ...page.components.slice(0, findIndex + 1), 
+      { ...page.components[findIndex], id:  newComponentId  }, 
+      ...page.components.slice(findIndex + 1, ) 
+    ]
     
     // Add the new component to the page
     setSelectedComponentId(newComponentId);
+    setHasUnsavedChanges(true);
+    
+    setPage({
+      ...page,
+      components: newComponents,
+    });
+    
+  };
+
+  const handleComponentMoveUpAndDown = (componentId: string, direction: 'up' | 'down') => {
+    if (!page) return;
+
+    const findIndex = page.components.findIndex(c => c.id === componentId);
+    if (
+      findIndex === -1 || 
+      (direction === 'down' && findIndex === page.components.length - 1) || 
+      (direction === 'up' && findIndex === 0)
+    ) return;
+
+    // Move the component up or down
+    const newComponents = [...page.components];
+    const [movedComponent] = newComponents.splice(findIndex, 1);
+    const newIndex = direction === 'up' ? findIndex - 1 : findIndex + 1;
+    newComponents.splice(newIndex, 0, movedComponent);
+    
+    // Add the new component to the page
+    setSelectedComponentId(componentId);
     setHasUnsavedChanges(true);
     
     setPage({
@@ -290,6 +321,7 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
                       onUpdate={handleComponentUpdate}
                       onDelete={handleComponentDelete}
                       onDuplicate={handleComponentDuplicate}
+                      onMove={handleComponentMoveUpAndDown}
                       onReorder={handleComponentReorder}
                     />
                   </div>
