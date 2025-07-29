@@ -40,6 +40,7 @@ export function ComponentEditor({ component, onUpdate, onClose }: ComponentEdito
         [key]: value,
       },
     });
+    
   };
   
   const renderEditor = () => {
@@ -414,10 +415,10 @@ export function ComponentEditor({ component, onUpdate, onClose }: ComponentEdito
                           updateProps(`features`, updatedFeatures);
                         }}
                       />
-                      {component.props.src && (
+                      {feature.src && (
                         <div className="mt-2 rounded overflow-hidden h-40 bg-muted">
                           <img 
-                            src={component.props.src}
+                            src={feature.src}
                             alt="Image preview"
                             className="h-full w-full object-contain"
                           />
@@ -426,21 +427,23 @@ export function ComponentEditor({ component, onUpdate, onClose }: ComponentEdito
                     </div>
 
                     {/* Close button for each feature */}
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => {
-                        const updatedFeatures = [...component.props.features];
-                        updatedFeatures.splice(index, 1);
-                        updateProps(`features`, updatedFeatures);
-                      }}
-                      className="absolute top-2 right-2 p-0 w-5 h-5">
-                      <X className="h-4 w-4" />
-                    </Button>
+                    {/*
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          const updatedFeatures = [...component.props.features];
+                          updatedFeatures.splice(index, 1);
+                          updateProps(`features`, updatedFeatures);
+                        }}
+                        className="absolute top-2 right-2 p-0 w-5 h-5">
+                        <X className="h-4 w-4" />
+                      </Button>
+                    */}
                   </div>
                 ))}
-                
+                {/* 
                 <Button
                   type="button"
                   variant="outline"
@@ -458,6 +461,7 @@ export function ComponentEditor({ component, onUpdate, onClose }: ComponentEdito
                 >
                   Add block
                 </Button>
+                */}
               </div>
             </div>
           </div>
@@ -597,16 +601,19 @@ const ColumnComponent = ({keyString, component, updateProps}: {
         />
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor='columns'>Columns</Label>
-        <Input
-          id='columns'
-          type="number"
-          value={component.props.columns || '1'}
-          onChange={(e) => updateProps('columns', parseInt(e.target.value) || 1)}
-          max={4}
-        />
-      </div>
+      {
+        keyString !== 'column' && 
+        <div className="space-y-2">
+          <Label htmlFor='columns'>Columns</Label>
+          <Input
+            id='columns'
+            type="number"
+            value={component.props.columns || '1'}
+            onChange={(e) => updateProps('columns', parseInt(e.target.value) || 1)}
+            max={4}
+          />
+        </div>
+      }
       
       <div className="space-y-2">
         <Label>Features</Label>
@@ -646,6 +653,30 @@ const ColumnComponent = ({keyString, component, updateProps}: {
                   }}
                   rows={2}
                 />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="src">Image URL</Label>
+                <Input
+                  id="src"
+                  value={feature.src || ''}
+                  onChange={(e) => {
+                    const updatedFeatures = [...component.props.features];
+                    updatedFeatures[index] = {
+                      ...updatedFeatures[index],
+                      src: e.target.value,
+                    };
+                    updateProps(`features`, updatedFeatures);
+                  }}
+                />
+                {feature.src && (
+                  <div className="mt-2 rounded overflow-hidden h-40 bg-muted">
+                    <img 
+                      src={feature.src}
+                      alt="Image preview"
+                      className="h-full w-full object-contain"
+                    />
+                  </div>
+                )}
               </div>
             </div>
           ))}

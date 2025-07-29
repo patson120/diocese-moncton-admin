@@ -1,20 +1,19 @@
 "use client";
 
-import { useState } from 'react';
-import { Page, Component, DeviceType } from '@/components/pages/lib/types';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Smartphone, Tablet, Monitor, Code } from 'lucide-react';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { HeroComponent } from '@/components/pages/page-components/hero-component';
+import { Component, DeviceType, Page } from '@/components/pages/lib/types';
 import { FeatureComponent } from '@/components/pages/page-components/feature-component';
-import { TextComponent } from '@/components/pages/page-components/text-component';
+import { HeroComponent } from '@/components/pages/page-components/hero-component';
 import { ImageComponent } from '@/components/pages/page-components/image-component';
+import { TextComponent } from '@/components/pages/page-components/text-component';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Monitor, Smartphone, Tablet } from 'lucide-react';
+import { useState } from 'react';
 import { generatePageHtml } from '../lib/utils/html-generator';
-import ColumnsComponent from '../page-components/columns-component';
-import TextImageComponent from '../page-components/text-image-component';
 import { GalleryComponent } from '../page-components/gallery-component';
+import TextImageComponent from '../page-components/text-image-component';
+import TowColumnsComponent from '../page-components/two-columns-component';
 
 interface PreviewPanelProps {
   page: Page;
@@ -43,7 +42,7 @@ export function PreviewPanel({ page }: PreviewPanelProps) {
       case 'gallery':
         return <GalleryComponent title="" features={[]} {...props} />;
       case 'columns':
-        return <ColumnsComponent title="" description="" features={[]} {...props} />;
+        return <TowColumnsComponent title="" description="" features={[]} {...props} />;
         
       default:
         return (

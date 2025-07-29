@@ -118,10 +118,18 @@ export const componentRegistry: ComponentDefinition[] = [
       title: 'Two columns',
       description: 'Discover how to create columns',
       features: [
-        { title: 'Feature 1', description: 'Description of feature 1', icon: 'star' },
-        { title: 'Feature 2', description: 'Description of feature 2', icon: 'shield' },
+        { 
+          title: 'Feature 1', 
+          description: 'Description of feature 1', 
+          src: "https://diocese-de-moncton.vercel.app/assets/img/bapteme.png",
+        },
+        { 
+          title: 'Feature 2', 
+          description: 'Description of feature 2', 
+          src: "https://diocese-de-moncton.vercel.app/assets/img/onction-des-malades.png",
+        },
       ],
-      columns: 2,
+      // columns: 2,
     },
     propDefinitions: [
       { name: 'title', label: 'Section Title', type: 'text', defaultValue: 'Our Features' },

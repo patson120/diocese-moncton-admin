@@ -89,7 +89,7 @@ function generateComponentHtml(component: Component): string {
                     </div>
                   </div>
                 </div>
-                <div className="${rightOrder} col-span-full lg:col-span-3 flex flex-col justify-center items-center">
+                <div className="${rightOrder} col-span-full lg:col-span-3 flex flex-col justify-center items-start" >
                     <div>
                         <h1 style="color: ${component.props.textColor}" className="${alignmentClasses[component.props.alignment]} heading-4 font-extrabold mb-5">${component.props.title}</h1>
                         <div className="${alignmentClasses[component.props.alignment]} md:mt-4">
@@ -144,38 +144,28 @@ function generateComponentHtml(component: Component): string {
           : component.props.features || [];
           
         return `
-          <section className="py-16 px-6 rounded-lg" 
-            style="text-align: center; ${marginClasses}">
-            <div className="max-w-4xl mx-auto text-center mb-12">
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                ${component.props.title || 'Our Features'}
-              </h2>
-              <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
-                ${component.props.description || 'Discover what makes our product special'}
-              </p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto"> 
-              ${features.map((feature: { title: string, description: string, icon: string }) => `
-                <div className="bg-card rounded-lg p-6 shadow-sm">
-                  <!-- Icon representation -->
-                  <div style="background-color: #f0fdfa;" className="mx-auto mb-4 h-12 w-12 rounded-full border border-[#0d9488-] flex items-center justify-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      style="color: #0d9488;"
-                      className="h-6 w-6">
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-xl font-semibold mb-2">${feature.title}</h3>
-                  <p className="text-muted-foreground">${feature.description}</p>
-                </div>`
-              ).join('')}
+          <section style="${marginClasses}" className='container max-margin py-10 md:py-20'>
+            <div className="space-y-4">
+                <div>
+                  ${ component.props.title && `<h2 className='heading-3 text-gray-900 my-2'>${ component.props.title }</h2>` }
+                  ${ component.props.description && `<p className="text-lg text-gray-600">${ component.props.description }</p>` }
+                </div>
+                <div className='flex flex-row overflow-x-scroll lg:overflow-x-hidden pb-8 lg:pb-0 space-x-4 lg:grid lg:gap-6 lg:grid-cols-2'>
+                  ${features.map((feature: { title: string, description: string, src: string }) => `
+                    <div style="min-width: 260px" className='space-y-3'>
+                      ${ feature.src && 
+                        `<div className='relative md:w-[416px] lg:w-full h-[280px] md:h-[400px] rounded-xl lg:rounded-3xl overflow-hidden'>
+                          <div 
+                            className="absolute inset-0 z-0 bg-cover bg-center"
+                            style="background-image: url(${feature.src})"
+                          ></div>
+                        </div>`
+                      }
+                      <h1 className='heading-4'>${feature.title}</h1>
+                      <p className='body-2 text-gray'>${feature.description}</p>
+                    </div>`
+                  ).join('')}
+                </div>
             </div>
           </section>`;
       } catch (e) {

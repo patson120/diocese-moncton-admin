@@ -1,18 +1,17 @@
 "use client";
 
-import { useState } from 'react';
 import { Component } from '@/components/pages/lib/types';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Pencil, Trash, GripVertical, Edit, Check } from 'lucide-react';
-import { HeroComponent } from '@/components/pages/page-components/hero-component';
 import { FeatureComponent } from '@/components/pages/page-components/feature-component';
-import { TextComponent } from '@/components/pages/page-components/text-component';
+import { HeroComponent } from '@/components/pages/page-components/hero-component';
 import { ImageComponent } from '@/components/pages/page-components/image-component';
-import ColumnsComponent from '../page-components/columns-component';
+import { TextComponent } from '@/components/pages/page-components/text-component';
+import { Button } from '@/components/ui/button';
+import { Check, GripVertical, Pencil, Trash } from 'lucide-react';
+import { useState } from 'react';
 import { getComponentDefinitionByType } from '../lib/components/registry';
-import TextImageComponent from '../page-components/text-image-component';
 import { GalleryComponent } from '../page-components/gallery-component';
+import TextImageComponent from '../page-components/text-image-component';
+import TwoColumnsComponent from '../page-components/two-columns-component';
 
 interface BuilderCanvasProps {
   components: Component[];
@@ -62,7 +61,7 @@ export function BuilderCanvas({
         case 'feature':
           return <FeatureComponent title="" description="" features={[]} {...props} />;
         case 'columns':
-            return <ColumnsComponent title="" description="" features={[]} {...props} />;
+            return <TwoColumnsComponent title="" description="" features={[]} {...props} />;
         case 'text-image':
           return <TextImageComponent title="" content='' {...props} />;
         case 'text':
