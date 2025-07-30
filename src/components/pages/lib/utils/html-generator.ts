@@ -192,7 +192,10 @@ function generateComponentHtml(component: Component): string {
 
         return `
           <section style="${marginClasses}" className="container max-margin py-10 md:py-20">
-            <h2 className='heading-3 mb-4'>${component.props.title}</h2>
+            <div>
+              ${ component.props.title && `<h2 className='heading-3 text-gray-900 my-2'>${ component.props.title }</h2>` }
+              ${ component.props.description && `<p className="text-lg text-gray-600 mb-5">${ component.props.description }</p>` }
+            </div>
             <div className="flex flex-row items-start overflow-x-scroll lg:overflow-x-hidden pb-8 lg:pb-0 space-x-4 lg:grid lg:gap-6 lg:grid-cols-3"> 
               ${features.map((feature: { title: string, description: string, src: string }) => `
                 <div style="min-width: 260px" className='space-y-3'>

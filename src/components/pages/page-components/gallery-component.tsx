@@ -19,6 +19,7 @@ interface GalleryComponentProps {
 
 export function GalleryComponent({
   title,
+  description,
   features,
   backgroundColor,
   marginTop = 0,
@@ -37,7 +38,10 @@ export function GalleryComponent({
 
   return (
     <section style={style} className="container max-margin py-10 md:py-20">
-      <h2 className='heading-3 text-gray-900 mb-4'>{title}</h2>
+      <div className="mb-5">
+        { title && <h2 className='heading-3 text-gray-900 mb-1'>{title}</h2> }
+        { description && <p className="text-lg text-gray-600">{description}</p> }
+      </div>
       <div className={`flex flex-row overflow-x-scroll pb-8 space-x-4 lg:overflow-x-hidden lg:pb-0 lg:grid lg:gap-6 lg:grid-cols-3`}>
         {
           features.map((feature, index) => 

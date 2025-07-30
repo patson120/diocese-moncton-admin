@@ -363,17 +363,16 @@ export function ComponentEditor({ component, onUpdate, onClose }: ComponentEdito
               />
             </div>
       
+            <div className="space-y-2">
+              <Label htmlFor="description">Section Description</Label>
+              <Textarea
+                id="description"
+                value={component.props.description || ''}
+                onChange={(e) => updateProps('description', e.target.value)}
+                rows={3}
+              />
+            </div>
             {/*
-              <div className="space-y-2">
-                <Label htmlFor="description">Section Description</Label>
-                <Textarea
-                  id="description"
-                  value={component.props.description || ''}
-                  onChange={(e) => updateProps('description', e.target.value)}
-                  rows={3}
-                />
-              </div>
-            
 
             <div className="space-y-2">
               <Label htmlFor='columns'>Columns</Label>
