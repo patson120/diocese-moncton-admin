@@ -162,7 +162,7 @@ function generateComponentHtml(component: Component): string {
                   ${ component.props.title && `<h2 className='heading-3 text-gray-900 my-2'>${ component.props.title }</h2>` }
                   ${ component.props.description && `<p className="text-lg text-gray-600">${ component.props.description }</p>` }
                 </div>
-                <div className='flex flex-row overflow-x-scroll lg:overflow-x-hidden pb-8 lg:pb-0 space-x-4 lg:grid lg:gap-6 lg:grid-cols-2'>
+                <div className='flex flex-row overflow-x-scroll v-scroll lg:overflow-x-hidden pb-8 lg:pb-0 space-x-4 lg:grid lg:gap-6 lg:grid-cols-2'>
                   ${features.map((feature: { title: string, description: string, src: string }) => `
                     <div style="min-width: 260px" className='space-y-3'>
                       ${ feature.src && 
@@ -196,7 +196,7 @@ function generateComponentHtml(component: Component): string {
               ${ component.props.title && `<h2 className='heading-3 text-gray-900 my-2'>${ component.props.title }</h2>` }
               ${ component.props.description && `<p className="text-lg text-gray-600 mb-5">${ component.props.description }</p>` }
             </div>
-            <div className="flex flex-row items-start overflow-x-scroll lg:overflow-x-hidden pb-8 lg:pb-0 space-x-4 lg:grid lg:gap-6 lg:grid-cols-3"> 
+            <div className="flex flex-row items-start overflow-x-scroll v-scroll lg:overflow-x-hidden pb-8 lg:pb-0 space-x-4 lg:grid lg:gap-6 lg:grid-cols-3"> 
               ${features.map((feature: { title: string, description: string, src: string }) => `
                 <div style="min-width: 260px" className='space-y-3'>
                 ${ feature.src &&
