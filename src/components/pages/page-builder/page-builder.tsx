@@ -175,7 +175,7 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
     newComponents.splice(newIndex, 0, movedComponent);
 
     // Reassign order based on new position
-    newComponents = newComponents.map((c, index) => ({ ...c, order: index}));
+    newComponents = resetComponentsOrder(newComponents);
     
     // Add the new component to the page
     setSelectedComponentId(componentId);
@@ -220,10 +220,7 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
     orderedComponents.splice(endIndex, 0, removed);
     
     // Reassign orders
-    const updatedComponents = orderedComponents.map((component, index) => ({
-      ...component,
-      order: index,
-    }));
+    const updatedComponents = resetComponentsOrder(orderedComponents);
     
     setPage({
       ...page,
@@ -231,6 +228,11 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
     });
     
     setHasUnsavedChanges(true);
+  };
+  
+
+  const resetComponentsOrder = ( components: Component[]) => {
+    return components.map((component, index) => ({ ...component, order: index,}))
   };
 
   const handleExit = () => {
