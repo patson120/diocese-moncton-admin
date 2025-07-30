@@ -169,10 +169,13 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
     ) return;
 
     // Move the component up or down
-    const newComponents = [...page.components];
+    let newComponents = [...page.components];
     const [movedComponent] = newComponents.splice(findIndex, 1);
     const newIndex = direction === 'up' ? findIndex - 1 : findIndex + 1;
     newComponents.splice(newIndex, 0, movedComponent);
+
+    // Reassign order based on new position
+    newComponents = newComponents.map((c, index) => ({ ...c, order: index}));
     
     // Add the new component to the page
     setSelectedComponentId(componentId);
@@ -181,8 +184,7 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
     setPage({
       ...page,
       components: newComponents,
-    });
-    
+    })
   };
 
   const handleComponentUpdate = (componentId: string, data: Partial<Component>) => {
