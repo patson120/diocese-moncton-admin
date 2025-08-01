@@ -85,84 +85,86 @@ export default function ImageContentSection() {
   return (
       <section className="w-full flex-1 p-6">
           <div className="flex flex-col bg-white w-full items-start gap-6 rounded-2xl p-6">
-                <div className="w-full grid grid-cols-1 lg:grid-cols-5 gap-6">
-                  {/* Sidebar */}
-                  <div className="lg:col-span-1">
-                    <Card className="shadow-sm">
-                      <CardHeader className="pb-3">
-                        <div className="flex items-center justify-between">
-                          <h3 className="font-semibold">Navigation</h3>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 w-8 p-0"
-                            onClick={() => {
-                              createFolder('', 'Nouveau dossier')
-                            }}>
-                            <FolderPlus className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="pt-0">
-                        <div className="overflow-y-auto max-h-[61vh] v-scroll">
-                          <FolderTree
-                            folders={state.folders}
+            <div className="w-full grid grid-cols-1 lg:grid-cols-5 gap-6">
+              {/* Sidebar */}
+              <div className="lg:col-span-1">
+                <Card className="shadow-sm">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold">Navigation</h3>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0"
+                        onClick={() => {
+                          createFolder('', 'Nouveau dossier')
+                        }}>
+                        <FolderPlus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="overflow-y-auto max-h-[61vh] v-scroll">
+                      <FolderTree
+                        folders={state.folders}
+                        currentFolder={state.currentFolder}
+                        onFolderSelect={handleFolderSelect}
+                        onToggleFolder={toggleFolder}
+                        onCreateFolder={createFolder}
+                        onUpdateFolder={updateFolder}
+                        onDeleteFolder={deleteFolder}
+                        onShowFavorites={handleShowFavorites}
+                        onShowRecent={handleShowRecent}
+                        favoriteCount={favoriteFiles.length}
+                        recentCount={recentFiles.length}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+    
+              {/* Main Content */}
+              <div className="lg:col-span-4">
+                <Card className="h-full shadow-sm">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <Breadcrumb
+                        currentFolder={state.currentFolder}
+                        folders={state.folders}
+                        onFolderSelect={handleFolderSelect}
+                        getFolderById={getFolderById}
+                        isSpecialView={currentView !== 'folder'}
+                        specialViewTitle={currentView === 'favorites' ? 'Favoris' : currentView === 'recent' ? 'Récents' : undefined}
+                      />
+                    </div>
+                  </CardHeader>
+                  
+                  <Separator />
+                    <CardContent className="pt-4">
+                      <ScrollArea className="w-full overflow-y-scroll v-scroll h-[calc(58vh+12px)]">
+                        <MediaViewer
+                            files={getCurrentFiles()}
                             currentFolder={state.currentFolder}
+                            currentFolders={state.currentFolders}
                             onFolderSelect={handleFolderSelect}
-                            onToggleFolder={toggleFolder}
-                            onCreateFolder={createFolder}
-                            onUpdateFolder={updateFolder}
-                            onDeleteFolder={deleteFolder}
-                            onShowFavorites={handleShowFavorites}
-                            onShowRecent={handleShowRecent}
-                            favoriteCount={favoriteFiles.length}
-                            recentCount={recentFiles.length}
-                          />
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-        
-                  {/* Main Content */}
-                  <div className="lg:col-span-4">
-                    <Card className="h-full shadow-sm">
-                      <CardHeader className="pb-3">
-                        <div className="flex items-center justify-between">
-                          <Breadcrumb
-                            currentFolder={state.currentFolder}
-                            folders={state.folders}
-                            onFolderSelect={handleFolderSelect}
-                            getFolderById={getFolderById}
-                            isSpecialView={currentView !== 'folder'}
-                            specialViewTitle={currentView === 'favorites' ? 'Favoris' : currentView === 'recent' ? 'Récents' : undefined}
-                          />
-                        </div>
-                      </CardHeader>
-                      
-                      <Separator />
-                        <CardContent className="pt-4">
-                          <ScrollArea className="w-full overflow-y-scroll v-scroll h-[calc(58vh+12px)]">
-                            <MediaViewer
-                                files={getCurrentFiles()}
-                                currentFolder={state.currentFolder}
-                                viewMode={state.viewMode}
-                                selectedFiles={state.selectedFiles}
-                                sortBy={state.sortBy}
-                                sortOrder={state.sortOrder}
-                                onFileSelect={toggleFileSelection}
-                                onViewModeChange={setViewMode}
-                                onSortChange={setSortBy}
-                                onSortOrderChange={setSortOrder}
-                                onSelectAll={selectAllFiles}
-                                onClearSelection={clearSelection}
-                                onToggleFavorite={toggleFileFavorite}
-                                title={getCurrentTitle()}
-                            />
-                          </ScrollArea>
-                        </CardContent>
-                    </Card>
-                  </div>
-                </div>
+                            viewMode={state.viewMode}
+                            selectedFiles={state.selectedFiles}
+                            sortBy={state.sortBy}
+                            sortOrder={state.sortOrder}
+                            onFileSelect={toggleFileSelection}
+                            onViewModeChange={setViewMode}
+                            onSortChange={setSortBy}
+                            onSortOrderChange={setSortOrder}
+                            onSelectAll={selectAllFiles}
+                            onClearSelection={clearSelection}
+                            onToggleFavorite={toggleFileFavorite}
+                            title={getCurrentTitle()}
+                        />
+                      </ScrollArea>
+                    </CardContent>
+                </Card>
+              </div>
+            </div>
           </div>
       </section>
   )

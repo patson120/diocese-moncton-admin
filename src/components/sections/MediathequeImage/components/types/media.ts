@@ -27,6 +27,7 @@ export interface MediaFolder {
 export interface MediaManagerState {
   folders: MediaFolder[];
   currentFolder: MediaFolder | null;
+  currentFolders: MediaFolder[];
   selectedFiles: string[];
   searchQuery: string;
   viewMode: 'grid' | 'list';

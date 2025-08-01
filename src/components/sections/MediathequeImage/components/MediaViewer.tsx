@@ -21,6 +21,7 @@ import {
   Download,
   Eye,
   FileText,
+  Folder,
   Heart,
   Image as ImageIcon,
   InfoIcon,
@@ -40,6 +41,8 @@ import { LoadingSpinner } from '../../MapSection/loading-spinner';
 interface MediaViewerProps {
   files: MediaFile[];
   currentFolder: MediaFolder | null;
+  currentFolders: MediaFolder[];
+  onFolderSelect: (folder: any) => void;
   viewMode: 'grid' | 'list';
   selectedFiles: string[];
   sortBy: 'name' | 'date' | 'size' | 'type';
@@ -306,6 +309,8 @@ const FileRow: React.FC<{
 export const MediaViewer: React.FC<MediaViewerProps> = ({
   files,
   currentFolder,
+  currentFolders,
+  onFolderSelect,
   viewMode,
   selectedFiles,
   sortBy,
@@ -355,6 +360,7 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
         setLoading(false)
       }
     }) ()
+    
   }, [currentFolder?.id])
 
   const handleDeleteImage = async (img?: ImageType) => {
@@ -491,14 +497,14 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
       )}*/} 
 
       { 
-        (images.length === 0 && !loading) &&
-        <div className="text-center py-16">
-          <div className="text-gray-400 mb-4">
-            <ImageIcon className="h-16 w-16 mx-auto" />
+        (images.length === 0 && currentFolders.length === 0 && !loading) &&
+          <div className="text-center py-16">
+            <div className="text-gray-400 mb-4">
+              <ImageIcon className="h-16 w-16 mx-auto" />
+            </div>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun fichier</h3>
+            <p className="text-muted-foreground">Il n'y a aucun fichier dans cette section</p>
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun fichier</h3>
-          <p className="text-muted-foreground">Il n'y a aucun fichier dans cette section</p>
-        </div>
       }
       {
         (loading) &&
@@ -510,6 +516,26 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
 
       {/* Image grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 gap-4">
+      { !loading && currentFolders.map((folder, index) => (
+          <Card
+              key={index}
+              onClick={() => onFolderSelect(folder)}
+              className="overflow-hidden rounded-lg border border-black/15 relative shrink-0 min-h-[150px] max-h-[200px] flex flex-col justify-center items-center">
+              <Folder className="h-10 w-10 flex-shrink-0" style={{ color: folder.color }} />
+              <div className='mt-2'>
+                <p className='text-center font-semibold'>{folder.name}</p>
+              </div>
+              {/* 
+                <div className='absolute top-0 left-0 w-full h-full bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-all duration-300 ease-in-out'>
+                    <div className='flex items-center gap-2'>
+                      <button onClick={() => {}} className='h-10 w-10 rounded-full bg-white/20 text-white hover:bg-white hover:text-black flex items-center justify-center'>
+                        { isDeleting ? <Loader className="h-5 w-5" /> : <Trash2Icon className='w-5 h-5'/>}
+                      </button>
+                    </div>
+                </div>
+              */}
+          </Card>
+        ))}
         { !loading && images.map((image, index) => (
           <Card
               key={index}

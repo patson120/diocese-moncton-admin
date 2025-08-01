@@ -143,6 +143,7 @@ const folders: MediaFolder[] = [
 export const useMediaManager = () => {
   const [state, setState] = useState<MediaManagerState>({
     folders: [],
+    currentFolders: [],
     currentFolder: null,
     selectedFiles: [],
     searchQuery: '',
@@ -306,6 +307,7 @@ export const useMediaManager = () => {
     if(!folder || folder.children.length) return
 
     const childrenFolders = await fetchFoldersFromApi(folder.id);
+
     const updatedFolder: MediaFolder = {
       ...folder,
       children: childrenFolders,
@@ -320,7 +322,8 @@ export const useMediaManager = () => {
       return {
         ...prev,
         folders: newList,
-        currentFolder: updatedFolder
+        currentFolder: updatedFolder,
+        currentFolders: childrenFolders
       }
     })
   }, [])
