@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
 import { Loader } from '@/components/ui/loader';
 import useRole from '@/hooks/use-role';
 import { apiClient } from '@/lib/axios';
@@ -38,9 +39,8 @@ import {
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { MediaFile, MediaFolder } from './types/media';
 import { LoadingSpinner } from '../../MapSection/loading-spinner';
-import { Input } from '@/components/ui/input';
+import { MediaFile, MediaFolder } from './types/media';
 
 interface MediaViewerProps {
   files: MediaFile[];
