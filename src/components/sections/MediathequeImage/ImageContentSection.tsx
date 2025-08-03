@@ -104,7 +104,7 @@ export default function ImageContentSection() {
                     </div>
                   </CardHeader>
                   <CardContent className="pt-0">
-                    <div className="overflow-y-auto max-h-[61vh] v-scroll">
+                    <div className="overflow-y-auto min-h-[61vh] v-scroll">
                       <FolderTree
                         folders={state.folders}
                         currentFolder={state.currentFolder}
@@ -143,22 +143,27 @@ export default function ImageContentSection() {
                     <CardContent className="pt-4">
                       <ScrollArea className="w-full overflow-y-scroll v-scroll h-[calc(58vh+12px)]">
                         <MediaViewer
-                            files={getCurrentFiles()}
-                            currentFolder={state.currentFolder}
-                            currentFolders={state.currentFolders}
-                            onFolderSelect={handleFolderSelect}
-                            viewMode={state.viewMode}
-                            selectedFiles={state.selectedFiles}
-                            sortBy={state.sortBy}
-                            sortOrder={state.sortOrder}
-                            onFileSelect={toggleFileSelection}
-                            onViewModeChange={setViewMode}
-                            onSortChange={setSortBy}
-                            onSortOrderChange={setSortOrder}
-                            onSelectAll={selectAllFiles}
-                            onClearSelection={clearSelection}
-                            onToggleFavorite={toggleFileFavorite}
-                            title={getCurrentTitle()}
+                          files={getCurrentFiles()}
+                          currentFolder={state.currentFolder}
+                          currentFolders={state.currentFolders}
+                          folders={state.folders}
+                          onFolderSelect={handleFolderSelect}
+                          onDeleteFolder={deleteFolder}
+                          onUpdateFolder={updateFolder}
+                          onCreateFolder={createFolder}
+                          getFolderById={getFolderById}
+                          viewMode={state.viewMode}
+                          selectedFiles={state.selectedFiles}
+                          sortBy={state.sortBy}
+                          sortOrder={state.sortOrder}
+                          onFileSelect={toggleFileSelection}
+                          onViewModeChange={setViewMode}
+                          onSortChange={setSortBy}
+                          onSortOrderChange={setSortOrder}
+                          onSelectAll={selectAllFiles}
+                          onClearSelection={clearSelection}
+                          onToggleFavorite={toggleFileFavorite}
+                          title={getCurrentTitle()}
                         />
                       </ScrollArea>
                     </CardContent>

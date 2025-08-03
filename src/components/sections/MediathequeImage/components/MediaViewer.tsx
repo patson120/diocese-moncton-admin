@@ -19,9 +19,11 @@ import { cn } from '@/lib/utils';
 import {
   CheckSquare,
   Download,
+  Edit2,
   Eye,
   FileText,
   Folder,
+  FolderPlus,
   Heart,
   Image as ImageIcon,
   InfoIcon,
@@ -29,6 +31,7 @@ import {
   Music,
   Share2,
   Square,
+  Trash2,
   Trash2Icon,
   Video
 } from 'lucide-react';
@@ -37,12 +40,18 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { MediaFile, MediaFolder } from './types/media';
 import { LoadingSpinner } from '../../MapSection/loading-spinner';
+import { Input } from '@/components/ui/input';
 
 interface MediaViewerProps {
   files: MediaFile[];
   currentFolder: MediaFolder | null;
   currentFolders: MediaFolder[];
+  folders: MediaFolder[];
   onFolderSelect: (folder: any) => void;
+  onDeleteFolder: (folderId: string) => Promise<void>;
+  onUpdateFolder: (folderId: string, updates: Partial<MediaFolder>) => void;
+  onCreateFolder: (parentId: string, name: string) => void;
+  getFolderById: (folders: MediaFolder[], folderId: string) => MediaFolder | null;
   viewMode: 'grid' | 'list';
   selectedFiles: string[];
   sortBy: 'name' | 'date' | 'size' | 'type';
@@ -308,9 +317,14 @@ const FileRow: React.FC<{
 
 export const MediaViewer: React.FC<MediaViewerProps> = ({
   files,
+  folders,
   currentFolder,
   currentFolders,
   onFolderSelect,
+  onDeleteFolder,
+  onUpdateFolder,
+  onCreateFolder,
+  getFolderById,
   viewMode,
   selectedFiles,
   sortBy,
@@ -345,6 +359,11 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
   const [images, setImages] = useState<ImageType[]>([])
   const [selectedImage, setSelectedImage] = useState<ImageType | undefined>()
   const [isDeleting, setIsDeleting] = useState(false)
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [editName, setEditName] = useState('');
+  const [isCreating, setIsCreating] = useState(false);
+  const [newFolderName, setNewFolderName] = useState('');
 
   useEffect(() => {
     ( async () => {
@@ -383,6 +402,45 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
       }
     }
   }
+
+  const handleSaveEdit = (folder: MediaFolder) => {
+    if (editName.trim() && editName !== folder.name) {
+      onUpdateFolder(folder.id, { name: editName.trim() });
+      currentFolders = currentFolders.map(f => {
+        if (f.id === folder.id){
+          return {
+            ...f,
+            name: editName.trim()
+          }
+        }
+        return f
+      })
+    }
+    setIsEditing(false);
+  };
+
+  const handleEdit = (folder: MediaFolder) => {
+    setIsEditing(true);
+    setEditName(folder.name);
+  };
+
+  const handleCreateFolder = (folder: MediaFolder) => {
+    onCreateFolder(folder.id, "Nouveau dossier");
+    onFolderSelect(folder)
+    setNewFolderName('');
+    setIsCreating(false);
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent, action: 'edit' | 'create', folder: MediaFolder) => {
+    if (e.key === 'Enter') {
+      onFolderSelect(getFolderById( folders, folder.parentId!))
+      if (action === 'edit') handleSaveEdit(folder);
+      else handleCreateFolder(folder);
+    } else if (e.key === 'Escape') {
+      if (action === 'edit') setIsEditing(false);
+      else setIsCreating(false);
+    }
+  };
   
   return (
     <div className="space-y-4">
@@ -513,30 +571,84 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
           <p className="text-muted-foreground">Chargement...</p>
         </div>
       }
-
       {/* Image grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 gap-4">
       { !loading && currentFolders.map((folder, index) => (
           <Card
-              key={index}
-              onClick={() => onFolderSelect(folder)}
-              className="overflow-hidden rounded-lg border border-black/15 relative shrink-0 min-h-[150px] max-h-[200px] flex flex-col justify-center items-center">
-              <Folder className="h-10 w-10 flex-shrink-0" style={{ color: folder.color }} />
-              <div className='mt-2'>
-                <p className='text-center font-semibold'>{folder.name}</p>
+            key={index}
+            onClick={() => onFolderSelect(folder)}
+            className="overflow-hidden rounded-lg border border-black/15 relative shrink-0 min-h-[150px] max-h-[200px] flex flex-col justify-center items-center">
+            <Folder className="h-10 w-10 flex-shrink-0" style={{ color: folder.color }} />
+            <div className='mt-2'>
+              {
+                isEditing ? (
+                  <Input
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    onClick={(e) => e.stopPropagation()}
+                    onBlur={() => handleSaveEdit(folder)}
+                    onKeyDown={(e) => handleKeyPress(e, 'edit', folder)}
+                    className="h-6 py-0 text-sm flex-1 z-10"
+                    autoFocus
+                  />
+                ) : ( 
+                  <div className="flex items-center gap-2 flex-1 min-w-0 z-0" onClick={() => {
+                    onFolderSelect(folder)
+                  }}>
+                    <span className="truncate text-sm flex-1">{folder.name}</span>
+                  </div>
+                )
+              }
+            </div>
+            {/* 
+              <div className='absolute top-0 left-0 w-full h-full bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-all duration-300 ease-in-out'>
+                  <div className='flex items-center gap-2'>
+                    <button onClick={() => {}} className='h-10 w-10 rounded-full bg-white/20 text-white hover:bg-white hover:text-black flex items-center justify-center'>
+                      { isDeleting ? <Loader className="h-5 w-5" /> : <Trash2Icon className='w-5 h-5'/>}
+                    </button>
+                  </div>
               </div>
-              {/* 
-                <div className='absolute top-0 left-0 w-full h-full bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-all duration-300 ease-in-out'>
-                    <div className='flex items-center gap-2'>
-                      <button onClick={() => {}} className='h-10 w-10 rounded-full bg-white/20 text-white hover:bg-white hover:text-black flex items-center justify-center'>
-                        { isDeleting ? <Loader className="h-5 w-5" /> : <Trash2Icon className='w-5 h-5'/>}
-                      </button>
-                    </div>
-                </div>
-              */}
+            */}
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-6 w-6 p-0 absolute top-2 right-2 hover:bg-accent/70"
+                  onClick={(e) => e.stopPropagation()}>
+                  <MoreHorizontal className="h-3 w-3" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={(e) => {
+                  e.stopPropagation()
+                  handleEdit(folder)
+                }}>
+                  <Edit2 className="h-4 w-4 mr-2" />
+                  Renommer
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={(e) => {
+                  e.stopPropagation()
+                  setIsCreating(true)
+                  handleCreateFolder(folder)
+                }}>
+                  <FolderPlus className="h-4 w-4 mr-2" />
+                  Nouveau dossier
+                </DropdownMenuItem>
+                <DropdownMenuItem className="text-destructive" onClick={() => {
+                  onFolderSelect(currentFolders.find( f => f.id === folder.parentId))
+                  onDeleteFolder(folder.id)
+                }}>
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Supprimer
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </Card>
         ))}
-        { !loading && images.map((image, index) => (
+        { 
+          !loading && images.map((image, index) => (
           <Card
               key={index}
               className="overflow-hidden rounded-lg border-none relative shrink-0 min-h-[150px] max-h-[200px]">

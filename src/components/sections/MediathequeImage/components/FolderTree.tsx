@@ -106,7 +106,7 @@ const FolderNode: React.FC<FolderNodeProps> = ({
     <div className="select-none">
       <div
         className={cn(
-          "flex items-center gap-1 px-2 py-2 rounded-lg cursor-pointer hover:bg-accent/50 group transition-all duration-200",
+          "flex items-center gap-1 px-2 py-2 relative rounded-lg cursor-pointer hover:bg-accent/50 group transition-all duration-200",
           isSelected && "bg-accent font-medium shadow-sm",
         )}
         style={{ paddingLeft: `${level * 16 + 8}px` }}>
@@ -147,8 +147,8 @@ const FolderNode: React.FC<FolderNodeProps> = ({
                 autoFocus
               />
             ) : ( 
-              <div className="flex items-center gap-2 flex-1 min-w-0" onClick={() => onSelect(folder)}>
-                <span className="truncate text-sm flex-1">{folder.name}</span>
+              <div title={ folder.name } className="flex items-center gap-2 flex-1 min-w-0" onClick={() => onSelect(folder)}>
+                <span className="text-sm flex-1 whitespace-nowrap">{folder.name}</span>
                 {
                   fileCount > 0 && (
                     <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded-full">
@@ -161,7 +161,7 @@ const FolderNode: React.FC<FolderNodeProps> = ({
           }
         </div>
 
-        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity absolute right-0">
           <Button
             variant="ghost"
             size="sm"

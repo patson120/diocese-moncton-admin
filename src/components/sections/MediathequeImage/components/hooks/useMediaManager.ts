@@ -253,6 +253,16 @@ export const useMediaManager = () => {
   const addFolderToTree = (folders: MediaFolder[], parentId: string, newFolder: MediaFolder): MediaFolder[] => {
     return folders.map(folder => {
       if (folder.id === parentId) {
+        const found = folder.children.findIndex( f => f.id === newFolder.id )
+        if (found !== -1) {
+          const data = folder.children
+          data[found] = newFolder
+          return {
+            ...folder,
+            children: data
+          }
+        }
+        
         return {
           ...folder,
           isExpanded: true,
@@ -304,7 +314,8 @@ export const useMediaManager = () => {
       ...prev,
       currentFolder: folder
     }))
-    if(!folder || folder.children.length) return
+    // if(!folder || folder.children.length) return
+    if(!folder) return
 
     const childrenFolders = await fetchFoldersFromApi(folder.id);
 
