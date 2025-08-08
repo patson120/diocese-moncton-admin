@@ -27,11 +27,15 @@ export default function ActualiteContent(
 
     useEffect(() => {
         const getActualites = async () => {
-            let params = `?paginate=20000&is_actif=${is_actif}`
+            let params = `?paginate=20000&is_actif=${is_actif}`   
             if (query) { params += `&intitule=${query}` }
             if (ordre) { params += `&ordre=${ordre}` }
             const response: any = await apiClient.get(`/api/actualites${params}`)
-            setActualites(response.data)
+            let planifiees: any[] = []
+            if (is_actif === 0) {
+                planifiees = await apiClient.get(`/api/actualites?is_planifier=1`)
+            }
+            setActualites([...planifiees, ...response.data])
         }
         getActualites()
     }, [is_actif, query, ordre])
@@ -210,7 +214,13 @@ export default function ActualiteContent(
                                                 </p>
                                             )}
                                             {
-                                                is_actif === 0 &&
+                                                (is_actif === 0 && article.is_planifier === 1) &&
+                                                <p className='text-xs text-cyan-500 font-medium'>
+                                                    Planifiée pour le: {formatDateToLocal((new Date(article.created_at)).toISOString())}
+                                                </p>
+                                            }
+                                            {
+                                                (is_actif === 0 && article.is_planifier === 0) &&
                                                 <p className='text-xs text-yellow-400 font-medium'>
                                                     En attente; {formatDateToLocal((new Date(article.created_at)).toISOString())}
                                                 </p>
@@ -258,7 +268,7 @@ export default function ActualiteContent(
                             </Button>
                             <div className="flex gap-2">
                                 {
-                                    canUpdateNews() &&
+                                    (selectedActualite?.is_planifier === 0 && canUpdateNews()) &&
                                     <Button onClick={handleUpdateStatus} variant="outline" className="h-10">
                                         { isUpdateStatus && <Loader className='h-5 w-5, mr-2' /> }
                                         { selectedActualite?.is_actif === 1 ? 'Désactiver' : 'Activer' }

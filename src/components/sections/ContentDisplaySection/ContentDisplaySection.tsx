@@ -129,16 +129,14 @@ export default function ContentDisplaySection() {
                   </TabsTrigger>
                   <TabsTrigger
                     value="pending"
-                    className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray"
-                  >
+                    className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
                     <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
                       En attente
                     </span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="disabled"
-                    className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray"
-                  >
+                    className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
                     <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
                       Désactivées
                     </span>
@@ -186,7 +184,7 @@ export default function ContentDisplaySection() {
                 <TabsContent value="pending" className="mt-6 space-y-6">
                   {/* Content for pending tab */}
                   <ActualiteContent 
-                    is_actif={0} 
+                    is_actif={0}  
                     query={query} 
                     ordre={ordre} 
                     displayMode={displayMode}

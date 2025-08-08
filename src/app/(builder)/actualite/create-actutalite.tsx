@@ -54,13 +54,13 @@ export default function CreateActutalite() {
 
     try {
       const response: any = await apiClient.post('/api/actualites', {
+        is_actif: 0, // Un actualité créée est dabord au statut attente
+        is_brouillon: 0,
         ...data,
         titre_fr: title.french,
         titre_en: title.english,
         description_fr: content.french,
         description_en: content.english,
-        is_brouillon: 0,
-        is_actif: 1, // Un actualité créée est dabord au statut attente
         galerie_id: selectedImage?.id!,
       })
   
