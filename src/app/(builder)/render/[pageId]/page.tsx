@@ -1,5 +1,3 @@
-import { Page } from '@/app/types';
-import { apiClient } from '@/lib/axios';
 import RenderPage from './RenderPage';
 
 export default async function page(props: {

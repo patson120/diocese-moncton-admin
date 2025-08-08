@@ -57,9 +57,6 @@ const formSchemaTwo = z.object({
 })
 const formSchemaThree = z.object({
   unite_pastorale: z.string().min(1, { message: "Unité pastorale requise" }),
-  // etabli_le: z.string().min(1, { message: "Date d'établissement requise" }),
-  // ordonne_le: z.string().min(1, { message: "Date d'ordination requise" }),
-  // premier_cure: z.string().min(1, { message: "Date du premier curé requise" }),
   horaire_bureau: z.string().min(1, { message: "Veuillez renseigner les horaires de bureau" }),
   langue: z.string().min(1, { message: "La langue principale est requise" }),
 })
@@ -119,9 +116,6 @@ export const AddParishFormSection = (): JSX.Element => {
     resolver: zodResolver(formSchemaThree),
     defaultValues: {
       unite_pastorale: "",
-      // etabli_le: "",
-      // ordonne_le: "",
-      // premier_cure: "",
       horaire_bureau: "",
       langue: "fr",
     },
@@ -145,30 +139,25 @@ export const AddParishFormSection = (): JSX.Element => {
   });
 
   const onSubmitFirst = async (values: z.infer<typeof formSchemaOne>) => {
-    // console.log(values);
     setStep(2)
   }
 
   const onSubmitSecond = async (values: z.infer<typeof formSchemaTwo>) => {
-    // console.log(values);
     setStep(3)
   }
 
   const onSubmitThree = async (values: z.infer<typeof formSchemaThree>) => {
-    // console.log(values);
     if (!horairesBureau.trim()){
-      formThree.setError("horaire_bureau", { message: "Veuillez renseigner les horaires de bureau"})
+      formThree.setError("horaire_bureau", { message: "Veuillez renseigner les horaires de bureau" })
     }
     else {setStep(4)}
   }
 
   const onSubmitFour = async (values: z.infer<typeof formSchemaFour>) => {
-    // console.log(values);
     setStep(5)
   }
 
   const onSubmitFive = async (values: z.infer<typeof formSchemaFive>) => {
-    // console.log(values);
     setStep(6)
   }
 
@@ -266,7 +255,7 @@ export const AddParishFormSection = (): JSX.Element => {
 
   useEffect(() => {
       // Récupérer les unités paroitiales depuis l'api
-      (async () => {
+      ( async () => {
           const response: TypeParoisse[] = await apiClient.get(`/api/type_paroisses`)
           setUnitePastorales(response)
       })()
@@ -466,58 +455,6 @@ export const AddParishFormSection = (): JSX.Element => {
                     </FormItem>
                   )}
                 />
-                {/* 
-                  <div className='grid grid-cols-2 gap-3 w-full'>
-                    <FormField
-                      control={formThree.control}
-                      name="etabli_le"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Etabli en</FormLabel>
-                          <FormControl>
-                            <Input {...field}
-                              className="h-11 inline-block px-3 py-3.5 rounded-lg border border-neutral-200"
-                              type="date"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={formThree.control}
-                      name="ordonne_le"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Date ordination</FormLabel>
-                          <FormControl>
-                            <Input {...field}
-                              className="h-11 inline-block px-3 py-3.5 rounded-lg border border-neutral-200"
-                              type="date"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <FormField
-                    control={formThree.control}
-                    name="premier_cure"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Date premier curé</FormLabel>
-                        <FormControl>
-                          <Input {...field}
-                            className="h-11 inline-block px-3 py-3.5 rounded-lg border border-neutral-200"
-                            type="date"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                */}
                 
                 <div className='w-min relative'>
                   <FormField
@@ -548,7 +485,6 @@ export const AddParishFormSection = (): JSX.Element => {
             </Form>
           </div>
         }
-
         {
           step === 4 &&
           <div className="flex flex-col w-full p-10 pt-6 space-y-6">

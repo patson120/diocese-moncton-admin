@@ -285,6 +285,29 @@ const useRole = () => {
 
     const canDeletePage = (): boolean => canUpdatePage()
 
+    const canAddLink = (): boolean => {
+        switch (userJson?.role?.sigle!) {
+            case "admin": return true
+            case "editeur": return false
+            case "lecteur": return false
+            case "moderateur": return false
+            case "bulletin": return false
+            default: return false
+        }
+    }
+    const canUpdateLink = (): boolean => {
+        switch (userJson?.role?.sigle!) {
+            case "admin": return true
+            case "editeur": return false
+            case "lecteur": return false
+            case "moderateur": return false
+            case "bulletin": return false
+            default: return false
+        }
+    }
+
+    const canDeleteLink = (): boolean => canUpdateLink()
+
 
 
     return {
@@ -341,6 +364,10 @@ const useRole = () => {
         canAddPage,
         canUpdatePage,
         canDeletePage,
+
+        canAddLink,
+        canUpdateLink,
+        canDeleteLink,
     }
 }
 
