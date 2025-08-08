@@ -156,7 +156,7 @@ export const ContentSection = (): JSX.Element => {
               </div>
 
               {
-                (canAddPage() && selectedTab === "pages" ) &&
+                (selectedTab === "pages" && canAddPage() ) &&
                 <Link href={`/create-page/new`} className="bg-blue rounded-[7px] flex justify-center items-center h-10 gap-2 px-3.5 py-0">
                   <PlusIcon className="w-5 h-5 text-white" />
                   <span className="font-body-3 text-white font-[number:var(--body-3-font-weight)] text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">

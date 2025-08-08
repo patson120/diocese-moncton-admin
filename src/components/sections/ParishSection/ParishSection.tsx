@@ -307,12 +307,13 @@ export default function ParishSection() {
                                 ))}
                             </TabsList>
                         </div>
-
-                        {
-                            selectedItem === 'paroisses' ?
-                            <AddParishFormSection /> :
-                            <AddUnitePastoraleFormSection />
-                        }
+                        <div>
+                            {
+                                selectedItem === 'paroisses' ?
+                                <AddParishFormSection /> :
+                                <AddUnitePastoraleFormSection />
+                            }
+                        </div>
 
                     </div>
                 </header>
