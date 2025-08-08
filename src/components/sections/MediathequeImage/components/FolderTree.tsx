@@ -165,7 +165,7 @@ const FolderNode: React.FC<FolderNodeProps> = ({
           <Button
             variant="ghost"
             size="sm"
-            className="h-6 w-6 p-0 hover:bg-accent/70"
+            className="h-6 w-6 p-0 bg-primary hover:bg-primary text-white hover:text-white"
             onClick={(e) => {
               e.stopPropagation();
               setIsCreating(true);
@@ -178,7 +178,7 @@ const FolderNode: React.FC<FolderNodeProps> = ({
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-6 w-6 p-0 hover:bg-accent/70"
+                className="h-6 w-6 p-0 bg-primary hover:bg-primary text-white hover:text-white"
                 onClick={(e) => e.stopPropagation()}>
                 <MoreHorizontal className="h-3 w-3" />
               </Button>
