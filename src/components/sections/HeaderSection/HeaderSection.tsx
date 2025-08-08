@@ -40,7 +40,7 @@ export default function HeaderSection (): JSX.Element  {
             Voir le site internet
           </Button>
         </Link>
-        <NotificationsDialog />
+        {/* <NotificationsDialog /> */}
       </div>
     </header>
   );
