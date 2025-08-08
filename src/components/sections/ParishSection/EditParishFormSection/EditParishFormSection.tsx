@@ -1,7 +1,8 @@
 
 'use client'
 
-import {Image as ImageType, Location, Paroisse, TypeParoisse } from "@/app/types";
+import { Image as ImageType, Location, Paroisse, TypeParoisse } from "@/app/types";
+import { Editor } from "@/components/Editor/Editor";
 import { MapContainer } from "@/components/sections/MapSection/map-container";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -23,8 +24,6 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 import { GaleryPopup } from "../../GaleryPopup";
-import { Editor } from "@/components/Editor/Editor";
-import useRole from "@/hooks/use-role";
 
 
 // Generate hours from 00:00 to 23:59 in 30-minute intervals
@@ -56,9 +55,6 @@ const formSchemaTwo = z.object({
 })
 const formSchemaThree = z.object({
   unite_pastorale: z.string().min(1, { message: "Unité pastorale requise" }),
-  // etabli_le: z.string().min(1, { message: "Date d'établissement requise" }),
-  // ordonne_le: z.string().min(1, { message: "Date d'ordination requise" }),
-  // premier_cure: z.string().min(1, { message: "Date du premier curé requise" }),
   horaire_bureau: z.string().min(1, { message: "Veuillez renseigner les horaires de bureau" }),
   langue: z.string().min(1, { message: "La langue principale est requise" }),
 })
@@ -133,9 +129,6 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
     resolver: zodResolver(formSchemaThree),
     defaultValues: {
       unite_pastorale: `${parish.type_paroisse_id}`,
-      // etabli_le: `${parish.etabli_le}-01-01`,
-      // ordonne_le: `${parish.ordonne_le}-01-01`,
-      // premier_cure: `${parish.premier_cure}-01-01`,
       horaire_bureau: `${parish.horaire_bureau}`,
       langue: `${parish.langue}`,
     },
@@ -235,9 +228,6 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
     formdata.append("email", formFour.getValues("email"))
     formdata.append("site_web", formFour.getValues("site_web"))
     formdata.append("horaires", horaires.map(item => `${item.jour}=${item.heures.join(";")}`).join(","))
-    // formdata.append("etabli_le", formThree.getValues("etabli_le").split('-')[0])
-    // formdata.append("ordonne_le", formThree.getValues("ordonne_le").split('-')[0])
-    // formdata.append("premier_cure", formThree.getValues("premier_cure").split('-')[0])
     formdata.append("horaire_bureau", horairesBureau)
     formdata.append("langue", formThree.getValues("langue"))
     formdata.append("gps", `${location?.lat};${location?.lng}`)
@@ -433,6 +423,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
           <div className="flex flex-col w-full p-10 pt-6 space-y-6">
             <Form {...formThree}>
               <form onSubmit={formThree.handleSubmit(onSubmitThree)} className="space-y-4">
+              
                 <FormField
                   control={formThree.control}
                   name="unite_pastorale"
@@ -482,58 +473,6 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
                     </FormItem>
                   )}
                 />
-                {/**  
-                  <div className='grid grid-cols-2 gap-3 w-full'>
-                    <FormField
-                      control={formThree.control}
-                      name="etabli_le"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Etabli en</FormLabel>
-                          <FormControl>
-                            <Input {...field}
-                              className="h-11 inline-block px-3 py-3.5 rounded-lg border border-neutral-200"
-                              type="date"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={formThree.control}
-                      name="ordonne_le"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Date ordination</FormLabel>
-                          <FormControl>
-                            <Input {...field}
-                              className="h-11 inline-block px-3 py-3.5 rounded-lg border border-neutral-200"
-                              type="date"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <FormField
-                    control={formThree.control}
-                    name="premier_cure"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Date premier curé</FormLabel>
-                        <FormControl>
-                          <Input {...field}
-                            className="h-11 inline-block px-3 py-3.5 rounded-lg border border-neutral-200"
-                            type="date"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                */}
                 <div className='w-min relative'>
                   <FormField
                     control={formThree.control}
@@ -555,7 +494,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
                   <Button variant={'outline'} onClick={() => setStep(2)} className="w-min px-8 mt-8 h-12 rounded-lg">
                     Retour
                   </Button>
-                  <Button disabled={!horairesBureau.trim()} type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
+                  <Button disabled={!horairesBureau} type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
                     Suivant
                   </Button>
                 </div>
@@ -661,8 +600,8 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
                     <FormItem>
                       <div className="flex flex-col space-y-2">
                         <FormLabel>Jour de messe </FormLabel>
-                        <select name="jour" id="jour" onChange={field.onChange} className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200 text-[#454545]">
-                          <option value="" disabled selected={false} >Sélectionnez un jour de messe</option>
+                        <select defaultValue="" name="jour" id="jour" onChange={field.onChange} className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200 text-[#454545]">
+                          <option value="" disabled >Sélectionnez un jour de messe</option>
                           {
                             jours.map((jour) => (
                               <option selected={field.value===jour.value} key={jour.value} value={jour.value}>{jour.label}</option>
