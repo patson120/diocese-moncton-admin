@@ -216,7 +216,7 @@ export default function ActualiteContent(
                                             {
                                                 (is_actif === 0 && article.is_planifier === 1) &&
                                                 <p className='text-xs text-cyan-500 font-medium'>
-                                                    Planifiée pour le: {formatDateToLocal((new Date(article.created_at)).toISOString())}
+                                                    Planifiée pour le: {formatDateToLocal((new Date(article.date_planification)).toISOString())}
                                                 </p>
                                             }
                                             {
