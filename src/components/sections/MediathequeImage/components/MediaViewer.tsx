@@ -577,7 +577,7 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
           <Card
             key={index}
             onClick={() => onFolderSelect(folder)}
-            className="overflow-hidden rounded-lg border border-black/15 relative shrink-0 min-h-[150px] max-h-[200px] flex flex-col justify-center items-center">
+            className="overflow-hidden rounded-lg border border-black/15 relative shrink-0 min-h-[150px] max-h-[200px] flex flex-col justify-center items-center cursor-pointer">
             <Folder className="h-10 w-10 flex-shrink-0" style={{ color: folder.color }} />
             <div className='mt-2'>
               {
