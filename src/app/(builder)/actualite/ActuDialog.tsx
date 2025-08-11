@@ -12,6 +12,7 @@ import { MonitorUp, Timer } from 'lucide-react';
 import Image from 'next/image';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { Category } from '../../types';
+import { AddCategoryFormSection } from '@/components/sections/EventSection/AddCategoryFormSection';
 
 export default function ActuDialog(
     {
@@ -130,16 +131,19 @@ export default function ActuDialog(
                         <div className="flex flex-col justify-between w-[350px] h-full items-start gap-4">
                             <div className='flex flex-col items-start gap-4 '>
                                 <div className="flex flex-col items-start gap-2 self-stretch w-full">
-                                    <label className="self-stretch mt-[-1.00px] font-body-3 text-noir-dashboard">
-                                        Catégorie
-                                    </label>
+                                    <div className='flex justify-between items-center'>
+                                        <label className="self-stretch mt-[-1.00px] font-body-3 text-noir-dashboard">
+                                            Catégorie
+                                        </label>
+                                        {/* Ajouter une nouvelle catégorie */}
+                                        <AddCategoryFormSection menu='actualite' setCategories={setCategories} />
+                                    </div>
                                     <Select
                                         value={`${categorie?.id!}`}
                                         onValueChange={(value: string) => {
                                             const item = categories.find(cat => `${cat.id}` === value)
                                             setCategorie(item)
-                                        }}
-                                    >
+                                        }}>
                                         <SelectTrigger className="w-[350px] h-11 bg-white rounded-xl border border-solid border-[#d9d9d9]">
                                             <SelectValue placeholder="Sélectionnez la catégorie" />
                                         </SelectTrigger>

@@ -70,8 +70,8 @@ export default function EditActualiteForm({actualite}: { actualite: Actualite })
           label: '',
           value: 0,
           comment: '',
-          created_at: `${actualite.galerie[0].created_at}`,
-          updated_at: `${actualite.galerie[0].updated_at}`,
+          created_at: actualite.galerie.length > 0 ? `${actualite.galerie[0].created_at}` : `${actualite.created_at}`,
+          updated_at: actualite.galerie.length > 0 ? `${actualite.galerie[0].updated_at}` : `${actualite.created_at}`,
         }
       ],
       prevId: 0,
