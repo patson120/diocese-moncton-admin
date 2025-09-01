@@ -36,7 +36,7 @@ export async function POST(request: Request) {
       })
     } else {
       console.log('reCAPTCHA non valide :', data['error-codes']);
-      return new Response(JSON.stringify({ success: false, message: 'Vérification reCAPTCHA échouée.' }), {
+      return new Response(JSON.stringify({ success: false, message: 'Vérification reCAPTCHA échouée.' + data }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' }
       })
