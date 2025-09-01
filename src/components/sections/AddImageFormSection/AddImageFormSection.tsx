@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Loader } from "@/components/ui/loader";
 import { Select, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import useRole from "@/hooks/use-role";
+import useRecaptcha from "@/hooks/useRecaptcha";
 import { apiClient } from "@/lib/axios";
 import { handleImageUpload } from "@/lib/utils";
 import { DialogTrigger } from "@radix-ui/react-dialog";
@@ -16,9 +17,12 @@ import { SelectContent } from "@radix-ui/react-select";
 import { PlusIcon } from "lucide-react";
 import Image from "next/image";
 import { JSX, useEffect, useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 import { toast } from "sonner";
 
 export const AddImageFormSection = (): JSX.Element => {
+
+  const { captchaToken, handleRecaptchaChange, verifyRecaptchaToken } = useRecaptcha()
 
   const { canAddImage} = useRole()
  
@@ -62,6 +66,16 @@ export const AddImageFormSection = (): JSX.Element => {
       formdata.append("dossier_id", folderId );
     }
     try {
+
+      const recaptchaReponse = await verifyRecaptchaToken();
+      const recaptchaData = await recaptchaReponse.json();
+
+      if (!recaptchaData.success) {
+        toast.error(recaptchaData.message || 'Erreur de vérification reCAPTCHA');
+        setIsLoading(false);
+        return;
+      }
+
       const result: any = await apiClient.post('/api/galeries', formdata, {
         'Content-Type': 'multipart/form-data'
       })
@@ -180,13 +194,14 @@ export const AddImageFormSection = (): JSX.Element => {
               </SelectContent>
           </Select>
         </div>
-        
+        <ReCAPTCHA
+          sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
+          onChange={handleRecaptchaChange}
+        />
         <div className='flex justify-center items-center  my-4 gap-3'>
-          <Button onClick={handleAddImage} className="px-3.5 py-0 bg-blue text-white rounded-[7px]">
+          <Button disabled={ isLoading || !captchaToken } onClick={handleAddImage} className="px-3.5 py-0 bg-blue text-white rounded-[7px]">
             { isLoading && <Loader className="h-5 w-5 mr-2" /> }
-            <span className="font-body-3 font-bold whitespace-nowrap">
-                Ajouter l'image
-            </span>
+            <span className="font-body-3 font-bold whitespace-nowrap">Ajouter l'image</span>
           </Button>         
         </div>
       </DialogContent>

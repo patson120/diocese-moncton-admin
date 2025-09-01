@@ -7,11 +7,13 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/ui/loader";
 import useRole from "@/hooks/use-role";
+import useRecaptcha from "@/hooks/useRecaptcha";
 import { apiClient } from "@/lib/axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -24,6 +26,8 @@ const formSchema = z.object({
 
 
 export default function AddAudioFormSection(){
+
+  const { captchaToken, handleRecaptchaChange, verifyRecaptchaToken } = useRecaptcha()
 
   const { canAddAudio } = useRole()
 
@@ -48,6 +52,16 @@ export default function AddAudioFormSection(){
     formdata.append("media", `${values.lien}`);
 
     try {
+
+      const recaptchaReponse = await verifyRecaptchaToken();
+      const recaptchaData = await recaptchaReponse.json();
+
+      if (!recaptchaData.success) {
+        toast.error(recaptchaData.message || 'Erreur de vérification reCAPTCHA');
+        setIsloading(false);
+        return;
+      }
+
       const response: any = await apiClient.post('/api/ressources', formdata, {
         'Content-Type': 'multipart/form-data'
       });
@@ -118,8 +132,11 @@ export default function AddAudioFormSection(){
                   </FormItem>
                 )}
               />
-              <div className="h-40"></div>
-              <Button type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
+              <ReCAPTCHA
+                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
+                onChange={handleRecaptchaChange}
+              />
+              <Button disabled={ isLoading || !captchaToken } type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
                 { isLoading && <Loader className='text-white mr-2' /> }
                 Ajouter l'audio
               </Button>

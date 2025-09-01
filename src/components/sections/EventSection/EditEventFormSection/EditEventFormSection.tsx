@@ -18,6 +18,8 @@ import * as z from "zod";
 import { GaleryPopup } from "../../GaleryPopup";
 import { MapContainer } from "../../MapSection/map-container";
 import { Image as ImageType } from "@/app/types";
+import useRecaptcha from "@/hooks/useRecaptcha";
+import ReCAPTCHA from "react-google-recaptcha";
 
 interface EditEventDialogProps { eventData: Event, duplicated?: boolean }
 
@@ -62,6 +64,8 @@ const formSchemaFour = z.object({
 })
 
 export const EditEventFormSection = ({ eventData, duplicated = false} : EditEventDialogProps): JSX.Element => {
+
+  const { captchaToken, handleRecaptchaChange, verifyRecaptchaToken } = useRecaptcha()
 
   const [isLoading, setIsloading] = useState(false)
   const [openModal, setOpenModal] = useState(false)
@@ -129,6 +133,15 @@ export const EditEventFormSection = ({ eventData, duplicated = false} : EditEven
     if (isLoading) return
     setIsloading(true)
     try {
+      const recaptchaReponse = await verifyRecaptchaToken();
+      const recaptchaData = await recaptchaReponse.json();
+
+      if (!recaptchaData.success) {
+        toast.error(recaptchaData.message || 'Erreur de vérification reCAPTCHA');
+        setIsloading(false);
+        return;
+      }
+  
       let response: any;
       if (duplicated) {
         response= await apiClient.post('/api/evenements', {
@@ -493,12 +506,16 @@ export const EditEventFormSection = ({ eventData, duplicated = false} : EditEven
                     }
                     </p>
                 </div>
+                <ReCAPTCHA
+                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
+                  onChange={handleRecaptchaChange}
+                />
                 
                 <div className="flex flex-row gap-4">
                   <Button variant={'outline'} onClick={() => setStep(3)} className="w-min px-8 mt-8 h-12 rounded-lg">
                     Retour
                   </Button>
-                  <Button type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
+                  <Button disabled={ isLoading || !captchaToken } type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
                     { isLoading && <Loader className='text-white mr-2' /> }
                     { duplicated ? "Enregistrer l'évènement": "Mettre à jour l'évènement"}
                     

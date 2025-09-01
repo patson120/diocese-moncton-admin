@@ -6,17 +6,21 @@ import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from "@
 import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/ui/loader";
 import useRole from "@/hooks/use-role";
+import useRecaptcha from "@/hooks/useRecaptcha";
 import { apiClient } from "@/lib/axios";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { getMonth } from "date-fns";
 import { PlusIcon } from "lucide-react";
 import Image from "next/image";
 import { JSX, useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 import { toast } from "sonner";
 
 export const AddBulletinFormSection = ( {paroisse_id}: { paroisse_id: number}): JSX.Element => {
 
-  const { canAddBulletin, canDeleteBulletin } = useRole()
+  const { captchaToken, handleRecaptchaChange, verifyRecaptchaToken } = useRecaptcha()
+
+  const { canAddBulletin } = useRole()
  
   const [fileName, setFileName] = useState("")
   const [file, setFile] = useState<File | undefined>();
@@ -56,6 +60,15 @@ export const AddBulletinFormSection = ( {paroisse_id}: { paroisse_id: number}): 
     formdata.append("document", file!);
 
     try {
+      const recaptchaReponse = await verifyRecaptchaToken();
+      const recaptchaData = await recaptchaReponse.json();
+
+      if (!recaptchaData.success) {
+        toast.error(recaptchaData.message || 'Erreur de vérification reCAPTCHA');
+        setIsLoading(false);
+        return;
+      }
+    
       const result: any = await apiClient.post('/api/bulletin_paroissial', formdata, {
         'Content-Type': 'multipart/form-data'
       });
@@ -148,9 +161,13 @@ export const AddBulletinFormSection = ( {paroisse_id}: { paroisse_id: number}): 
             className="h-full w-full absolute cursor-pointer inset-0 opacity-0 z-[3]"
           />
         </div>
+        <ReCAPTCHA
+          sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
+          onChange={handleRecaptchaChange}
+        />
         
         <div className='flex justify-center items-center  my-4 gap-3'>
-          <Button onClick={handleAddRessource} className="px-3.5 py-0 bg-blue text-white rounded-[7px]">
+          <Button disabled={ isLoading || !captchaToken } onClick={handleAddRessource} className="px-3.5 py-0 bg-blue text-white rounded-[7px]">
             { isLoading && <Loader className="h-5 w-5 mr-2" /> }
             <span className="font-body-3 font-bold whitespace-nowrap">
                 Ajouter le bulletin

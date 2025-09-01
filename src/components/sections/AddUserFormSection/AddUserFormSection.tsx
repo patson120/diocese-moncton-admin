@@ -8,11 +8,13 @@ import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/ui/loader";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import useRole from "@/hooks/use-role";
+import useRecaptcha from "@/hooks/useRecaptcha";
 import { apiClient } from "@/lib/axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { PlusIcon } from "lucide-react";
 import { JSX, useEffect, useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -26,6 +28,8 @@ const formSchema = z.object({
 });
 
 export const AddUserFormSection = (): JSX.Element => {
+
+  const { captchaToken, handleRecaptchaChange, verifyRecaptchaToken } = useRecaptcha();
 
   const { canAddUser } = useRole()
 
@@ -55,6 +59,7 @@ export const AddUserFormSection = (): JSX.Element => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (isLoading) return 
     setIsLoading(true)
+    
     const data = {
       nom: values.nom,
       email: values.email,
@@ -63,6 +68,15 @@ export const AddUserFormSection = (): JSX.Element => {
       statut: values.statut === 'actif' ? 1 : 0,
     };
     try {
+      const recaptchaReponse = await verifyRecaptchaToken();
+      const recaptchaData = await recaptchaReponse.json();
+
+      if (!recaptchaData.success) {
+        toast.error(recaptchaData.message || 'Erreur de vérification reCAPTCHA');
+        setIsLoading(false);
+        return;
+      }
+
       const response: any = await apiClient.post("/api/administrateurs", data);
       if (response.infos.id ) {
         toast.success('Utilisateur ajouté avec succès');
@@ -196,9 +210,14 @@ export const AddUserFormSection = (): JSX.Element => {
                   </FormItem>
                 )}
               />
+              
+              <ReCAPTCHA
+                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
+                onChange={handleRecaptchaChange}
+              />
 
               <DialogFooter>
-                <Button type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
+                <Button disabled={isLoading || !captchaToken} type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
                   {isLoading && <Loader className="h-5 w-5 mr-2" />}
                   Ajouter l’utilisateur
                 </Button>

@@ -25,6 +25,8 @@ import { GaleryPopup } from "../../GaleryPopup";
 import Image from "next/image";
 import { Editor } from "@/components/Editor/Editor";
 import useRole from "@/hooks/use-role";
+import ReCAPTCHA from "react-google-recaptcha";
+import useRecaptcha from "@/hooks/useRecaptcha";
 
 
 // Generate hours from 00:00 to 23:59 in 30-minute intervals
@@ -72,6 +74,8 @@ const formSchemaFive = z.object({
 });
 
 export const AddParishFormSection = (): JSX.Element => {
+
+  const { captchaToken, handleRecaptchaChange, verifyRecaptchaToken } = useRecaptcha();
 
   const { canAddParish } = useRole()
 
@@ -226,6 +230,16 @@ export const AddParishFormSection = (): JSX.Element => {
     }
   
     try {
+
+      const recaptchaReponse = await verifyRecaptchaToken();
+      const recaptchaData = await recaptchaReponse.json();
+
+      if (!recaptchaData.success) {
+        toast.error(recaptchaData.message || 'Erreur de vérification reCAPTCHA');
+        setIsLoading(false);
+        return;
+      }
+
       const response: any = await apiClient.post('/api/paroisses', formdata, {
         'Content-Type': 'multipart/form-data'
       });
@@ -685,11 +699,15 @@ export const AddParishFormSection = (): JSX.Element => {
                 }
                </p>
             </div>
+            <ReCAPTCHA
+              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
+              onChange={handleRecaptchaChange}
+            />
             <div className="flex flex-row gap-4">
               <Button variant={'outline'} onClick={() => setStep(5)} className="w-min px-8 mt-8 h-12 rounded-lg">
                 Retour
               </Button>
-              <Button onClick={handleSubmitForm} className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
+              <Button disabled={isLoading || !captchaToken } onClick={handleSubmitForm} className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
                 { isLoading && <Loader className='h-5 w-5, mr-2' /> }
                 Ajouter la paroisse
               </Button>

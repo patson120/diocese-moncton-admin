@@ -6,11 +6,13 @@ import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/ui/loader";
+import useRecaptcha from "@/hooks/useRecaptcha";
 import { apiClient } from "@/lib/axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { PlusIcon } from "lucide-react";
 import { JSX, useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -22,6 +24,8 @@ const formSchema = z.object({
 });
 
 export const AddCategoryFormSection = ({parent_id=0, menu, setCategories}: { parent_id?: number, menu: string, setCategories: (data: any) => void}): JSX.Element => {
+  
+  const { captchaToken, handleRecaptchaChange, verifyRecaptchaToken } = useRecaptcha()
 
   const [isLoading, setIsLoading] = useState(false)
  
@@ -43,6 +47,16 @@ export const AddCategoryFormSection = ({parent_id=0, menu, setCategories}: { par
       menu: menu,
     };
     try {
+
+      const recaptchaReponse = await verifyRecaptchaToken();
+      const recaptchaData = await recaptchaReponse.json();
+
+      if (!recaptchaData.success) {
+        toast.error(recaptchaData.message || 'Erreur de vérification reCAPTCHA');
+        setIsLoading(false);
+        return;
+      }
+
       const response: any = await apiClient.post("/api/categories", data);
       if (response.id ) {
         toast.success('Catégorie ajoutée avec succès');
@@ -120,8 +134,13 @@ export const AddCategoryFormSection = ({parent_id=0, menu, setCategories}: { par
                 )}
               />
 
+              <ReCAPTCHA
+                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
+                onChange={handleRecaptchaChange}
+              />
+
               <DialogFooter>
-                <Button type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
+                <Button disabled={ isLoading || !captchaToken } type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
                   {isLoading && <Loader className="h-5 w-5 mr-2" />}
                   Ajouter la catégorie
                 </Button>

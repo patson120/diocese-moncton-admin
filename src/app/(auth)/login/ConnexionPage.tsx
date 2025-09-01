@@ -354,12 +354,10 @@ export const ConnexionPage = (): JSX.Element => {
                         </Button>
                       </div>
 
-                      <div className="w-full">
-                        <ReCAPTCHA
-                          sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
-                          onChange={handleRecaptchaChange}
-                        />
-                      </div>
+                      <ReCAPTCHA
+                        sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
+                        onChange={handleRecaptchaChange}
+                      />
 
                       <div className="w-full">
                         {/* Login button */}

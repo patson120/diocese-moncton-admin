@@ -17,6 +17,8 @@ import { toast } from "sonner";
 import * as z from "zod";
 import { User } from "../../../app/types";
 import useRole from "@/hooks/use-role";
+import ReCAPTCHA from "react-google-recaptcha";
+import useRecaptcha from "@/hooks/useRecaptcha";
 
 
 const formSchema = z.object({
@@ -27,6 +29,8 @@ const formSchema = z.object({
 });
 
 export const EditUserFormSection = ({user}: { user: User}): JSX.Element => {
+
+  const { captchaToken, handleRecaptchaChange, verifyRecaptchaToken } = useRecaptcha();
 
   const { canUpdateUser, isCurrentUser } = useRole()
 
@@ -67,6 +71,15 @@ export const EditUserFormSection = ({user}: { user: User}): JSX.Element => {
       statut: values.statut === 'actif' ? 1 : 0,
     }
     try {
+      const recaptchaReponse = await verifyRecaptchaToken();
+      const recaptchaData = await recaptchaReponse.json();
+
+      if (!recaptchaData.success) {
+        toast.error(recaptchaData.message || 'Erreur de vérification reCAPTCHA');
+        setIsLoading(false);
+        return;
+      }
+
       const response: any = await apiClient.put(`/api/administrateurs/${user.id}`, data);
       if (response.id ) {
         toast.success('Utilisateur modifié avec succès');
@@ -202,8 +215,13 @@ export const EditUserFormSection = ({user}: { user: User}): JSX.Element => {
                 )}
               />
 
+              <ReCAPTCHA
+                sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
+                onChange={handleRecaptchaChange}
+              />
+
               <DialogFooter>
-                <Button type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
+                <Button disabled={isLoading || !captchaToken } type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
                   {isLoading && <Loader className="h-5 w-5 mr-2" />}
                   Mettre à jour l’utilisateur
                 </Button>
