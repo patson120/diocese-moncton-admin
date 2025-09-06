@@ -205,7 +205,7 @@ export default function ParishSection() {
         }
         try {
             await apiClient.delete(`/api/bulletin_paroissial/${id}`);
-            toast.success("Bulletin enregistré avec succès !")
+            toast.success("Bulletin supprimé avec succès !")
         } catch (error: any) {
             toast.warning(
                 <div className='p-3 bg-red-500 text-white rounded-md'>
@@ -737,7 +737,7 @@ export default function ParishSection() {
                                 <GaleryPopup setSelectedImage={setSelectedImage} >
                                     <Button className="h-10 w-min bg-primary text-white hover:bg-blue/90  gap-2">
                                         <PlusIcon className="w-5 h-5" />
-                                        Ajouter un photo
+                                        Ajouter une photo
                                     </Button>
                                 </GaleryPopup>
                                 { 

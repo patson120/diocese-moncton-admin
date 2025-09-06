@@ -23,6 +23,7 @@ import useRole from '@/hooks/use-role'
 
 export default function EditActualiteForm({actualite}: { actualite: Actualite }) {
   const router = useRouter()
+
   const [isSave, setIsSave] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [alertModal, setAlertModal] = useState("");
@@ -112,7 +113,7 @@ export default function EditActualiteForm({actualite}: { actualite: Actualite })
       setAlertModal("")
       toast.success("Actualité modifée avec succès !")
       setTimeout(() => {
-        router.back() 
+        router.replace("/contents")
       }, 1500);
     }
     else {
@@ -425,7 +426,7 @@ export default function EditActualiteForm({actualite}: { actualite: Actualite })
 
       <EditActuDialog
         imageUrl={selectedImage?.path!}
-        actualite={actualite}
+        actualite={data}
         isLoading={isLoading}
         handlePublish={handlePublish}
         open={openPublishModal}
