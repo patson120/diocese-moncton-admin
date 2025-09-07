@@ -37,8 +37,9 @@ import {
   Video
 } from 'lucide-react';
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+import React, { JSX, useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { AddImageFormSection } from '../../AddImageFormSection';
 import { LoadingSpinner } from '../../MapSection/loading-spinner';
 import { MediaFile, MediaFolder } from './types/media';
 
@@ -365,6 +366,8 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
   const [isCreating, setIsCreating] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
 
+  let element: JSX.Element = <AddImageFormSection dossier_id={currentFolder?.id} />
+
   useEffect(() => {
     ( async () => {
       setLoading(true)
@@ -379,7 +382,6 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
         setLoading(false)
       }
     }) ()
-    
   }, [currentFolder?.id])
 
   const handleDeleteImage = async (img?: ImageType) => {
@@ -516,7 +518,8 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
             </Button>
           </div>
         </div>
-         */}
+        */}
+        { !loading && ( <AddImageFormSection dossier_id={currentFolder?.id} />) }
       </div>
       {/* 
       {
@@ -573,7 +576,7 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
       }
       {/* Image grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 gap-4">
-      { !loading && currentFolders.map((folder, index) => (
+        {!loading && currentFolders.map((folder, index) => (
           <Card
             key={index}
             onClick={() => onFolderSelect(folder)}

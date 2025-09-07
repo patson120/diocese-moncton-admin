@@ -20,7 +20,7 @@ import { JSX, useEffect, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { toast } from "sonner";
 
-export const AddImageFormSection = (): JSX.Element => {
+export const AddImageFormSection = ({dossier_id}: {dossier_id?: string}): JSX.Element => {
 
   const { captchaToken, handleRecaptchaChange, verifyRecaptchaToken } = useRecaptcha()
 
@@ -29,14 +29,17 @@ export const AddImageFormSection = (): JSX.Element => {
   const [fileName, setFileName] = useState("")
   const [coverImage, setCoverImage] = useState('')
   const [fileImage, setFileImage] = useState<File | undefined>();
+  const [files, setFiles] = useState<File[]>([]);
   const [openModal, setOpenModal] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
   const [folders, setFolders] = useState<Dossier[]>([]);
-  const [folderId, setFolderId] = useState("0");
+  const [folderId, setFolderId] = useState(dossier_id ?? "0");
 
   const handleCoverImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    setFiles(Array.from(e.target.files!))
+    
     if (file) {
       setFileName(file.name)
       const imageUrl = await handleImageUpload(file)
@@ -59,14 +62,7 @@ export const AddImageFormSection = (): JSX.Element => {
 
     setIsLoading(true)
     // Creer l'image de couverture
-    const formdata = new FormData();
-    formdata.append("titre", fileName);
-    formdata.append("fichier", fileImage!);
-    if (folderId !== "0"){
-      formdata.append("dossier_id", folderId );
-    }
     try {
-
       const recaptchaReponse = await verifyRecaptchaToken();
       const recaptchaData = await recaptchaReponse.json();
 
@@ -75,12 +71,12 @@ export const AddImageFormSection = (): JSX.Element => {
         setIsLoading(false);
         return;
       }
-
-      const result: any = await apiClient.post('/api/galeries', formdata, {
-        'Content-Type': 'multipart/form-data'
-      })
-  
-      if (result.id) {
+      let result: any;
+      for (let index = 0; index < files.length; index++) {
+        result = await handleAddSingleFile(files[index])
+      }
+      
+      if (result.id){
         toast.success("Image enregistrée avec succès !")
         setFileImage(undefined)
         setCoverImage('');
@@ -89,6 +85,7 @@ export const AddImageFormSection = (): JSX.Element => {
         }, 1500);
         setOpenModal(false)
       }
+     
     } 
     catch (error: any) {
       toast.error(
@@ -102,6 +99,18 @@ export const AddImageFormSection = (): JSX.Element => {
     }
   }
 
+  const handleAddSingleFile = async (file: File) => {
+    const formdata = new FormData();
+    formdata.append("titre", file.name);
+    formdata.append("fichier", file);
+    if (folderId !== "0"){
+      formdata.append("dossier_id", folderId );
+    }
+    return await apiClient.post('/api/galeries', formdata, {
+      'Content-Type': 'multipart/form-data'
+    })
+  }
+
   useEffect(() => {
     (async () => {
       const response: Dossier[] = await apiClient.get("/api/dossiers")
@@ -110,6 +119,7 @@ export const AddImageFormSection = (): JSX.Element => {
   }, [])
 
   if (!canAddImage()) return <></>
+  
 
   return (
     <Dialog open={openModal} onOpenChange={setOpenModal}>
@@ -171,12 +181,14 @@ export const AddImageFormSection = (): JSX.Element => {
           <Input
             accept="image/png,image/jpg,image/jpeg,image/svg,image/gif,image/webp"
             type="file"
+            multiple={true}
             onChange={handleCoverImageChange}
             className="h-full w-full absolute cursor-pointer inset-0 opacity-0 z-[3]"
           />
         </div>
 
         <div className="flex flex-col space-y-2 z-[10]">
+          <Label className="text-right text-gray">Fichiers ({files.length}) </Label>
           <Label className="mb-1">Mettre l'image dans... </Label>
           <Select 
               onValueChange={setFolderId}
@@ -201,7 +213,7 @@ export const AddImageFormSection = (): JSX.Element => {
         <div className='flex justify-center items-center  my-4 gap-3'>
           <Button disabled={ isLoading || !captchaToken } onClick={handleAddImage} className="px-3.5 py-0 bg-blue text-white rounded-[7px]">
             { isLoading && <Loader className="h-5 w-5 mr-2" /> }
-            <span className="font-body-3 font-bold whitespace-nowrap">Ajouter l'image</span>
+            <span className="font-body-3 font-bold whitespace-nowrap">{ files.length > 1 ? `Ajouter les images (${files.length})` : "Ajouter l'image" }</span>
           </Button>         
         </div>
       </DialogContent>
