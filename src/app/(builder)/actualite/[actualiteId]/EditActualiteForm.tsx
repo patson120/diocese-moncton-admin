@@ -24,6 +24,7 @@ import useRole from '@/hooks/use-role'
 export default function EditActualiteForm({actualite}: { actualite: Actualite }) {
   const router = useRouter()
 
+
   const [isSave, setIsSave] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [alertModal, setAlertModal] = useState("");
@@ -42,69 +43,68 @@ export default function EditActualiteForm({actualite}: { actualite: Actualite })
     french: actualite.titre_fr,
     english: actualite.titre_en,
   })
+
   const [content, setContent] = useState({
     french: actualite.description_fr,
     english: actualite.description_en,
   })
   
   const data: Actualite = {
-      id: 0,
-      categorie_id: 0,
-      titre_fr: title.french,
-      titre_en: title.english,
-      date_publication: `${new Date().toISOString()}`,
-      is_actif: 1,
-      is_brouillon: 1,
-      is_planifier: 0,
-      date_planification: null,
-      description_fr: content.french,
-      description_en: content.english,
-      created_at: `${actualite.created_at}`,
-      updated_at: `${actualite.updated_at}`,
-      galerie: [
-        {
-          id: 36,
-          titre: null,
-          dossier_id: 0,
-          path: `${selectedImage?.path}`,
-          path_en: null,
-          label: '',
-          value: 0,
-          comment: '',
-          created_at: actualite.galerie.length > 0 ? `${actualite.galerie[0].created_at}` : `${actualite.created_at}`,
-          updated_at: actualite.galerie.length > 0 ? `${actualite.galerie[0].updated_at}` : `${actualite.created_at}`,
-        }
-      ],
-      prevId: 0,
-      nextId: 0,
-      categorie: {
-        id: 0,
-        parent_id: 0,
-        intitule_fr: `${actualite.categorie.intitule_fr}`,
-        intitule_en: `${actualite.categorie.intitule_en}`,
-        menu: `${actualite.categorie.menu}`,
-        created_at: `${actualite.categorie.created_at}`,
-          updated_at: `${actualite.categorie.updated_at}`,
-      },
-      motcles:  actualite.motcles
+    id: actualite.id,
+    categorie_id: actualite.categorie_id,
+    titre_fr: title.french,
+    titre_en: title.english,
+    date_publication: `${new Date().toISOString()}`,
+    is_actif: actualite.is_actif,
+    is_brouillon: actualite.is_brouillon,
+    is_planifier: actualite.is_planifier,
+    date_planification: actualite.date_planification,
+    description_fr: content.french,
+    description_en: content.english,
+    created_at: `${actualite.created_at}`,
+    updated_at: `${actualite.updated_at}`,
+    galerie: [
+      {
+        id: 36,
+        titre: null,
+        dossier_id: 0,
+        path: `${selectedImage?.path}`,
+        path_en: null,
+        label: '',
+        value: 0,
+        comment: '',
+        created_at: actualite.galerie.length > 0 ? `${actualite.galerie[0].created_at}` : `${actualite.created_at}`,
+        updated_at: actualite.galerie.length > 0 ? `${actualite.galerie[0].updated_at}` : `${actualite.created_at}`,
+      }
+    ],
+    prevId: 0,
+    nextId: 0,
+    categorie: {
+      id: actualite.categorie_id,
+      parent_id: actualite.categorie.parent_id,
+      intitule_fr: `${actualite.categorie.intitule_fr}`,
+      intitule_en: `${actualite.categorie.intitule_en}`,
+      menu: `${actualite.categorie.menu}`,
+      created_at: `${actualite.categorie.created_at}`,
+        updated_at: `${actualite.categorie.updated_at}`,
+    },
+    motcles:  actualite.motcles
   }
-
-  
 
   const handlePublish = async (data: any) => {
     if (isLoading) return
     setIsLoading(true)
     const response: any = await apiClient.put(`/api/actualites/${actualite.id}`, {
       ...data,
-      is_actif: actualite.is_actif,
+      is_actif: data.is_planifier ? actualite.is_actif : 1,
       titre_fr: title.french,
       titre_en: title.english,
       description_fr: content.french,
       description_en: content.english,
-      is_brouillon: actualite.is_brouillon,
+      is_brouillon: 0, // actualite.is_brouillon,
       galerie_id: selectedImage?.id,
-    })    
-
+    })
+  
     if (response.id) {
       setTitle({french: '', english: '',})
       setContent({french: '', english: '',})
@@ -147,9 +147,9 @@ export default function EditActualiteForm({actualite}: { actualite: Actualite })
     }
   }
 
-   useEffect(() => {
-      if (!canAddNews()) { goback()}
-    }, [actualite.id])
+  useEffect(() => {
+    if (!canAddNews()) { goback()}
+  }, [actualite.id])
 
   return (
     <div className="relative w-full h-screen bg-[#f0f0f4] overflow-x-hidden">
