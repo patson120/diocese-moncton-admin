@@ -119,7 +119,7 @@ export const EditUserFormSection = ({user}: { user: User}): JSX.Element => {
           </span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[500px] p-0 rounded-2xl">
+      <DialogContent className="w-[500px] md:w-[620px] max-h-[80vh] overflow-y-scroll p-0 rounded-2xl">
         <DialogHeader className="border-b border-neutral-200 p-4 rounded-t-2xl">
           <DialogTitle className="text-lg font-bold leading-7">
             Modifier un utilisateur

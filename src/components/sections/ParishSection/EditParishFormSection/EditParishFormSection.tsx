@@ -306,7 +306,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
           Modifier
         </Button>
       </DialogTrigger>
-      <DialogContent aria-describedby={undefined} className="min-w-[500px] w-min p-0 gap-0 rounded-2xl overflow-hidden">
+      <DialogContent aria-describedby={undefined} className="min-w-[500px] w-min max-h-[80vh] overflow-y-scroll p-0 gap-0 rounded-2xl">
         <DialogHeader className="border-b border-neutral-200 p-4 rounded-t-2xl">
           <DialogTitle className="text-lg font-bold leading-7">
             Mettre à jour la paroisse

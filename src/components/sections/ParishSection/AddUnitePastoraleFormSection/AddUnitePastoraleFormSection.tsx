@@ -129,7 +129,7 @@ export const AddUnitePastoraleFormSection = (): JSX.Element => {
           <span className="font-body-3 text-sm">Ajouter une unité</span>
         </Button>
       </DialogTrigger>
-      <DialogContent aria-describedby={undefined} className="w-[500px] p-0 gap-0 rounded-2xl overflow-hidden">
+      <DialogContent aria-describedby={undefined} className="w-[500px] md:w-[620px] max-h-[80vh] overflow-y-scroll p-0 gap-0 rounded-2xl">
         <DialogHeader className="border-b border-neutral-200 p-4 rounded-t-2xl">
           <DialogTitle className="text-lg font-bold leading-7">
             Créer une unité pastorale

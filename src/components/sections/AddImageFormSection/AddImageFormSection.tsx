@@ -129,7 +129,7 @@ export const AddImageFormSection = ({dossier_id}: {dossier_id?: string}): JSX.El
           Ajouter une image
         </Button>
       </DialogTrigger>
-      <DialogContent aria-describedby={undefined} className="max-w-4xl p-3 rounded-2xl">
+      <DialogContent aria-describedby={undefined} className="max-w-4xl max-h-[80vh] overflow-y-scroll p-3 rounded-2xl">
         <DialogClose className="absolute border-none w-5 h-5 top-[14px] right-[14px]">
         </DialogClose>
         <DialogHeader className='hidden'>

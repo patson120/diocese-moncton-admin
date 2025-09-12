@@ -205,6 +205,13 @@ export default function ParishSection() {
         }
         try {
             await apiClient.delete(`/api/bulletin_paroissial/${id}`);
+            setSelectedParish((prev) => {
+                if (!prev) return undefined; // Handle the case where `prev` is undefined
+                return {
+                  ...prev,
+                  bulletins: prev.bulletins?.filter((b) => b.id !== id), // Ensure `bulletins` is updated correctly
+                };
+              });
             toast.success("Bulletin supprimé avec succès !")
         } catch (error: any) {
             toast.warning(

@@ -289,7 +289,7 @@ export const AddParishFormSection = (): JSX.Element => {
           <span className="font-body-3 text-sm">Ajouter une paroisse</span>
         </Button>
       </DialogTrigger>
-      <DialogContent aria-describedby={undefined} className="min-w-[500px] w-min p-0 gap-0 rounded-2xl overflow-hidden">
+      <DialogContent aria-describedby={undefined} className="min-w-[500px] max-h-[80vh] overflow-y-scroll w-min p-0 gap-0 rounded-2xl">
         <DialogHeader className="border-b border-neutral-200 p-4 rounded-t-2xl">
           <DialogTitle className="text-lg font-bold leading-7">
             Créer une paroisse
