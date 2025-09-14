@@ -2,6 +2,7 @@
 'use client'
 
 import { Image as ImageType, Location, TypeParoisse } from "@/app/types";
+import { Editor } from "@/components/Editor/Editor";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -10,23 +11,22 @@ import { Loader } from "@/components/ui/loader";
 import { MultiSelect, Option } from "@/components/ui/multi-select";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import useRole from "@/hooks/use-role";
+import useRecaptcha from "@/hooks/useRecaptcha";
 import { apiClient } from "@/lib/axios";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTrigger } from "@radix-ui/react-dialog";
-import { Divide, PlusIcon } from "lucide-react";
+import { Label } from "@radix-ui/react-label";
+import { PlusIcon } from "lucide-react";
+import Image from "next/image";
 import { JSX, useEffect, useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { MapContainer } from "../../MapSection/map-container";
-import { Label } from "@radix-ui/react-label";
 import { GaleryPopup } from "../../GaleryPopup";
-import Image from "next/image";
-import { Editor } from "@/components/Editor/Editor";
-import useRole from "@/hooks/use-role";
-import ReCAPTCHA from "react-google-recaptcha";
-import useRecaptcha from "@/hooks/useRecaptcha";
+import { MapContainer } from "../../MapSection/map-container";
 
 
 // Generate hours from 00:00 to 23:59 in 30-minute intervals
@@ -53,24 +53,31 @@ const formSchemaOne = z.object({
   nom_fr: z.string().min(1, { message: "Nom de la paroisse requis" }),
   histoire_fr: z.string().min(1, { message: "Histoire de la paroisse requise" }),
 })
+
 const formSchemaTwo = z.object({
   nom_en: z.string().min(1, { message: "Parish name required" }),
   histoire_en: z.string().min(1, { message: "Parish history required" }),
 })
+
 const formSchemaThree = z.object({
   unite_pastorale: z.string().min(1, { message: "Unité pastorale requise" }),
   horaire_bureau: z.string().min(1, { message: "Veuillez renseigner les horaires de bureau" }),
   langue: z.string().min(1, { message: "La langue principale est requise" }),
 })
+
 const formSchemaFour = z.object({
   telephone: z.string().min(1, { message: "Téléphone requis" }),
   email: z.string().email({ message: "Email requis"}),
-  site_web: z.string().min(1, { message: "Site internet requis" }),
 })
 
 const formSchemaFive = z.object({
   jour: z.string().min(1, { message: "Jour de messe requis" }),
   selectedHours: z.array(z.string()), // Make this required
+});
+
+const formSchemaSix= z.object({
+  site_web: z.string().min(1, { message: "Site internet requis" }),
+  lien_youtube: z.string().optional(),
 });
 
 export const AddParishFormSection = (): JSX.Element => {
@@ -130,7 +137,6 @@ export const AddParishFormSection = (): JSX.Element => {
     defaultValues: {
       telephone: "",
       email: "",
-      site_web: "",
     },
   });
 
@@ -139,6 +145,14 @@ export const AddParishFormSection = (): JSX.Element => {
     defaultValues: {
       jour: "dimanche",
       selectedHours: [], // Ensure this is initialized as an empty array
+    },
+  });
+
+  const formSix = useForm<z.infer<typeof formSchemaSix>>({
+    resolver: zodResolver(formSchemaSix),
+    defaultValues: {
+      site_web: "",
+      lien_youtube: ""
     },
   });
 
@@ -163,6 +177,10 @@ export const AddParishFormSection = (): JSX.Element => {
 
   const onSubmitFive = async (values: z.infer<typeof formSchemaFive>) => {
     setStep(6)
+  }
+
+  const onSubmitSix = async (values: z.infer<typeof formSchemaSix>) => {
+    setStep(7)
   }
 
   const handleValidateHours = () => {
@@ -214,7 +232,8 @@ export const AddParishFormSection = (): JSX.Element => {
     formdata.append("histoire_en", formTwo.getValues("histoire_en"))
     formdata.append("telephone", formFour.getValues("telephone"))
     formdata.append("email", formFour.getValues("email"))
-    formdata.append("site_web", formFour.getValues("site_web"))
+    formdata.append("site_web", formSix.getValues("site_web"))
+    formdata.append("lien_youtube", formSix.getValues("lien_youtube") ?? "")
     formdata.append("horaires", horaires.map(item => `${item.jour}=${item.heures.join(";")}`).join(","))
     formdata.append("horaire_bureau", horairesBureau)
     formdata.append("langue", formThree.getValues("langue"))
@@ -222,12 +241,6 @@ export const AddParishFormSection = (): JSX.Element => {
     formdata.append("statut", '1')
     formdata.append("galerie_id", `${selectedImage?.id}`)
     formdata.append("adresse", `${location?.name};${location?.address}`)
-    
-    const data = {
-      code_postal: '',
-      lien_youtube: '',
-      pretre_responsable: '',
-    }
   
     try {
 
@@ -534,21 +547,7 @@ export const AddParishFormSection = (): JSX.Element => {
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={formFour.control}
-                  name="site_web"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Site internet paroisse</FormLabel>
-                      <FormControl>
-                        <Input type="url" placeholder="Entrez l'adresse du site" {...field}
-                          className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                
                 <div className="flex flex-col space-y-2">
                   <Label htmlFor="categorie" className="mb-2">Image de la paroisse</Label>
                   <GaleryPopup setSelectedImage={setSelectedImage} >
@@ -672,9 +671,72 @@ export const AddParishFormSection = (): JSX.Element => {
             </Form>
           </div>
         }
-
         {
           step === 6 &&
+          <div className="flex flex-col w-full p-10 pt-6 space-y-6">
+            <Form {...formSix}>
+              <form onSubmit={formSix.handleSubmit(onSubmitSix)} className="space-y-4">
+                
+                <FormField
+                  control={formSix.control}
+                  name="site_web"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Site internet paroisse</FormLabel>
+                      <FormControl>
+                        <Input type="url" placeholder="Entrez l'adresse du site" {...field}
+                          className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={formSix.control}
+                  name="lien_youtube"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Lien de la vidéo</FormLabel>
+                      <FormControl>
+                        <Input type="url" placeholder="Entrez le lien d'une vidéo" {...field}
+                          className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                { 
+                  (formSix.getValues("lien_youtube") !== "") &&
+                  <div className="w-full aspect-video bg-black rounded-lg overflow-hidden">
+                    <iframe
+                      src={formSix.getValues("lien_youtube")!.replace("watch?v=", "embed/")}
+                      title="Titre de la vidéo"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      className="w-full h-full"
+                    ></iframe>
+                  </div>
+                }
+                
+                <div className="flex flex-row gap-4">
+                  <Button variant={'outline'} onClick={() => setStep(5)} className="w-min px-8 mt-8 h-12 rounded-lg">
+                    Retour
+                  </Button>
+                  <Button type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
+                    Suivant
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </div>
+        }
+        {
+          step === 7 &&
           <div className="flex flex-col w-full p-10 pt-6 space-y-6">
             <h1 className="font-bold">Emplacement sur la map</h1>
             <div className="h-80 w-full bg-black/5 rounded-lg overflow-hidden">
@@ -687,24 +749,26 @@ export const AddParishFormSection = (): JSX.Element => {
             </div>
             <div className="flex flex-col space-y-2">
               <h1 className="font-bold">Localisation</h1>
-              <p className=" text-black">
+              <div className=" text-black">
                 {
                   location ?
-                  <span>
-                    {location?.name} {location?.address}<br /> 
-                    lat: {location?.lat.toFixed(6)} <br /> 
-                    lng: {location?.lng.toFixed(6)}
-                  </span> :
-                  <span>Entrez une adresse pour voir les informations s'afficher</span>
+                  <div className="">
+                    <p>{location?.name} {location?.address}</p>
+                    <div className="flex flex-row gap-2">
+                      <span>lat: {location?.lat.toFixed(6)};</span>
+                      <span>lng: {location?.lng.toFixed(6)}</span>
+                    </div>
+                  </div> :
+                  <span className="w-full">Entrez une adresse pour voir les informations s'afficher</span>
                 }
-               </p>
+               </div>
             </div>
             <ReCAPTCHA
               sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
               onChange={handleRecaptchaChange}
             />
             <div className="flex flex-row gap-4">
-              <Button variant={'outline'} onClick={() => setStep(5)} className="w-min px-8 mt-8 h-12 rounded-lg">
+              <Button variant={'outline'} onClick={() => setStep(6)} className="w-min px-8 mt-8 h-12 rounded-lg">
                 Retour
               </Button>
               <Button disabled={isLoading || !captchaToken } onClick={handleSubmitForm} className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
