@@ -796,7 +796,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
               <Button variant={'outline'} onClick={() => setStep(6)} className="w-min px-8 mt-8 h-12 rounded-lg">
                 Retour
               </Button>
-              <Button disabled={ isLoading || !captchaToken } onClick={handleSubmitForm} className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
+              <Button disabled={ isLoading } onClick={handleSubmitForm} className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
                 { isLoading && <Loader className='h-5 w-5, mr-2' /> }
                 Modifier la paroisse
               </Button>
