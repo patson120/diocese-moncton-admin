@@ -37,9 +37,9 @@ export const AddBulletinFormSection = ( {paroisse_id}: { paroisse_id: number}): 
 
   const handleAddRessource = async () => {
 
-    if (!canAddBulletin()){ 
+    if (!canAddBulletin(paroisse_id)){ 
       return toast.success("Vous n'avez pas le droit d'effectuer cette opération !")
-  }
+    }
     if (isLoading) return
     if (!file) {
       toast.warning(
@@ -92,10 +92,12 @@ export const AddBulletinFormSection = ( {paroisse_id}: { paroisse_id: number}): 
     }
   }
 
+  if (!canAddBulletin(paroisse_id)) return <div></div>
+
   return (
     <Dialog open={openModal} onOpenChange={setOpenModal}>
       <DialogTrigger asChild>
-        <Button disabled={!canAddBulletin()} onClick={( ) => setOpenModal(true) } className="bg-blue hover:bg-blue/90 text-white gap-2">
+        <Button disabled={!canAddBulletin(paroisse_id)} onClick={( ) => setOpenModal(true) } className="bg-blue hover:bg-blue/90 text-white gap-2">
           <PlusIcon className="w-5 h-5" />
           Ajouter un bulletin
         </Button>

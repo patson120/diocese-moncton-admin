@@ -171,6 +171,7 @@ export type User = {
     created_at: string;
     updated_at: string;
     privilege: string[];
+    paroisse_id: number[];
     role: Role;
     token: string;
 }

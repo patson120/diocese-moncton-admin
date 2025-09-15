@@ -237,13 +237,19 @@ const useRole = () => {
 
     const canDeleteMessage = (): boolean => canUpdateMessage()
 
-    const canAddBulletin = (): boolean => {
+    const canAddBulletin = (paroisseId: number): boolean => {
         switch (userJson?.role?.sigle!) {
             case "admin": return true
             case "editeur": return false
             case "lecteur": return false
             case "moderateur": return false
-            case "bulletin": return false
+            case "bulletin": return userJson?.paroisse_id.includes(paroisseId) ?? false
+                /* if (userJson?.paroisse_id.length){
+                    
+                }
+                else{
+                    return false
+                } */
             default: return false
         }
     }
@@ -253,7 +259,7 @@ const useRole = () => {
             case "editeur": return false
             case "lecteur": return false
             case "moderateur": return false
-            case "bulletin": return false
+            case "bulletin": return true
             default: return false
         }
     }
