@@ -239,7 +239,7 @@ const useRole = () => {
 
     const canAddBulletin = (paroisseId: number): boolean => {
         switch (userJson?.role?.sigle!) {
-            case "admin": return true
+            case "admin": return false
             case "editeur": return false
             case "lecteur": return false
             case "moderateur": return false
@@ -255,7 +255,7 @@ const useRole = () => {
     }
     const canUpdateBulletin = (paroisseId: number): boolean => {
         switch (userJson?.role?.sigle!) {
-            case "admin": return true
+            case "admin": return false
             case "editeur": return false
             case "lecteur": return false
             case "moderateur": return false
