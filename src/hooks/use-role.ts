@@ -225,6 +225,7 @@ const useRole = () => {
             default: return false
         }
     }
+
     const canUpdateMessage = (): boolean => {
         switch (userJson?.role?.sigle!) {
             case "admin": return true
@@ -244,6 +245,7 @@ const useRole = () => {
             default: return false
         }
     }
+
     const canUpdateBulletin = (paroisseId: number): boolean => {
         switch (userJson?.role?.sigle!) {
             case "admin": return true
@@ -265,6 +267,7 @@ const useRole = () => {
             default: return false
         }
     }
+
     const canUpdatePage = (): boolean => {
         switch (userJson?.role?.sigle!) {
             case "admin": return true
@@ -286,6 +289,7 @@ const useRole = () => {
             default: return false
         }
     }
+    
     const canUpdateLink = (): boolean => {
         switch (userJson?.role?.sigle!) {
             case "admin": return true
