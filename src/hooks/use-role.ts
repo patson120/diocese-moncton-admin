@@ -253,18 +253,18 @@ const useRole = () => {
             default: return false
         }
     }
-    const canUpdateBulletin = (): boolean => {
+    const canUpdateBulletin = (paroisseId: number): boolean => {
         switch (userJson?.role?.sigle!) {
             case "admin": return true
             case "editeur": return false
             case "lecteur": return false
             case "moderateur": return false
-            case "bulletin": return true
+            case "bulletin": return userJson?.paroisse_id.includes(paroisseId) ?? false
             default: return false
         }
     }
 
-    const canDeleteBulletin = (): boolean => canUpdateBulletin()
+    const canDeleteBulletin = (paroisseId: number): boolean => canUpdateBulletin(paroisseId)
 
     const isCurrentUser = (userId: number): boolean => userJson?.id! === userId
 

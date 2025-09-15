@@ -200,7 +200,7 @@ export default function ParishSection() {
     }
 
     const handleDeleteRessource = async (id: number) => {
-        if (!canDeleteBulletin()){ 
+        if (!canDeleteBulletin(id)){ 
             return toast.success("Vous n'avez pas le droit d'effectuer cette opération !")
         }
         try {
