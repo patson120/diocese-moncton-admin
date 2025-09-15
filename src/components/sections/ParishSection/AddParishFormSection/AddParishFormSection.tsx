@@ -771,7 +771,7 @@ export const AddParishFormSection = (): JSX.Element => {
               <Button variant={'outline'} onClick={() => setStep(6)} className="w-min px-8 mt-8 h-12 rounded-lg">
                 Retour
               </Button>
-              <Button disabled={isLoading } onClick={handleSubmitForm} className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
+              <Button disabled={isLoading} onClick={handleSubmitForm} className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
                 { isLoading && <Loader className='h-5 w-5, mr-2' /> }
                 Ajouter la paroisse
               </Button>
