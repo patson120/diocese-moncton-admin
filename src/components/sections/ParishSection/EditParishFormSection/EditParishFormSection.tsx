@@ -162,7 +162,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
     resolver: zodResolver(formSchemaSix),
     defaultValues: {
       site_web: `${parish.site_web}`,
-      lien_youtube: `${parish.lien_youtube}`,
+      lien_youtube: parish.lien_youtube,
     },
   });
 
@@ -735,7 +735,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
                 />
 
                 { 
-                  (formSix.getValues("lien_youtube") !== "") &&
+                  (formSix.getValues("lien_youtube")) &&
                   <div className="w-full aspect-video bg-black rounded-lg overflow-hidden">
                     <iframe
                       src={formSix.getValues("lien_youtube")!.replace("watch?v=", "embed/")}

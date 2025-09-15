@@ -268,7 +268,6 @@ const useRole = () => {
             case "editeur": return false
             case "lecteur": return false
             case "moderateur": return false
-            case "bulletin": return false
             default: return false
         }
     }
@@ -278,7 +277,6 @@ const useRole = () => {
             case "editeur": return false
             case "lecteur": return false
             case "moderateur": return false
-            case "bulletin": return false
             default: return false
         }
     }
@@ -291,7 +289,6 @@ const useRole = () => {
             case "editeur": return false
             case "lecteur": return false
             case "moderateur": return false
-            case "bulletin": return false
             default: return false
         }
     }
@@ -301,14 +298,11 @@ const useRole = () => {
             case "editeur": return false
             case "lecteur": return false
             case "moderateur": return false
-            case "bulletin": return false
             default: return false
         }
     }
 
     const canDeleteLink = (): boolean => canUpdateLink()
-
-
 
     return {
         canAddUser,
