@@ -63,14 +63,14 @@ export const AddImageFormSection = ({dossier_id}: {dossier_id?: string}): JSX.El
     setIsLoading(true)
     // Creer l'image de couverture
     try {
-      const recaptchaReponse = await verifyRecaptchaToken();
+      /* const recaptchaReponse = await verifyRecaptchaToken();
       const recaptchaData = await recaptchaReponse.json();
 
       if (!recaptchaData.success) {
         toast.error(recaptchaData.message || 'Erreur de vérification reCAPTCHA');
         setIsLoading(false);
         return;
-      }
+      } */
       let result: any;
       for (let index = 0; index < files.length; index++) {
         result = await handleAddSingleFile(files[index])
@@ -212,12 +212,12 @@ export const AddImageFormSection = ({dossier_id}: {dossier_id?: string}): JSX.El
             </Select>
           }
         </div>
-        <ReCAPTCHA
+       {/*  <ReCAPTCHA
           sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
           onChange={handleRecaptchaChange}
-        />
+        /> */}
         <div className='flex justify-center items-center  my-4 gap-3'>
-          <Button disabled={ isLoading || !captchaToken } onClick={handleAddImage} className="px-3.5 py-0 bg-blue text-white rounded-[7px]">
+          <Button disabled={ isLoading } onClick={handleAddImage} className="px-3.5 py-0 bg-blue text-white rounded-[7px]">
             { isLoading && <Loader className="h-5 w-5 mr-2" /> }
             <span className="font-body-3 font-bold whitespace-nowrap">{ files.length > 1 ? `Ajouter les images (${files.length})` : "Ajouter l'image" }</span>
           </Button>         
