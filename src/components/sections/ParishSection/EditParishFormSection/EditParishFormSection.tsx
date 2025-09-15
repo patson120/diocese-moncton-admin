@@ -72,7 +72,7 @@ const formSchemaFive = z.object({
 });
 
 const formSchemaSix= z.object({
-  site_web: z.string().min(1, { message: "Site internet requis" }),
+  site_web: z.string().optional(), // z.string().min(1, { message: "Site internet requis" }),
   lien_youtube: z.string().optional(),
 });
 
@@ -244,14 +244,14 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
     formdata.append("histoire_en", formTwo.getValues("histoire_en"))
     formdata.append("telephone", formFour.getValues("telephone"))
     formdata.append("email", formFour.getValues("email"))
-    formdata.append("site_web", formSix.getValues("site_web"))
+    formdata.append("site_web", formSix.getValues("site_web") ?? "")
     formdata.append("lien_youtube", formSix.getValues("lien_youtube") ?? "")
     formdata.append("horaires", horaires.map(item => `${item.jour}=${item.heures.join(";")}`).join(","))
     formdata.append("horaire_bureau", horairesBureau)
     formdata.append("langue", formThree.getValues("langue"))
     formdata.append("gps", `${location?.lat};${location?.lng}`)
     formdata.append("statut", `${parish.statut}`)
-    formdata.append("galerie_id", `${selectedImage?.id}`)
+    if (selectedImage?.id){formdata.append("galerie_id", `${selectedImage?.id}`)}
     formdata.append("adresse", `${location?.name};${location?.address}`)
   
     try {

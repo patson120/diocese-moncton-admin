@@ -537,7 +537,7 @@ export default function ParishSection() {
                                         fill
                                         priority
                                         alt="Église Immaculée-Conception"
-                                        src={selecteParish?.galerie[0] ? `${process.env.NEXT_PUBLIC_API_URL}/${selecteParish?.galerie[0].path}`: `/rectangle-2492.svg`}
+                                        src={selecteParish?.galerie.length ? `${process.env.NEXT_PUBLIC_API_URL}/${selecteParish?.galerie[0].path}`: `/assets/img/paroisse.png`}
                                     />
                                 </div>
 
