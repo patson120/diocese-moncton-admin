@@ -161,7 +161,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
   const formSix = useForm<z.infer<typeof formSchemaSix>>({
     resolver: zodResolver(formSchemaSix),
     defaultValues: {
-      site_web: `${parish.site_web}`,
+      site_web: parish.site_web ?? '',
       lien_youtube: parish.lien_youtube,
     },
   });
@@ -268,7 +268,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
         'Content-Type': 'multipart/form-data'
       });
       if (response.id) {
-        toast.success('Paroisse ajoutée avec succès');
+        toast.success('Paroisse mise à jour avec succès');
         setTimeout(() => {
           window.location.reload();
         }, 1500);

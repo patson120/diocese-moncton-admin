@@ -537,7 +537,7 @@ export default function ParishSection() {
                                         fill
                                         priority
                                         alt="Église Immaculée-Conception"
-                                        src={selecteParish?.galerie.length ? `${process.env.NEXT_PUBLIC_API_URL}/${selecteParish?.galerie[0].path}`: `/assets/img/paroisse.png`}
+                                        src={selecteParish?.galerie.length ? `${process.env.NEXT_PUBLIC_API_URL}/${selecteParish?.galerie[0].path}`: `/assets/img/paroisse.jpeg`}
                                     />
                                 </div>
 
@@ -597,6 +597,24 @@ export default function ParishSection() {
                                     */}
                                 </p>
                             </section>
+
+                            {/* Video section */}
+                            {
+                                selecteParish?.lien_youtube &&
+                                <section className="flex flex-col gap-2 ">
+                                    <h2 className="font-heading-5 text-2xl text-[#1c0004] mb-3 font-bold">Vidéo de la paroisse</h2>
+                                    <div className="w-full aspect-video bg-black rounded-lg overflow-hidden">
+                                        <iframe
+                                            src={selecteParish?.lien_youtube.replace("watch?v=", "embed/")}
+                                            title="Titre de la vidéo"
+                                            frameBorder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowFullScreen
+                                            className="w-full h-full">
+                                        </iframe>
+                                    </div>
+                                </section>
+                            }
 
                             {/* Mass schedule section */}
                             <section className="flex flex-col gap-2 w-full">
