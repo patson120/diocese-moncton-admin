@@ -105,14 +105,14 @@ export const EditUserFormSection = ({user}: { user: User}): JSX.Element => {
       statut: values.statut === 'actif' ? 1 : 0,
     }
     try {
-      const recaptchaReponse = await verifyRecaptchaToken();
+      /* const recaptchaReponse = await verifyRecaptchaToken();
       const recaptchaData = await recaptchaReponse.json();
 
       if (!recaptchaData.success) {
         toast.error(recaptchaData.message || 'Erreur de vérification reCAPTCHA');
         setIsLoading(false);
         return;
-      }
+      } */
 
       const response: any = await apiClient.put(`/api/administrateurs/${user.id}`, data);
       if (response.id ) {
@@ -343,13 +343,13 @@ export const EditUserFormSection = ({user}: { user: User}): JSX.Element => {
                 )}
               />
 
-              <ReCAPTCHA
+             {/*  <ReCAPTCHA
                 sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
                 onChange={handleRecaptchaChange}
-              />
+              /> */}
 
               <DialogFooter>
-                <Button disabled={isLoading || !captchaToken } type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
+                <Button disabled={isLoading } type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
                   {isLoading && <Loader className="h-5 w-5 mr-2" />}
                   Mettre à jour l’utilisateur
                 </Button>
