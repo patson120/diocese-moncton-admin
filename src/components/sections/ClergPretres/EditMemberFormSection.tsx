@@ -79,7 +79,7 @@ const defaultMember = {
 
 const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Element => {
 
-  const { captchaToken, handleRecaptchaChange, verifyRecaptchaToken } = useRecaptcha()
+  const { captchaToken, handleRecaptchaChange, verifyRecaptchaToken } = useRecaptcha()  
 
   const [member, setMember] = useState(defaultMember);
   const [fileImage, setFileImage] = useState<File | undefined>();
@@ -90,7 +90,7 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
     defaultValues: {
       nom: memberData.nom,
       fonction: `${fonctions.find((f) => f.intitule_fr === memberData.poste)?.id}`,
-      etablissement: `${memberData?.unites[0]?.id}`,
+      etablissement: memberData?.unites.length ? `${memberData?.unites[0]?.id}`: '',
     },
   });
 
@@ -129,6 +129,10 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
     if (isLoading) return
     setIsloading(true)
 
+    // console.log(JSON.stringify(memberData, null, 2));
+    // console.log(memberData?.unites.length > 0 ? `${memberData?.unites[0]?.id}`: 'Yess');
+    
+
     const formdata = new FormData();
     formdata.append("categorie_id", `${data.poste}`);
     formdata.append("nom", `${data.nom}`);
@@ -139,6 +143,7 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
     if (fileImage){
       formdata.append("image", fileImage!);
     }
+    
     if (data.etablissement){
       formdata.append("etablissement_id", `${data.etablissement},`); 
     }
@@ -147,14 +152,14 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
 
     try {
 
-      const recaptchaReponse = await verifyRecaptchaToken();
+      /* const recaptchaReponse = await verifyRecaptchaToken();
       const recaptchaData = await recaptchaReponse.json();
 
       if (!recaptchaData.success) {
         toast.error(recaptchaData.message || 'Erreur de vérification reCAPTCHA');
         setIsloading(false);
         return;
-      }
+      } */
 
       const response: any = await apiClient.post(`/api/membres/${memberData.id}?_method=PUT`, formdata, {
         'Content-Type': 'multipart/form-data'
@@ -166,7 +171,7 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
         toast.success('Membre modifié avec succès');
         setFileImage(undefined)
         setTimeout(() => {
-          window.location.reload()
+          // window.location.reload()
         }, 1500);
       }
       else  {
@@ -418,15 +423,15 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
                     </FormItem>
                   )}
                 />
-                <ReCAPTCHA
+                {/* <ReCAPTCHA
                   sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
                   onChange={handleRecaptchaChange}
-                />
+                /> */}
                 <div className="flex flex-row gap-4">
                   <Button variant={'outline'} onClick={() => setStep(1)} className="w-1/3 mt-8 h-12 rounded-lg">
                     Retour
                   </Button>
-                  <Button disabled={ isLoading || !captchaToken } type="submit" className="w-2/3 h-12 mt-8 bg-blue text-white rounded-lg">
+                  <Button disabled={ isLoading } type="submit" className="w-2/3 h-12 mt-8 bg-blue text-white rounded-lg">
                     { isLoading && <Loader className='text-white mr-2' /> }
                     Mettre à jour
                   </Button>

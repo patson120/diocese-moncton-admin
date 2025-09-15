@@ -151,14 +151,14 @@ export default function AddMemberFormSection(){
     formdata.append("description_en", `${data.description_en}`);
 
     try {
-      const recaptchaReponse = await verifyRecaptchaToken();
+      /* const recaptchaReponse = await verifyRecaptchaToken();
       const recaptchaData = await recaptchaReponse.json();
 
       if (!recaptchaData.success) {
         toast.error(recaptchaData.message || 'Erreur de vérification reCAPTCHA');
         setIsloading(false);
         return;
-      }
+      } */
 
       const response: any = await apiClient.post('/api/membres', formdata, {
         'Content-Type': 'multipart/form-data'
@@ -429,15 +429,15 @@ export default function AddMemberFormSection(){
                     </FormItem>
                   )}
                 />
-                <ReCAPTCHA
+               {/*  <ReCAPTCHA
                   sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
                   onChange={handleRecaptchaChange}
-                />
+                /> */}
                 <div className="flex flex-row gap-4">
                   <Button variant={'outline'} onClick={() => setStep(1)} className="w-1/3 mt-8 h-12 rounded-lg">
                     Retour
                   </Button>
-                  <Button disabled={ isLoading || !captchaToken } type="submit" className="w-2/3 h-12 mt-8 bg-blue text-white rounded-lg">
+                  <Button disabled={ isLoading } type="submit" className="w-2/3 h-12 mt-8 bg-blue text-white rounded-lg">
                     { isLoading && <Loader className='text-white mr-2' /> }
                     Ajouter ce membre
                   </Button>
