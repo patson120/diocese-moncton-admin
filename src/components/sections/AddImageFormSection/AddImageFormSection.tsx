@@ -162,7 +162,7 @@ export const AddImageFormSection = ({dossier_id}: {dossier_id?: string}): JSX.El
                     src="/vector.svg"
                   />
                   <div className="text-center">
-                    <h4 className="font-bold">Ajouter une image</h4>
+                    <h4 className="font-bold">Sélectionner une ou plusieurs image(s)</h4>
                     <p className="text-gray">png, jpg, jpeg, svg, gif, webp. ajoutez des images optimisées</p>
                   </div>
                 </div>        
@@ -189,22 +189,28 @@ export const AddImageFormSection = ({dossier_id}: {dossier_id?: string}): JSX.El
 
         <div className="flex flex-col space-y-2 z-[10]">
           <Label className="text-right text-gray">Fichiers ({files.length}) </Label>
-          <Label className="mb-1">Mettre l'image dans... </Label>
-          <Select 
-              onValueChange={setFolderId}
-              defaultValue={folderId}>
-              <SelectTrigger className="h-11 px-3 py-3.5 rounded-lg border border-neutral-200 text-[#454545]">
-                <SelectValue placeholder="Sélectionnez un dossier" />
-              </SelectTrigger>
-              <SelectContent className="bg-white h-[180px] overflow-y-scroll v-scroll border border-neutral-200 rounded-md">
-                <SelectItem disabled value="0">Aucun</SelectItem>
-                {
-                  folders && folders.map(f => (
-                    <SelectItem className="w-full px-6" key={f.id} value={`${f.id}`}>{f.titre_fr}</SelectItem>
-                  ))
-                }
-              </SelectContent>
-          </Select>
+          {
+            dossier_id &&
+            <Label className="mb-1">Classer le(s) image(s) dans... </Label>
+          }
+          {
+            dossier_id &&
+            <Select 
+                onValueChange={setFolderId}
+                defaultValue={folderId}>
+                <SelectTrigger className="h-11 px-3 py-3.5 rounded-lg border border-neutral-200 text-[#454545]">
+                  <SelectValue placeholder="Sélectionnez un dossier" />
+                </SelectTrigger>
+                <SelectContent className="bg-white h-[180px] overflow-y-scroll v-scroll border border-neutral-200 rounded-md">
+                  <SelectItem disabled value="0">Aucun</SelectItem>
+                  {
+                    folders && folders.map(f => (
+                      <SelectItem className="w-full px-6" key={f.id} value={`${f.id}`}>{f.titre_fr}</SelectItem>
+                    ))
+                  }
+                </SelectContent>
+            </Select>
+          }
         </div>
         <ReCAPTCHA
           sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
