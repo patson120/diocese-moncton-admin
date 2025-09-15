@@ -171,7 +171,7 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
         toast.success('Membre modifié avec succès');
         setFileImage(undefined)
         setTimeout(() => {
-          // window.location.reload()
+          window.location.reload()
         }, 1500);
       }
       else  {
