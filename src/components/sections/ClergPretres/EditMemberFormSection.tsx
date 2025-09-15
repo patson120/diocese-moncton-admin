@@ -144,7 +144,7 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
       formdata.append("image", fileImage!);
     }
     
-    if (data.etablissement){
+    if (data.etablissement && data.etablissement !== 'undefined'){
       formdata.append("etablissement_id", `${data.etablissement},`); 
     }
     formdata.append("description_fr", `${data.description_fr}`);
