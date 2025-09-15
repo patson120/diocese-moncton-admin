@@ -1,15 +1,18 @@
 
 'use client'
 
+import { Paroisse, TypeParoisse } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Loader } from "@/components/ui/loader";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import useRole from "@/hooks/use-role";
 import useRecaptcha from "@/hooks/useRecaptcha";
 import { apiClient } from "@/lib/axios";
+import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { PlusIcon } from "lucide-react";
@@ -23,8 +26,10 @@ import * as z from "zod";
 const formSchema = z.object({
   nom: z.string().min(1, "Le nom est requis"),
   email: z.string().email("L'adresse email n'est pas valide"),
-  role: z.enum(["admin", "moderateur", "editeur", "lecteur"]),
+  role: z.enum(["admin", "bulletin", "moderateur", "editeur", "lecteur"]),
   statut: z.enum(["actif", "inactif"]),
+  paroisse_id: z.string().optional(),
+  unite_id: z.string().optional(),
 });
 
 export const AddUserFormSection = (): JSX.Element => {
@@ -36,10 +41,24 @@ export const AddUserFormSection = (): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false)
  
   const [roles, setRoles] = useState<any>()
+  const [parishes, setParishes] = useState<Paroisse[]>([])
+  const [unitePastorles, setUnitePastorles] = useState<TypeParoisse[]>([])
+  
+  const [selectedCategory, setSelectedCategory] = useState('paroisse')
 
   const getRoles = async () => {
     const response = await apiClient.get("/api/roles")
     setRoles(response)    
+  }
+
+  const getParishes = async () => {
+    const response: Paroisse[] = await apiClient.get("/api/paroisses")
+    setParishes(response)    
+  }
+
+  const getUnitePastorales = async () => {
+    const response: TypeParoisse[] = await apiClient.get("/api/type_paroisses")
+    setUnitePastorles(response)    
   }
 
   useEffect(() => {
@@ -53,10 +72,22 @@ export const AddUserFormSection = (): JSX.Element => {
       email: "",
       role: "lecteur",
       statut: 'actif',
+      paroisse_id: "",
     },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (form.watch("role") === "bulletin" ){
+      if (!form.watch("paroisse_id") && !form.watch("unite_id")){
+        toast.error(
+          <div className='p-3 bg-red-500 text-white rounded-md'>
+            Veuillez sélectionner une paroisse ou une unité rattaché à rôle
+          </div>
+        )
+        return
+      }
+    }
+
     if (isLoading) return 
     setIsLoading(true)
     
@@ -64,6 +95,8 @@ export const AddUserFormSection = (): JSX.Element => {
       nom: values.nom,
       email: values.email,
       role_id: roles.find((role: any) => role.sigle === values.role)?.id,
+      paroisse_id: values.paroisse_id ?? null,
+      unite_id: values.unite_id ?? null,
       password: '1234',
       statut: values.statut === 'actif' ? 1 : 0,
     };
@@ -108,8 +141,22 @@ export const AddUserFormSection = (): JSX.Element => {
     return <></>
   }
 
+  const onOpenChange = async (val:boolean)  => {
+    if (val){
+      await getParishes()
+      await getUnitePastorales()
+    }
+  }
+
+  useEffect(() => {
+    if (form.watch("role") !== "bulletin"){
+      setSelectedCategory("")
+    }
+  }, [form.watch("role")])
+  
+
   return (
-    <Dialog>
+    <Dialog onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
         <Button className="bg-blue rounded-[7px] h-10 gap-2 px-3.5 py-0">
           <PlusIcon className="w-5 h-5" />
@@ -186,6 +233,86 @@ export const AddUserFormSection = (): JSX.Element => {
                   </FormItem>
                 )}
               />
+              {
+                form.getValues("role") === "bulletin" &&
+                <div className="flex flex-col space-y-2 mt-10">
+                  <Label htmlFor="categorie" className="mb-2">Rattaché l'utilisateur à:</Label>
+                  <div className="flex flex-wrap gap-3">
+                    <div onClick={() => setSelectedCategory('paroisse')}
+                      className={cn(
+                        'px-5 py-2 border border-gray/10 rounded-full cursor-pointer',
+                        selectedCategory === 'paroisse' && 'bg-blue text-white border-none'
+                      )}>une paroisse</div>
+                      <div onClick={() => setSelectedCategory("unite_pastorale")}
+                        className={cn(
+                          'px-5 py-2 border border-gray/10 rounded-full cursor-pointer',
+                          selectedCategory === 'unite_pastorale' && 'bg-blue text-white border-none'
+                        )}>une unite pastorale</div>
+                  </div>
+                </div>
+              }
+              {
+                selectedCategory === "paroisse" &&
+                <FormField
+                  control={form.control}
+                  name="paroisse_id"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Paroisse</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}>
+                        <FormControl className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200">
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sélectionnez une paroisse" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {
+                            parishes && parishes.map((parish) => (
+                              <SelectItem key={parish.id} value={`${parish.id}`}>
+                                {parish.nom}
+                              </SelectItem>
+                            ))
+                          }
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              }
+              {
+                selectedCategory === "unite_pastorale" &&
+                <FormField
+                  control={form.control}
+                  name="unite_id"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Unité pastorale</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}>
+                        <FormControl className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200">
+                          <SelectTrigger>
+                            <SelectValue placeholder="Sélectionnez une unité" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {
+                            unitePastorles && unitePastorles.map((unite) => (
+                              <SelectItem key={unite.id} value={`${unite.id}`}>
+                                {unite.intitule_fr}
+                              </SelectItem>
+                            ))
+                          }
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              }
 
               <FormField
                 control={form.control}

@@ -27,8 +27,8 @@ export default function ContentDisplaySection() {
   const navItems = [
     { id: "actualites", label: "Actualités", route: "actualite", labelRouter: "une actualité", active: true },
     { id: "messages", label: "Messages évêques", route: "/message", labelRouter: "un message", active: false },
-    { id: "communautes", label: "Communautés", route: "#", labelRouter: "un ...", active: false },
-    { id: "mouvements", label: "Mouvements", route: "#", labelRouter: "un mouvement", active: false },
+    /* { id: "communautes", label: "Communautés", route: "#", labelRouter: "un ...", active: false },
+    { id: "mouvements", label: "Mouvements", route: "#", labelRouter: "un mouvement", active: false }, */
   ];
   const [selectedItem, setSelectedItem] = useState(navItems[0])
   const [query, setQuery] = useState(params.get('query')?.toString() || '')

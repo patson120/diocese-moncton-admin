@@ -362,7 +362,7 @@ export default function ParishSection() {
                                                     />
                                                     <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
                                                 </div>
-                                                <Button
+                                               {/*  <Button
                                                     variant="outline"
                                                     className="h-11 flex items-center gap-2.5 border border-[#d9d9d9] rounded-lg">
                                                     <ListFilter className="w-5 h-5" />
@@ -375,7 +375,7 @@ export default function ParishSection() {
                                                     variant="outline"
                                                     className="w-11 h-11 p-0 flex items-center justify-center border border-[#d9d9d9] rounded-lg">
                                                     <LayoutGridIcon className="w-5 h-5" />
-                                                </Button>
+                                                </Button> */}
                                             </div>
                                         </div>
                                     </div>
