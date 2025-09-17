@@ -56,7 +56,7 @@ const formSchemaThree = z.object({
 })
 
 const formSchemaFour = z.object({
-  contact: z.string().min(1, {message: "Un contact est requis"}),
+  contact: z.string().optional(), // z.string().min(1, {message: "Un contact est requis"}),
   // gps: z.string().min(1, {message: "Un GPS est requis"}),
   // lieu: z.string().min(1, {message: "Un lieu est requis"}),
   // is_planifier: z.number().min(0, {message: "Un plan est requis"}),
@@ -228,7 +228,7 @@ export const EditEventFormSection = ({ eventData, duplicated = false} : EditEven
   const onSubmitForth= async (values: z.infer<typeof formSchemaFour>) => {
     setEvent(prev => (
       { ...prev,
-        contact: values.contact,
+        contact: values.contact!,
       }
     ))
     await handleUpdateEvent()

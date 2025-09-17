@@ -49,7 +49,7 @@ export default function ActuDialog(
             categorie_id: categorie?.id!,
             motcles: motcles ? motcles.split(',') : [],
             is_planifier: isPlan ? 1 : 0,
-            is_actif: 0,// isPlan ? 0 : 1,
+            is_actif: isPlan ? 0 : 1,
             date_planification: `${date}`,
             // date_planification: `${date}T${hour}:00.000000Z`
         }
@@ -131,7 +131,7 @@ export default function ActuDialog(
                         <div className="flex flex-col justify-between w-[350px] h-full items-start gap-4">
                             <div className='flex flex-col items-start gap-4 '>
                                 <div className="flex flex-col items-start gap-2 self-stretch w-full">
-                                    <div className='flex justify-between items-center'>
+                                    <div className='w-full flex justify-between items-center'>
                                         <label className="self-stretch mt-[-1.00px] font-body-3 text-noir-dashboard">
                                             Catégorie
                                         </label>
