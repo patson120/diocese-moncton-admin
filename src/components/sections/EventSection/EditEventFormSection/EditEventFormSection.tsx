@@ -105,7 +105,8 @@ export const EditEventFormSection = ({ eventData, duplicated = false} : EditEven
     resolver: zodResolver(formSchemaThree),
     defaultValues: {
       heure_event: eventData.heure_event,
-      date_event: (Number(eventData.date_event.split("-")[0]) + 1).toString() + eventData.date_event.slice(4, )  // eventData.date_event,
+      // date_event: (Number(eventData.date_event.split("-")[0]) + 1).toString() + eventData.date_event.slice(4, )  // eventData.date_event,
+      date_event: eventData.date_event,
     },
   });
 
@@ -115,8 +116,6 @@ export const EditEventFormSection = ({ eventData, duplicated = false} : EditEven
       contact: eventData.contact,
     },
   });
-
-
 
   const getCategories = async () => {
     const response: Category[] = await apiClient.get(`/api/categories?menu=event`)
