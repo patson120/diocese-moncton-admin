@@ -22,6 +22,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 const formSchemaOne = z.object({
   nom_fr: z.string().min(1, { message: "Nom requis" }),
 })
+
 const formSchemaTwo = z.object({
   nom_en: z.string().min(1, { message: "Name required" }),
 })
@@ -53,6 +54,10 @@ export const AddUnitePastoraleFormSection = ( { unite }: { unite?: TypeParoisse 
     setStep(2)
   }
 
+  const onSubmitSecond = async (values: z.infer<typeof formSchemaTwo>) => {
+    setStep(3)
+  }
+
   const handleSubmitForm = async () => {
     if (isLoading) return
     setIsLoading(true)
@@ -73,7 +78,7 @@ export const AddUnitePastoraleFormSection = ( { unite }: { unite?: TypeParoisse 
       }
       let response: any = null;
       if (unite){
-        response = await apiClient.put(`/api/type_paroisses/${unite?.id}`, formData, {
+        response = await apiClient.post(`/api/type_paroisses/${unite?.id}?_method=PUT`, formData, {
           'Content-Type': 'multipart/form-data'
         });
       }
@@ -111,6 +116,15 @@ export const AddUnitePastoraleFormSection = ( { unite }: { unite?: TypeParoisse 
     if (unite){
       formOne.setValue("nom_fr", unite.intitule_fr ?? "")
       formTwo.setValue("nom_en", unite.intitule_en ?? "")
+      if (unite.gps !=null){
+        setLocation({
+          address: '',
+          name: '',
+          lat: parseFloat(unite.gps.split(';')[0]),
+          lng: parseFloat(unite.gps.split(';')[1]),
+          placeId: `${(new Date()).getTime()}`,
+        })
+      }
     }
   }, [unite])
   
@@ -190,7 +204,7 @@ export const AddUnitePastoraleFormSection = ( { unite }: { unite?: TypeParoisse 
           step === 2 &&
           <div className="flex flex-col w-full p-10 pt-6 space-y-4">
             <Form {...formTwo}>
-              <form onSubmit={formTwo.handleSubmit(handleSubmitForm)} className="space-y-4">
+              <form onSubmit={formTwo.handleSubmit(onSubmitSecond)} className="space-y-4">
                 <FormField
                   control={formTwo.control}
                   name="nom_en"
@@ -206,25 +220,21 @@ export const AddUnitePastoraleFormSection = ( { unite }: { unite?: TypeParoisse 
                     </FormItem>
                   )}
                 />
-                <div className="h-32"></div>
-                <ReCAPTCHA
-                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
-                  onChange={handleRecaptchaChange}
-                />
+                <div className="h-40"></div>
                 <div className="flex flex-row gap-4">
                   <Button variant={'outline'} onClick={() => setStep(1)} className="w-min px-8 mt-8 h-12 rounded-lg">
                     Retour
                   </Button>
-                  <Button disabled={ isLoading || !captchaToken } type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
+                  <Button disabled={ isLoading } type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
                     {  isLoading && <Loader className=" w-5 h-5 mr-2" />}
-                    { unite ? "Modifier l'unite pastorale" : "Ajouter l'unite pastorale" }
+                    Suivant
                   </Button>
                 </div>
               </form>
             </Form>
           </div>
         }
-        {/*
+        {
           step === 3 &&
           <div className="flex flex-col w-full p-10 pt-6 space-y-6">
             <h1 className="font-bold">Emplacement sur la map</h1>
@@ -242,7 +252,7 @@ export const AddUnitePastoraleFormSection = ( { unite }: { unite?: TypeParoisse 
                   location ?
                   <span>
                     {location?.name} {location?.address}<br /> 
-                    lat: {location?.lat.toFixed(6)} <br /> 
+                    lat: {location?.lat.toFixed(6)} {'; '}
                     lng: {location?.lng.toFixed(6)}
                   </span> :
                   <span>Entrez une adresse pour voir les informations s'afficher</span>
@@ -263,7 +273,7 @@ export const AddUnitePastoraleFormSection = ( { unite }: { unite?: TypeParoisse 
               </Button>
             </div>
           </div>
-        */}
+        }
       </DialogContent>
     </Dialog>
   );

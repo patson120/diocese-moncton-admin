@@ -73,6 +73,9 @@ export default function ParishSection() {
         // setIsStatutLoading(true)
         const response: TypeParoisse = await apiClient.get(`/api/type_paroisses/${id}`)
         setUnitePastorale(response)
+        if (response.id){
+            setOpenModalUnite(true)
+        }
         // setIsStatutLoading(false)
     }
 
@@ -470,10 +473,7 @@ export default function ParishSection() {
                                                 <Card
                                                     key={index}
                                                     className="w-full border-none shadow-none cursor-pointer"
-                                                    onClick={() => {
-                                                        fetchUnitePastorale(unite.id)
-                                                        setOpenModalUnite(true)
-                                                    }}>
+                                                    onClick={() => fetchUnitePastorale(unite.id)}>
                                                     <CardContent className="bg-[#F9F9F0] rounded-xl px-5 py-6">
                                                         <div className='body-1 font-bold text-black line-clamp-2'>
                                                             <Text className='text-base font-bold' labelFr={unite.intitule_fr} labelEn={unite.intitule_en} />
@@ -879,7 +879,7 @@ export default function ParishSection() {
                             </div>
 
                             {/* Map section */}
-                            {/* <section className="w-full">
+                            {<section className="w-full">
                                 <h2 className="font-heading-5 text-2xl text-[#1c0004] mb-4 font-bold">
                                     Sur la carte
                                 </h2>
@@ -895,7 +895,7 @@ export default function ParishSection() {
                                         }}
                                     />
                                 </div>
-                            </section> */}
+                            </section>}
                         </div>
                     </div>
                 </SheetContent>
