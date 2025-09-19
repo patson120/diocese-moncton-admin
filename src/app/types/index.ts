@@ -112,6 +112,9 @@ export type Event = {
     titre_en: string;
     heure_event: string;
     date_event: string;
+    date_fin: string | null;
+    date_desactivation: string | null;
+    is_desactiver: number;
     prevId: number | null;
     nextId: number | null;
     lieu: string;

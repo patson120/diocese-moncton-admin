@@ -70,18 +70,18 @@ export function CalendarGrid({
   };
 
   const isMultiDayEvent = (event: Event) => {
-    return differenceInDays(new Date(event.date_event), new Date(event.date_event)) > 0;
+    return differenceInDays(new Date(event.date_fin ? event.date_fin : event.date_event), new Date(event.date_event)) > 0;
   };
 
   const getEventDurationLabel = (event: Event) => {
-    const days = differenceInDays(new Date(event.date_event), new Date(event.date_event)) + 1;
+    const days = differenceInDays(new Date(event.date_fin ? event.date_fin : event.date_event), new Date(event.date_event)) + 1;
     return days > 1 ? `(${days} jours)` : '';
   };
 
   const getDayEvents = (date: Date) => {
     return events.filter(event => {
       let start = new Date(`${event.date_event!}T00:00:00`);
-      let end = new Date(`${event.date_event!}T23:59:59`);
+      let end = new Date(`${event.date_fin ? event.date_fin : event.date_event!}T23:59:59`);
       return isWithinInterval(date, { start, end });
     });
   };
@@ -101,8 +101,10 @@ export function CalendarGrid({
           <div className="grid grid-cols-1 gap-1">
             {hours.map((hour) => {
               const currentHourEvents = events.filter(event => {
-                const eventDate = new Date(`${event.date_event}T${event.heure_event}`);
-                return isSameDay(eventDate, currentDate) && getHours(eventDate) === hour;
+                const start = new Date(`${event.date_event}T${event.heure_event}`);
+                const end = event.date_fin ? new Date(`${event.date_fin}T${event.heure_event}`): start;
+                return (isSameDay(start, currentDate) && getHours(start) === hour) ||
+                  (isWithinInterval(currentDate, { start, end }) && getHours(end) === hour);
               });
               
 
@@ -156,8 +158,7 @@ export function CalendarGrid({
                 className={cn(
                   "sticky top-0 z-10 p-2 text-center border-b bg-background",
                   isToday(day) && "bg-blue-50 dark:bg-blue-900/20"
-                )}
-              >
+                )}>
                 <div className="font-medium">{format(day, "EEE", { locale: fr })}</div>
                 <div className="text-sm text-muted-foreground">{format(day, "d", { locale: fr })}</div>
               </div>
@@ -170,8 +171,10 @@ export function CalendarGrid({
                 </div>
                 {days.map((day) => {
                   const dayEvents = events.filter(event => {
-                    const eventDate = new Date(`${event.date_event}T${event.heure_event}`);
-                    return isSameDay(eventDate, day) && getHours(eventDate) === hour;
+                    const start = new Date(`${event.date_event}T${event.heure_event}`);
+                    const end = event.date_fin ? new Date(`${event.date_fin}T${event.heure_event}`) : start;
+                    return (isSameDay(start, day) && getHours(start) === hour) ||
+                      (isWithinInterval(day, { start, end }) && getHours(end) === hour);
                   });
 
                   return (
@@ -180,8 +183,7 @@ export function CalendarGrid({
                           <div
                           key={event.id}
                           className={cn("text-xs p-1 truncate", getEventStyle(event))}
-                          onClick={() => handleEventClick(event)}
-                        >
+                          onClick={() => handleEventClick(event)}>
                           <div className="flex flex-col items-center">
                             <p className="w-full overflow-hidden truncate">
                               <span className="truncate text-base">{event.titre_fr}</span> <br />

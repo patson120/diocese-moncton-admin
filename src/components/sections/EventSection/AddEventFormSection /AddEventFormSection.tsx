@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { apiClient } from "@/lib/axios";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PlusIcon } from "lucide-react";
+import { CalendarIcon, PlusIcon } from "lucide-react";
 import Image from "next/image";
 import { JSX, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -24,6 +24,10 @@ import { AddCategoryFormSection } from "../AddCategoryFormSection";
 import useRole from "@/hooks/use-role";
 import ReCAPTCHA from "react-google-recaptcha";
 import useRecaptcha from "@/hooks/useRecaptcha";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
+import { Calendar } from "@/components/ui/calendar";
 
 const defaultEvent = {
   paroisse_id: 1,
@@ -54,6 +58,8 @@ const formSchemaTwo = z.object({
 const formSchemaThree = z.object({
   heure_event: z.string().min(1, {message: "L'heure est requise"}),
   date_event: z.string().min(1, { message: "La date est requise" }),
+  date_fin: z.string().optional(),
+  date_desactivation: z.string().optional(),
   image: z.instanceof(File).optional(),
 })
 
@@ -158,13 +164,6 @@ export const AddEventFormSection = (): JSX.Element => {
       })
       if (response.id) {
         toast.success("Evènement enregistré avec succès !")
-        // formOne.reset()
-        // formTwo.reset()
-        // formThree.reset()
-        // formFour.reset()
-        // setStep(1)
-        // setCoverImage('')
-        // setOpenModal(false)
         setTimeout(() => {
           window.location.reload()
         }, 1500);
@@ -210,10 +209,13 @@ export const AddEventFormSection = (): JSX.Element => {
   const onSubmitThree = async (values: z.infer<typeof formSchemaThree>) => {
     setEvent(prev => (
       { ...prev,
-        date_event: values.date_event,
+        date_event: formatDateToString(values.date_event) ?? '',
         heure_event: values.heure_event,
+        date_fin: formatDateToString(values.date_fin!) ?? '',
+        date_desactivation: formatDateToString(values.date_desactivation!) ?? '',
       }
     ))
+    
     setStep(4)
   }
   const onSubmitForth= async (values: z.infer<typeof formSchemaFour>) => {
@@ -244,6 +246,14 @@ export const AddEventFormSection = (): JSX.Element => {
           // setIsDeleting(false)
       }
     }
+  }
+
+
+  const formatDateToString = (date: string) => {
+    if (!date) return null
+    const newDate = new Date(date)
+    newDate?.setDate(newDate.getDate() + 1)
+    return newDate.toISOString().slice(0, 10)
   }
 
   if (!canAddEvent()) return <></>
@@ -397,17 +407,37 @@ export const AddEventFormSection = (): JSX.Element => {
                       name="date_event"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Jour</FormLabel>
+                          <FormLabel>Date de début</FormLabel>
                           <FormControl>
-                            <Input {...field}
-                              className="h-11 inline-block bg-white rounded-xl border border-solid border-[#d9d9d9]"
-                              type='date'
-                            />
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  className={cn(
+                                    "w-full justify-start text-left font-normal",
+                                    !formThree.watch("date_event") && "text-muted-foreground"
+                                  )}>
+                                  <CalendarIcon className="mr-2 h-4 w-4" />
+                                  {formThree.watch("date_event") ? format(formThree.watch("date_event"), "PPP", { locale: fr }) : "Date de début"}
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-auto p-0">
+                                <Calendar
+                                  mode="single"
+                                  selected={new Date(formThree.watch("date_event"))}
+                                  onSelect={(date) => {
+                                    formThree.setValue("date_event", date?.toISOString()!)
+                                  }}
+                                  initialFocus
+                                />
+                              </PopoverContent>
+                            </Popover>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
+
                     <FormField
                       control={formThree.control}
                       name="heure_event"
@@ -423,7 +453,79 @@ export const AddEventFormSection = (): JSX.Element => {
                           <FormMessage />
                         </FormItem>
                       )}
-                    />                  
+                    />  
+
+                    <FormField
+                      control={formThree.control}
+                      name="date_fin"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Date de fin</FormLabel>
+                          <FormControl>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  className={cn(
+                                    "w-full justify-start text-left font-normal",
+                                    !formThree.watch("date_fin") && "text-muted-foreground"
+                                  )}>
+                                  <CalendarIcon className="mr-2 h-4 w-4" />
+                                  {formThree.watch("date_fin") ? format(formThree.watch("date_fin")!, "PPP", { locale: fr }) : "Date de fin"}
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-auto p-0">
+                                <Calendar
+                                  mode="single"
+                                  selected={new Date(formThree.watch("date_fin")!)}
+                                  onSelect={(date) => {
+                                    formThree.setValue("date_fin", date?.toISOString()!)
+                                  }}
+                                  initialFocus
+                                />
+                              </PopoverContent>
+                            </Popover>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={formThree.control}
+                      name="date_desactivation"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Désactiver le</FormLabel>
+                          <FormControl>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  className={cn(
+                                    "w-full justify-start text-left font-normal",
+                                    !new Date(formThree.watch("date_desactivation")!) && "text-muted-foreground"
+                                  )}>
+                                  <CalendarIcon className="mr-2 h-4 w-4" />
+                                  {formThree.watch("date_desactivation") ? format(formThree.watch("date_desactivation")!, "PPP", { locale: fr }) : "Désactiver le"}
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-auto p-0">
+                                <Calendar
+                                  mode="single"
+                                  selected={new Date(formThree.watch("date_desactivation")!)}
+                                  onSelect={(date) => {
+                                    formThree.setValue("date_desactivation", date?.toISOString()!)
+                                  }}
+                                  initialFocus
+                                />
+                              </PopoverContent>
+                            </Popover>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />            
                   </div>
                   <div className="flex flex-col space-y-2">
                     <div className="flex justify-between items-center w-full">
@@ -455,7 +557,7 @@ export const AddEventFormSection = (): JSX.Element => {
 
                   </div>
                   <div className="flex flex-col space-y-2">
-                    <Label htmlFor="categorie" className="mb-2">Image de couverture évènement</Label>
+                    <Label htmlFor="categorie" className="mb-2">Image de couverture de l'évènement</Label>
                     <GaleryPopup setSelectedImage={setSelectedImage} >
                       <div className="h-44 w-full bg-[#f0f0f0] rounded-md overflow-hidden relative flex justify-center items-center cursor-pointer">
                         {
