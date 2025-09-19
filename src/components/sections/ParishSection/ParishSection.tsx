@@ -537,7 +537,7 @@ export default function ParishSection() {
                                         fill
                                         priority
                                         alt="Église Immaculée-Conception"
-                                        src={selecteParish?.galerie.length ? `${process.env.NEXT_PUBLIC_API_URL}/${selecteParish?.galerie[0].path}`: `/assets/img/paroisse.jpeg`}
+                                        src={(selecteParish?.galerie && selecteParish?.galerie.length) ? `${process.env.NEXT_PUBLIC_API_URL}/${selecteParish?.galerie[0].path}`: `/assets/img/paroisse.jpeg`}
                                     />
                                 </div>
 
@@ -855,10 +855,11 @@ export default function ParishSection() {
                                     { unitePastorale?.paroisses?.map((parish, index) => (
                                         <Card
                                             key={index}
-                                            className="w-full border-none shadow-none cursor-pointer"
+                                            className="w-full border-none shadow-none "
                                             onClick={() => {
-                                                setOpenModal(true)
-                                                setSelectedParish(parish)
+                                                // // setOpenModalUnite(false)
+                                                // setSelectedParish(parish)
+                                                // setOpenModal(true)
                                             }}>
                                             <CardContent className="p-0 w-full h-full space-y-2 bg-[#F9F9F0] rounded-xl flex flex-col justify-between gap-[10px] px-5 py-6">
                                                 <div className="">
