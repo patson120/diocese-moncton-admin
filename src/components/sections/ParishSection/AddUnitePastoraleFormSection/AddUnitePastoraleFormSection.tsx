@@ -10,15 +10,14 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { PlusIcon } from "lucide-react";
-import { JSX, useState } from "react";
+import { JSX, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 import { MapContainer } from "../../MapSection/map-container";
-import { Location } from "@/app/types";
+import { Location, TypeParoisse } from "@/app/types";
 import useRecaptcha from "@/hooks/useRecaptcha";
 import ReCAPTCHA from "react-google-recaptcha";
-
 
 const formSchemaOne = z.object({
   nom_fr: z.string().min(1, { message: "Nom requis" }),
@@ -26,14 +25,10 @@ const formSchemaOne = z.object({
 const formSchemaTwo = z.object({
   nom_en: z.string().min(1, { message: "Name required" }),
 })
-const formSchemaThree = z.object({
-  gps: z.string().optional(),
-})
 
-export const AddUnitePastoraleFormSection = (): JSX.Element => {
+export const AddUnitePastoraleFormSection = ( { unite }: { unite?: TypeParoisse } ): JSX.Element => {
 
   const { captchaToken, handleRecaptchaChange, verifyRecaptchaToken } = useRecaptcha()
-
 
   const [step, setStep] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
@@ -43,37 +38,20 @@ export const AddUnitePastoraleFormSection = (): JSX.Element => {
   const formOne = useForm<z.infer<typeof formSchemaOne>>({
     resolver: zodResolver(formSchemaOne),
     defaultValues: {
-      nom_fr: "",
+      nom_fr: unite ? `${unite.intitule_fr}` : "",
     },
   });
 
   const formTwo = useForm<z.infer<typeof formSchemaTwo>>({
     resolver: zodResolver(formSchemaTwo),
     defaultValues: {
-      nom_en: "",
+      nom_en: unite ? `${unite.intitule_en}` : "",
     },
   });
 
-  const formThree = useForm<z.infer<typeof formSchemaThree>>({
-    resolver: zodResolver(formSchemaThree),
-    defaultValues: {},
-  });
-
   const onSubmitFirst = async (values: z.infer<typeof formSchemaOne>) => {
-    console.log(values);
     setStep(2)
   }
-
-  const onSubmitSecond = async (values: z.infer<typeof formSchemaTwo>) => {
-    console.log(values);
-    setStep(3)
-  }
-
-  const onSubmitThree = async (values: z.infer<typeof formSchemaThree>) => {
-    console.log(values);
-    setStep(4)
-  }
-
 
   const handleSubmitForm = async () => {
     if (isLoading) return
@@ -93,26 +71,34 @@ export const AddUnitePastoraleFormSection = (): JSX.Element => {
         setIsLoading(false);
         return;
       }
+      let response: any = null;
+      if (unite){
+        response = await apiClient.put(`/api/type_paroisses/${unite?.id}`, formData, {
+          'Content-Type': 'multipart/form-data'
+        });
+      }
+      else {
+        response = await apiClient.post('/api/type_paroisses', formData, {
+          'Content-Type': 'multipart/form-data'
+        });
+      }
 
-      const response: any = await apiClient.post('/api/type_paroisses', formData, {
-        'Content-Type': 'multipart/form-data'
-      });
       if (response.id) {
-        toast.success("Unité pastorale ajoutée avec succès");
+        toast.success(unite ? "Unité pastorale modifiée avec succès" : "Unité pastorale ajoutée avec succès");
         setTimeout(() => {
           window.location.reload()
         }, 1500);
       }else {
         toast.error(
           <div className='p-3 bg-red-500 text-white rounded-md'>
-            Une erreur s'est produite lors de l'ajout de l'unité pastorale
+            Une erreur s'est produite lors de { unite ? "la mise à jour": "l'ajout"} de l'unité pastorale
           </div>
         )
       }
     } catch (error) {
       toast.warning(
         <div className='p-3 bg-red-500 text-white rounded-md'>
-          Une erreur s'est produite lors de l'ajout de l'unité pastorale {JSON.stringify(error)}
+          Une erreur s'est produite lors de { unite ? "la mise à jour": "l'ajout"} de l'unité pastorale {JSON.stringify(error)}
         </div>
       )
     }
@@ -121,18 +107,33 @@ export const AddUnitePastoraleFormSection = (): JSX.Element => {
     }
   }
 
+  useEffect(() => {
+    if (unite){
+      formOne.setValue("nom_fr", unite.intitule_fr ?? "")
+      formTwo.setValue("nom_en", unite.intitule_en ?? "")
+    }
+  }, [unite])
+  
+
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="h-10 gap-2 px-3.5 py-0 bg-blue rounded-[7px] text-white">
-          <PlusIcon className="w-5 h-5" />
-          <span className="font-body-3 text-sm">Ajouter une unité</span>
-        </Button>
+        {
+          (unite?.intitule_fr) ?
+          <Button className="h-10 gap-2 px-3.5 py-0 bg-blue rounded-[7px] text-white">
+            <span className="font-body-3 text-sm">Modifier</span>
+          </Button> :
+          <Button className="h-10 gap-2 px-3.5 py-0 bg-blue rounded-[7px] text-white">
+            <PlusIcon className="w-5 h-5" />
+            <span className="font-body-3 text-sm">Ajouter une unité</span>
+          </Button>
+        }
       </DialogTrigger>
       <DialogContent aria-describedby={undefined} className="w-[500px] md:w-[620px] max-h-[80vh] overflow-y-scroll p-0 gap-0 rounded-2xl">
         <DialogHeader className="border-b border-neutral-200 p-4 rounded-t-2xl">
           <DialogTitle className="text-lg font-bold leading-7">
-            Créer une unité pastorale
+            { unite ? "Modifier l'unité pastorale": "Créer une unité pastorale" }
           </DialogTitle>
         </DialogHeader>
         {
@@ -189,7 +190,7 @@ export const AddUnitePastoraleFormSection = (): JSX.Element => {
           step === 2 &&
           <div className="flex flex-col w-full p-10 pt-6 space-y-4">
             <Form {...formTwo}>
-              <form onSubmit={formTwo.handleSubmit(onSubmitSecond)} className="space-y-4">
+              <form onSubmit={formTwo.handleSubmit(handleSubmitForm)} className="space-y-4">
                 <FormField
                   control={formTwo.control}
                   name="nom_en"
@@ -205,25 +206,29 @@ export const AddUnitePastoraleFormSection = (): JSX.Element => {
                     </FormItem>
                   )}
                 />
-                <div className="h-40"></div>
+                <div className="h-32"></div>
+                <ReCAPTCHA
+                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
+                  onChange={handleRecaptchaChange}
+                />
                 <div className="flex flex-row gap-4">
                   <Button variant={'outline'} onClick={() => setStep(1)} className="w-min px-8 mt-8 h-12 rounded-lg">
                     Retour
                   </Button>
-                  <Button type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
-                    Suivant
+                  <Button disabled={ isLoading || !captchaToken } type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
+                    {  isLoading && <Loader className=" w-5 h-5 mr-2" />}
+                    { unite ? "Modifier l'unite pastorale" : "Ajouter l'unite pastorale" }
                   </Button>
                 </div>
               </form>
             </Form>
           </div>
         }
-        {
+        {/*
           step === 3 &&
           <div className="flex flex-col w-full p-10 pt-6 space-y-6">
             <h1 className="font-bold">Emplacement sur la map</h1>
             <div className="h-80 w-full bg-black/5 rounded-lg overflow-hidden">
-              {/** Map view */}
               <MapContainer 
                 showSearchBar={true}
                 location={location}
@@ -254,11 +259,11 @@ export const AddUnitePastoraleFormSection = (): JSX.Element => {
               </Button>
               <Button disabled={ isLoading || !captchaToken } onClick={handleSubmitForm} className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
                 {  isLoading && <Loader className=" w-5 h-5 mr-2" />}
-                Ajouter l'unite pastorale
+                { unite ? "Modifier l'unite pastorale" : "Ajouter l'unite pastorale" }
               </Button>
             </div>
           </div>
-        }
+        */}
       </DialogContent>
     </Dialog>
   );

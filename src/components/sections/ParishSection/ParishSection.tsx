@@ -30,7 +30,7 @@ import { EditParishFormSection } from './EditParishFormSection';
 export default function ParishSection() {
     const router = useRouter()
 
-    const { canUpdateParish, canDeleteImage, canDeleteParish, canDeleteBulletin, canDeleteParishUnit } = useRole()
+    const { canUpdateParish, canDeleteImage, canDeleteParish, canUpdateParishUnit, canDeleteBulletin, canDeleteParishUnit } = useRole()
 
     const [isStatutLoading, setIsStatutLoading] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
@@ -824,12 +824,11 @@ export default function ParishSection() {
                                 */}
                                 {/**
                                     <EditParishFormSection parish={selecteParish!} />
-                                 */}
-                                 {/* 
-                                    <Button className="h-10 bg-blue text-white hover:bg-blue/90">
-                                        Modifier
-                                    </Button>
-                                 */}
+                                */}
+                                {
+                                    canUpdateParishUnit() &&
+                                    <AddUnitePastoraleFormSection unite={{ ...unitePastorale, paroisses: []} as TypeParoisse} />
+                                }
                                 {
                                     canDeleteParishUnit() &&
                                     <Button onClick={handleDeleteUnitePastorale} className="h-10 bg-red-500 text-white hover:bg-blue/90">
@@ -880,7 +879,7 @@ export default function ParishSection() {
                             </div>
 
                             {/* Map section */}
-                            <section className="w-full">
+                            {/* <section className="w-full">
                                 <h2 className="font-heading-5 text-2xl text-[#1c0004] mb-4 font-bold">
                                     Sur la carte
                                 </h2>
@@ -896,7 +895,7 @@ export default function ParishSection() {
                                         }}
                                     />
                                 </div>
-                            </section>
+                            </section> */}
                         </div>
                     </div>
                 </SheetContent>

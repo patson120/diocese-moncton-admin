@@ -171,7 +171,6 @@ export const EditEventFormSection = ({ eventData, duplicated = false} : EditEven
         })
       }
 
-
       if (response.id) {
         toast.success("Evènement modifié avec succès !")
         setTimeout(() => {
