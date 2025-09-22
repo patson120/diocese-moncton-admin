@@ -44,13 +44,13 @@ export const ClergPretres = (): JSX.Element => {
   ];
 
   useEffect(() => {
-      ( async () => {
-        let params = `?categorie_id=${categoryId}`
-        if (query) params += `&nom=${query}`
-        if (etat) params += `&etat=${etat}`
-        const response: Member[] = await apiClient.get(`/api/membres${params}`)
-        setMembers(response)
-      })()
+    ( async () => {
+      let params = `?categorie_id=${categoryId}`
+      if (query) params += `&nom=${query}`
+      if (etat) params += `&etat=${etat}`
+      const response: Member[] = await apiClient.get(`/api/membres${params}`)
+      setMembers(response)
+    })()
   }, [categoryId, query, etat])
 
   const handleDeleteMember = async () => {
@@ -212,8 +212,7 @@ export const ClergPretres = (): JSX.Element => {
                             setSelectedMember(member)
                           }}
                           key={index}
-                          className="w-full border-none shadow-none cursor-pointer"
-                        >
+                          className="w-full border-none shadow-none cursor-pointer">
                           <CardContent className="p-0 space-y-3">
                             <div className="relative w-full h-[250px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
                               <Image

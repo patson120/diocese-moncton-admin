@@ -1,7 +1,7 @@
 
 'use client'
 
-import { Image as ImageType, Location, TypeParoisse } from "@/app/types";
+import { Image as ImageType, Location, Member, TypeParoisse } from "@/app/types";
 import { Editor } from "@/components/Editor/Editor";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -61,6 +61,7 @@ const formSchemaTwo = z.object({
 
 const formSchemaThree = z.object({
   unite_pastorale: z.string().min(1, { message: "Unité pastorale requise" }),
+  pretre_responsable: z.string().optional(),
   horaire_bureau: z.string().min(1, { message: "Veuillez renseigner les horaires de bureau" }),
   langue: z.string().min(1, { message: "La langue principale est requise" }),
 })
@@ -82,6 +83,8 @@ const formSchemaSix= z.object({
 
 export const AddParishFormSection = (): JSX.Element => {
 
+  const [openModal, setOpenModal] = useState(false)
+
   const { captchaToken, handleRecaptchaChange, verifyRecaptchaToken } = useRecaptcha();
 
   const { canAddParish } = useRole()
@@ -90,6 +93,7 @@ export const AddParishFormSection = (): JSX.Element => {
   const [horaires, setHoraires] = useState<{[key: string]: any}[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [unitePastorales, setUnitePastorales] = useState<TypeParoisse[]>([])
+  const [priests, setPriests] = useState<Member[]>([])
   const [selectedImage, setSelectedImage] = useState<ImageType | undefined>();
   const [horairesBureau, setHorairesBureau] = useState("")
 
@@ -237,6 +241,7 @@ export const AddParishFormSection = (): JSX.Element => {
     formdata.append("horaires", horaires.map(item => `${item.jour}=${item.heures.join(";")}`).join(","))
     formdata.append("horaire_bureau", horairesBureau)
     formdata.append("langue", formThree.getValues("langue"))
+    formdata.append("pretre_responsable", formThree.getValues("pretre_responsable") ?? "")
     formdata.append("gps", `${location?.lat};${location?.lng}`)
     formdata.append("statut", '1')
     if (selectedImage?.id){formdata.append("galerie_id", `${selectedImage?.id}`)}
@@ -281,21 +286,31 @@ export const AddParishFormSection = (): JSX.Element => {
   }
 
   useEffect(() => {
+    formThree.setValue("horaire_bureau", horairesBureau)
+  }, [horairesBureau])
+
+  const fetchPriests = async () => {
+    // Récupération de la liste des prêtres enregistrés
+    const response: Member[] = await apiClient.get("/api/membres?categorie_id=20")
+    setPriests(response)
+  }
+
+  useEffect(() => {
+    if (openModal){
       // Récupérer les unités paroitiales depuis l'api
       ( async () => {
           const response: TypeParoisse[] = await apiClient.get(`/api/type_paroisses`)
           setUnitePastorales(response)
       })()
-  }, [])
+      fetchPriests()
+    }
+  }, [openModal])
 
-  useEffect(() => {
-    formThree.setValue("horaire_bureau", horairesBureau)
-  }, [horairesBureau])
 
   if (!canAddParish()){return <></>}
 
   return (
-    <Dialog>
+    <Dialog onOpenChange={(val :boolean) => { setOpenModal(val) }}>
       <DialogTrigger asChild>
         <Button className="h-10 gap-2 px-3.5 py-0 bg-blue rounded-[7px] text-white">
           <PlusIcon className="w-5 h-5" />
@@ -450,6 +465,32 @@ export const AddParishFormSection = (): JSX.Element => {
                             { 
                               unitePastorales.map(unite => (
                                 <SelectItem key={unite.id} value={`${unite.id}`}>{unite.intitule_fr}</SelectItem>
+                              ))
+                            }
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={formThree.control}
+                  name="pretre_responsable"
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className="flex flex-col space-y-2">
+                        <FormLabel>Prêtre responsable</FormLabel>
+                        <Select 
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}>
+                          <SelectTrigger className="h-11 px-3 py-3.5 rounded-lg border border-neutral-200 text-[#454545]">
+                            <SelectValue placeholder="Sélectionnez un prêtre" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            { 
+                              priests.map(priest => (
+                                <SelectItem key={priest.id} value={`${priest.id}`}>{priest.nom}{" "}{priest.prenom}</SelectItem>
                               ))
                             }
                           </SelectContent>
