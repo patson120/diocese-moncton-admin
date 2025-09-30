@@ -145,14 +145,14 @@ export const AddEventFormSection = (): JSX.Element => {
     setIsloading(true)
 
     try {
-      /* const recaptchaReponse = await verifyRecaptchaToken();
+      const recaptchaReponse = await verifyRecaptchaToken();
       const recaptchaData = await recaptchaReponse.json();
 
       if (!recaptchaData.success) {
         toast.error(recaptchaData.message || 'Erreur de vérification reCAPTCHA');
         setIsloading(false);
         return;
-      } */
+      }
 
       const response: any = await apiClient.post('/api/evenements', {
         ...event,
@@ -160,7 +160,7 @@ export const AddEventFormSection = (): JSX.Element => {
         contact: formFour.getValues('contact'),
         gps: `${location?.lat};${location?.lng}`,
         lieu: `${location?.name};${location?.address}`,
-        galerie_id: `${selectedImage?.id}`
+        galerie_id: selectedImage ? `${selectedImage?.id}` : null
       })
       if (response.id) {
         toast.success("Evènement enregistré avec succès !")
@@ -635,16 +635,16 @@ export const AddEventFormSection = (): JSX.Element => {
                       }
                     </p>
                   </div>
-                  {/* <ReCAPTCHA
+                  <ReCAPTCHA
                     sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
                     onChange={handleRecaptchaChange}
-                  /> */}
+                  />
                   
                   <div className="flex flex-row gap-4">
                     <Button variant={'outline'} onClick={() => setStep(3)} className="w-min px-8 mt-8 h-12 rounded-lg">
                       Retour
                     </Button>
-                    <Button disabled={ isLoading } type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
+                    <Button disabled={ isLoading || !captchaToken} type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
                       { isLoading && <Loader className='text-white mr-2' /> }
                       Ajouter l'évènement
                     </Button>

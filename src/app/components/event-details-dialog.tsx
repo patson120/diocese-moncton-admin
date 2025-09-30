@@ -51,7 +51,8 @@ export default function EventDetailsDialog({ event, open, onOpenChange }: EventD
     try {
       await apiClient.put(`/api/evenements/${event.id}`, {
         ...event,
-        etat:  event.etat === 1 ? -1 : 1
+        // etat:  event.etat === 1 ? -1 : 1
+        is_desactiver: event.is_desactiver === 0 ? 1 : 0
       });
       window.location.reload(); // Reload the page to reflect changes      
     } catch (error) {
@@ -86,6 +87,13 @@ export default function EventDetailsDialog({ event, open, onOpenChange }: EventD
               {
                 canUpdateEvent() &&
                 <EditEventFormSection eventData={event} />
+              }
+              {
+                canUpdateEvent() &&
+                <Button onClick={handleUpdatedStatut} className="h-10 border bg-white border-red-500 text-red-500 hover:!bg-white">
+                  { isStatusChanging && <Loader className='h-5 w-5, mr-2' /> }
+                  { event.is_desactiver === 0 ? 'Désactiver' : 'Activer' }
+                </Button>
               }
               {
                 canDeleteEvent() &&
