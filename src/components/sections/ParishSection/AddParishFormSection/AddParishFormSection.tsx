@@ -804,10 +804,10 @@ export const AddParishFormSection = (): JSX.Element => {
                 }
                </div>
             </div>
-            {/* <ReCAPTCHA
+            <ReCAPTCHA
               sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
               onChange={handleRecaptchaChange}
-            /> */}
+            />
             <div className="flex flex-row gap-4">
               <Button variant={'outline'} onClick={() => setStep(6)} className="w-min px-8 mt-8 h-12 rounded-lg">
                 Retour

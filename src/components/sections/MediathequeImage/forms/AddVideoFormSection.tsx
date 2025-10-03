@@ -52,14 +52,14 @@ export default function AddVideoFormSection(){
 
     try {
 
-      /* const recaptchaReponse = await verifyRecaptchaToken();
+      const recaptchaReponse = await verifyRecaptchaToken();
       const recaptchaData = await recaptchaReponse.json();
 
       if (!recaptchaData.success) {
         toast.error(recaptchaData.message || 'Erreur de vérification reCAPTCHA');
         setIsloading(false);
         return;
-      } */
+      }
 
       const response: any = await apiClient.post('/api/ressources', formdata, {
         'Content-Type': 'multipart/form-data'
@@ -131,11 +131,11 @@ export default function AddVideoFormSection(){
                   </FormItem>
                 )}
               />
-             {/*  <ReCAPTCHA
+              <ReCAPTCHA
                 sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
                 onChange={handleRecaptchaChange}
-              /> */}
-              <Button disabled={ isLoading } type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
+              />
+              <Button disabled={ isLoading || !captchaToken } type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
                 { isLoading && <Loader className='text-white mr-2' /> }
                 Ajouter la vidéo
               </Button>

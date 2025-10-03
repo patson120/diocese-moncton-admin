@@ -55,14 +55,14 @@ export const AddDocumentFormSection = (): JSX.Element => {
 
     try {
 
-      /* const recaptchaReponse = await verifyRecaptchaToken();
+      const recaptchaReponse = await verifyRecaptchaToken();
       const recaptchaData = await recaptchaReponse.json();
 
       if (!recaptchaData.success) {
         toast.error(recaptchaData.message || 'Erreur de vérification reCAPTCHA');
         setIsLoading(false);
         return;
-      } */
+      }
 
       const result: any = await apiClient.post('/api/ressources', formdata, {
         'Content-Type': 'multipart/form-data'
@@ -158,12 +158,12 @@ export const AddDocumentFormSection = (): JSX.Element => {
             className="h-full w-full absolute cursor-pointer inset-0 opacity-0 z-[3]"
           />
         </div>
-        {/* <ReCAPTCHA
+        <ReCAPTCHA
           sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
           onChange={handleRecaptchaChange}
-        /> */}
+        />
         <div className='flex justify-center items-center  my-4 gap-3'>
-          <Button disabled={ isLoading } onClick={handleAddRessource} className="px-3.5 py-0 bg-blue text-white rounded-[7px]">
+          <Button disabled={ isLoading || !captchaToken } onClick={handleAddRessource} className="px-3.5 py-0 bg-blue text-white rounded-[7px]">
             { isLoading && <Loader className="h-5 w-5 mr-2" /> }
             <span className="font-body-3 font-bold whitespace-nowrap">
                 Ajouter le document
