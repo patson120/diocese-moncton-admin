@@ -292,11 +292,8 @@ export const AddEventFormSection = (): JSX.Element => {
           {
             ( step === 1 || step == 2) && 
             <div className="grid grid-cols-2 items-center gap-0">
-              <div onClick={() => {
-                setStep(1)
-              }} className={cn('h-12 flex justify-center items-center cursor-pointer', 
-                step === 1 ? 'bg-[#E1E7EF]' : 'bg-[#F5F7FA]'
-              )}>
+              <div onClick={() => setStep(1)} className={cn('h-12 flex justify-center items-center cursor-pointer', 
+                step === 1 ? 'bg-[#E1E7EF]' : 'bg-[#F5F7FA]')}>
                 <p className={cn('font-bold', 
                   step === 1  ?'text-blue'  : 'text-noir-dashboard'
                 )}>Français</p>
