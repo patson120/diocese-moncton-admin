@@ -702,7 +702,7 @@ export default function ParishSection() {
                                                 <DropdownMenuContent>
                                                     {/* Dropdown menu items would go here */}
                                                     <DropdownMenuItem className="text-gray">
-                                                        <a href={`${process.env.NEXT_PUBLIC_API_URL}/${doc.document}`} target="_blank" >Consulter</a>
+                                                        <a href={ doc.lien_externe ? doc.lien_externe : `${process.env.NEXT_PUBLIC_API_URL}/${doc.document}`} target="_blank" >Consulter</a>
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem onClick={() => handleDeleteRessource(doc.id)}
                                                     className="text-red-500">
@@ -715,13 +715,13 @@ export default function ParishSection() {
                                             </div>
 
                                             <div className="flex flex-col items-center gap-3 my-4">
-                                            <div className="w-[100px] h-20 bg-white rounded-2xl border border-solid border-[#d9d9d9] flex items-center justify-center">
+                                            <div className="w-[100px] truncate h-20 bg-white rounded-2xl border border-solid border-[#d9d9d9] flex items-center justify-center">
                                                 <span className="font-body-3 text-[length:var(--body-3-font-size)] uppercase text-gray text-center">
-                                                {doc.document.split(".")[1]}
+                                                { doc.lien_externe ? "Lien" : doc.document.split(".")[1]}
                                                 </span>
                                             </div>
                                             <p className="font-body-3 text-[length:var(--body-3-font-size)] text-noir-dashboard text-center">
-                                                {doc.titre_fr}
+                                                { doc.lien_externe ? doc.lien_externe.split("/")[doc.lien_externe.split("/").length - 1].split('.')[0] : doc.titre_fr} 
                                             </p>
                                             </div>
                                         </div>

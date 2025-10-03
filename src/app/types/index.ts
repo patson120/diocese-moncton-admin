@@ -82,6 +82,7 @@ export type Bulletin = {
     titre_fr: string;
     titre_en: string;
     document: string;
+    lien_externe: string | null;
     mois: number;
     created_at: string;
     updated_at: string;
