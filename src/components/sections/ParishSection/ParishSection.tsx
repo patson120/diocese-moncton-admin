@@ -702,7 +702,7 @@ export default function ParishSection() {
                                                 <DropdownMenuContent>
                                                     {/* Dropdown menu items would go here */}
                                                     <DropdownMenuItem className="text-gray">
-                                                        <a href={ doc.lien_externe ? doc.lien_externe : `${process.env.NEXT_PUBLIC_API_URL}/${doc.document}`} target="_blank" >Consulter</a>
+                                                        <a href={ doc.lien_externe ?? `${process.env.NEXT_PUBLIC_API_URL}/${doc.document}`} target="_blank" >Consulter</a>
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem onClick={() => handleDeleteRessource(doc.id)}
                                                     className="text-red-500">
