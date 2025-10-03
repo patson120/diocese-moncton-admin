@@ -257,6 +257,21 @@ export const AddEventFormSection = (): JSX.Element => {
     return newDate.toISOString().slice(0, 10)
   }
 
+  const navigateToEnglishForm = () => {
+    if ( formOne.formState.isValid ){
+      formOne.clearErrors()
+      setStep(2)
+    }
+    else {
+      if ( !formOne.getValues('titre_fr') ){
+        formOne.setError('titre_fr', { type: 'manual', message: 'Titre est requis' })
+      }
+      if ( !formOne.getValues('description_fr') ){
+        formOne.setError('description_fr', { type: 'manual', message: 'Description française est requise' })
+      }
+    }
+  }
+
   if (!canAddEvent()) return <></>
 
   return (
@@ -277,14 +292,16 @@ export const AddEventFormSection = (): JSX.Element => {
           {
             ( step === 1 || step == 2) && 
             <div className="grid grid-cols-2 items-center gap-0">
-              <div className={cn('h-12 flex justify-center items-center', 
+              <div onClick={() => {
+                setStep(1)
+              }} className={cn('h-12 flex justify-center items-center cursor-pointer', 
                 step === 1 ? 'bg-[#E1E7EF]' : 'bg-[#F5F7FA]'
               )}>
                 <p className={cn('font-bold', 
                   step === 1  ?'text-blue'  : 'text-noir-dashboard'
                 )}>Français</p>
               </div>
-              <div className={cn('h-12 flex justify-center items-center', 
+              <div onClick={navigateToEnglishForm} className={cn('h-12 flex justify-center items-center cursor-pointer', 
                 step === 2 ? 'bg-[#E1E7EF]' : 'bg-[#F5F7FA]'
               )}>
                 <p className={cn('font-bold', 

@@ -713,7 +713,6 @@ export default function ParishSection() {
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
                                             </div>
-
                                             <div className="flex flex-col items-center gap-3 my-4">
                                             <div className="w-[100px] truncate h-20 bg-white rounded-2xl border border-solid border-[#d9d9d9] flex items-center justify-center">
                                                 <span className="font-body-3 text-[length:var(--body-3-font-size)] uppercase text-gray text-center">

@@ -326,7 +326,7 @@ export const AddParishFormSection = (): JSX.Element => {
         {
           ( step === 1 || step == 2) && 
           <div className="grid grid-cols-2 items-center gap-0">
-            <div className={cn('h-12 flex justify-center items-center', 
+            <div  className={cn('h-12 flex justify-center items-center', 
               step === 1 ? 'bg-[#E1E7EF]' : 'bg-[#F5F7FA]'
             )}>
               <p className={cn('font-bold', 
