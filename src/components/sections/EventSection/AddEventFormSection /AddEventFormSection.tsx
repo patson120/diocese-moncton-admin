@@ -11,9 +11,9 @@ import { Label } from "@/components/ui/label";
 import { Loader } from "@/components/ui/loader";
 import { Textarea } from "@/components/ui/textarea";
 import { apiClient } from "@/lib/axios";
-import { cn } from "@/lib/utils";
+import { cn, copyToClipboard } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CalendarIcon, PlusIcon } from "lucide-react";
+import { CalendarIcon, CopyIcon, ExternalLinkIcon, PlusIcon } from "lucide-react";
 import Image from "next/image";
 import { JSX, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -28,6 +28,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Calendar } from "@/components/ui/calendar";
+import { Card, CardContent } from "@/components/ui/card";
 
 const defaultEvent = {
   paroisse_id: 1,
@@ -303,7 +304,7 @@ export const AddEventFormSection = (): JSX.Element => {
                     control={formOne.control}
                     name="titre_fr"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="relative">
                         <FormLabel>Titre évènement</FormLabel>
                         <FormControl>
                           <Input placeholder="Entrez le nom complet" {...field}
@@ -311,6 +312,13 @@ export const AddEventFormSection = (): JSX.Element => {
                           />
                         </FormControl>
                         <FormMessage />
+                        <Button
+                          variant="ghost" type="button"
+                          className="w-fit h-fit absolute right-2 -top-1 z-10 px-3 py-2 bg-[#f3f3e1] rounded-md"
+                          onClick={()=> copyToClipboard(formOne.getValues('titre_fr'))}>
+                          <span className="mr-3 text-gray">Copier</span>
+                          <CopyIcon className="w-5 h-5 text-blue shrink-0" />
+                        </Button>
                       </FormItem>
                     )}
                   />
@@ -319,7 +327,7 @@ export const AddEventFormSection = (): JSX.Element => {
                     control={formOne.control}
                     name="description_fr"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="relative">
                         <FormLabel>Description de l'évènement</FormLabel>
                         <FormControl>
                           {/* Textarea */}
@@ -331,16 +339,44 @@ export const AddEventFormSection = (): JSX.Element => {
                           />
                         </FormControl>
                         <FormMessage />
+                        <Button
+                          variant="ghost" type="button"
+                          className="w-fit h-fit absolute right-2 -top-1 z-10 px-3 py-2 bg-[#f3f3e1] rounded-md"
+                          onClick={()=> copyToClipboard(formOne.getValues('description_fr'))}>
+                          <span className="mr-3 text-gray">Copier</span>
+                          <CopyIcon className="w-5 h-5 text-blue shrink-0" />
+                        </Button>
                       </FormItem>
                     )}
                   />
+                  <div className="my-4 flex justify-end gap-3">
+                    <Card className="shadow-[0px_4px_12px_#0000001a] rounded-lg w-fit">
+                      <CardContent className="flex items-start gap-1 p-3">
+                        <ExternalLinkIcon className="w-5 h-5" />
+                        <a className='no-underline' href='https://www.deepl.com/fr/translator' target='_blank' >
+                          <span className="font-body-3 text-noir-dashboard text-sm">
+                            Traduire le texte sur Deepl
+                          </span>
+                        </a>
+                      </CardContent>
+                    </Card>
+                    <Card className="shadow-[0px_4px_12px_#0000001a] rounded-lg w-fit">
+                      <CardContent className="flex items-start gap-1 p-3">
+                        <ExternalLinkIcon className="w-5 h-5" />
+                        <a className='no-underline' href={'https://www.scribens.fr/'} target='_blank' >
+                          <span className="font-body-3 text-noir-dashboard text-sm">
+                            Correction orthographique
+                          </span>
+                        </a>
+                      </CardContent>
+                    </Card>
+                  </div>
                   <div>
                     <Button type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
                       Suivant
                     </Button>
                   </div>
                 </form>
-                  
               </Form>
             </div>
           }

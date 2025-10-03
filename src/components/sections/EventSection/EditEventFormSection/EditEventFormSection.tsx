@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Loader } from "@/components/ui/loader";
 import { Textarea } from "@/components/ui/textarea";
 import { apiClient } from "@/lib/axios";
-import { cn } from "@/lib/utils";
+import { cn, copyToClipboard } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { JSX, useEffect, useState } from "react";
@@ -21,10 +21,11 @@ import { Image as ImageType } from "@/app/types";
 import useRecaptcha from "@/hooks/useRecaptcha";
 import ReCAPTCHA from "react-google-recaptcha";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, CopyIcon, ExternalLinkIcon } from "lucide-react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { fr } from "date-fns/locale";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface EditEventDialogProps { eventData: Event, duplicated?: boolean }
 
@@ -287,7 +288,7 @@ export const EditEventFormSection = ({ eventData, duplicated = false} : EditEven
                   control={formOne.control}
                   name="titre_fr"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="relative">
                       <FormLabel>Titre évènement</FormLabel>
                       <FormControl>
                         <Input placeholder="Entrez le nom complet" {...field}
@@ -295,6 +296,13 @@ export const EditEventFormSection = ({ eventData, duplicated = false} : EditEven
                         />
                       </FormControl>
                       <FormMessage />
+                      <Button
+                        variant="ghost" type="button"
+                        className="w-fit h-fit absolute right-2 -top-1 z-10 px-3 py-2 bg-[#f3f3e1] rounded-md"
+                        onClick={()=> copyToClipboard(formOne.getValues('titre_fr'))}>
+                        <span className="mr-3 text-gray">Copier</span>
+                        <CopyIcon className="w-5 h-5 text-blue shrink-0" />
+                      </Button>
                     </FormItem>
                   )}
                 />
@@ -303,7 +311,7 @@ export const EditEventFormSection = ({ eventData, duplicated = false} : EditEven
                   control={formOne.control}
                   name="description_fr"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="relative">
                       <FormLabel>Description de l'évènement</FormLabel>
                       <FormControl>
                         {/* Textarea */}
@@ -315,9 +323,38 @@ export const EditEventFormSection = ({ eventData, duplicated = false} : EditEven
                         />
                       </FormControl>
                       <FormMessage />
+                      <Button
+                        variant="ghost" type="button"
+                        className="w-fit h-fit absolute right-2 -top-1 z-10 px-3 py-2 bg-[#f3f3e1] rounded-md"
+                        onClick={()=> copyToClipboard(formOne.getValues('description_fr'))}>
+                        <span className="mr-3 text-gray">Copier</span>
+                        <CopyIcon className="w-5 h-5 text-blue shrink-0" />
+                      </Button>
                     </FormItem>
                   )}
                 />
+                <div className="my-4 flex justify-end gap-3">
+                  <Card className="shadow-[0px_4px_12px_#0000001a] rounded-lg w-fit">
+                    <CardContent className="flex items-start gap-1 p-3">
+                      <ExternalLinkIcon className="w-5 h-5" />
+                      <a className='no-underline' href='https://www.deepl.com/fr/translator' target='_blank' >
+                        <span className="font-body-3 text-noir-dashboard text-sm">
+                          Traduire le texte sur Deepl
+                        </span>
+                      </a>
+                    </CardContent>
+                  </Card>
+                  <Card className="shadow-[0px_4px_12px_#0000001a] rounded-lg w-fit">
+                    <CardContent className="flex items-start gap-1 p-3">
+                      <ExternalLinkIcon className="w-5 h-5" />
+                      <a className='no-underline' href={'https://www.scribens.fr/'} target='_blank' >
+                        <span className="font-body-3 text-noir-dashboard text-sm">
+                          Correction orthographique
+                        </span>
+                      </a>
+                    </CardContent>
+                  </Card>
+                </div>
                 <div>
                   <Button type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
                     Suivant

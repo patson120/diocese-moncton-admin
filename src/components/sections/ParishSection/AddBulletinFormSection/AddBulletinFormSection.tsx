@@ -10,6 +10,7 @@ import useRecaptcha from "@/hooks/useRecaptcha";
 import { apiClient } from "@/lib/axios";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { getMonth } from "date-fns";
+import { link } from "fs";
 import { PlusIcon } from "lucide-react";
 import Image from "next/image";
 import { JSX, useState } from "react";
@@ -26,6 +27,7 @@ export const AddBulletinFormSection = ( {paroisse_id}: { paroisse_id: number}): 
   const [file, setFile] = useState<File | undefined>();
   const [openModal, setOpenModal] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [isLink, setIsLink] = useState(false)
 
   const handleDocumentChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const fileTarget = e.target.files?.[0];
@@ -40,11 +42,11 @@ export const AddBulletinFormSection = ( {paroisse_id}: { paroisse_id: number}): 
     if (!canAddBulletin(paroisse_id)){ 
       return toast.success("Vous n'avez pas le droit d'effectuer cette opération !")
     }
-    if (isLoading) return
-    if (!file) {
+    if (isLoading) return 
+    if (!file && !fileName.trim()) {
       toast.warning(
         <p className='p-3 bg-red-500 text-white rounded-md'>
-          Veuillez choisir un ducment avant de continuer !
+          Veuillez choisir un document avant de continuer !
         </p>
       )
       return
@@ -57,7 +59,12 @@ export const AddBulletinFormSection = ( {paroisse_id}: { paroisse_id: number}): 
     formdata.append("titre_fr", fileName);
     formdata.append("titre_en", fileName);
     formdata.append("mois", `${getMonth(new Date()) + 1}`);
-    formdata.append("document", file!);
+    if (!isLink){
+      formdata.append("document", file!);
+    }
+    else {
+      formdata.append("lien_externe", fileName);
+    }
 
     try {
       const recaptchaReponse = await verifyRecaptchaToken();
@@ -118,33 +125,39 @@ export const AddBulletinFormSection = ( {paroisse_id}: { paroisse_id: number}): 
           </Button>
           { 
             (file) ?
-              <div className="h-full w-full flex items-center justify-center">
-                <div className="flex flex-col justify-center items-center gap-5">
-                  <div className="w-[100px] h-20 bg-white rounded-2xl border border-solid border-[#d9d9d9] flex items-center justify-center">
-                    <span className="font-body-3 text-[length:var(--body-3-font-size)] text-gray uppercase text-center">
-                      {file.type.split("/")[1]}
-                    </span>
-                  </div>
-                  <div className="text-center">
-                    <h4 className="font-bold">{file.name}</h4>
-                    <p className="text-gray">Nom actuel du document</p>
-                  </div>
-                </div>        
-              </div> :
-              <div className="h-full w-full flex items-center justify-center">
-                <div className="flex flex-col justify-center items-center gap-5">
-                  <Image
-                    width={80}
-                    height={80}
-                    alt="Vector"
-                    src="/vector-file.png"
-                  />
-                  <div className="text-center">
-                    <h4 className="font-bold">Ajouter un document</h4>
-                    <p className="text-gray">docx, pdf, xslx... ajoutez des documents optimisés</p>
-                  </div>
-                </div>        
-              </div>
+            <div className="h-full w-full flex items-center justify-center">
+              <div className="flex flex-col justify-center items-center gap-5">
+                <div className="w-[100px] h-20 bg-white rounded-2xl border border-solid border-[#d9d9d9] flex items-center justify-center">
+                  <span className="font-body-3 text-[length:var(--body-3-font-size)] text-gray uppercase text-center">
+                    {file.type.split("/")[1]}
+                  </span>
+                </div>
+                <div className="text-center">
+                  <h4 className="font-bold">{file.name}</h4>
+                  <p className="text-gray">Nom actuel du document</p>
+                </div>
+              </div>        
+            </div> :
+            <div className="h-full w-full flex items-center justify-center">
+              <div className="flex flex-col justify-center items-center gap-5">
+                <Image
+                  width={80}
+                  height={80}
+                  alt="Vector"
+                  src="/vector-file.png"
+                />
+                <div className="text-center">
+                  <h4 className="font-bold">{ isLink ? "Renseignez le lien du bulletin dans le champ ci-dessous": "Ajouter un document" }</h4>
+                  {
+                    !isLink &&
+                    <div>
+                      <p className="text-gray">docx, pdf, xslx... ajoutez des documents optimisés</p>
+                      <p className="text-sm italic text-gray">(Cliquez dans autour pour ajouter un fichier)</p>
+                    </div>
+                  }
+                </div>
+              </div>        
+            </div>
           }
           <div className="absolute z-[5] bottom-5 left-0 right-0 flex justify-center items-center">
             <div className="w-1/2">
@@ -152,24 +165,33 @@ export const AddBulletinFormSection = ( {paroisse_id}: { paroisse_id: number}): 
                 value={fileName}
                 onChange={(e) => setFileName(e.target.value)}
                 className="h-10 bg-white border-none"
-                placeholder="Modifier le nom du document"
+                placeholder={ isLink ? "Coller le lien ici..." : "Renommer le document..." } 
               />
             </div>
           </div>
-          <Input
-            accept=".doc,.docx,.pdf,.xlx,xslx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            type="file"
-            onChange={handleDocumentChange}
-            className="h-full w-full absolute cursor-pointer inset-0 opacity-0 z-[3]"
-          />
+          {
+            !isLink &&
+            <Input
+              accept=".doc,.docx,.pdf,.xlx,xslx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+              type="file"
+              onChange={handleDocumentChange}
+              className="h-full w-full absolute cursor-pointer inset-0 opacity-0 z-[3]"
+            />
+          }
         </div>
+        <div className="">
+          <Button onClick={() => setIsLink( prev => !prev)} variant="outline" className="w-fit bg-transparent !border !border-blue !text-blue">
+            { isLink ? "Ajouter un document" : "Ajout le lien" }
+          </Button>
+        </div>
+
         <ReCAPTCHA
           sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
           onChange={handleRecaptchaChange}
         />
         
         <div className='flex justify-center items-center  my-4 gap-3'>
-          <Button disabled={ isLoading || !captchaToken } onClick={handleAddRessource} className="px-3.5 py-0 bg-blue text-white rounded-[7px]">
+          <Button disabled={ isLoading || !captchaToken || (!file && !fileName) } onClick={handleAddRessource} className="px-3.5 py-0 bg-blue text-white rounded-[7px]">
             { isLoading && <Loader className="h-5 w-5 mr-2" /> }
             <span className="font-body-3 font-bold whitespace-nowrap">
                 Ajouter le bulletin
