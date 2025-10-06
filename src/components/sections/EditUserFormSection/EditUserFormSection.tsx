@@ -238,7 +238,7 @@ export const EditUserFormSection = ({user}: { user: User}): JSX.Element => {
                 />
               }
 
-{
+              {
                 form.getValues("role") === "bulletin" &&
                 <div className="flex flex-col space-y-2 mt-10">
                   <Label htmlFor="categorie" className="mb-2">Rattaché l'utilisateur à:</Label>

@@ -299,13 +299,11 @@ export const AddEventFormSection = (): JSX.Element => {
                 )}>Français</p>
               </div>
               <div onClick={navigateToEnglishForm} className={cn('h-12 flex justify-center items-center cursor-pointer', 
-                step === 2 ? 'bg-[#E1E7EF]' : 'bg-[#F5F7FA]'
-              )}>
+                step === 2 ? 'bg-[#E1E7EF]' : 'bg-[#F5F7FA]')}>
                 <p className={cn('font-bold', 
                   step === 2  ?'text-blue'  : 'text-noir-dashboard'
                 )}>Anglais</p>
               </div>
-              
             </div>
           }
 
