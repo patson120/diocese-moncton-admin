@@ -1,248 +1,177 @@
+
 'use client'
 
-import { Ressource } from "@/app/types";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { Loader } from "@/components/ui/loader";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import useRole from "@/hooks/use-role";
-import { apiClient } from "@/lib/axios";
-import { formatDateToLocal } from "@/lib/utils";
-import {
-  EyeIcon,
-  LayoutGridIcon,
-  ListFilter,
-  ListOrdered,
-  MoreHorizontalIcon,
-  SearchIcon,
-  Trash2Icon
-} from "lucide-react";
-import { ChangeEvent, JSX, useEffect, useState } from "react";
-import { toast } from "sonner";
-import { useDebouncedCallback } from "use-debounce";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
+import { FolderPlus } from 'lucide-react';
+import { useState } from 'react';
+import { Breadcrumb } from './components/Breadcrumb';
+import { FolderTree } from './components/FolderTree';
+import { useDocumentManager } from './components/hooks/useDocumentManager';
+import { DocumentViewer } from './components/DocumentViewer';
 
-export const DocumentContentSection = (): JSX.Element => {
 
-  const { canDeleteDocument,  } = useRole()
+type ViewType = 'folder' | 'favorites' | 'recent';
 
-  const [dislayMode, setDislayMode] = useState<'list' | 'grid'>('grid')
-  const [isDeleting, setisDeleting] = useState(false)
-  const [query, setQuery] = useState("")
-
-  const [ressources, setRessources] = useState<Ressource[]>([])
-
-  const toggleDisplayMode = () => {
-    if (dislayMode === 'list') setDislayMode("grid") 
-    else setDislayMode("list")
-  }
-
-  const fetchRessources = async () => {
-    const response: Ressource[] = await apiClient.get('/api/ressources?type=document')
-    setRessources(response)
-  }
-  const fetchFilteredRessources = async (titre: string) => {
-    const response: Ressource[] = await apiClient.get(`/api/ressources?type=document&titre=${titre}`)
-    setRessources(response)
+export const DocumentContentSection = ()  => {
+  const {
+    state,
+    createFolder,
+    deleteFolder,
+    toggleFolder,
+    setCurrentFolder,
+    setSearchQuery,
+    setViewMode,
+    setSortBy,
+    setSortOrder,
+    toggleFileSelection,
+    selectAllFiles,
+    clearSelection,
+    toggleFileFavorite,
+    filteredFiles,
+    allFiles,
+    favoriteFiles,
+    recentFiles,
+    getFolderById,
+    updateFolder
+  } = useDocumentManager();
+  
+  const [currentView, setCurrentView] = useState<ViewType>('folder');
+  
+  const handleShowFavorites = () => {
+    setCurrentView('favorites');
+    setCurrentFolder(null);
   }
   
-  const deleteRessources = async (idRessource: number) => {
-    if (!canDeleteDocument()){ 
-      return toast.success("Vous n'avez pas le droit d'effectuer cette opération !")
-    }
-    if (isDeleting) return
-    setisDeleting(true)
-    try {
-      await apiClient.delete(`/api/ressources/${idRessource}`)
-      setRessources(prev  => prev.filter( doc  => doc.id != idRessource))
-      toast.success("Ressource supprimée avec succès")
-    } catch (error: any) {
-      toast.error(
-        <div className='p-3 bg-red-500 text-white rounded-md'>
-          Une erreur est survenue. Erreur:  {JSON.stringify(error.message)}
-        </div>
-      )
-    }
-    finally {
-      setisDeleting(false)
+  const handleShowRecent = () => {
+    setCurrentView('recent');
+    setCurrentFolder(null);
+  }
+  
+  const handleFolderSelect = (folder: any) => {
+    setCurrentView('folder');
+    setCurrentFolder(folder);
+  }
+  
+  const getCurrentFiles = () => {
+    switch (currentView) {
+      case 'favorites':
+        return favoriteFiles;
+      case 'recent':
+        return recentFiles;
+      default:
+        return filteredFiles;
     }
   }
-
-  useEffect(() => {
-    fetchRessources()
-  }, [])
   
-  const handleSearch = useDebouncedCallback( (event: ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setQuery(value);
-    if (value.trim() === "") {
-      fetchRessources(); // Re-fetch all resources if the search query is empty
-    } else {
-      fetchFilteredRessources(value); // Fetch filtered resources based on the search query
+  const getCurrentTitle = () => {
+    switch (currentView) {
+      case 'favorites':
+        return 'Favoris';
+      case 'recent':
+        return 'Fichiers récents';
+      default:
+        return state.currentFolder ? state.currentFolder.name : 'Tous les fichiers';
     }
-  }, 800)
-
+  }
+  
+  const totalSize = allFiles.reduce((acc, file) => acc + file.size, 0);
+  const formatTotalSize = (bytes: number) => {
+    const gb = bytes / (1024 * 1024 * 1024);
+    return `${gb.toFixed(1)} GB`;
+  }
 
   return (
     <section className="w-full flex-1 p-6">
       <div className="flex flex-col bg-white w-full items-start gap-6 rounded-2xl p-6">
-        <div className="flex w-full items-start gap-2.5">
-          <div className="flex items-center gap-2">
-            <div className="relative w-[256px]">
-              <Input
-                className="h-10 bg-neutral-100 border-none pl-9"
-                placeholder="Rechercher un document"
-                onChange={handleSearch}
-                defaultValue={query}
-              />
-              <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
-            </div>
-            <Button
-              variant="outline"
-              className="h-11 flex items-center gap-2.5 border border-[#d9d9d9] rounded-lg">
-              <ListFilter className="w-5 h-5" />
-              <span className="font-body-3 text-noir-dashboard">
-                Trier par...
-              </span>
-            </Button>
+        <div className="w-full grid grid-cols-1 lg:grid-cols-5 gap-6">
+          {/* Sidebar */} 
+          <div className="lg:col-span-1">
+            <Card className="shadow-sm">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold">Navigation</h3>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 w-8 p-0"
+                    onClick={() => {
+                      createFolder('', 'Nouveau dossier')
+                    }}>
+                    <FolderPlus className="h-4 w-4" />
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0">
+                <div className="overflow-y-auto min-h-[61vh] v-scroll">
+                  <FolderTree
+                    folders={state.folders}
+                    currentFolder={state.currentFolder}
+                    onFolderSelect={handleFolderSelect}
+                    onToggleFolder={toggleFolder}
+                    onCreateFolder={createFolder}
+                    onUpdateFolder={updateFolder}
+                    onDeleteFolder={deleteFolder}
+                    onShowFavorites={handleShowFavorites}
+                    onShowRecent={handleShowRecent}
+                    favoriteCount={favoriteFiles.length}
+                    recentCount={recentFiles.length}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
-            <Button
-            onClick={toggleDisplayMode}
-              variant="outline"
-              className="w-11 h-11 p-0 flex items-center justify-center border border-[#d9d9d9] rounded-lg transition-all"
-            >
-              {
-                (dislayMode === 'list') ?
-                <LayoutGridIcon className="w-5 h-5" /> :
-                <ListOrdered className="w-5 h-5" />
-              }
-            </Button>
+          {/* Main Content */} 
+          <div className="lg:col-span-4">
+            <Card className="h-full shadow-sm">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <Breadcrumb
+                    currentFolder={state.currentFolder}
+                    folders={state.folders}
+                    onFolderSelect={handleFolderSelect}
+                    getFolderById={getFolderById}
+                    isSpecialView={currentView !== 'folder'}
+                    specialViewTitle={currentView === 'favorites' ? 'Favoris' : currentView === 'recent' ? 'Récents' : undefined}
+                  />
+                </div>
+              </CardHeader>
+              
+              <Separator />
+                <CardContent className="pt-4">
+                  <ScrollArea className="w-full overflow-y-scroll v-scroll h-[calc(58vh+12px)]">
+                    <DocumentViewer
+                      files={getCurrentFiles()}
+                      currentFolder={state.currentFolder}
+                      currentFolders={state.currentFolders}
+                      folders={state.folders}
+                      onFolderSelect={handleFolderSelect}
+                      onDeleteFolder={deleteFolder}
+                      onUpdateFolder={updateFolder}
+                      onCreateFolder={createFolder}
+                      getFolderById={getFolderById}
+                      viewMode={state.viewMode}
+                      selectedFiles={state.selectedFiles}
+                      sortBy={state.sortBy}
+                      sortOrder={state.sortOrder}
+                      onFileSelect={toggleFileSelection}
+                      onViewModeChange={setViewMode}
+                      onSortChange={setSortBy}
+                      onSortOrderChange={setSortOrder}
+                      onSelectAll={selectAllFiles}
+                      onClearSelection={clearSelection}
+                      onToggleFavorite={toggleFileFavorite}
+                      title={getCurrentTitle()}
+                    />
+                  </ScrollArea>
+                </CardContent>
+            </Card>
           </div>
         </div>
-
-        <ScrollArea className="w-full h-[calc(100vh-345px)]">
-          {
-             ( dislayMode === 'list') ?
-              <Card className="w-full rounded-2xl bg-white">
-                <CardContent className="p-0">
-                  <div className="flex flex-col w-full items-start gap-4">
-                    <Table>
-                      <TableHeader className="bg-[#f9f9f0] rounded-lg">
-                        <TableRow className="border-none">
-                          <TableHead className="font-body-3 text-noir-dashboard text-sm">
-                            Nom document
-                          </TableHead>
-                          <TableHead className="font-body-3 text-noir-dashboard text-sm">
-                            Format
-                          </TableHead>
-                          <TableHead className="font-body-3 text-noir-dashboard text-sm">
-                            Ajouté le
-                          </TableHead>
-                          <TableHead className="font-body-3 text-noir-dashboard text-sm">
-                            Actions
-                          </TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {ressources.map((doc, index) => (
-                          <TableRow key={index} className="border-b border-[#d9d9d9]">
-                            <TableCell className="font-body-3 text-noir-dashboard py-3.5">
-                              {doc.titre_fr}
-                            </TableCell>
-                            <TableCell className="font-body-3 text-gray py-3.5 uppercase">
-                              {doc.media.split(".")[1]}
-                            </TableCell>
-                            <TableCell className="font-body-3 text-noir-dashboard py-3.5">
-                              {formatDateToLocal((new Date(doc.created_at)).toISOString())}
-                            </TableCell>
-                            <TableCell className="py-3.5">
-                              <div className="flex items-center gap-[17px]">
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="h-auto p-0 flex items-center gap-1">
-                                  <a href={`${process.env.NEXT_PUBLIC_API_URL}/${doc.media}`} target="_blank" className="flex justify-center items-center flex-nowrap space-x-2" >
-                                    <EyeIcon className="w-[18px] h-[18px]" />
-                                    <span className="font-body-3 text-noir-dashboard">
-                                      Voir
-                                    </span>
-                                  </a>
-                                </Button>
-                                <Button
-                                  onClick={() => deleteRessources(doc.id)}
-                                  variant="ghost"
-                                  size="sm"
-                                  className="h-auto p-0 flex items-center gap-1">
-                                  { (isDeleting ) ?
-                                    <Loader className="w-4 h-4" /> :
-                                    <Trash2Icon className="w-4 h-4" />
-                                  }
-                                  <span className="font-body-3 text-noir-dashboard">
-                                    Supprimer
-                                  </span>
-                                </Button>
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                </CardContent>
-              </Card> :
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 gap-3">
-                {/* Document cards grid */}
-                {ressources.map((doc, index) => (
-                  <Card
-                    key={index}
-                    className="bg-[#f9f9f0] rounded-2xl">
-                    <CardContent className="p-0">
-                      <div className="mt-2 mx-auto">
-                        <div className="flex flex-row justify-end items-center px-3">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild >
-                              <Button
-                                variant="ghost"
-                                className="w-[18px] h-[18px] p-0">
-                                <MoreHorizontalIcon className="w-[18px] h-[18px]" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent>
-                              {/* Dropdown menu items would go here */}
-                              <DropdownMenuItem className="text-gray">
-                                <a href={`${process.env.NEXT_PUBLIC_API_URL}/${doc.media}`} target="_blank" >Consulter</a>
-                              </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => deleteRessources(doc.id)}
-                                className="text-red-500">
-                                { (isDeleting ) &&
-                                  <Loader className="w-4 h-4 mr-2" />
-                                }
-                                Supprimer</DropdownMenuItem>
-                            </DropdownMenuContent>
-                            
-                          </DropdownMenu>
-                        </div>
-
-                        <div className="flex flex-col items-center gap-3 my-4">
-                          <div className="w-[100px] h-20 bg-white rounded-2xl border border-solid border-[#d9d9d9] flex items-center justify-center">
-                            <span className="font-body-3 text-[length:var(--body-3-font-size)] uppercase text-gray text-center">
-                              {doc.media.split(".")[1]}
-                            </span>
-                          </div>
-                          <p className="font-body-3 text-[length:var(--body-3-font-size)] text-noir-dashboard text-center">
-                            {doc.titre_fr}
-                          </p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-          }
-        </ScrollArea>
       </div>
     </section>
-  );
-};
+  )
+}

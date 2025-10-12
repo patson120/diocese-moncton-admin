@@ -1,6 +1,7 @@
 "use client";
 
-import { Image as ImageType } from '@/app/types';
+import { Image as ImageType, Ressource } from '@/app/types';
+import { LoadingSpinner } from '@/components/sections/MapSection/loading-spinner';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -21,7 +22,6 @@ import {
   CheckSquare,
   Download,
   Edit2,
-  Eye,
   FileText,
   Folder,
   FolderPlus,
@@ -29,21 +29,21 @@ import {
   Image as ImageIcon,
   InfoIcon,
   MoreHorizontal,
+  MoreHorizontalIcon,
   Music,
+  Notebook,
   Share2,
   Square,
   Trash2,
-  Trash2Icon,
   Video
 } from 'lucide-react';
 import Image from 'next/image';
-import React, { JSX, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-import { AddImageFormSection } from '../../AddImageFormSection';
-import { LoadingSpinner } from '../../MapSection/loading-spinner';
+import { AddDocumentFormSection } from '../forms/AddDocumentFormSection';
 import { MediaFile, MediaFolder } from './types/media';
 
-interface MediaViewerProps {
+interface DocumentViewerProps {
   files: MediaFile[];
   currentFolder: MediaFolder | null;
   currentFolders: MediaFolder[];
@@ -316,7 +316,7 @@ const FileRow: React.FC<{
   );
 };
 
-export const MediaViewer: React.FC<MediaViewerProps> = ({
+export const DocumentViewer: React.FC<DocumentViewerProps> = ({
   files,
   folders,
   currentFolder,
@@ -339,26 +339,12 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
   onToggleFavorite,
   title = "Fichiers"
 }) => {
-  const getSortLabel = (sort: string) => {
-    switch (sort) {
-      case 'name': return 'Nom';
-      case 'date': return 'Date';
-      case 'size': return 'Taille';
-      case 'type': return 'Type';
-      default: return 'Nom';
-    }
-  };
 
-
-
-  // Image
-
-  const { canDeleteImage } = useRole()
+  const { canDeleteDocument,  } = useRole()
 
   const [loading, setLoading] = useState(false)
     
   const [images, setImages] = useState<ImageType[]>([])
-  const [selectedImage, setSelectedImage] = useState<ImageType | undefined>()
   const [isDeleting, setIsDeleting] = useState(false)
 
   const [isEditing, setIsEditing] = useState(false);
@@ -366,13 +352,16 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
   const [isCreating, setIsCreating] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
 
+  const [ressources, setRessources] = useState<Ressource[]>([])
+
+
   useEffect(() => {
     ( async () => {
       setLoading(true)
       try {
-        const url = currentFolder?.id! ? `/api/galeries?dossier_id=${currentFolder?.id!}` : '/api/galeries'
-        const response: ImageType[] = await apiClient.get(url);
-        setImages(response)
+        const url = currentFolder?.id! ? `/api/ressources?type=document&dossier_id=${currentFolder?.id!}` : '/api/ressources?type=document'
+        const response: Ressource[] = await apiClient.get(url);
+        setRessources(response)
       } catch (error) {
         console.log(error);
       }
@@ -381,27 +370,6 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
       }
     }) ()
   }, [currentFolder?.id])
-
-  const handleDeleteImage = async (img?: ImageType) => {
-    if (!window.confirm("Voulez-vous vraiment supprimer cette image ?")) return
-    if (!canDeleteImage()){ 
-      return toast.success("Vous n'avez pas le droit d'effectuer cette opération !")
-    }
-    if (isDeleting) return;
-    if (img) {
-      setIsDeleting(true);
-      try {
-        await apiClient.delete(`/api/galeries/${ img.id}`);
-        setImages(images.filter(image => image.id !== img.id));
-        setSelectedImage(undefined);
-      } catch (error) {
-        console.error('Error deleting image:', error);
-      }
-      finally {
-        setIsDeleting(false);
-      }
-    }
-  }
 
   const handleSaveEdit = (folder: MediaFolder) => {
     if (editName.trim() && editName !== folder.name) {
@@ -441,6 +409,29 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
       else setIsCreating(false);
     }
   };
+
+
+  const deleteRessources = async (idRessource: number) => {
+    if (!canDeleteDocument()){ 
+      return toast.success("Vous n'avez pas le droit d'effectuer cette opération !")
+    }
+    if (isDeleting) return
+    setIsDeleting(true)
+    try {
+      await apiClient.delete(`/api/ressources/${idRessource}`)
+      setRessources(prev  => prev.filter( doc  => doc.id != idRessource))
+      toast.success("Ressource supprimée avec succès")
+    } catch (error: any) {
+      toast.error(
+        <div className='p-3 bg-red-500 text-white rounded-md'>
+          Une erreur est survenue. Erreur:  {JSON.stringify(error.message)}
+        </div>
+      )
+    }
+    finally {
+      setIsDeleting(false)
+    }
+  }
   
   return (
     <div className="space-y-4">
@@ -448,7 +439,7 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
         <div className="flex items-center gap-4">
           <h2 className="text-lg font-semibold">{title}</h2>
           <div className="text-sm text-muted-foreground">
-            {images.length} fichier{images.length > 1 ? 's' : ''}
+            {ressources.length} fichier{ressources.length > 1 ? 's' : ''}
             {selectedFiles.length > 0 && (
               <span className="ml-2 text-blue-600">
                 • {selectedFiles.length} sélectionné{selectedFiles.length > 1 ? 's' : ''}
@@ -456,110 +447,14 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
             )}
           </div>
         </div>
-        {/*
-        <div className="flex items-center gap-2">
-          {selectedFiles.length > 0 && (
-            <Button variant="outline" size="sm" onClick={onClearSelection}>
-              Désélectionner
-            </Button>
-          )}
-          
-          {files.length > 0 && (
-            <Button variant="outline" size="sm" onClick={onSelectAll}>
-              Tout sélectionner
-            </Button>
-          )}
-          
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <ArrowUpDown className="h-4 w-4 mr-2" />
-                {getSortLabel(sortBy)}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => onSortChange('name')}>
-                Nom {sortBy === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onSortChange('date')}>
-                Date {sortBy === 'date' && (sortOrder === 'asc' ? '↑' : '↓')}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onSortChange('size')}>
-                Taille {sortBy === 'size' && (sortOrder === 'asc' ? '↑' : '↓')}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onSortChange('type')}>
-                Type {sortBy === 'type' && (sortOrder === 'asc' ? '↑' : '↓')}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => onSortOrderChange(sortOrder === 'asc' ? 'desc' : 'asc')}>
-                {sortOrder === 'asc' ? 'Décroissant' : 'Croissant'}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          
-          <div className="flex items-center gap-1 border rounded-md">
-            <Button
-              variant={viewMode === 'grid' ? 'default' : 'ghost'}
-              size="sm"
-              className="h-8"
-              onClick={() => onViewModeChange('grid')}
-            >
-              <Grid3X3 className="h-4 w-4" />
-            </Button>
-            <Button
-              variant={viewMode === 'list' ? 'default' : 'ghost'}
-              size="sm"
-              className="h-8"
-              onClick={() => onViewModeChange('list')}
-            >
-              <List className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-        */}
-        { !loading && ( <AddImageFormSection dossier_id={currentFolder?.id} />) }
-      </div>
-      {/* 
-      {
-        files.length === 0 ? (
-        <div className="text-center py-16">
-          <div className="text-gray-400 mb-4">
-            <ImageIcon className="h-16 w-16 mx-auto" />
-          </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun fichier</h3>
-          <p className="text-muted-foreground">Il n'y a aucun fichier dans cette section</p>
-        </div>
-      ) : viewMode === 'grid' ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-          {files.map((file) => (
-            <FileCard
-              key={file.id}
-              file={file}
-              isSelected={selectedFiles.includes(file.id)}
-              onSelect={onFileSelect}
-              onToggleFavorite={onToggleFavorite}
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="space-y-1">
-          {files.map((file) => (
-            <FileRow
-              key={file.id}
-              file={file}
-              isSelected={selectedFiles.includes(file.id)}
-              onSelect={onFileSelect}
-              onToggleFavorite={onToggleFavorite}
-            />
-          ))}
-        </div>
-      )}*/} 
 
+        { !loading && ( <AddDocumentFormSection dossier_id={currentFolder?.id} />) }
+      </div>
       { 
-        (images.length === 0 && currentFolders.length === 0 && !loading) &&
+        (ressources.length === 0 && currentFolders.length === 0 && !loading) &&
           <div className="text-center py-16">
             <div className="text-gray-400 mb-4">
-              <ImageIcon className="h-16 w-16 mx-auto" />
+              <Notebook className="h-16 w-16 mx-auto" />
             </div>
             <h3 className="text-lg font-medium text-gray-900 mb-2">Aucun fichier</h3>
             <p className="text-muted-foreground">Il n'y a aucun fichier dans cette section</p>
@@ -572,8 +467,9 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
           <p className="text-muted-foreground">Chargement...</p>
         </div>
       }
-      {/* Image grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 gap-4">
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+        {/*  Document cards grid */}
         {!loading && currentFolders.map((folder, index) => (
           <Card
             key={index}
@@ -601,15 +497,6 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
                 )
               }
             </div>
-            {/* 
-              <div className='absolute top-0 left-0 w-full h-full bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-all duration-300 ease-in-out'>
-                  <div className='flex items-center gap-2'>
-                    <button onClick={() => {}} className='h-10 w-10 rounded-full bg-white/20 text-white hover:bg-white hover:text-black flex items-center justify-center'>
-                      { isDeleting ? <Loader className="h-5 w-5" /> : <Trash2Icon className='w-5 h-5'/>}
-                    </button>
-                  </div>
-              </div>
-            */}
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -649,70 +536,52 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
           </Card>
         ))}
         { 
-          !loading && images.map((image, index) => (
+          !loading && ressources.map((doc, index) => (
           <Card
-              key={index}
-              className="overflow-hidden rounded-lg border-none relative shrink-0 min-h-[150px] max-h-[200px]">
-              <Image
-                  alt={`Image ${index + 1}`}
-                  src={`${process.env.NEXT_PUBLIC_API_URL}/${image.path!}`}
-                  style={{ objectFit: 'cover' }}
-                  fill
-                  priority
-              />
-              <div className='absolute top-0 left-0 w-full h-full bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-all duration-300 ease-in-out'>
-                  <div className='flex items-center gap-2'>
-                    <button onClick={() => {setSelectedImage(image)}} className='h-10 w-10 rounded-full bg-white/20 text-white hover:bg-white hover:text-black flex items-center justify-center'>
-                      <Eye className='w-5 h-5'/>
-                    </button>
-                    <button onClick={() => handleDeleteImage(image)} className='h-10 w-10 rounded-full bg-white/20 text-white hover:bg-white hover:text-black flex items-center justify-center'>
-                      { isDeleting ? <Loader className="h-5 w-5" /> : <Trash2Icon className='w-5 h-5'/>}
-                    </button>
+            key={index}
+            className="bg-[#f9f9f0] rounded-2xl">
+            <CardContent className="p-0">
+              <div className="mt-2 mx-auto">
+                <div className="flex flex-row justify-end items-center px-3">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild >
+                      <Button
+                        variant="ghost"
+                        className="w-[18px] h-[18px] p-0">
+                        <MoreHorizontalIcon className="w-[18px] h-[18px]" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      {/* Dropdown menu items would go here */}
+                      <DropdownMenuItem className="text-gray">
+                        <a href={`${process.env.NEXT_PUBLIC_API_URL}/${doc.media}`} target="_blank" >Consulter</a>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => deleteRessources(doc.id)}
+                        className="text-red-500">
+                        { (isDeleting ) &&
+                          <Loader className="w-4 h-4 mr-2" />
+                        }
+                        Supprimer</DropdownMenuItem>
+                    </DropdownMenuContent>
+                    
+                  </DropdownMenu>
+                </div>
+
+                <div className="flex flex-col items-center gap-3 my-4">
+                  <div className="w-[100px] h-20 bg-white rounded-2xl border border-solid border-[#d9d9d9] flex items-center justify-center">
+                    <span className="font-body-3 text-[length:var(--body-3-font-size)] uppercase text-gray text-center">
+                      {doc.media.split(".")[1]}
+                    </span>
                   </div>
+                  <p className="font-body-3 text-[length:var(--body-3-font-size)] text-noir-dashboard text-center">
+                    {doc.titre_fr}
+                  </p>
+                </div>
               </div>
+            </CardContent>
           </Card>
         ))}
       </div>
-      <Dialog open={selectedImage != undefined} onOpenChange={() => setSelectedImage(undefined)}>
-          <DialogContent aria-describedby={undefined} className="max-w-4xl p-3 rounded-2xl">
-            <DialogClose onClick={() => setSelectedImage(undefined)} className="absolute border-none w-5 h-5 top-[14px] right-[14px]">
-            </DialogClose>
-            <DialogHeader className='hidden'>
-                <DialogTitle></DialogTitle>
-            </DialogHeader>
-            <div className='w-full h-[calc(70vh)] relative rounded-xl overflow-hidden'>
-              <Image
-                alt={`Image details`}
-                src={`${process.env.NEXT_PUBLIC_API_URL}/${selectedImage?.path!}`}
-                style={{ objectFit: 'cover' }}
-                fill
-                priority
-              />
-            </div>
-            <div className='flex justify-between items-center gap-3'>
-              <div className='flex gap-3'>
-                <Button onClick={() => setSelectedImage(undefined)} className="px-3.5 py-0 bg-blue text-white rounded-[7px]">
-                  <span className="font-body-3 whitespace-nowrap">
-                    Fermer
-                  </span>
-                </Button>
-                <Button
-                  onClick={() => handleDeleteImage(selectedImage)}
-                  variant="outline"
-                  className=" p-3.5 bg-white rounded-lg border border-solid border-[#d9d9d9]">
-                  { isDeleting && <Loader className="h-5 w-5 mr-2" />}
-                  <span className="font-body-3 text-noir-dashboard whitespace-nowrap">
-                      Supprimer
-                  </span>
-                </Button>
-              </div>
-              <div className='flex items-center gap-1'>
-                <InfoIcon className='h-5 w-5' />
-                <p className='text-gray'>{selectedImage?.path.split('/')[selectedImage?.path.split('/').length - 1]}</p>
-              </div>
-            </div>
-          </DialogContent>
-      </Dialog>
     </div>
   );
 };

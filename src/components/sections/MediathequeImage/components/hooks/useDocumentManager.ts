@@ -5,7 +5,7 @@ import { apiClient } from '@/lib/axios';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { MediaFile, MediaFolder, MediaManagerState } from '../types/media';
 
-export const useMediaManager = () => {
+export const useDocumentManager = () => {
   const [state, setState] = useState<MediaManagerState>({
     folders: [],
     currentFolders: [],
@@ -75,7 +75,7 @@ export const useMediaManager = () => {
       parent_id: parent_id,
       titre_fr: titre,
       titre_en: titre,
-      menu: "galerie"
+      menu: "document"
     })
     return response.id
   }
@@ -84,7 +84,6 @@ export const useMediaManager = () => {
     await apiClient.put(`/api/dossiers/${folder_id}`, {
       titre_fr: titre,
       titre_en: titre,
-      menu: "galerie"
     })
   }
 
@@ -109,7 +108,7 @@ export const useMediaManager = () => {
 
   const fetchFoldersFromApi = async (parentId: string = '0') => {
     try {
-      const response: any[] = await apiClient.get(`/api/dossiers?menu=galerie&parent_id=${parentId}`);
+      const response: any[] = await apiClient.get(`/api/dossiers?menu=document&parent_id=${parentId}`);
       return getFolderList(response); // Transforme les données en MediaFolder[]
     } catch (error) {
       console.error("Erreur lors du chargement des dossiers :", error);

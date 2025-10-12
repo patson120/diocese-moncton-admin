@@ -22,7 +22,7 @@ import {
   Trash2
 } from 'lucide-react';
 import React, { useState } from 'react';
-import { MediaFolder } from './types/media';
+import { MediaFolder } from './images/types/media';
 
 interface FolderTreeProps {
   folders: MediaFolder[];
