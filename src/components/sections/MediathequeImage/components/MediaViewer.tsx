@@ -37,7 +37,7 @@ import {
   Video
 } from 'lucide-react';
 import Image from 'next/image';
-import React, { JSX, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { AddImageFormSection } from '../../AddImageFormSection';
 import { LoadingSpinner } from '../../MapSection/loading-spinner';
