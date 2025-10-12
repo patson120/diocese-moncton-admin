@@ -5,7 +5,6 @@ import { LoadingSpinner } from '@/components/sections/MapSection/loading-spinner
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,7 +26,6 @@ import {
   FolderPlus,
   Heart,
   Image as ImageIcon,
-  InfoIcon,
   MoreHorizontal,
   MoreHorizontalIcon,
   Music,
@@ -37,7 +35,6 @@ import {
   Trash2,
   Video
 } from 'lucide-react';
-import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { AddDocumentFormSection } from '../forms/AddDocumentFormSection';
