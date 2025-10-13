@@ -573,7 +573,7 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
         </div>
       }
       {/* Image grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         {!loading && currentFolders.map((folder, index) => (
           <Card
             key={index}
@@ -601,16 +601,6 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
                 )
               }
             </div>
-            {/* 
-              <div className='absolute top-0 left-0 w-full h-full bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-all duration-300 ease-in-out'>
-                  <div className='flex items-center gap-2'>
-                    <button onClick={() => {}} className='h-10 w-10 rounded-full bg-white/20 text-white hover:bg-white hover:text-black flex items-center justify-center'>
-                      { isDeleting ? <Loader className="h-5 w-5" /> : <Trash2Icon className='w-5 h-5'/>}
-                    </button>
-                  </div>
-              </div>
-            */}
-
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
