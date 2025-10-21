@@ -2,6 +2,7 @@
 
 import { DashboardShell } from '@/components/pages/dashboard-shell';
 import { Component, Page } from '@/components/pages/lib/types';
+import { v4 as uuidv4 } from '@/components/pages/lib/uuid';
 import { BuilderCanvas } from '@/components/pages/page-builder/builder-canvas';
 import { ComponentEditor } from '@/components/pages/page-builder/component-editor';
 import { ComponentLibrary } from '@/components/pages/page-builder/component-library';
@@ -16,7 +17,6 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { slugGenerator } from '../lib/utils/slug-generator';
-import { v4 as uuidv4 } from '@/components/pages/lib/uuid';
 
 interface PageBuilderProps {
   pageId: string;
