@@ -33,14 +33,18 @@ export const usePagesStore = create<PagesState>()(
         
         let page: Page = {
           id,
-          title: pageData.title,
-          description: pageData.description,
+          title_fr: pageData.title_fr,
+          title_en: pageData.title_en,
+          description_fr: pageData.description_fr,
+          description_en: pageData.description_en,
           slug: pageData.slug,
           status: pageData.status || 'draft',
-          components: pageData.components || [],
+          components_fr: pageData.components_fr || [],
+          components_en: pageData.components_en || [],
           createdAt: now,
           updatedAt: now,
           preview: pageData.preview,
+          language: pageData.language ?? "fr",
           publishedVersions: pageData.publishedVersions || [],
           metaData: pageData.metaData || {},
         }
@@ -91,13 +95,18 @@ export const usePagesStore = create<PagesState>()(
         const duplicatedPage: Page = {
           ...page,
           id: newId,
-          title: `${page.title} (Copy)`,
+          title_fr: `${page.title_fr} (Copy)`,
+          title_en: `${page.title_en} (Copy)`,
           slug: `${page.slug}-copy`,
           status: 'draft',
           createdAt: now,
           updatedAt: now,
           publishedVersions: [],
-          components: page.components.map(component => ({
+          components_fr: page.components_fr.map(component => ({
+            ...component,
+            id: uuidv4(),
+          })),
+          components_en: page.components_en.map(component => ({
             ...component,
             id: uuidv4(),
           })),
@@ -115,7 +124,7 @@ export const usePagesStore = create<PagesState>()(
           const page = state.pages.find((p) => p.id === pageId);
           if (!page) return state;
           
-          const components = [...page.components];
+          const components = [...( page.language === "fr" ? page.components_fr : page.components_en)];
           const order = components.length > 0 
             ? Math.max(...components.map(c => c.order)) + 1 
             : 0;
@@ -132,7 +141,8 @@ export const usePagesStore = create<PagesState>()(
               p.id === pageId
                 ? {
                     ...p,
-                    components: [...p.components, newComponent],
+                    [page.language === "fr" ? "components_fr" : "components_en"]:
+                    [...(page.language === "fr" ?  p.components_fr : p.components_en), newComponent],
                     updatedAt: new Date().toISOString(),
                   }
                 : p
@@ -151,7 +161,8 @@ export const usePagesStore = create<PagesState>()(
               p.id === pageId
                 ? {
                     ...p,
-                    components: p.components.map((c) =>
+                    [page.language === "fr" ? "components_fr" : "components_en"]: 
+                    [ ...(p.language === "fr" ? p.components_fr : p.components_en) ].map((c) =>
                       c.id === componentId ? { ...c, ...data } : c
                     ),
                     updatedAt: new Date().toISOString(),
@@ -172,7 +183,7 @@ export const usePagesStore = create<PagesState>()(
               p.id === pageId
                 ? {
                     ...p,
-                    components: p.components.filter((c) => c.id !== componentId),
+                    components: [...(p.language ===  "fr" ? p.components_fr : p.components_en)].filter((c) => c.id !== componentId),
                     updatedAt: new Date().toISOString(),
                   }
                 : p
@@ -186,12 +197,20 @@ export const usePagesStore = create<PagesState>()(
           const page = state.pages.find((p) => p.id === pageId);
           if (!page) return state;
           
-          const components = [...page.components].sort((a, b) => a.order - b.order);
-          const [removed] = components.splice(startIndex, 1);
-          components.splice(endIndex, 0, removed);
+          const components_fr = page.components_fr.sort((a, b) => a.order - b.order);
+          const components_en = page.components_en.sort((a, b) => a.order - b.order);
+          const [removed_fr] = components_fr.splice(startIndex, 1);
+          const [removed_en] = components_en.splice(startIndex, 1);
+          components_fr.splice(endIndex, 0, removed_fr);
+          components_en.splice(endIndex, 0, removed_en);
           
           // Reassign orders
-          const updatedComponents = components.map((component, index) => ({
+          const updatedComponents_fr = components_fr.map((component, index) => ({
+            ...component,
+            order: index,
+          }));
+
+          const updatedComponents_en = components_en.map((component, index) => ({
             ...component,
             order: index,
           }));
@@ -201,7 +220,8 @@ export const usePagesStore = create<PagesState>()(
               p.id === pageId
                 ? {
                     ...p,
-                    components: updatedComponents,
+                    components_fr: updatedComponents_fr,
+                    components_en: updatedComponents_en,
                     updatedAt: new Date().toISOString(),
                   }
                 : p
@@ -242,14 +262,14 @@ export const usePagesStore = create<PagesState>()(
           <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>${page.title}</title>
+            <title>${page.language ? page.title_fr : page.title_en}</title>
             ${page.metaData?.description ? `<meta name="description" content="${page.metaData.description}">` : ''}
             ${page.metaData?.keywords ? `<meta name="keywords" content="${page.metaData.keywords}">` : ''}
           </head>
           <body>
             <!-- Generated Page Content -->
-            <h1>${page.title}</h1>
-            ${page.components.map(component => {
+            <h1>${page.language ? page.title_fr : page.title_en}</h1>
+            ${[...(page.language === "fr" ? page.components_fr : page.components_en)].map(component => {
               // In a real implementation, this would render the component based on its type and props
               return `<section data-component-type="${component.type}" data-component-id="${component.id}">
                 <!-- Component content would be rendered here based on the component type and props -->

@@ -315,8 +315,8 @@ function generateComponentHtml(component: Component): string {
   }
 }
 
-export function generatePageHtml(page: Page): string {
-  const componentsHtml = page.components.map(generateComponentHtml).join('');
+export function generatePageHtml(page: Page, language: "fr" | "en"): string {
+  const componentsHtml = page[`components_${language}`].map(generateComponentHtml).join('');
   
   return `<!DOCTYPE html>
     <html lang="en">
@@ -326,7 +326,7 @@ export function generatePageHtml(page: Page): string {
       ${page.metaData?.description ? `<meta name="description" content="${page.metaData.description}">` : ''}
       ${page.metaData?.keywords ? `<meta name="keywords" content="${page.metaData.keywords}">` : ''}
       <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-      <title>${page.title}</title>
+      <title>${page[`title_${language}`]}</title>
       <style>
         * {
           margin: 0;

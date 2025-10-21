@@ -18,14 +18,15 @@ import TextLeftComponent from '../page-components/text-left-component';
 
 interface PreviewPanelProps {
   page: Page;
+  language: "fr" | "en"
 }
 
-export function PreviewPanel({ page }: PreviewPanelProps) {
+export function PreviewPanel({ page, language }: PreviewPanelProps) {
   const [deviceView, setDeviceView] = useState<DeviceType>('desktop');
   const [activeTab, setActiveTab] = useState<'preview' | 'code'>('preview');
-  
+
   // Sort components by order
-  const sortedComponents = [...page.components].sort((a, b) => a.order - b.order);
+  const sortedComponents = [...page[`components_${language}`]].sort((a, b) => a.order - b.order);
   
   const renderComponent = (component: Component) => {
     const props = { ...component.props, deviceView: deviceView  }
@@ -66,7 +67,7 @@ export function PreviewPanel({ page }: PreviewPanelProps) {
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>${page.title}</title>
+        <title>${page[`title_${page.language}`]}</title>
         ${page.metaData?.description ? `<meta name="description" content="${page.metaData.description}">` : ''}
         ${page.metaData?.keywords ? `<meta name="keywords" content="${page.metaData.keywords}">` : ''}
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
@@ -132,7 +133,7 @@ export function PreviewPanel({ page }: PreviewPanelProps) {
                   <div className="space-y-4 min-h-full">
                     {sortedComponents.map((component) => (
                       <div key={component.id}>
-                        {renderComponent(component)}
+                        { renderComponent(component) }
                       </div>
                     ))}
                   </div>
@@ -144,10 +145,7 @@ export function PreviewPanel({ page }: PreviewPanelProps) {
           <ScrollArea className="h-full">
             <div className="p-4">
               <pre className="bg-card p-4 rounded-md text-sm overflow-x-auto whitespace-pre-wrap">
-                {/**
-                  {getPageHtml()}
-                */}
-                {generatePageHtml(page)}
+                { generatePageHtml(page, language) }
               </pre>
             </div>
           </ScrollArea>

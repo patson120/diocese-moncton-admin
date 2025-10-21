@@ -53,14 +53,18 @@ export type PageStatus = 'draft' | 'published';
 
 export interface Page {
   id: string;
-  title: string;
-  description?: string;
+  title_fr: string;
+  title_en: string;
+  description_fr?: string;
+  description_en?: string;
   slug: string;
   status: PageStatus;
-  components: Component[];
+  components_fr: Component[];
+  components_en: Component[];
   createdAt: string;
   updatedAt: string;
   preview?: string;
+  language: "fr" | "en"
   publishedVersions?: string[];
   metaData?: {
     title?: string;

@@ -29,6 +29,7 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
   const [title, setTitle] = useState('');
   const [selectedComponentId, setSelectedComponentId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState('builder');
+  const [activeLangTab, setActiveLangTab] = useState<"fr" | "en">('fr');
   const [isSaving, setIsSaving] = useState(false);
   const [showPublishAlert, setShowPublishAlert] = useState(false);
   const [showExitAlert, setShowExitAlert] = useState(false);
@@ -41,10 +42,13 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
       setTitle('New Page');
       setPage({
         id: 'temp',
-        title: 'New Page',
+        title_fr: 'New Page',
+        title_en: 'New Page',
         slug: 'new-page',
         status: 'draft',
-        components: [],
+        components_fr: [],
+        components_en: [],
+        language: activeLangTab,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       });
@@ -52,9 +56,9 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
       // Load existing page
       getPage(pageId).then(existingPage => {
         if (existingPage) {
-          const page: Page = {...existingPage!,id: pageId};
+          const page: Page = {...existingPage!, id: pageId, language: activeLangTab};
           setPage(page!);
-          setTitle(page!.title);
+          setTitle(page!.title_fr);
         } else {
           // Handle invalid page ID
           router.push('/create-page/new');
@@ -65,7 +69,7 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
 
   // Track changes
   useEffect(() => {
-    if (page && (page.title !== title || page.id === 'temp')) {
+    if (page && (page.title_fr !== title || page.title_en !== title || page.id === 'temp')) {
       setHasUnsavedChanges(true);
     }
   }, [page, title]);
@@ -81,11 +85,15 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
         // Create new page
         const slug = slugGenerator(title) // title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
         const newPageId = await addPage({
-          title,
+          title_fr: title,
+          title_en: title,
           slug,
           status: 'draft',
-          components: page.components,
-          description: '',
+          components_fr: page.components_fr,
+          components_en: page.components_en,
+          description_fr: '',
+          language: activeLangTab,
+          description_en: '',
         });
 
         toast.success('Page created successfully');
@@ -93,9 +101,12 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
       } else {
         // Update existing page
         updatePage(page.id, {
-          title,
+          title_fr: title,
+          title_en: title,
           slug: slugGenerator(title),
-          components: page.components,
+          language: activeLangTab,
+          components_fr: page.components_fr,
+          components_en: page.components_en,
           updatedAt: new Date().toISOString(),
         });
         
@@ -127,7 +138,7 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
     
     setPage({
       ...page,
-      components: [...page.components, component],
+      [`components_${activeLangTab}`]: [...page[`components_${activeLangTab}`], component],
     });
     
     setHasUnsavedChanges(true);
@@ -136,15 +147,15 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
   const handleComponentDuplicate = (componentId: string) => {
     if (!page) return;
 
-    const findIndex = page.components.findIndex(c => c.id === componentId);
+    const findIndex = page[`components_${activeLangTab}`].findIndex(c => c.id === componentId);
     if (findIndex === -1) return;
 
     // Duplicate the component
     const newComponentId = uuidv4();
     const newComponents = [ 
-      ...page.components.slice(0, findIndex + 1), 
-      { ...page.components[findIndex], id:  newComponentId  }, 
-      ...page.components.slice(findIndex + 1, ) 
+      ...page[`components_${activeLangTab}`].slice(0, findIndex + 1), 
+      { ...page[`components_${activeLangTab}`][findIndex], id:  newComponentId  }, 
+      ...page[`components_${activeLangTab}`].slice(findIndex + 1, ) 
     ]
     
     // Add the new component to the page
@@ -153,7 +164,7 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
     
     setPage({
       ...page,
-      components: newComponents,
+      [`components_${activeLangTab}`]: newComponents,
     });
     
   };
@@ -161,15 +172,15 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
   const handleComponentMoveUpAndDown = (componentId: string, direction: 'up' | 'down') => {
     if (!page) return;
 
-    const findIndex = page.components.findIndex(c => c.id === componentId);
+    const findIndex = page[`components_${activeLangTab}`].findIndex(c => c.id === componentId);
     if (
       findIndex === -1 || 
-      (direction === 'down' && findIndex === page.components.length - 1) || 
+      (direction === 'down' && findIndex === page[`components_${activeLangTab}`].length - 1) || 
       (direction === 'up' && findIndex === 0)
     ) return;
 
     // Move the component up or down
-    let newComponents = [...page.components];
+    let newComponents = [...page[`components_${activeLangTab}`]];
     const [movedComponent] = newComponents.splice(findIndex, 1);
     const newIndex = direction === 'up' ? findIndex - 1 : findIndex + 1;
     newComponents.splice(newIndex, 0, movedComponent);
@@ -183,7 +194,7 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
     
     setPage({
       ...page,
-      components: newComponents,
+      [`components_${activeLangTab}`]: newComponents,
     })
   };
 
@@ -192,7 +203,7 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
     
     setPage({
       ...page,
-      components: page.components.map((c) =>
+      [`components_${activeLangTab}`]: page[`components_${activeLangTab}`].map((c) =>
         c.id === componentId ? { ...c, ...data } : c
       ),
     });
@@ -205,7 +216,7 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
     
     setPage({
       ...page,
-      components: page.components.filter((c) => c.id !== componentId),
+      [`components_${activeLangTab}`]: page[`components_${activeLangTab}`].filter((c) => c.id !== componentId),
     });
     
     setSelectedComponentId(null);
@@ -215,7 +226,7 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
   const handleComponentReorder = (startIndex: number, endIndex: number) => {
     if (!page) return;
     
-    const orderedComponents = [...page.components].sort((a, b) => a.order - b.order);
+    const orderedComponents = [...page[`components_${activeLangTab}`]].sort((a, b) => a.order - b.order);
     const [removed] = orderedComponents.splice(startIndex, 1);
     orderedComponents.splice(endIndex, 0, removed);
     
@@ -224,7 +235,7 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
     
     setPage({
       ...page,
-      components: updatedComponents,
+      [`components_${activeLangTab}`]: updatedComponents,
     });
     
     setHasUnsavedChanges(true);
@@ -287,7 +298,7 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
               <Button
                 variant="outline"
                 onClick={() => setShowPublishAlert(true)}
-                disabled={page.id === 'temp' || page.components.length === 0}
+                disabled={page.id === 'temp' || page[`components_${activeLangTab}`].length === 0}
               >
                 <Globe className="mr-2 h-4 w-4" />
                 Publish
@@ -299,6 +310,16 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
               >
                 <Save className="mr-2 h-4 w-4" />
                 Save
+              </Button>
+              <Button
+                variant="outline"
+                className='bg-blue text-white'
+                onClick={() => {
+                  setSelectedComponentId(null)
+                  setActiveLangTab(activeLangTab === 'fr' ? 'en' : 'fr')}
+                }>
+                  <Globe className="mr-2 h-4 w-4" />
+                  { activeLangTab === 'fr' ? "Anglais" : "Français" }
               </Button>
             </div>
           </div>
@@ -320,7 +341,7 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
                 <ScrollArea className="h-[calc(100vh-80px)]">
                   <div className="p-4">
                     <BuilderCanvas
-                      components={page.components}
+                      components={page[`components_${activeLangTab}`]}
                       selectedComponentId={selectedComponentId}
                       onSelect={handleComponentSelect}
                       onUpdate={handleComponentUpdate}
@@ -338,7 +359,7 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
                   {selectedComponentId ? (
                     <div className="p-4">
                       <ComponentEditor
-                        component={page.components.find(c => c.id === selectedComponentId)!}
+                        component={page[`components_${activeLangTab}`].find(c => c.id === selectedComponentId)!}
                         onUpdate={(data) => handleComponentUpdate(selectedComponentId, data)}
                         onClose={() => setSelectedComponentId(null)}
                       />
@@ -354,7 +375,7 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
               </div>
             </div>
           ) : (
-            <PreviewPanel page={page} />
+            <PreviewPanel page={page} language={activeLangTab} />
           )}
         </div>
       </div>
