@@ -179,7 +179,7 @@ export const AddLinkFormSection = ({lien}: {lien?: Lien}): JSX.Element => {
                         <SelectContent>
                           { 
                             pages.map(page => (
-                              <SelectItem key={page.id} value={`${page.id}`}>{page.titre}</SelectItem>
+                              <SelectItem key={page.id} value={`${page.id}`} className="truncate">{page.titre_fr}/{page.titre_en}</SelectItem>
                             ))
                           }
                         </SelectContent>
