@@ -451,6 +451,7 @@ export const ContentSection = (): JSX.Element => {
                               </TableHeader>
                               <TableBody>
                                 {liens.map((lien) => (
+                                  lien.lapage.length > 0 ?
                                   <TableRow key={lien.id} className="border-b border-[#d9d9d9]">
                                     <TableCell className="py-3.5 font-body-3 font-[number:var(--body-3-font-weight)] text-noir-dashboard text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
                                       {lien.intitule_fr}/{lien.intitule_en}
@@ -492,7 +493,7 @@ export const ContentSection = (): JSX.Element => {
                                         </Button>
                                       </div>
                                     </TableCell>
-                                  </TableRow>
+                                  </TableRow> : null
                                 ))}
                               </TableBody>
                             </Table> :
