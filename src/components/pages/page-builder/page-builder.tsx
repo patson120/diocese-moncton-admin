@@ -56,7 +56,7 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
       // Load existing page
       getPage(pageId).then(existingPage => {
         if (existingPage) {
-          const page: Page = {...existingPage!, id: pageId, language: activeLangTab};
+          const page: Page = {...existingPage!, id: pageId, language: activeLangTab};          
           setPage(page!);
           setTitle(page!.title_fr);
         } else {

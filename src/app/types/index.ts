@@ -211,13 +211,17 @@ export type Dossier = {
 
 export type Page = {
     id: number;
-    titre: string;
+    titre_fr: string;
+    titre_en: string|null;
     is_planifier: number;
     is_publier: number;
-    description: string;
+    description_fr: string;
+    description_en: string |null;
     data: string;
-    contenu_html: string | null;
-    contenu_json: string | null;
+    contenu_html_fr: string | null;
+    contenu_html_en: string | null;
+    contenu_json_fr: string | null;
+    contenu_json_en: string | null;
     date_planification: string | null;
     contenus: any[],
     created_at: string;

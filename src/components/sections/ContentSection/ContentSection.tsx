@@ -73,11 +73,11 @@ export const ContentSection = (): JSX.Element => {
 
   const handleDeletePage = async (page: Page) => {
     if(isDeleting) return
-    if (window.confirm(`Voulez-vous vraiment supprimer la page "${page.titre}" ? \nCette action est irreversible ! `)){
+    if (window.confirm(`Voulez-vous vraiment supprimer la page "${page.titre_fr}" ? \nCette action est irreversible ! `)){
       setIsDeleting(true)
       try {
         await apiClient.delete(`/api/pages/${page.id}`)
-        toast.success(`La page ${page.titre} a été supprimée avec succès !`)
+        toast.success(`La page ${page.titre_fr} a été supprimée avec succès !`)
         setPages(prev => (prev.filter(p => p.id !== page.id)) )
       } catch (error) {
         console.log("Erreur", error)
@@ -94,12 +94,16 @@ export const ContentSection = (): JSX.Element => {
         await apiClient.post("/api/pages", {
           is_publier: 1,
           is_planifier: 0,
-          titre: `${page.titre} (Copie)`,
-          description: `${page.description} (Copie)`,
-          contenu_html: page.contenu_html,
-          contenu_json: page.contenu_json
+          titre_fr: `${page.titre_fr} (Copie)`,
+          titre_en: `${page.titre_en} (Copie)`,
+          description_fr: `${page.description_fr} (Copie)`,
+          description_en: `${page.description_en} (Copie)`,
+          contenu_html_fr: page.contenu_html_fr,
+          contenu_html_en: page.contenu_html_en,
+          contenu_json_fr: page.contenu_json_fr,
+          contenu_json_en: page.contenu_json_en
         })
-        toast.success(`La page ${page.titre} a été dupliquée avec succès !`)
+        toast.success(`La page ${page.titre_fr} a été dupliquée avec succès !`)
         setTimeout(() => {
           window.location.reload()
         }, 3000);
@@ -238,10 +242,10 @@ export const ContentSection = (): JSX.Element => {
 
                                   <div className="flex flex-1 flex-col ml-2 gap-0.5">
                                     <h3 className="font-body-3 font-semibold text-noir-dashboard text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)] line-clamp-1">
-                                      {page.titre}
+                                      {page.titre_fr}
                                     </h3>
                                     <p className="font-body-3 truncate overflow-hidden text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)] line-clamp-1">
-                                      { page.description ?? 'Lorem ipsum dolor si...' }
+                                      { page.description_fr ?? 'Lorem ipsum dolor si...' }
                                     </p>
                                   </div>
                                   <DropdownMenu>
@@ -298,7 +302,7 @@ export const ContentSection = (): JSX.Element => {
 
                                   <div className="flex flex-1 flex-col ml-2 gap-0.5">
                                     <h3 className="font-body-3 font-semibold text-noir-dashboard text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)] line-clamp-1">
-                                      {page.titre}
+                                      {page.titre_fr}
                                     </h3>
                                     <p className="font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)] line-clamp-1">
                                       {/* page.description */}
@@ -452,7 +456,7 @@ export const ContentSection = (): JSX.Element => {
                                       {lien.intitule_fr}/{lien.intitule_en}
                                     </TableCell>
                                     <TableCell className="py-3.5 font-body-3 font-[number:var(--body-3-font-weight)] text-noir-dashboard text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                                      {lien.lapage[0].titre}
+                                      {lien.lapage[0].titre_fr}
                                     </TableCell>
                                     <TableCell className="py-3.5 font-body-3 font-[number:var(--body-3-font-weight)] text-noir-dashboard text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
                                       { formatDateToLocal((new Date(lien.created_at)).toISOString()) }
