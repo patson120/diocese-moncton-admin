@@ -49,6 +49,7 @@ export const ContentSection = (): JSX.Element => {
   const [isDeleting, setIsDeleting] = useState(false)
   const [isFetching, setIsFetching] = useState(false)
   const [isDuplicating, setIsDuplicating] = useState(false)
+  const [isUpdating, setIsUpdating] = useState(false)
   const [showDeleteAlert, setShowDeleteAlert] = useState(false)
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -126,6 +127,27 @@ export const ContentSection = (): JSX.Element => {
     }
   }
 
+  const handleUpdatePageStatus = async (page: Page) => {
+    if (isUpdating) return
+    if (window.confirm(`Voulez-vous vraiment ${ page.is_publier === 1 ? "désactiver" : "activer" } cette page ?`)){
+      setIsUpdating(true)
+      try {
+        await apiClient.put(`/api/pages/${page.id}`, {
+          ...page,
+          is_publier: page.is_publier === 1 ? 0 : 1,
+        })
+        toast.success(`La page ${page.titre_fr} a été ${ page.is_publier === 1 ? "désactivée" : "activée" } avec succès !`)
+        setTimeout(() => {
+          window.location.reload()
+        }, 3000);
+      } catch (error) {
+        toast.success(`Une erreur est survenue lors de cette opération !\n Veuillez réessayer plus tard.`)
+        console.log(error);
+      }
+      finally{ setIsUpdating(false) }
+    }
+  }
+
   useEffect(() => {
     setIsFetching(true)
     Promise.all([
@@ -139,14 +161,15 @@ export const ContentSection = (): JSX.Element => {
   const handleDeleteLink = async () => {
     if(isDeleting) return
     setIsDeleting(true)
-      try {
-        await apiClient.delete(`/api/liens/${selectedLink?.id}`)
-        toast.success(`Le lien ${selectedLink?.intitule_fr} a été supprimée avec succès !`)
-        setLinks(prev => (prev.filter(p => p.id !== selectedLink?.id)) )
-      } catch (error) {
-        console.log("Erreur", error)
-      }
-      finally{ setIsDeleting(false)}
+    try {
+      await apiClient.delete(`/api/liens/${selectedLink?.id}`)
+      toast.success(`Le lien ${selectedLink?.intitule_fr} a été supprimée avec succès !`)
+      setLinks(prev => (prev.filter(p => p.id !== selectedLink?.id)) )
+    } 
+    catch (error) {
+      console.log("Erreur", error)
+    }
+    finally{ setIsDeleting(false)}
   }
 
   return (
@@ -248,9 +271,9 @@ export const ContentSection = (): JSX.Element => {
                       <TabsContent value="actives" className="mt-6 space-y-6">
                         <ScrollArea className="w-full h-[calc(63vh)]">
                           {
-                            pages.filter(p => p.is_publier = 1).length ?
+                            pages.filter(p => p.is_publier === 1).length ?
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                              {pages.filter(p => p.is_publier = 1).map((page, index) => (
+                              {pages.filter(p => p.is_publier === 1).map((page, index) => (
                                 <Card
                                   key={index}
                                   className="bg-[#F9F9F0] rounded-xl border-none">
@@ -282,6 +305,12 @@ export const ContentSection = (): JSX.Element => {
                                           <DropdownMenuItem className="text-gray">
                                               <Link href={`/create-page/${page.id}`} target="_blank">Editer</Link>
                                           </DropdownMenuItem>
+                                          {
+                                            canAddPage() &&
+                                            <DropdownMenuItem className="text-gray" onClick={() => handleUpdatePageStatus(page)}>
+                                              { page.is_publier === 1 ? "Mettre au brouillon" : "Publier" }
+                                            </DropdownMenuItem>
+                                          }
                                           {
                                             canAddPage() &&
                                             <DropdownMenuItem className="text-gray" onClick={() => handleDuplicatePage(page)}>
@@ -317,9 +346,10 @@ export const ContentSection = (): JSX.Element => {
                       <TabsContent value="inactives" className="mt-6 space-y-6">
                         <ScrollArea className="w-full h-[calc(63vh)]">
                           {
-                            pages.filter(p => p.is_publier = 0).length ?
+                            pages.filter(p => p.is_publier === 0).length ?
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                              {pages.filter(p => p.is_publier = 0).map((page, index) => (
+                              {
+                                pages.filter(p => p.is_publier === 0).map((page, index) => (
                                 <Card
                                   key={index}
                                   className="bg-[#F9F9F0] rounded-xl border-none">
@@ -331,17 +361,50 @@ export const ContentSection = (): JSX.Element => {
                                       <h3 className="font-body-3 font-semibold text-noir-dashboard text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)] line-clamp-1">
                                         {page.titre_fr}
                                       </h3>
-                                      <p className="font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)] line-clamp-1">
-                                        {/* page.description */}
-                                        Lorem ipsum dolor si...
+                                      <p className="font-body-3 truncate overflow-hidden text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)] line-clamp-1">
+                                        { page.description_fr ?? 'Lorem ipsum dolor si...' }
                                       </p>
                                     </div>
-
-                                    <Button
-                                      variant="ghost"
-                                      size="icon">
-                                      <MoreVerticalIcon className="w-[16px] h-[16px]" />
-                                    </Button>
+                                    <DropdownMenu>
+                                      <DropdownMenuTrigger asChild >
+                                      <Button
+                                        variant="ghost"
+                                        size="icon">
+                                        <MoreVerticalIcon className="w-[16px] h-[16px]" />
+                                      </Button>
+                                      </DropdownMenuTrigger>
+                                      <DropdownMenuContent>
+                                          {/* Dropdown menu items would go here */}
+                                          <DropdownMenuItem className="text-gray">
+                                              <Link href={`/render/${page.id}`} target="_blank">Consulter</Link>
+                                          </DropdownMenuItem>
+                                          <DropdownMenuItem className="text-gray">
+                                              <Link href={`/create-page/${page.id}`} target="_blank">Editer</Link>
+                                          </DropdownMenuItem>
+                                          {
+                                            canAddPage() &&
+                                            <DropdownMenuItem className="text-gray" onClick={() => handleUpdatePageStatus(page)}>
+                                              { page.is_publier === 1 ? "Mettre au brouillon" : "Publier" }
+                                            </DropdownMenuItem>
+                                          }
+                                          {
+                                            canAddPage() &&
+                                            <DropdownMenuItem className="text-gray" onClick={() => handleDuplicatePage(page)}>
+                                              Dupliquer
+                                            </DropdownMenuItem>
+                                          }
+                                          {
+                                            canDeletePage() &&
+                                            <DropdownMenuItem onClick={() => handleDeletePage(page)}
+                                              className="text-red-500">
+                                              { (isDeleting ) &&
+                                                  <Loader className="w-4 h-4 mr-2" />
+                                              }
+                                              Supprimer
+                                            </DropdownMenuItem>
+                                          }
+                                      </DropdownMenuContent>
+                                    </DropdownMenu>
                                   </CardContent>
                                 </Card>
                               ))}

@@ -37,7 +37,7 @@ export const AddLinkFormSection = ({lien}: {lien?: Lien}): JSX.Element => {
   const [menus, setMenus] = useState<Menu[]>([])
 
   const getPages = async () => {
-    const response: Page[] = await apiClient.get("/api/pages?is_select=oui")
+    const response: Page[] = await apiClient.get("/api/pages?is_select=oui&is_publier=1")
     setPages(response)    
   }
   const getMenus = async () => {
