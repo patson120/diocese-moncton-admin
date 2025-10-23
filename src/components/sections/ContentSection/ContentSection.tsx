@@ -22,7 +22,7 @@ import {
   Trash2
 } from "lucide-react";
 import Link from "next/link";
-import { JSX, useEffect, useState } from "react";
+import { JSX, useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { AddLinkFormSection } from "./AddLinkFormSection";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -30,6 +30,7 @@ import { formatDateToLocal } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader } from "@/components/ui/alert-dialog";
 import { AlertDialogTitle } from "@radix-ui/react-alert-dialog";
+import { LoadingSpinner } from "../MapSection/loading-spinner";
 
 export const ContentSection = (): JSX.Element => {
 
@@ -43,16 +44,18 @@ export const ContentSection = (): JSX.Element => {
   ];
 
   const [pages, setPages] = useState<Page[]>([])
-  const [liens, setLiens] = useState<Lien[]>([])
+  const [links, setLinks] = useState<Lien[]>([])
   const [selectedLink, setSelectedLink] = useState<Lien | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [isFetching, setIsFetching] = useState(false)
   const [isDuplicating, setIsDuplicating] = useState(false)
   const [showDeleteAlert, setShowDeleteAlert] = useState(false)
 
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [selectedTab, setSelectedTab] = useState<string>('pages');
-  const categories = ['all', 'layout', 'content', 'media', 'advanced'];  
+  const categories = ['all', 'layout', 'content', 'media', 'advanced']; 
+
   
   const filteredComponents = searchTerm
   ? componentRegistry.filter(c => 
@@ -62,14 +65,22 @@ export const ContentSection = (): JSX.Element => {
   : componentRegistry
 
 
-  const fetchLinks = async () => {
-    const response: Lien[] = await apiClient.get("/api/liens")
-    setLiens(response);
-  }
-  const fetchPages = async () => {
-    const response: Page[] = await apiClient.get("/api/pages")
-    setPages(response);
-  }
+  const fetchLinks = useCallback(
+    async () => {
+      const response: Lien[] = await apiClient.get("/api/liens")
+      setLinks(response);
+    },
+    [],
+  )
+  
+  const fetchPages = useCallback(
+    async () => {
+      const response: Page[] = await apiClient.get("/api/pages")
+      setPages(response);
+    },
+    [],
+  )
+  
 
   const handleDeletePage = async (page: Page) => {
     if(isDeleting) return
@@ -116,8 +127,13 @@ export const ContentSection = (): JSX.Element => {
   }
 
   useEffect(() => {
-    fetchPages()
-    fetchLinks()
+    setIsFetching(true)
+    Promise.all([
+      fetchPages(),
+      fetchLinks()
+    ]).finally(() => {
+      setIsFetching(false)
+    })
   }, [])
 
   const handleDeleteLink = async () => {
@@ -126,7 +142,7 @@ export const ContentSection = (): JSX.Element => {
       try {
         await apiClient.delete(`/api/liens/${selectedLink?.id}`)
         toast.success(`Le lien ${selectedLink?.intitule_fr} a été supprimée avec succès !`)
-        setLiens(prev => (prev.filter(p => p.id !== selectedLink?.id)) )
+        setLinks(prev => (prev.filter(p => p.id !== selectedLink?.id)) )
       } catch (error) {
         console.log("Erreur", error)
       }
@@ -231,94 +247,113 @@ export const ContentSection = (): JSX.Element => {
                       </div>
                       <TabsContent value="actives" className="mt-6 space-y-6">
                         <ScrollArea className="w-full h-[calc(63vh)]">
-                          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                            {pages.map((page, index) => (
-                              <Card
-                                key={index}
-                                className="bg-[#F9F9F0] rounded-xl border-none">
-                                <CardContent className="p-2 flex justify-start items-center">
+                          {
+                            pages.filter(p => p.is_publier = 1).length ?
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                              {pages.filter(p => p.is_publier = 1).map((page, index) => (
+                                <Card
+                                  key={index}
+                                  className="bg-[#F9F9F0] rounded-xl border-none">
+                                  <CardContent className="p-2 flex justify-start items-center">
 
-                                  <FileTextIcon className="w-5 h-5 mx-1" />
+                                    <FileTextIcon className="w-5 h-5 mx-1" />
 
-                                  <div className="flex flex-1 flex-col ml-2 gap-0.5">
-                                    <h3 className="font-body-3 font-semibold text-noir-dashboard text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)] line-clamp-1">
-                                      {page.titre_fr}
-                                    </h3>
-                                    <p className="font-body-3 truncate overflow-hidden text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)] line-clamp-1">
-                                      { page.description_fr ?? 'Lorem ipsum dolor si...' }
-                                    </p>
-                                  </div>
-                                  <DropdownMenu>
-                                    <DropdownMenuTrigger asChild >
+                                    <div className="flex flex-1 flex-col ml-2 gap-0.5">
+                                      <h3 className="font-body-3 font-semibold text-noir-dashboard text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)] line-clamp-1">
+                                        {page.titre_fr}
+                                      </h3>
+                                      <p className="font-body-3 truncate overflow-hidden text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)] line-clamp-1">
+                                        { page.description_fr ?? 'Lorem ipsum dolor si...' }
+                                      </p>
+                                    </div>
+                                    <DropdownMenu>
+                                      <DropdownMenuTrigger asChild >
+                                      <Button
+                                        variant="ghost"
+                                        size="icon">
+                                        <MoreVerticalIcon className="w-[16px] h-[16px]" />
+                                      </Button>
+                                      </DropdownMenuTrigger>
+                                      <DropdownMenuContent>
+                                          {/* Dropdown menu items would go here */}
+                                          <DropdownMenuItem className="text-gray">
+                                              <Link href={`/render/${page.id}`} target="_blank">Consulter</Link>
+                                          </DropdownMenuItem>
+                                          <DropdownMenuItem className="text-gray">
+                                              <Link href={`/create-page/${page.id}`} target="_blank">Editer</Link>
+                                          </DropdownMenuItem>
+                                          {
+                                            canAddPage() &&
+                                            <DropdownMenuItem className="text-gray" onClick={() => handleDuplicatePage(page)}>
+                                              Dupliquer
+                                            </DropdownMenuItem>
+                                          }
+                                          {
+                                            canDeletePage() &&
+                                            <DropdownMenuItem onClick={() => handleDeletePage(page)}
+                                              className="text-red-500">
+                                              { (isDeleting ) &&
+                                                  <Loader className="w-4 h-4 mr-2" />
+                                              }
+                                              Supprimer
+                                            </DropdownMenuItem>
+                                          }
+                                      </DropdownMenuContent>
+                                    </DropdownMenu>
+                                  </CardContent>
+                                </Card>
+                              ))}
+                            </div> : 
+                            <div className="flex items-center justify-center h-[50vh]">
+                              {
+                                isFetching ?
+                                <LoadingSpinner /> :
+                                <p className="text-gray">Aucune page disponible</p>
+                              }
+                            </div>
+                          }
+                        </ScrollArea>
+                      </TabsContent>
+                      <TabsContent value="inactives" className="mt-6 space-y-6">
+                        <ScrollArea className="w-full h-[calc(63vh)]">
+                          {
+                            pages.filter(p => p.is_publier = 0).length ?
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                              {pages.filter(p => p.is_publier = 0).map((page, index) => (
+                                <Card
+                                  key={index}
+                                  className="bg-[#F9F9F0] rounded-xl border-none">
+                                  <CardContent className="p-2 flex justify-start items-center">
+
+                                    <FileTextIcon className="w-5 h-5 mx-1" />
+
+                                    <div className="flex flex-1 flex-col ml-2 gap-0.5">
+                                      <h3 className="font-body-3 font-semibold text-noir-dashboard text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)] line-clamp-1">
+                                        {page.titre_fr}
+                                      </h3>
+                                      <p className="font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)] line-clamp-1">
+                                        {/* page.description */}
+                                        Lorem ipsum dolor si...
+                                      </p>
+                                    </div>
+
                                     <Button
                                       variant="ghost"
                                       size="icon">
                                       <MoreVerticalIcon className="w-[16px] h-[16px]" />
                                     </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent>
-                                        {/* Dropdown menu items would go here */}
-                                        <DropdownMenuItem className="text-gray">
-                                            <Link href={`/render/${page.id}`} target="_blank">Consulter</Link>
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem className="text-gray">
-                                            <Link href={`/create-page/${page.id}`} target="_blank">Editer</Link>
-                                        </DropdownMenuItem>
-                                        {
-                                          canAddPage() &&
-                                          <DropdownMenuItem className="text-gray" onClick={() => handleDuplicatePage(page)}>
-                                            Dupliquer
-                                          </DropdownMenuItem>
-                                        }
-                                        {
-                                          canDeletePage() &&
-                                          <DropdownMenuItem onClick={() => handleDeletePage(page)}
-                                            className="text-red-500">
-                                            { (isDeleting ) &&
-                                                <Loader className="w-4 h-4 mr-2" />
-                                            }
-                                            Supprimer
-                                          </DropdownMenuItem>
-                                        }
-                                    </DropdownMenuContent>
-                                  </DropdownMenu>
-                                </CardContent>
-                              </Card>
-                            ))}
-                          </div>
-                        </ScrollArea>
-                      </TabsContent>
-                      <TabsContent value="inactives" className="mt-6 space-y-6">
-                        <ScrollArea className="w-full h-[calc(63vh)]">
-                          <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                            {pages.slice(7, 13).map((page, index) => (
-                              <Card
-                                key={index}
-                                className="bg-[#F9F9F0] rounded-xl border-none"
-                              >
-                                <CardContent className="p-2 flex justify-start items-center">
-
-                                  <FileTextIcon className="w-5 h-5 mx-1" />
-
-                                  <div className="flex flex-1 flex-col ml-2 gap-0.5">
-                                    <h3 className="font-body-3 font-semibold text-noir-dashboard text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)] line-clamp-1">
-                                      {page.titre_fr}
-                                    </h3>
-                                    <p className="font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)] line-clamp-1">
-                                      {/* page.description */}
-                                      Lorem ipsum dolor si...
-                                    </p>
-                                  </div>
-
-                                  <Button
-                                    variant="ghost"
-                                    size="icon">
-                                    <MoreVerticalIcon className="w-[16px] h-[16px]" />
-                                  </Button>
-                                </CardContent>
-                              </Card>
-                            ))}
-                          </div>
+                                  </CardContent>
+                                </Card>
+                              ))}
+                            </div> :
+                            <div className="flex items-center justify-center h-[50vh]">
+                              {
+                                isFetching ?
+                                <LoadingSpinner /> :
+                                <p className="text-gray">Aucune page disponible</p>
+                              }
+                            </div>
+                          }
                         </ScrollArea>
                       </TabsContent>
                     </Tabs>
@@ -375,8 +410,7 @@ export const ContentSection = (): JSX.Element => {
               }
             </TabsContent>
 
-            <TabsContent
-              value="links"
+            <TabsContent value="links"
               className="border-none">
                 <Card className="">
                   <CardContent className="p-4 lg:p-7">
@@ -407,20 +441,20 @@ export const ContentSection = (): JSX.Element => {
                                 placeholder="Rechercher un lien" />
                               <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
                             </div>
-                            <Button
+                            {/* <Button
                               variant="outline"
                               className="h-11 flex items-center gap-2.5 border border-[#d9d9d9] rounded-lg">
                               <ListFilter className="w-5 h-5" />
                               <span className="font-body-3 text-noir-dashboard">
                                 Trier par...
                               </span>
-                            </Button>
+                            </Button> */}
 
-                            <Button
+                            {/* <Button
                               variant="outline"
                               className="w-11 h-11 p-0 flex items-center justify-center border border-[#d9d9d9] rounded-lg">
                               <LayoutGridIcon className="w-5 h-5" />
-                            </Button>
+                            </Button> */}
                           </div>
                         </div>
                       </div>
@@ -428,7 +462,7 @@ export const ContentSection = (): JSX.Element => {
                         <ScrollArea className="w-full h-[calc(63vh)]">
                           {/* Links table */}
                           {
-                            liens.length ?
+                            links.filter(l => l.lapage.length).length ?
                             <Table>
                               <TableHeader className="bg-[#f2f2f9]">
                                 <TableRow>
@@ -450,7 +484,7 @@ export const ContentSection = (): JSX.Element => {
                                 </TableRow>
                               </TableHeader>
                               <TableBody>
-                                {liens.map((lien) => (
+                                {links.filter(l => l.lapage.length).map((lien) => (
                                   <TableRow key={lien.id} className="border-b border-[#d9d9d9]">
                                     <TableCell className="py-3.5 font-body-3 font-[number:var(--body-3-font-weight)] text-noir-dashboard text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
                                       {lien.intitule_fr}/{lien.intitule_en}
@@ -496,17 +530,97 @@ export const ContentSection = (): JSX.Element => {
                                 ))}
                               </TableBody>
                             </Table> :
-                              <div className="flex items-center justify-center h-[76vh]">
-                              <p className="text-gray">Aucun lien</p>
+                            <div className="flex items-center justify-center h-[50vh]">
+                              {
+                                isFetching ?
+                                <LoadingSpinner /> :
+                                <p className="text-gray">Aucun lien</p>
+                              }
                             </div>
+                            
                           }
                         </ScrollArea>
                       </TabsContent>
                       <TabsContent value="inactives" className="mt-6 space-y-6">
                         <ScrollArea className="w-full h-[calc(63vh)]">
-                        <div className="flex items-center justify-center h-[76vh]">
-                          <p className="text-gray">Aucun lien</p>
-                        </div>
+                          {/* Links table */}
+                          {
+                            links.filter(l => !l.lapage.length).length ?
+                            <Table>
+                              <TableHeader className="bg-[#f2f2f9]">
+                                <TableRow>
+                                  <TableHead className="pl-2.5 font-body-3 font-bold text-[#11112e] text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
+                                    Intitulé du lien
+                                  </TableHead>
+                                  <TableHead className="font-body-3 font-bold text-[#11112e] text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
+                                    Page liée
+                                  </TableHead>
+                                  <TableHead className="font-body-3 font-bold text-[#11112e] text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
+                                    Créé le
+                                  </TableHead>
+                                  <TableHead className="font-body-3 font-bold text-[#11112e] text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
+                                    Statut
+                                  </TableHead>
+                                  <TableHead className="font-body-3 font-bold text-[#11112e] text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
+                                    Actions
+                                  </TableHead>
+                                </TableRow>
+                              </TableHeader>
+                              <TableBody>
+                                {links.filter(l => !l.lapage.length).map((lien) => (
+                                  <TableRow key={lien.id} className="border-b border-[#d9d9d9]">
+                                    <TableCell className="py-3.5 font-body-3 font-[number:var(--body-3-font-weight)] text-noir-dashboard text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
+                                      {lien.intitule_fr}/{lien.intitule_en}
+                                    </TableCell>
+                                    <TableCell className="py-3.5 font-body-3 font-[number:var(--body-3-font-weight)] text-noir-dashboard text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
+                                      {lien.lapage.length > 0 ? lien.lapage[0].titre_fr : "--"}
+                                    </TableCell>
+                                    <TableCell className="py-3.5 font-body-3 font-[number:var(--body-3-font-weight)] text-noir-dashboard text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
+                                      { formatDateToLocal((new Date(lien.created_at)).toISOString()) }
+                                    </TableCell>
+                                    <TableCell className="py-3.5">
+                                      {
+                                        lien.statut === 1 ? (
+                                        <Badge
+                                          variant="outline"
+                                          className="bg-muted text-noir-dashboard rounded-[80px] px-3 py-1.5 font-body-3 font-[number:var(--body-3-font-weight)] text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
+                                          Actif
+                                        </Badge>
+                                        ) : (
+                                        <Badge
+                                          variant="outline"
+                                          className="bg-[#eb5e601a] text-[#eb5e60] rounded-[80px] px-3 py-1.5 font-body-3 font-[number:var(--body-3-font-weight)] text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
+                                          Inactif
+                                        </Badge>
+                                        )
+                                      }
+                                    </TableCell>
+                                    <TableCell className="py-3.5">
+                                      <div className="flex items-center gap-[17px]">
+                                        <AddLinkFormSection lien={lien} />
+                                        <Button
+                                          onClick={() => { setSelectedLink(lien); setShowDeleteAlert(true) }}
+                                          variant="ghost"
+                                          className="h-auto p-0 flex items-center gap-1">
+                                          <Trash2 className="w-4 h-4 mr-1" />
+                                          <span className="font-body-3 font-[number:var(--body-3-font-weight)] text-noir-dashboard text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
+                                            Supprimer
+                                          </span>
+                                        </Button>
+                                      </div>
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                              </TableBody>
+                            </Table> :
+                            <div className="flex items-center justify-center h-[50vh]">
+                              {
+                                isFetching ?
+                                <LoadingSpinner /> :
+                                <p className="text-gray">Aucun lien</p>
+                              }
+                            </div>
+                          }
                         </ScrollArea>
                       </TabsContent>
                     </Tabs>
