@@ -103,6 +103,7 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
         updatePage(page.id, {
           title_fr: title,
           title_en: title,
+          is_publish: page.is_publish,
           slug: slugGenerator(title),
           language: activeLangTab,
           components_fr: page.components_fr,
@@ -121,12 +122,12 @@ export function PageBuilder({ pageId }: PageBuilderProps) {
     }
   };
 
-  const handlePublish = () => {
+  const handlePublish = async () => {
     if (!page || page.id === 'temp') return;
     
     updatePageStatus(page.id, 'published');
     setShowPublishAlert(false);
-    toast.success('Page published successfully');
+    await handleSave()
   };
 
   const handleComponentSelect = (componentId: string | null) => {

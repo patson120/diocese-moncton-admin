@@ -230,14 +230,14 @@ export const ContentSection = (): JSX.Element => {
                             defaultValue={"actives"}
                             className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
                             <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                              Assignées
+                              Publiées
                             </span>
                           </TabsTrigger>
                           <TabsTrigger
                             value="inactives"
                             className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
                             <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                              Non assignées
+                              Brouillons
                             </span>
                           </TabsTrigger>
                         </TabsList>

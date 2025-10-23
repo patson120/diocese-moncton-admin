@@ -7,7 +7,7 @@ import { generatePageHtml } from "./html-generator";
 export const handleCreatePage = async (page: Page) => {
   try {
     return await apiClient.post("/api/pages", {
-      is_publier: 1,
+      is_publier: 0,
       is_planifier: 0,
       titre_fr: page.title_fr,
       titre_en: page.title_en,
@@ -26,7 +26,7 @@ export const handleCreatePage = async (page: Page) => {
 export const handleUpdatePage = async (page: Page) => {
   try {
     return await apiClient.put(`/api/pages/${page.id}`, {
-      is_publier: 1,
+      is_publier: page.is_publish,
       is_planifier: 0,
       titre_fr: page.title_fr,
       titre_en: page.title_en,
@@ -45,19 +45,9 @@ export const handleUpdatePage = async (page: Page) => {
 export const handleReadPage = async (pageId: string): Promise<Page | undefined> => {
   try {
     const pageFound = await apiClient.get(`/api/pages/${pageId}`) as PageType
-   
-    /* const page = JSON.parse(pageFound!.contenu_json_fr!) 
-    return { 
-      ...page, 
-      title_fr: page.title,
-      title_en: page.title,
-      description_fr: page.description_fr,
-      description_en: page.description_en,
-      components_fr: page["components"],
-      components_en: page["components"],
-    } as Page */ 
-  
-    return JSON.parse(pageFound!.contenu_json_fr!) as Page
+
+    const result = JSON.parse(pageFound!.contenu_json_fr!) as Page
+    return { ...result, is_publish: pageFound.is_publier }
   } catch (error) {
     console.log(error)
     return undefined

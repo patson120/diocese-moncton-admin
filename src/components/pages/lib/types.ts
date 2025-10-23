@@ -57,6 +57,7 @@ export interface Page {
   title_en: string;
   description_fr?: string;
   description_en?: string;
+  is_publish?: number;
   slug: string;
   status: PageStatus;
   components_fr: Component[];
