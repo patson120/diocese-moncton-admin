@@ -556,26 +556,6 @@ export default function ParishSection() {
                                                     &nbsp;<span className='font-bold'>{selecteParish?.langue == 'fr' ? 'Français': 'Anglais'}</span>
                                                 </span>
                                             </p>
-                                            {/* 
-                                                <p className="font-body-3 whitespace-nowrap">
-                                                    <span className="text-[#575757] whitespace-nowrap">Établi en</span>
-                                                    <span className="text-[#1c0004]">
-                                                        &nbsp;<span className='font-bold'>{selecteParish?.etabli_le}</span>
-                                                    </span>
-                                                </p>
-                                                <p className="font-body-3 whitespace-nowrap">
-                                                    <span className="text-[#575757] whitespace-nowrap">Ordonné en</span>
-                                                    <span className="text-[#1c0004]">
-                                                        &nbsp;<span className='font-bold'>{selecteParish?.ordonne_le}</span>
-                                                    </span>
-                                                </p>
-                                                <p className="font-body-3 whitespace-nowrap">
-                                                    <span className="text-[#575757] whitespace-nowrap">Premier curé</span>
-                                                    <span className="text-[#1c0004]">
-                                                        &nbsp;<span className='font-bold'>{selecteParish?.premier_cure}</span>
-                                                    </span>
-                                                </p>
-                                            */}
                                         </div>
                                         <div className="font-body-3 whitespace-nowrap mt-5">
                                             <span className="text[#575757] whitespace-nowrap font-bold my-2">Horaires de bureau</span>
