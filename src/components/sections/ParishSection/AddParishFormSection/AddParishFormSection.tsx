@@ -249,14 +249,14 @@ export const AddParishFormSection = (): JSX.Element => {
   
     try {
 
-      /* const recaptchaReponse = await verifyRecaptchaToken();
+      const recaptchaReponse = await verifyRecaptchaToken();
       const recaptchaData = await recaptchaReponse.json();
 
       if (!recaptchaData.success) {
         toast.error(recaptchaData.message || 'Erreur de vérification reCAPTCHA');
         setIsLoading(false);
         return;
-      } */
+      }
 
       const response: any = await apiClient.post('/api/paroisses', formdata, {
         'Content-Type': 'multipart/form-data'
@@ -812,7 +812,7 @@ export const AddParishFormSection = (): JSX.Element => {
               <Button variant={'outline'} onClick={() => setStep(6)} className="w-min px-8 mt-8 h-12 rounded-lg">
                 Retour
               </Button>
-              <Button disabled={isLoading} onClick={handleSubmitForm} className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
+              <Button disabled={isLoading || !captchaToken } onClick={handleSubmitForm} className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
                 { isLoading && <Loader className='h-5 w-5, mr-2' /> }
                 Ajouter la paroisse
               </Button>
