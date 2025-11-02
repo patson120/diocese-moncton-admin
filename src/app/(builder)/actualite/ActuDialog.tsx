@@ -50,8 +50,8 @@ export default function ActuDialog(
             motcles: motcles ? motcles.split(',') : [],
             is_planifier: isPlan ? 1 : 0,
             is_actif: isPlan ? 0 : 1,
-            date_planification: `${date}`,
-            // date_planification: `${date}T${hour}:00.000000Z`
+            // date_planification: `${date}`,
+            date_planification: `${date}T${hour}:00`
         }
         handlePublish(data)
     }
