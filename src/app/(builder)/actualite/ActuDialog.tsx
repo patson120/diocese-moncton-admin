@@ -51,7 +51,7 @@ export default function ActuDialog(
             is_planifier: isPlan ? 1 : 0,
             is_actif: isPlan ? 0 : 1,
             // date_planification: `${date}`,
-            date_planification: `${date}T${hour}:00`
+            date_planification: date ? `${date}T${hour}:00` : null
         }
         handlePublish(data)
     }
