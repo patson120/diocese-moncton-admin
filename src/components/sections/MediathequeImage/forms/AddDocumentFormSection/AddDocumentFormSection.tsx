@@ -52,7 +52,9 @@ export const AddDocumentFormSection = ({dossier_id}: {dossier_id?: string}): JSX
     formdata.append("titre_en", fileName);
     formdata.append("type", 'document');
     formdata.append("media", file!);
-    formdata.append("dossier_id", `${dossier_id}`);
+    if (dossier_id){
+      formdata.append("dossier_id", `${dossier_id}`);
+    }
 
     try {
 
