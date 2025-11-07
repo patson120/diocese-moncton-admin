@@ -43,6 +43,7 @@ export default function ActuDialog(
     const [date, setDate] = useState('')
     const [hour, setHour] = useState('')
     const [isPlan, setIsPlan] = useState(false)
+    const [publishDate, setPublishDate] = useState('')
 
     const handlePublishActualite = async () => {
         const data = {
@@ -50,14 +51,18 @@ export default function ActuDialog(
             motcles: motcles ? motcles.split(',') : [],
             is_planifier: isPlan ? 1 : 0,
             is_actif: isPlan ? 0 : 1,
-            // date_planification: `${date}`,
-            date_planification: date ? `${date}T${hour}:00` : null
+            date_planification: date ? `${date}T${hour}:00` : null,
+            date_publication: isPlan ? null : `${publishDate}`
         }
         handlePublish(data)
     }
 
     const handleSelectedDate = (e: ChangeEvent<HTMLInputElement>) => {
         setDate(e.target.value)
+    }
+
+    const handleSelectedPublishDate = (e: ChangeEvent<HTMLInputElement>) => {
+        setPublishDate(e.target.value)
     }
 
     const handleSelectedHour = (e: ChangeEvent<HTMLInputElement>) => {
@@ -81,10 +86,10 @@ export default function ActuDialog(
             categorie_id: categorie?.id!,
             motcles: motcles ? motcles.split(',') : [],
             is_planifier: isPlan ? 1 : 0,
-            date_planification: `${date}`,
-            // date_planification: `${date}T${hour}:00.000000Z`
+            date_planification: date ? `${date}T${hour}:00`: null,
+            date_publication: isPlan ? null : `${publishDate}`
         })
-    }, [ categorie?.id!, motcles, isPlan, date ])
+    }, [ categorie?.id!, motcles, isPlan, date, publishDate ])
 
 
     return (
@@ -169,7 +174,7 @@ export default function ActuDialog(
                                     />
                                 </div>
                                 {
-                                    (isPlan) &&
+                                    (isPlan) ?
                                     <div className='grid grid-cols-2 gap-3 w-full'>
                                         <div className="gap-2 self-stretch !w-full">
                                             <Label htmlFor="role">Jour</Label>
@@ -189,6 +194,14 @@ export default function ActuDialog(
                                                 type='time'
                                             />
                                         </div>
+                                    </div> :
+                                    <div className="gap-2 self-stretch !w-full">
+                                        <Label htmlFor="role">Date de publication</Label>
+                                        <Input
+                                            onChange={handleSelectedPublishDate}
+                                            className="h-11 inline-block bg-white rounded-xl border border-solid border-[#d9d9d9]"
+                                            type='date'
+                                        />
                                     </div>
                                 }
                             </div>

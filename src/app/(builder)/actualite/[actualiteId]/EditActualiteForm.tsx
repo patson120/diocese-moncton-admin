@@ -54,7 +54,7 @@ export default function EditActualiteForm({actualite}: { actualite: Actualite })
     categorie_id: actualite.categorie_id,
     titre_fr: title.french,
     titre_en: title.english,
-    date_publication: `${new Date().toISOString()}`,
+    date_publication: actualite.date_publication,
     is_actif: actualite.is_actif,
     is_brouillon: actualite.is_brouillon,
     is_planifier: actualite.is_planifier,

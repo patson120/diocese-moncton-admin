@@ -39,19 +39,23 @@ export default function EditActuDialog(
     const [date, setDate] = useState('')
     const [hour, setHour] = useState('')
     const [isPlan, setIsPlan] = useState(false)
+    const [publishDate, setPublishDate] = useState(actualite.date_publication)
 
     const handlePublishActualite = async () => {
         handlePublish({
             categorie_id: categorie?.id!,
             motcles: motcles ? motcles.split(',') : [],
             is_planifier: isPlan ? 1 : 0,
-            date_planification: date ? `${date}T${hour}:00` : null
-            // date_planification: `${date}`
+            date_planification: date ? `${date}T${hour}:00` : null,
+            date_publication: isPlan ? null : `${publishDate}`
         })
     }
 
     const handleSelectedDate = (e: ChangeEvent<HTMLInputElement>) => {
         setDate(e.target.value)
+    }
+    const handleSelectedPublishDate = (e: ChangeEvent<HTMLInputElement>) => {
+        setPublishDate(e.target.value)
     }
 
     const handleSelectedHour = (e: ChangeEvent<HTMLInputElement>) => {
@@ -153,7 +157,7 @@ export default function EditActuDialog(
                                     />
                                 </div>
                                 {
-                                    (isPlan) &&
+                                    (isPlan) ?
                                     <div className='grid grid-cols-2 gap-3 w-full'>
                                         <div className="gap-2 self-stretch !w-full">
                                             <Label htmlFor="role">Jour</Label>
@@ -173,6 +177,15 @@ export default function EditActuDialog(
                                                 type='time'
                                             />
                                         </div>
+                                    </div> :
+                                    <div className="gap-2 self-stretch !w-full">
+                                        <Label htmlFor="role">Date de publication</Label>
+                                        <Input
+                                            value={publishDate}
+                                            onChange={handleSelectedPublishDate}
+                                            className="h-11 inline-block bg-white rounded-xl border border-solid border-[#d9d9d9]"
+                                            type='date'
+                                        />
                                     </div>
                                 }
                             </div>
