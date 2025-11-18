@@ -31,7 +31,9 @@ export const GaleryPopup = ({ children, setSelectedImage }: {
       setIsLoading(true)
       const response: ImageType[] = await apiClient.get( folderId =="0" ?  `/api/galeries` : `/api/galeries?dossier_id=${folderId}`);
       setImages(response)
-      setIsLoading(false)
+      setTimeout(() => {
+        setIsLoading(false)
+      }, 2000);
     }) ()
   }, [folderId])
 
@@ -88,7 +90,7 @@ export const GaleryPopup = ({ children, setSelectedImage }: {
                   <>
                       {
                         isLoading ? 
-                        <div className="h-[calc(70vh)] w-full flex flex-col justify-center items-center">
+                        <div className="h-[calc(50vh)] w-full flex flex-col justify-center items-center">
                           <Loader className="w-10 h-10" />
                           <p className="text-center text-muted-foreground mt-2">Loading...</p>
                         </div> :
