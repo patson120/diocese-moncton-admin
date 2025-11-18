@@ -240,6 +240,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
       return
     }   
     if (isLoading) return
+    
     setIsLoading(true)
     const formdata = new FormData()
     formdata.append("type_paroisse_id", formThree.getValues("unite_pastorale"))
