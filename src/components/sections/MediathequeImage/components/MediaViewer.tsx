@@ -644,7 +644,7 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
               key={index}
               className="overflow-hidden rounded-lg border-none relative shrink-0 min-h-[150px] max-h-[200px]">
               <Image
-                  alt={`Image ${index + 1}`}
+                  alt={`Image ${index + 1} url: ${process.env.NEXT_PUBLIC_API_URL}/${image.path!} `}
                   src={`${process.env.NEXT_PUBLIC_API_URL}/${image.path!}`}
                   style={{ objectFit: 'cover' }}
                   fill
