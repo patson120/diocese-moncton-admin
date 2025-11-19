@@ -372,7 +372,7 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
       try {
         const url = currentFolder?.id! ? `/api/galeries?dossier_id=${currentFolder?.id!}` : '/api/galeries'
         const response: ImageType[] = await apiClient.get(url);
-        setImages(response)
+        setImages(response.slice(0, 10))
       } catch (error) {
         console.log(error);
       }
