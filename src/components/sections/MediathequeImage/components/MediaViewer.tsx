@@ -644,11 +644,10 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
               key={index}
               className="overflow-hidden rounded-lg border-none relative shrink-0 min-h-[150px] max-h-[200px]">
               <Image
-                  alt={`Image ${index + 1} url: ${process.env.NEXT_PUBLIC_API_URL}/${image.path!} `}
-                  src={`${process.env.NEXT_PUBLIC_API_URL}/${image.path!}`}
-                  style={{ objectFit: 'cover' }}
-                  fill
-                  priority
+                alt={`Image ${index + 1}`}
+                src={`${process.env.NEXT_PUBLIC_API_URL}/${image.path!}`}
+                style={{ objectFit: 'cover' }}
+                fill priority
               />
               <div className='absolute top-0 left-0 w-full h-full bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-all duration-300 ease-in-out'>
                   <div className='flex items-center gap-2'>
