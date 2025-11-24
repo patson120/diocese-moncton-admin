@@ -26,6 +26,7 @@ import { AddBulletinFormSection } from './AddBulletinFormSection';
 import { AddParishFormSection } from './AddParishFormSection';
 import { AddUnitePastoraleFormSection } from './AddUnitePastoraleFormSection';
 import { EditParishFormSection } from './EditParishFormSection';
+import { HTMLContent } from '@/components/shared/html-content';
 
 export default function ParishSection() {
     const router = useRouter()
@@ -568,14 +569,11 @@ export default function ParishSection() {
                             {/* History section */}
                             <section className="flex flex-col gap-2 ">
                                 <h2 className="font-heading-5 text-2xl text-[#1c0004] mb-3 font-bold">Histoire</h2>
-                                <p className="text-gray leading-[26px]">
-                                    {selecteParish?.histoire}{" "}
-                                    {/*
-                                        <span className="font-body-3 text-[#11112e] cursor-pointer">
-                                            voir plus
-                                        </span> 
-                                    */}
-                                </p>
+                                {
+                                    <div className="text-gray leading-[26px]">
+                                        <HTMLContent html={selecteParish?.histoire! ?? selecteParish?.histoire_en} className='w-full' />
+                                    </div>
+                                }
                             </section>
 
                             {/* Video section */}
@@ -768,13 +766,13 @@ export default function ParishSection() {
                                         {/** Map view */}
                                         <MapContainer 
                                             showSearchBar={false}
-                                            location={{
+                                            location= {selecteParish?.gps ?{
                                                 address: `${selecteParish?.adresse.split(";")[1]}`,
                                                 name: `${selecteParish?.adresse.split(";")[0]}`,
                                                 lat: Number(selecteParish?.gps.split(";")[0]),
                                                 lng: Number(selecteParish?.gps.split(";")[1]),
                                                 placeId: (new Date()).getTime().toString()
-                                            }}
+                                            } : null}
                                         />
                                     </div>
                                 </div>

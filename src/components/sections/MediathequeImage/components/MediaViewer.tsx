@@ -376,9 +376,7 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
       } catch (error) {
         console.log(error);
       }
-      finally {
-        setLoading(false)
-      }
+      finally { setLoading(false) }
     }) ()
   }, [currentFolder?.id])
 
