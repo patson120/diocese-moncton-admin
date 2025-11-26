@@ -46,7 +46,7 @@ export default function EditActuDialog(
             categorie_id: categorie?.id!,
             motcles: motcles ? motcles.split(',') : [],
             is_planifier: isPlan ? 1 : 0,
-            date_planification: date ? `${date}T${hour}:00` : null,
+            date_planification: date ? `${date}T${hour}:00.000Z` : null,
             date_publication: publishDate ?? null
         })
     }

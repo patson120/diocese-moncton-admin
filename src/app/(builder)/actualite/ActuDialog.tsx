@@ -51,7 +51,7 @@ export default function ActuDialog(
             motcles: motcles ? motcles.split(',') : [],
             is_planifier: isPlan ? 1 : 0,
             is_actif: isPlan ? 0 : 1,
-            date_planification: date ? `${date}T${hour}:00` : null,
+            date_planification: date ? `${date}T${hour}:00.000Z`: null,
             date_publication: isPlan ? null : `${publishDate}`
         }
         handlePublish(data)
@@ -86,7 +86,7 @@ export default function ActuDialog(
             categorie_id: categorie?.id!,
             motcles: motcles ? motcles.split(',') : [],
             is_planifier: isPlan ? 1 : 0,
-            date_planification: date ? `${date}T${hour}:00`: null,
+            date_planification: date ? `${date}T${hour}:00.000Z`: null,
             date_publication:  publishDate ?? null
         })
     }, [ categorie?.id!, motcles, isPlan, date, publishDate ])
