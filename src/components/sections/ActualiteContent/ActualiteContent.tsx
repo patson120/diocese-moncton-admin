@@ -315,7 +315,7 @@ export default function ActualiteContent(
                                         selectedActualite?.created_at && (
                                             <div>
                                                 {/* <span className="text-gray">{formatDateToLocal((new Date(selectedActualite?.date_publication!)).toISOString())}</span> */}
-                                                {
+                                                {/* {
                                                     is_actif === 0 &&
                                                     <p className='text-xs text-yellow-400 font-medium'>
                                                         En attente; {formatDateToLocal((new Date(selectedActualite.created_at)).toISOString())}
@@ -325,6 +325,30 @@ export default function ActualiteContent(
                                                     is_actif === 1 &&
                                                     <p className='text-xs text-gray font-medium'>
                                                         {formatDateToLocal((new Date(selectedActualite?.date_publication ? selectedActualite?.date_publication : selectedActualite?.created_at)).toISOString())}
+                                                    </p>
+                                                }
+                                                {
+                                                    is_actif === -1 &&
+                                                    <p className='text-xs text-red-600 font-medium'>
+                                                        Désactivé
+                                                    </p>
+                                                } */}
+                                                {
+                                                (is_actif === 0 && selectedActualite.is_planifier === 1) &&
+                                                    <p className='text-xs text-cyan-500 font-medium'>
+                                                        Planifiée pour le: {formatDateToLocal((new Date(selectedActualite.date_planification)).toISOString())}
+                                                    </p>
+                                                }
+                                                {
+                                                    (is_actif === 0 && selectedActualite.is_planifier === 0) &&
+                                                    <p className='text-xs text-yellow-400 font-medium'>
+                                                        En attente; {formatDateToLocal((new Date(selectedActualite.created_at)).toISOString())}
+                                                    </p>
+                                                }
+                                                {
+                                                    is_actif === 1 &&
+                                                    <p className='text-xs text-gray font-medium'>
+                                                        {formatDateToLocal((new Date(selectedActualite.created_at)).toISOString())}
                                                     </p>
                                                 }
                                                 {
