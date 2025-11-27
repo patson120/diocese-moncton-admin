@@ -39,3 +39,8 @@ export const copyToClipboard = (text: string) => {
     toast.error("Erreur lors de la copie dans le presse-papier :", error);
   });
 };
+
+export const convertDateToISO = (date: string) => {
+  const d = new Date(date);
+  return d.toISOString();
+}

@@ -52,6 +52,10 @@ export default function CreateActutalite() {
     if (isLoading) return
     setIsLoading(true)
 
+    console.log('data to publish', data.date_planification);
+    
+    return 
+
     try {
       const response: any = await apiClient.post('/api/actualites', {
         is_actif: 0, // Un actualité créée est dabord au statut attente

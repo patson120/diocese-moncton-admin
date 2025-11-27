@@ -13,6 +13,7 @@ import Image from 'next/image';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { Actualite, Category } from '../../../types';
 import { AddCategoryFormSection } from '@/components/sections/EventSection/AddCategoryFormSection';
+import { convertDateToISO } from '@/lib/utils';
 
 export default function EditActuDialog(
     {
@@ -46,7 +47,7 @@ export default function EditActuDialog(
             categorie_id: categorie?.id!,
             motcles: motcles ? motcles.split(',') : [],
             is_planifier: isPlan ? 1 : 0,
-            date_planification: date ? `${date}T${hour}:00.000Z` : null,
+            date_planification: date ? convertDateToISO(`${date}T${hour}`) : null,
             date_publication: publishDate ?? null
         })
     }

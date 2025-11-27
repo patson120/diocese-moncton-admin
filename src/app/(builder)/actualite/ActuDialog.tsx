@@ -13,6 +13,7 @@ import Image from 'next/image';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { Category } from '../../types';
 import { AddCategoryFormSection } from '@/components/sections/EventSection/AddCategoryFormSection';
+import { convertDateToISO } from '@/lib/utils';
 
 export default function ActuDialog(
     {
@@ -51,7 +52,7 @@ export default function ActuDialog(
             motcles: motcles ? motcles.split(',') : [],
             is_planifier: isPlan ? 1 : 0,
             is_actif: isPlan ? 0 : 1,
-            date_planification: date ? `${date}T${hour}:00.000Z`: null,
+            date_planification: date ? convertDateToISO(`${date}T${hour}`): null,
             date_publication: isPlan ? null : `${publishDate}`
         }
         handlePublish(data)
@@ -86,7 +87,7 @@ export default function ActuDialog(
             categorie_id: categorie?.id!,
             motcles: motcles ? motcles.split(',') : [],
             is_planifier: isPlan ? 1 : 0,
-            date_planification: date ? `${date}T${hour}:00.000Z`: null,
+            date_planification: date ? `${date}T${hour}` : null,
             date_publication:  publishDate ?? null
         })
     }, [ categorie?.id!, motcles, isPlan, date, publishDate ])
