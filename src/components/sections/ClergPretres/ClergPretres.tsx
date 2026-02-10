@@ -37,9 +37,9 @@ export const ClergPretres = (): JSX.Element => {
   // Clergy tabs data
   const clergyTabs = [
     { value: "archeveque", label: "Archevêque", active: false, id: '21' },
-    { value: "diacres", label: "Diacres", active: false, id: '19'  },
     { value: "pretres", label: "Prêtres", active: false, id: '20'  },
     { value: "religieux", label: "Religieux", active: true, id: '22' },
+    { value: "diacres", label: "Diacres", active: false, id: '19'  },
     { value: "options", label: "Options", active: false, id: '23' },
   ];
 
@@ -70,7 +70,7 @@ export const ClergPretres = (): JSX.Element => {
   
   return (
     <main>
-      <Tabs defaultValue="archeveque" className="w-full">
+      <Tabs defaultValue="pretres" className="w-full">
         <header className="w-full bg-white pt-6 px-9">
           <div className="flex items-start justify-between">
             <div className="space-y-4">

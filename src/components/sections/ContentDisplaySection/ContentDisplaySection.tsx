@@ -5,13 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import useRole from "@/hooks/use-role";
 import { LayoutGridIcon, ListOrdered, PlusIcon, SearchIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import ActualiteContent from "../ActualiteContent/ActualiteContent";
 import MessageContent from "../MessageContent/MessageContent";
-import useRole from "@/hooks/use-role";
 
 export default function ContentDisplaySection() {
 
