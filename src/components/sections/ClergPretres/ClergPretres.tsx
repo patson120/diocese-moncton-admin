@@ -23,17 +23,6 @@ import useRole from "@/hooks/use-role";
 
 export const ClergPretres = (): JSX.Element => {
 
-  const { canUpdateClergy, canDeleteClergy} = useRole()
-
-  const [openModal, setOpenModal] = useState(false)
-  const [isDeleting, setIsDeleting] = useState(false)
-
-  const [members, setMembers] = useState<Member[]>([])
-  const [selectedMember, setSelectedMember] = useState<Member>()
-  const [categoryId, setCategoryId] = useState('21')
-  const [query, setQuery] = useState('')
-  const [etat, setEtat] = useState('')
-
   // Clergy tabs data
   const clergyTabs = [
     { value: "archeveque", label: "Archevêque", active: false, id: '21' },
@@ -42,6 +31,17 @@ export const ClergPretres = (): JSX.Element => {
     { value: "diacres", label: "Diacres", active: false, id: '19'  },
     { value: "options", label: "Options", active: false, id: '23' },
   ];
+
+  const { canUpdateClergy, canDeleteClergy} = useRole()
+
+  const [openModal, setOpenModal] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  const [members, setMembers] = useState<Member[]>([])
+  const [selectedMember, setSelectedMember] = useState<Member>()
+  const [categoryId, setCategoryId] = useState(clergyTabs[1].id)
+  const [query, setQuery] = useState('')
+  const [etat, setEtat] = useState('')
 
   useEffect(() => {
     ( async () => {
