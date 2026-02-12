@@ -88,10 +88,9 @@ export default function ActuDialog(
             motcles: motcles ? motcles!.split(',') : [],
             is_planifier: isPlan ? 1 : 0,
             date_planification: date ? `${date}T${hour}` : null,
-            date_publication:  publishDate ?? null
-        })
-    }, [ categorie?.id!, motcles, isPlan, date, publishDate ])
-
+            date_publication: publishDate ?? null
+        });
+    }, [categorie, motcles, isPlan, date, hour, publishDate]);
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
