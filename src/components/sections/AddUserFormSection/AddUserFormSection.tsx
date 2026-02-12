@@ -148,13 +148,14 @@ export const AddUserFormSection = (): JSX.Element => {
     }
   }
 
-/*   useEffect(() => {
-    const role = form.getValues("role"); 
-    if (role !== "bulletin") {
-      setSelectedCategory("");
-    }
-  }, [form, form.getValues("role")]);
-   */
+  /*   
+    useEffect(() => {
+      const role = form.getValues("role"); 
+      if (role !== "bulletin") {
+        setSelectedCategory("");
+      }
+    }, [form, form.getValues("role")]);
+  */
 
   return (
     <Dialog onOpenChange={onOpenChange}>
