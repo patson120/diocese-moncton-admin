@@ -153,7 +153,7 @@ export const AddUserFormSection = (): JSX.Element => {
     if (role !== "bulletin") {
       setSelectedCategory("");
     }
-  }, [form.getValues("role")]);
+  }, [form, form.getValues("role")]);
   
 
   return (
