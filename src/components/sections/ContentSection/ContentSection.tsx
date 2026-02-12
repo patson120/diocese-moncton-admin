@@ -74,22 +74,15 @@ export const ContentSection = (): JSX.Element => {
     : componentRegistry
 
 
-  const fetchLinks = useCallback(
-    async () => {
-      const response: Lien[] = await apiClient.get(`/api/liens?titre=${lien || ''}`)
-      setLinks(response);
-    },
-    [lien],
-  )
+  const fetchLinks = async (titre?: string) => {
+    const response: Lien[] = await apiClient.get(`/api/liens?titre=${titre || ''}`)
+    setLinks(response);
+  }
 
-  const fetchPages = useCallback(
-    async () => {
-      const response: Page[] = await apiClient.get(`/api/pages?intitule=${query || ''}`)
-      setPages(response);
-    },
-    [query],
-  )
-
+  const fetchPages = async (intitule?: string) => {
+    const response: Page[] = await apiClient.get(`/api/pages?intitule=${intitule || ''}`)
+    setPages(response);
+  }
 
   const handleDeletePage = async (page: Page) => {
     if (isDeleting) return
@@ -159,8 +152,8 @@ export const ContentSection = (): JSX.Element => {
   useEffect(() => {
     setIsFetching(true)
     Promise.all([
-      fetchPages(),
-      fetchLinks()
+      fetchPages(query),
+      fetchLinks(lien)
     ]).finally(() => {
       setIsFetching(false)
     })
@@ -180,13 +173,14 @@ export const ContentSection = (): JSX.Element => {
     finally { setIsDeleting(false) }
   }
 
-  const handleSearchPage = useDebouncedCallback((event: ChangeEvent<HTMLInputElement>) => {
+  const handleSearchPage = useDebouncedCallback( async (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value
     // params.set('page', '1');  
     setQuery(value)
     // If the value is empty, remove the query parameter
     value ? params.set('query', value) : params.delete('query')
     router.replace(`${pathname}?${params.toString()}`)
+    await fetchPages(value)
   }, 800)
 
   const handleSearchLink = useDebouncedCallback( async(event: ChangeEvent<HTMLInputElement>) => {
@@ -203,7 +197,7 @@ export const ContentSection = (): JSX.Element => {
     }
     value ? params.set('lien', value) : params.delete('lien')
     router.replace(`${pathname}?${params.toString()}`)
-    await fetchLinks()
+    await fetchLinks(value)
   }, 800)
 
   return (
