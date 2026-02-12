@@ -85,7 +85,7 @@ export default function ActuDialog(
     useEffect(() => {
         onDataChange({
             categorie_id: categorie?.id!,
-            motcles: motcles ? motcles.split(',') : [],
+            motcles: motcles ? motcles!.split(',') : [],
             is_planifier: isPlan ? 1 : 0,
             date_planification: date ? `${date}T${hour}` : null,
             date_publication:  publishDate ?? null
