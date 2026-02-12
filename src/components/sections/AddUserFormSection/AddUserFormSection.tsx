@@ -149,10 +149,11 @@ export const AddUserFormSection = (): JSX.Element => {
   }
 
   useEffect(() => {
-    if (form.watch("role") !== "bulletin") {
+    const role = form.getValues("role"); 
+    if (role !== "bulletin") {
       setSelectedCategory("");
     }
-  }, [form.watch("role")]);
+  }, [form.getValues("role")]);
   
 
   return (
