@@ -149,7 +149,7 @@ export function Sidebar({ className }: SidebarProps) {
       });
     });
     setNavigationSections(updatedSections);
-  }, [pathname])
+  }, [pathname, navigationSections])
   
   const logoutUser = () => {
     window.localStorage.clear()
