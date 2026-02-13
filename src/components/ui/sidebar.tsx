@@ -25,6 +25,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { toast } from 'sonner';
 import { Button } from './button';
 import { ScrollArea } from './scroll-area';
+import useRole from '@/hooks/use-role';
 
 interface SidebarProps {
   className?: string;
@@ -37,31 +38,39 @@ export function Sidebar({ className }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
 
+  const { user } = useRole();
+  const isBookNote = user?.role.sigle.includes("bulletin");
+  const isAdmin = user?.role.sigle.includes("admin");
+
+
   // Memoize navigation sections to avoid recalculating on every render
   const [navigationSections, setNavigationSections] = useState(() => [
     {
       title: "PRINCIPAL",
+      visible: !isBookNote,
       items: [
-        { icon: LayoutDashboard, label: "Tableau de bord", href: "/", active: false },
-        { icon: ReceiptText, label: "Gestion de contenus", href: "/contents", active: false },
-        { icon: BookCopy, label: "Gestion des pages", href: "/pages", active: false },
-        { icon: Images, label: "Gestion médiathèque", href: "/mediatheque", active: false },
-        { icon: Puzzle, label: "Gestion du clergé", href: "/clergy", active: false },
+        { icon: LayoutDashboard, label: "Tableau de bord", href: "/", active: false, visible: !isBookNote },
+        { icon: ReceiptText, label: "Gestion de contenus", href: "/contents", active: false, visible: !isBookNote },
+        { icon: BookCopy, label: "Gestion des pages", href: "/pages", active: false, visible: !isBookNote },
+        { icon: Images, label: "Gestion médiathèque", href: "/mediatheque", active: false, visible: !isBookNote },
+        { icon: Puzzle, label: "Gestion du clergé", href: "/clergy", active: false, visible: !isBookNote },
       ],
     },
     {
       title: "SECONDAIRE",
+      visible: true,
       items: [
-        { icon: CalendarDays, label: "Evènements", href: "/events", active: false },
-        { icon: Church, label: "Gestion des paroisses", href: "/parishes", active: false },
-        { icon: Users, label: "Utilisateurs", href: "/users", active: false },
+        { icon: CalendarDays, label: "Evènements", href: "/events", active: false, visible: !isBookNote },
+        { icon: Church, label: "Gestion des paroisses", href: "/parishes", active: false, visible: true  },
+        { icon: Users, label: "Utilisateurs", href: "/users", active: false, visible: !isBookNote },
       ],
     },
     {
       title: "AUTRES",
+      visible: !isBookNote,
       items: [
-        { icon: LucideSettings, label: "Paramètres", href: "#", active: false },
-        { icon: BadgeHelp, label: "Aide", href: "#", active: false },
+        { icon: LucideSettings, label: "Paramètres", href: "#", active: false, visible: !isBookNote },
+        { icon: BadgeHelp, label: "Aide", href: "#", active: false, visible: !isBookNote },
       ],
     },
   ]);
@@ -132,16 +141,14 @@ export function Sidebar({ className }: SidebarProps) {
           "fixed top-0 left-0 h-full bg-background border-r border-neutral-200 transition-all duration-300 z-40",
           isCollapsed ? "-translate-x-full md:translate-x-0 md:w-16" : "w-64",
           className
-        )}
-      >
+        )}>
         <div className="flex flex-col h-full">
           <div className="h-16 flex items-center justify-between px-4 border-b border-neutral-200">
             <h1
               className={cn(
                 "font-bold transition-all duration-300",
                 isCollapsed && "md:hidden"
-              )}
-            >
+              )}>
               <div className="relative shrink-0 w-[79px] h-12">
                 <Image
                   alt="Logo de l'archidiocèse de Moncton"
@@ -170,56 +177,60 @@ export function Sidebar({ className }: SidebarProps) {
           <ScrollArea className="h-[calc(100%-80px)]">
             <div className="flex flex-col px-2.5 py-6 gap-6">
               {navigationSections.map((section, sectionIndex) => (
-                <div key={sectionIndex} className="w-full cursor-pointer">
-                  <div
-                    className={cn(
-                      "px-[18px] mb-3",
-                      isCollapsed && "md:hidden"
-                    )}
-                  >
-                    <span className="font-legend text-xs text-gray">
-                      {section.title}
-                    </span>
-                  </div>
-                  <ul className="flex flex-col w-full gap-0 space-y-[5px]">
-                    {section.items.map((item, itemIndex) => {
-                      const Icon = item.icon;
-                      return (
-                        <li
-                          key={itemIndex}
-                          className={cn(
-                            "w-full h-10 rounded-lg list-none",
-                            item.active ? "bg-[#f2f2f9]" : "bg-white"
-                          )}
-                        >
-                          <Link
-                            href={item.href}
-                            onClick={() => changeStatut(sectionIndex, itemIndex)}
-                            className={cn(
-                              "flex items-center gap-2 h-full px-4 space-x-2 rounded-lg transition-all duration-200 hover:bg-muted",
-                              item.active ? "font-semibold" : "",
-                              isCollapsed && "md:justify-center md:px-2"
-                            )}
-                          >
-                            <Icon
+                <div key={sectionIndex}>
+                  {
+                    (section.visible ) &&
+                    <div className="w-full cursor-pointer">
+                      <div
+                        className={cn(
+                          "px-[18px] mb-3",
+                          isCollapsed && "md:hidden"
+                        )}>
+                        <span className="font-legend text-xs text-gray">
+                          {section.title}
+                        </span>
+                      </div>
+                      <ul className="flex flex-col w-full gap-0 space-y-[5px]">
+                        {section.items.map((item, itemIndex) => {
+                          const Icon = item.icon;
+                          if (!item.visible) return null;
+                          return (
+                            <li
+                              key={itemIndex}
                               className={cn(
-                                "h-5 w-5 shrink-0",
-                                item.active && "text-blue"
-                              )}
-                            />
-                            <span
-                              className={cn(
-                                "transition-all duration-300 whitespace-nowrap",
-                                isCollapsed && "md:hidden",
-                                item.active && "text-blue"
+                                "w-full h-10 rounded-lg list-none",
+                                item.active ? "bg-[#f2f2f9]" : "bg-white"
                               )}>
-                              {item.label}
-                            </span>
-                          </Link>
-                        </li>
-                      );
-                    })}
-                  </ul>
+                              <Link
+                                href={item.href}
+                                onClick={() => changeStatut(sectionIndex, itemIndex)}
+                                className={cn(
+                                  "flex items-center gap-2 h-full px-4 space-x-2 rounded-lg transition-all duration-200 hover:bg-muted",
+                                  item.active ? "font-semibold" : "",
+                                  isCollapsed && "md:justify-center md:px-2"
+                                )}
+                              >
+                                <Icon
+                                  className={cn(
+                                    "h-5 w-5 shrink-0",
+                                    item.active && "text-blue"
+                                  )}
+                                />
+                                <span
+                                  className={cn(
+                                    "transition-all duration-300 whitespace-nowrap",
+                                    isCollapsed && "md:hidden",
+                                    item.active && "text-blue"
+                                  )}>
+                                  {item.label}
+                                </span>
+                              </Link>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </div>
+                  }
                 </div>
               ))}
             </div>

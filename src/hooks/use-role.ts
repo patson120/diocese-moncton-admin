@@ -303,6 +303,7 @@ const useRole = () => {
     const canDeleteLink = (): boolean => canUpdateLink()
 
     return {
+        user: userJson,
         canAddUser,
         canUpdateUser,
         canDeleteUser,
