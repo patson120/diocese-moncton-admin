@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import * as z from "zod";
 import ReCAPTCHA from 'react-google-recaptcha';
 import useRecaptcha from "@/hooks/useRecaptcha";
+import { useRouter } from "next/navigation";
 
 
 const formSchemaOne = z.object({
@@ -55,6 +56,7 @@ export const ConnexionPage = (): JSX.Element => {
   const [error, setError] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const { login } = useAuth()
+  const router = useRouter()
 
   const formOne = useForm<z.infer<typeof formSchemaOne>>({
     resolver: zodResolver(formSchemaOne),
@@ -109,8 +111,12 @@ export const ConnexionPage = (): JSX.Element => {
       } */
       const user = await login(values.email.trim(), values.password.trim());
       if (user) {
-        // router.push('/');
-        window.location.reload();
+        if (user.role.sigle === "admin") {
+          window.location.reload();
+        }
+        else {
+          router.push('/parishes');
+        }
       } else {
         setError('Identifiants invalides');
       }
