@@ -100,13 +100,13 @@ export const ConnexionPage = (): JSX.Element => {
     if (isLoading) return 
     setIsLoading(true)
     try {
-      const response = await verifyRecaptchaToken();
+      /* const response = await verifyRecaptchaToken();
       const data = await response.json();
       if (!data.success) {
         toast.error(data.message || 'Erreur de vérification reCAPTCHA');
         setIsLoading(false);
         return;
-      }
+      } */
       const user = await login(values.email.trim(), values.password.trim());
       if (user) {
         // router.push('/');
@@ -354,14 +354,14 @@ export const ConnexionPage = (): JSX.Element => {
                         </Button>
                       </div>
 
-                      <ReCAPTCHA
+                      {/* <ReCAPTCHA
                         sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
                         onChange={handleRecaptchaChange}
-                      />
+                      /> */}
 
                       <div className="w-full">
                         {/* Login button */}
-                        <Button disabled={!captchaToken || isLoading } type="submit" className="w-full h-[50px] bg-blue rounded-[13px] text-base font-bold">
+                        <Button disabled={ isLoading } type="submit" className="w-full h-[50px] bg-blue rounded-[13px] text-base font-bold">
                           { isLoading && <Loader className="w-5 h-5 mr-2" /> }
                           Se connecter
                         </Button>
