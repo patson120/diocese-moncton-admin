@@ -52,7 +52,7 @@ export function ActualiteDetailSkeleton() {
 }
 
 export function ActualitesSkeleton({ items }: { items: number }) {
-    let comps = []
+    const comps = []
     for (let i = 0; i < items; i++) {
         comps.push(<ActualiteSkeleton key={i} />)
     }
@@ -106,7 +106,7 @@ export function EventItemSkeleton() {
 }
 
 export function EventsSkeleton({ items }: { items: number }) {
-    let comps = []
+    const comps = []
     for (let i = 0; i < items; i++) {
         comps.push(<EventItemSkeleton key={i} />)
     }
@@ -194,7 +194,7 @@ export function MessageSkeleton() {
 }
 
 export function MessagesSkeleton({ items }: { items: number }) {
-    let comps = []
+    const comps = []
     for (let i = 0; i < items; i++) {
         comps.push(<MessageSkeleton key={i} />)
     }

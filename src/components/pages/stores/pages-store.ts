@@ -31,7 +31,7 @@ export const usePagesStore = create<PagesState>()(
         const id = "1"; //uuidv4();
         const now = new Date().toISOString();
         
-        let page: Page = {
+        const page: Page = {
           id,
           title_fr: pageData.title_fr,
           title_en: pageData.title_en,

@@ -150,7 +150,7 @@ export default function ProfilePage() {
     };
 
     useEffect(() => {
-        let currentUser = Cookies.get('user');
+        const currentUser = Cookies.get('user');
         if (currentUser){
             const profile: User = JSON.parse(currentUser!)
             setUser(profile)

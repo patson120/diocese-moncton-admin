@@ -80,8 +80,8 @@ export function CalendarGrid({
 
   const getDayEvents = (date: Date) => {
     return events.filter(event => {
-      let start = new Date(`${event.date_event!}T00:00:00`);
-      let end = new Date(`${event.date_fin ? event.date_fin : event.date_event!}T23:59:59`);
+      const start = new Date(`${event.date_event!}T00:00:00`);
+      const end = new Date(`${event.date_fin ? event.date_fin : event.date_event!}T23:59:59`);
       return isWithinInterval(date, { start, end });
     });
   };
