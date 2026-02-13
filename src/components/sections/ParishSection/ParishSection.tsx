@@ -31,7 +31,7 @@ import { HTMLContent } from '@/components/shared/html-content';
 export default function ParishSection() {
     const router = useRouter()
 
-    const { canUpdateParish, canDeleteImage, canDeleteParish, canUpdateParishUnit, canDeleteBulletin, canDeleteParishUnit } = useRole()
+    const {user, canUpdateParish, canDeleteImage, canDeleteParish, canUpdateParishUnit, canDeleteBulletin, canDeleteParishUnit } = useRole()
 
     const [isStatutLoading, setIsStatutLoading] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
@@ -49,7 +49,6 @@ export default function ParishSection() {
     const [images, setImages] = useState<ImageType[]>([]);
     const [newImages, setNewImages] = useState<ImageType[]>([]);
 
-
     const [isLoading, setIsLoading] = useState(false)
 
     
@@ -66,7 +65,13 @@ export default function ParishSection() {
         // Récupérer les unités paroitiales depuis l'api
         (async () => {
             const response: TypeParoisse[] = await apiClient.get(`/api/type_paroisses`)
-            setUnitePastorales(response)
+            if (user?.role.sigle.includes("bulletin")){
+                const data = response.filter((item: any) => user?.unite_id === item.id)
+                setUnitePastorales(data)
+            }
+            else {
+                setUnitePastorales(response)
+            }
         })()
     }, [])
 
@@ -83,7 +88,13 @@ export default function ParishSection() {
     useEffect(() => {
         const getParishes = async () => {
             const response: any = await apiClient.get(`/api/paroisses?paginate=20000&statut=${statut}&nom=${query}`)
-            setParishes(response.data)
+            if (user?.role.sigle.includes("bulletin")){
+                const data = response.data.filter((item: any) => user?.paroisse_id.includes(item.id))
+                setParishes(data)
+            }
+            else {
+                setParishes(response.data)
+            }
         }
         getParishes()
     }, [statut, query])

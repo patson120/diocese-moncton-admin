@@ -172,6 +172,7 @@ export type User = {
     statut: number;
     password: string;
     role_id: number;
+    unite_id: number;
     created_at: string;
     updated_at: string;
     privilege: string[];
