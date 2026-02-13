@@ -40,8 +40,6 @@ export function Sidebar({ className }: SidebarProps) {
 
   const { user } = useRole();
   const isBookNote = user?.role.sigle.includes("bulletin");
-  const isAdmin = user?.role.sigle.includes("admin");
-
 
   // Memoize navigation sections to avoid recalculating on every render
   const [navigationSections, setNavigationSections] = useState(() => [
