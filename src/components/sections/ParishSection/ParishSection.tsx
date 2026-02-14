@@ -747,12 +747,15 @@ export default function ParishSection() {
                             </div>
 
                             <div className='flex gap-4'>
-                                <GaleryPopup setSelectedImage={setSelectedImage} >
-                                    <Button className="h-10 w-min bg-primary text-white hover:bg-blue/90  gap-2">
-                                        <PlusIcon className="w-5 h-5" />
-                                        Ajouter une photo
-                                    </Button>
-                                </GaleryPopup>
+                                {
+                                    canUpdateParish() &&
+                                    <GaleryPopup setSelectedImage={setSelectedImage} >
+                                        <Button className="h-10 w-min bg-primary text-white hover:bg-blue/90  gap-2">
+                                            <PlusIcon className="w-5 h-5" />
+                                            Ajouter une photo
+                                        </Button>
+                                    </GaleryPopup>
+                                }
                                 { 
                                     (newImages.length > 0 ) &&
                                     <Button onClick={handleSaveImages} className="h-10 bg-blue text-white hover:bg-blue/90  gap-2">
