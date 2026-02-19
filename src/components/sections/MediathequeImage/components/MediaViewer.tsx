@@ -644,7 +644,7 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
               <Image
                 alt={`Image ${index + 1}`}
                 src={`${process.env.NEXT_PUBLIC_API_URL}/${image.path!}`}
-                style={{ objectFit: 'cover' }}
+                style={{ objectFit: 'contain' }}
                 fill priority
               />
               <div className='absolute top-0 left-0 w-full h-full bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-all duration-300 ease-in-out'>
@@ -671,7 +671,7 @@ export const MediaViewer: React.FC<MediaViewerProps> = ({
               <Image
                 alt={`Image details`}
                 src={`${process.env.NEXT_PUBLIC_API_URL}/${selectedImage?.path!}`}
-                style={{ objectFit: 'cover' }}
+                style={{ objectFit: 'contain' }}
                 fill
                 priority
               />

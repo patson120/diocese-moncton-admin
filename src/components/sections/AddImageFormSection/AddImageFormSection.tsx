@@ -129,14 +129,14 @@ export const AddImageFormSection = ({dossier_id}: {dossier_id?: string}): JSX.El
           Ajouter une image
         </Button>
       </DialogTrigger>
-      <DialogContent aria-describedby={undefined} className="max-w-4xl max-h-[80vh] overflow-y-scroll p-3 rounded-2xl">
+      <DialogContent aria-describedby={undefined} className="max-w-4xl max-h-[70vh] overflow-y-scroll p-3 rounded-2xl">
         <DialogClose className="absolute border-none w-5 h-5 top-[14px] right-[14px]">
         </DialogClose>
         <DialogHeader className='hidden'>
             <DialogTitle></DialogTitle>
         </DialogHeader>
         
-        <div className='w-full h-[calc(60vh)] z-[5] bg-[#f0f0f0] self-stretch relative rounded-xl overflow-hidden'>
+        <div className='w-full h-[calc(50vh)] z-[5] bg-[#f0f0f0] self-stretch relative rounded-xl overflow-hidden'>
           <Button 
             onClick={( ) => setOpenModal(false)}
             variant={'outline'} 
@@ -149,7 +149,7 @@ export const AddImageFormSection = ({dossier_id}: {dossier_id?: string}): JSX.El
               <Image
                 alt={`Image details`}
                 src={`${coverImage}`}
-                style={{ objectFit: 'cover' }}
+                style={{ objectFit: 'contain' }}
                 fill
                 priority
               /> :
@@ -190,11 +190,11 @@ export const AddImageFormSection = ({dossier_id}: {dossier_id?: string}): JSX.El
         <div className="flex flex-col space-y-2 z-[10]">
           <Label className="text-right text-gray">Fichiers ({files.length}) </Label>
           {
-            dossier_id &&
+            !dossier_id &&
             <Label className="mb-1">Classer le(s) image(s) dans... </Label>
           }
           {
-            dossier_id &&
+            !dossier_id &&
             <Select 
                 onValueChange={setFolderId}
                 defaultValue={folderId}>
