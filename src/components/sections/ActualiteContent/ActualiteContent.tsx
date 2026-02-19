@@ -196,12 +196,12 @@ export default function ActualiteContent(
                                 <CardContent className="p-0 space-y-3">
                                      {article.galerie.length === 0 ? ( 
                                         <div
-                                            className="w-full h-[150px] rounded-xl bg-cover bg-center"
-                                            style={{ backgroundImage: `url("/assets/img/actualite.png")` }}
+                                            className="w-full h-[150px] rounded-xl bg-cover bg-no-repeat bg-center"
+                                            style={{ backgroundImage: `url("/vector.svg")` }}
                                         />
                                      ) : (
                                         <div
-                                            className="w-full h-[150px] rounded-xl bg-cover bg-center"
+                                            className="w-full h-[150px] rounded-xl bg-cover bg-no-repeat bg-center"
                                             style={{ backgroundImage: `url(${process.env.NEXT_PUBLIC_API_URL}/${article.galerie[0].path})` }}
                                         />
                                     )}
@@ -299,10 +299,10 @@ export default function ActualiteContent(
                                 selectedActualite?.galerie.length === 0 ?
                                 <section
                                     className="w-full h-[260px] aspect-auto rounded-2xl bg-cover bg-center bg-no-repeat"
-                                    style={{ backgroundImage: `url("/assets/img/actualite.png")` }}
+                                    style={{ backgroundImage: `url("/vector.svg")` }}
                                 /> :
                                 <section
-                                    className="w-full h-[260px] aspect-auto rounded-2xl bg-cover bg-center bg-no-repeat"
+                                    className="w-full h-[260px] aspect-auto rounded-2xl bg-contain bg-center bg-no-repeat"
                                     style={{ backgroundImage: `url(${process.env.NEXT_PUBLIC_API_URL}/${selectedActualite?.galerie[0].path})` }}
                                 />
                             }
