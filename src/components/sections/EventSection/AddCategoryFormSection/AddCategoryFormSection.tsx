@@ -48,14 +48,14 @@ export const AddCategoryFormSection = ({parent_id=0, menu, setCategories}: { par
     };
     try {
 
-      const recaptchaReponse = await verifyRecaptchaToken();
+      /* const recaptchaReponse = await verifyRecaptchaToken();
       const recaptchaData = await recaptchaReponse.json();
 
       if (!recaptchaData.success) {
         toast.error(recaptchaData.message || 'Erreur de vérification reCAPTCHA');
         setIsLoading(false);
         return;
-      }
+      } */
 
       const response: any = await apiClient.post("/api/categories", data);
       if (response.id ) {
@@ -134,13 +134,13 @@ export const AddCategoryFormSection = ({parent_id=0, menu, setCategories}: { par
                 )}
               />
 
-              <ReCAPTCHA
+              {/* <ReCAPTCHA
                 sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
                 onChange={handleRecaptchaChange}
-              />
+              /> */}
 
               <DialogFooter>
-                <Button disabled={ isLoading || !captchaToken } type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
+                <Button disabled={ isLoading } type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
                   {isLoading && <Loader className="h-5 w-5 mr-2" />}
                   Ajouter la catégorie
                 </Button>

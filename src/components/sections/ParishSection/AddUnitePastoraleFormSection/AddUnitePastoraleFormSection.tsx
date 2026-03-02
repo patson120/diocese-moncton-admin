@@ -68,14 +68,14 @@ export const AddUnitePastoraleFormSection = ( { unite }: { unite?: TypeParoisse 
     formData.append('gps', `${location?.lat};${location?.lng}`);
     
     try {
-      const recaptchaReponse = await verifyRecaptchaToken();
+      /* const recaptchaReponse = await verifyRecaptchaToken();
       const recaptchaData = await recaptchaReponse.json();
 
       if (!recaptchaData.success) {
         toast.error(recaptchaData.message || 'Erreur de vérification reCAPTCHA');
         setIsLoading(false);
         return;
-      }
+      } */
       let response: any = null;
       if (unite){
         response = await apiClient.post(`/api/type_paroisses/${unite?.id}?_method=PUT`, formData, {
@@ -259,15 +259,15 @@ export const AddUnitePastoraleFormSection = ( { unite }: { unite?: TypeParoisse 
                 }
               </p>
             </div>
-            <ReCAPTCHA
+            {/* <ReCAPTCHA
               sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''}
               onChange={handleRecaptchaChange}
-            />
+            /> */}
             <div className="flex flex-row gap-4">
               <Button variant={'outline'} onClick={() => setStep(2)} className="w-min px-8 mt-8 h-12 rounded-lg">
                 Retour
               </Button>
-              <Button disabled={ isLoading || !captchaToken } onClick={handleSubmitForm} className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
+              <Button disabled={ isLoading } onClick={handleSubmitForm} className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
                 {  isLoading && <Loader className=" w-5 h-5 mr-2" />}
                 { unite ? "Modifier l'unite pastorale" : "Ajouter l'unite pastorale" }
               </Button>
