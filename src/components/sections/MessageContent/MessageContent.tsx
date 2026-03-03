@@ -14,6 +14,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { EyeIcon, Trash2Icon } from 'lucide-react';
 import useRole from '@/hooks/use-role';
+import { LoadingSpinner } from '../MapSection/loading-spinner';
 
 export default function MessageContent(
     { 
@@ -35,14 +36,17 @@ export default function MessageContent(
 
     const [isDeleting, setIsDeleting] = useState(false)
     const [isStatusChanging, setIsStatusChanging] = useState(false)
+    const [isFetching, setIsFetching] = useState(false)
 
     useEffect(() => {
         const getMessages = async () => {
+            setIsFetching(true)
             let params = `?paginate=200&etat=${etat}`
             if (query) { params += `&titre=${query}` }
             if (ordre) { params += `&ordre=${ordre}` }
             const response: any = await apiClient.get(`/api/mot_archeve${params}`)
             setMessages(response.data)
+            setIsFetching(false)
         }
         getMessages()
     }, [etat, query, ordre])
@@ -85,6 +89,16 @@ export default function MessageContent(
 
     return (
         <div>
+            {
+                messages.length === 0 &&
+                <div className="flex items-center justify-center h-[50vh]">
+                {
+                    isFetching ?
+                    <LoadingSpinner /> :
+                    <p className="text-gray">Aucune donnée trouvée</p>
+                }
+                </div>
+            }
             {
                 ( displayMode === 'list') ?
                     <Card className="w-full rounded-2xl bg-white">

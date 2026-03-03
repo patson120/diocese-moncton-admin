@@ -27,8 +27,6 @@ export default function ContentDisplaySection() {
   const navItems = [
     { id: "actualites", label: "Actualités", route: "actualite", labelRouter: "une actualité", active: true },
     { id: "messages", label: "Messages évêques", route: "/message", labelRouter: "un message", active: false },
-    /* { id: "communautes", label: "Communautés", route: "#", labelRouter: "un ...", active: false },
-    { id: "mouvements", label: "Mouvements", route: "#", labelRouter: "un mouvement", active: false }, */
   ];
   const [selectedItem, setSelectedItem] = useState(navItems[0])
   const [query, setQuery] = useState(params.get('query')?.toString() || '')
@@ -103,7 +101,8 @@ export default function ContentDisplaySection() {
               </TabsList>
             </div>
           </div>
-          {(selectedItem && canAddNews()) &&
+          {
+            (selectedItem && canAddNews()) &&
             <Button onClick={() => router.push(selectedItem.route)} className="h-10 gap-2 px-3.5 py-0 bg-blue rounded-[7px] text-white">
               <PlusIcon className="w-5 h-5" />
               <span className="font-body-3 text-sm">Ajouter {selectedItem.labelRouter}</span>
@@ -291,10 +290,6 @@ export default function ContentDisplaySection() {
                 </TabsContent>
               </ScrollArea>
             </Tabs>
-
-            {/* <div className="flex items-center justify-center h-[400px]">
-              <p className="text-gray">Aucun messages</p>
-            </div> */}
           </TabsContent>
 
           <TabsContent value="communautes" className="mt-6 p-0 border-none">

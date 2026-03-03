@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Actualite } from '../../../app/types';
 import useRole from '@/hooks/use-role';
+import { LoadingSpinner } from '../MapSection/loading-spinner';
 
 export default function ActualiteContent(
     { is_actif, query, ordre , displayMode}: 
@@ -22,11 +23,13 @@ export default function ActualiteContent(
     const [openModal, setOpenModal] = useState(false) 
     const [isDeleting, setIsDeleting] = useState(false)
     const [isUpdateStatus, setIsUpdateStatus] = useState(false)
+    const [isFetching, setIsFetching] = useState(false)
 
     const { canUpdateNews, canDeleteNews} = useRole()
 
     useEffect(() => {
         const getActualites = async () => {
+            setIsFetching(true)
             let params = `?paginate=20000&is_actif=${is_actif}`   
             if (query) { params += `&intitule=${query}` }
             if (ordre) { params += `&ordre=${ordre}` }
@@ -36,6 +39,7 @@ export default function ActualiteContent(
                 planifiees = await apiClient.get(`/api/actualites?is_planifier=1`)
             }
             setActualites([...planifiees, ...response.data])
+            setIsFetching(false)
         }
         getActualites()
     }, [is_actif, query, ordre])
@@ -88,6 +92,16 @@ export default function ActualiteContent(
 
     return (
         <>  
+            {
+                actualites.length === 0 &&
+                <div className="flex items-center justify-center h-[50vh]">
+                {
+                    isFetching ?
+                    <LoadingSpinner /> :
+                    <p className="text-gray">Aucune donnée trouvée</p>
+                }
+                </div>
+            }
             {
                 ( displayMode === 'list') ?
                 <Card className="w-full rounded-2xl bg-white">

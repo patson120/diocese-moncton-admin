@@ -20,6 +20,7 @@ import EditMemberFormSection from "./EditMemberFormSection";
 import SearchInput from "./SearchInput";
 import Text from "@/components/shared/Text";
 import useRole from "@/hooks/use-role";
+import { LoadingSpinner } from "../MapSection/loading-spinner";
 
 export const ClergPretres = (): JSX.Element => {
 
@@ -42,14 +43,17 @@ export const ClergPretres = (): JSX.Element => {
   const [categoryId, setCategoryId] = useState(clergyTabs[1].id)
   const [query, setQuery] = useState('')
   const [etat, setEtat] = useState('')
+  const [isFetching, setIsFetching] = useState(false)
 
   useEffect(() => {
     ( async () => {
+      setIsFetching(true)
       let params = `?categorie_id=${categoryId}`
       if (query) params += `&nom=${query}`
       if (etat) params += `&etat=${etat}`
       const response: Member[] = await apiClient.get(`/api/membres${params}`)
       setMembers(response)
+      setIsFetching(false)
     })()
   }, [categoryId, query, etat])
 
@@ -108,7 +112,9 @@ export const ClergPretres = (): JSX.Element => {
               <ScrollArea className="w-full h-[calc(100vh-345px)] mt-6">
                 {/* Archevêque grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
-                  { members.map((member, index) => (
+                  { 
+                    members.length > 0 ?
+                    members.map((member, index) => (
                     <Card
                       onClick={() => {
                         setOpenModal(true)
@@ -134,13 +140,20 @@ export const ClergPretres = (): JSX.Element => {
                             </span>
                           </div>
                           <p className="relative self-stretch font-body-3 text-gray text-sm tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
-                            {/*member.unites.map((unite) => unite.intitule_fr || unite.intitule_en).join(', ')*/}
                             { member.coordonnees }
                           </p>
                         </div>
                       </CardContent>
                     </Card>
-                  ))}
+                  )) :
+                  <div className="flex items-center justify-center h-[50vh]">
+                    {
+                      isFetching ?
+                        <LoadingSpinner /> :
+                        <p className="text-gray">Aucune donnée trouvée</p>
+                    }
+                  </div>
+                }
                 </div>
               </ScrollArea>
             </TabsContent>
@@ -184,60 +197,74 @@ export const ClergPretres = (): JSX.Element => {
                         placeholder="Rechercher un prêtre"
                         setQuery={setQuery}
                       />
-                      <Button
+                      {/* <Button
                         variant="outline"
                         className="h-11 flex items-center gap-2.5 border border-[#d9d9d9] rounded-lg">
                         <ListFilter className="w-5 h-5" />
                         <span className="font-body-3 text-noir-dashboard">
                           Trier par...
                         </span>
-                      </Button>
-                      <Button
+                      </Button> */}
+                      {/* <Button
                         variant="outline"
                         className="w-11 h-11 p-0 flex items-center justify-center border border-[#d9d9d9] rounded-lg">
                         <LayoutGridIcon className="w-5 h-5" />
-                      </Button>
+                      </Button> */}
                     </div>
                   </div>
                 </div>
 
                 <TabsContent value="actif" className="mt-6 space-y-6">
                   <ScrollArea className="w-full h-[calc(100vh-350px)] mt-6">
-                    {/* Prêtres grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
-                    {members.map((member, index) => (
-                        <Card
-                          onClick={() => {
-                            setOpenModal(true)
-                            setSelectedMember(member)
-                          }}
-                          key={index}
-                          className="w-full border-none shadow-none cursor-pointer"
-                        >
-                          <CardContent className="p-0 space-y-3">
-                            <div className="relative w-full h-[250px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
-                              <Image
-                                fill
-                                priority
-                                className="object-cover"
-                                alt="Vector"
-                                src={ member.image ? `${process.env.NEXT_PUBLIC_API_URL}/${member.image}` : "/vector.svg"}
-                              />
-                            </div>
+                    <div>
+                      {/* Prêtres grid */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
+                        {
+                          members.map((member, index) => (
+                            <Card
+                              onClick={() => {
+                                setOpenModal(true)
+                                setSelectedMember(member)
+                              }}
+                              key={index}
+                              className="w-full border-none shadow-none cursor-pointer"
+                            >
+                              <CardContent className="p-0 space-y-3">
+                                <div className="relative w-full h-[250px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
+                                  <Image
+                                    fill
+                                    priority
+                                    className="object-cover"
+                                    alt="Vector"
+                                    src={ member.image ? `${process.env.NEXT_PUBLIC_API_URL}/${member.image}` : "/vector.svg"}
+                                  />
+                                </div>
 
-                            <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
-                              <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
-                                <span className="font-bold text-sm">
-                                  {member.nom} {member.prenom}
-                                </span>
-                              </div>
-                              <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
-                                {member.unites.map((unite) => unite.intitule_fr || unite.intitule_en).join(', ')}
-                              </p>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
+                                <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
+                                  <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
+                                    <span className="font-bold text-sm">
+                                      {member.nom} {member.prenom}
+                                    </span>
+                                  </div>
+                                  <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
+                                    {member.unites.map((unite) => unite.intitule_fr || unite.intitule_en).join(', ')}
+                                  </p>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          ))
+                        }
+                      </div>
+                      { 
+                        members.length === 0 &&
+                        <div className="w-full flex items-center justify-center h-[50vh]">
+                          {
+                            isFetching ?
+                            <LoadingSpinner /> :
+                            <p className="text-gray">Aucune donnée trouvée</p>
+                          }
+                        </div>
+                      }
                     </div>
                   </ScrollArea>
                 </TabsContent>
@@ -246,83 +273,109 @@ export const ClergPretres = (): JSX.Element => {
                   value="en-retraite"
                   className="mt-6 p-0 border-none">
                   <ScrollArea className="w-full h-[calc(100vh-350px)] mt-6">
-                    {/* Prêtres grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
-                    {members.map((member, index) => (
-                        <Card
-                          onClick={() => {
-                            setOpenModal(true)
-                            setSelectedMember(member)
-                          }}
-                          key={index}
-                          className="w-full border-none shadow-none cursor-pointer"
-                        >
-                          <CardContent className="p-0 space-y-3">
-                            <div className="relative w-full h-[250px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
-                              <Image
-                                fill
-                                priority
-                                className="object-cover"
-                                alt="Vector"
-                                src="/clerge-1.png"
-                              />
-                            </div>
-
-                            <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
-                              <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
-                                <span className="font-bold text-sm">
-                                  {member.nom} {member.prenom}
-                                </span>
+                    <div>
+                      {/* Prêtres grid */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
+                      {
+                        members.map((member, index) => (
+                          <Card
+                            onClick={() => {
+                              setOpenModal(true)
+                              setSelectedMember(member)
+                            }}
+                            key={index}
+                            className="w-full border-none shadow-none cursor-pointer"
+                          >
+                            <CardContent className="p-0 space-y-3">
+                              <div className="relative w-full h-[250px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
+                                <Image
+                                  fill
+                                  priority
+                                  className="object-cover"
+                                  alt="Vector"
+                                  src="/clerge-1.png"
+                                />
                               </div>
-                              <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
-                                {member.unites.map((unite) => unite.intitule_fr || unite.intitule_en).join(', ')}
-                              </p>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
+
+                              <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
+                                <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
+                                  <span className="font-bold text-sm">
+                                    {member.nom} {member.prenom}
+                                  </span>
+                                </div>
+                                <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
+                                  {member.unites.map((unite) => unite.intitule_fr || unite.intitule_en).join(', ')}
+                                </p>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))
+                      }
+                      </div>
+                      { 
+                        members.length === 0 &&
+                        <div className="w-full flex items-center justify-center h-[50vh]">
+                          {
+                            isFetching ?
+                            <LoadingSpinner /> :
+                            <p className="text-gray">Aucune donnée trouvée</p>
+                          }
+                        </div>
+                      }
                     </div>
                   </ScrollArea>
                 </TabsContent>
 
                 <TabsContent value="decedes" className="mt-6 p-0 border-none">
                   <ScrollArea className="w-full h-[calc(100vh-350px)] mt-6">
-                    {/* Prêtres grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
-                      {members.map((member, index) => (
-                        <Card
-                          onClick={() => {
-                            setOpenModal(true)
-                            setSelectedMember(member)
-                          }}
-                          key={index}
-                          className="w-full border-none shadow-none cursor-pointer"
-                        >
-                          <CardContent className="p-0 space-y-3">
-                            <div className="relative w-full h-[250px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
-                              <Image
-                                fill
-                                priority
-                                className="object-cover"
-                                alt="Vector"
-                                src={ member.image ? `${process.env.NEXT_PUBLIC_API_URL}/${member.image}` : "/vector.svg"}
-                              />
-                            </div>
-
-                            <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
-                              <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
-                                <span className="font-bold text-sm">
-                                  {member.nom} {member.prenom}
-                                </span>
+                    <div>
+                      {/* Prêtres grid */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
+                        {members.map((member, index) => (
+                          <Card
+                            onClick={() => {
+                              setOpenModal(true)
+                              setSelectedMember(member)
+                            }}
+                            key={index}
+                            className="w-full border-none shadow-none cursor-pointer"
+                          >
+                            <CardContent className="p-0 space-y-3">
+                              <div className="relative w-full h-[250px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
+                                <Image
+                                  fill
+                                  priority
+                                  className="object-cover"
+                                  alt="Vector"
+                                  src={ member.image ? `${process.env.NEXT_PUBLIC_API_URL}/${member.image}` : "/vector.svg"}
+                                />
                               </div>
-                              <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
-                                {member.unites.map((unite) => unite.intitule_fr || unite.intitule_en).join(', ')}
-                              </p>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
+
+                              <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
+                                <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
+                                  <span className="font-bold text-sm">
+                                    {member.nom} {member.prenom}
+                                  </span>
+                                </div>
+                                <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
+                                  {member.unites.map((unite) => unite.intitule_fr || unite.intitule_en).join(', ')}
+                                </p>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
                     </div>
+                    { 
+                        members.length === 0 &&
+                        <div className="w-full flex items-center justify-center h-[50vh]">
+                          {
+                            isFetching ?
+                            <LoadingSpinner /> :
+                            <p className="text-gray">Aucune donnée trouvée</p>
+                          }
+                        </div>
+                      }
                   </ScrollArea>
                 </TabsContent>
               </Tabs>
@@ -346,8 +399,7 @@ export const ClergPretres = (): JSX.Element => {
                     <TabsTrigger
                       value="en-retraite"
                       onClick={() =>  setEtat('0')}
-                      className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray"
-                    >
+                      className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
                       <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
                         En retraite
                       </span>
@@ -386,40 +438,53 @@ export const ClergPretres = (): JSX.Element => {
 
                 <TabsContent value="actif" className="mt-6 space-y-6">
                   <ScrollArea className="w-full h-[calc(100vh-350px)] mt-6">
-                    {/* Diacres grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
-                      {members.map((member, index) => (
-                        <Card
-                          onClick={() => {
-                            setOpenModal(true)
-                            setSelectedMember(member)
-                          }}
-                          key={index}
-                          className="w-full border-none shadow-none cursor-pointer">
-                          <CardContent className="p-0 space-y-3">
-                            <div className="relative w-full h-[250px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
-                              <Image
-                                fill
-                                priority
-                                className="object-cover"
-                                alt="Vector"
-                                src={ member.image ? `${process.env.NEXT_PUBLIC_API_URL}/${member.image}` : "/vector.svg"}
-                              />
-                            </div>
-
-                            <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
-                              <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
-                                <span className="font-bold text-sm">
-                                  {member.nom} {member.prenom}
-                                </span>
+                    <div>
+                      {/* Diacres grid */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
+                        {
+                          members.map((member, index) => (
+                          <Card
+                            onClick={() => {
+                              setOpenModal(true)
+                              setSelectedMember(member)
+                            }}
+                            key={index}
+                            className="w-full border-none shadow-none cursor-pointer">
+                            <CardContent className="p-0 space-y-3">
+                              <div className="relative w-full h-[250px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
+                                <Image
+                                  fill
+                                  priority
+                                  className="object-cover"
+                                  alt="Vector"
+                                  src={ member.image ? `${process.env.NEXT_PUBLIC_API_URL}/${member.image}` : "/vector.svg"}
+                                />
                               </div>
-                              <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
-                                {member.unites.map((unite) => unite.intitule_fr || unite.intitule_en).join(', ')}
-                              </p>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
+
+                              <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
+                                <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
+                                  <span className="font-bold text-sm">
+                                    {member.nom} {member.prenom}
+                                  </span>
+                                </div>
+                                <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
+                                  {member.unites.map((unite) => unite.intitule_fr || unite.intitule_en).join(', ')}
+                                </p>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                      { 
+                        members.length === 0 &&
+                        <div className="w-full flex items-center justify-center h-[50vh]">
+                          {
+                            isFetching ?
+                            <LoadingSpinner /> :
+                            <p className="text-gray">Aucune donnée trouvée</p>
+                          }
+                        </div>
+                      }
                     </div>
                   </ScrollArea>
                 </TabsContent>
@@ -428,82 +493,107 @@ export const ClergPretres = (): JSX.Element => {
                   value="en-retraite"
                   className="mt-6 p-0 border-none">
                   <ScrollArea className="w-full h-[calc(100vh-350px)] mt-6">
-                    {/* Diacres grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
-                      {members.map((member, index) => (
-                        <Card
-                          onClick={() => {
-                            setOpenModal(true)
-                            setSelectedMember(member)
-                          }}
-                          key={index}
-                          className="w-full border-none shadow-none cursor-pointer"
-                        >
-                          <CardContent className="p-0 space-y-3">
-                            <div className="relative w-full h-[250px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
-                              <Image
-                                fill
-                                priority
-                                className="object-cover"
-                                alt="Vector"
-                                src={ member.image ? `${process.env.NEXT_PUBLIC_API_URL}/${member.image}` : "/vector.svg"}
-                              />
-                            </div>
-
-                            <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
-                              <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
-                                <span className="font-bold text-sm">
-                                  {member.nom} {member.prenom}
-                                </span>
+                    <div>
+                      {/* Diacres grid */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
+                        {
+                          members.map((member, index) => (
+                          <Card
+                            onClick={() => {
+                              setOpenModal(true)
+                              setSelectedMember(member)
+                            }}
+                            key={index}
+                            className="w-full border-none shadow-none cursor-pointer">
+                            <CardContent className="p-0 space-y-3">
+                              <div className="relative w-full h-[250px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
+                                <Image
+                                  fill
+                                  priority
+                                  className="object-cover"
+                                  alt="Vector"
+                                  src={ member.image ? `${process.env.NEXT_PUBLIC_API_URL}/${member.image}` : "/vector.svg"}
+                                />
                               </div>
-                              <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
-                                {member.unites.map((unite) => unite.intitule_fr || unite.intitule_en).join(', ')}
-                              </p>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
+
+                              <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
+                                <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
+                                  <span className="font-bold text-sm">
+                                    {member.nom} {member.prenom}
+                                  </span>
+                                </div>
+                                <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
+                                  {member.unites.map((unite) => unite.intitule_fr || unite.intitule_en).join(', ')}
+                                </p>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))
+                        }
+                      </div>
+                      { 
+                        members.length === 0 &&
+                        <div className="w-full flex items-center justify-center h-[50vh]">
+                          {
+                            isFetching ?
+                            <LoadingSpinner /> :
+                            <p className="text-gray">Aucune donnée trouvée</p>
+                          }
+                        </div>
+                      }
                     </div>
                   </ScrollArea>
                 </TabsContent>
 
                 <TabsContent value="decedes" className="mt-6 p-0 border-none">
                   <ScrollArea className="w-full h-[calc(100vh-350px)] mt-6">
-                    {/* Diacres grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
-                      {members.map((member, index) => (
-                        <Card
-                          onClick={() => {
-                            setOpenModal(true)
-                            setSelectedMember(member)
-                          }}
-                          key={index}
-                          className="w-full border-none shadow-none cursor-pointer"
-                        >
-                          <CardContent className="p-0 space-y-3">
-                            <div className="relative w-full h-[250px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
-                              <Image
-                                fill
-                                priority
-                                className="object-cover"
-                                alt="Vector"
-                                src={ member.image ? `${process.env.NEXT_PUBLIC_API_URL}/${member.image}` : "/vector.svg"}
-                              />
-                            </div>
-
-                            <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
-                              <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
-                                <span className="font-bold text-sm">
-                                  {member.nom} {member.prenom}
-                                </span>
+                    <div>
+                      {/* Diacres grid */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
+                        {members.map((member, index) => (
+                          <Card
+                            onClick={() => {
+                              setOpenModal(true)
+                              setSelectedMember(member)
+                            }}
+                            key={index}
+                            className="w-full border-none shadow-none cursor-pointer"
+                          >
+                            <CardContent className="p-0 space-y-3">
+                              <div className="relative w-full h-[250px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
+                                <Image
+                                  fill
+                                  priority
+                                  className="object-cover"
+                                  alt="Vector"
+                                  src={ member.image ? `${process.env.NEXT_PUBLIC_API_URL}/${member.image}` : "/vector.svg"}
+                                />
                               </div>
-                              <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
-                                {member.unites.map((unite) => unite.intitule_fr || unite.intitule_en).join(', ')}
-                              </p>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
+
+                              <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
+                                <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
+                                  <span className="font-bold text-sm">
+                                    {member.nom} {member.prenom}
+                                  </span>
+                                </div>
+                                <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
+                                  {member.unites.map((unite) => unite.intitule_fr || unite.intitule_en).join(', ')}
+                                </p>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                      { 
+                        members.length === 0 &&
+                        <div className="w-full flex items-center justify-center h-[50vh]">
+                          {
+                            isFetching ?
+                            <LoadingSpinner /> :
+                            <p className="text-gray">Aucune donnée trouvée</p>
+                          }
+                        </div>
+                      }
                     </div>
                   </ScrollArea>
                 </TabsContent>
@@ -568,50 +658,64 @@ export const ClergPretres = (): JSX.Element => {
 
                 <TabsContent value="pretres-redemptoristes" className="mt-6 space-y-6">
                   <ScrollArea className="w-full h-[calc(100vh-350px)] ">
-                    {/* Priests grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
-                    {members.map((member, index) => (
-                        <Card
-                          onClick={() => {
-                            setOpenModal(true)
-                            setSelectedMember(member)
-                          }}
-                          key={index}
-                          className="w-full border-none shadow-none cursor-pointer">
-                          <CardContent className="p-0 space-y-3">
-                            <div className="relative self-stretch w-full h-[250px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
-                              
-                              {
-                                member.image ?
-                                <Image
-                                  fill
-                                  priority
-                                  className="object-cover"
-                                  alt="Vector"
-                                  src={`${process.env.NEXT_PUBLIC_API_URL}/${member.image}` }
-                                /> :
-                                <Image
-                                  width={60}
-                                  height={60}
-                                  alt="Vector"
-                                  src="/vector.svg"
-                                />
-                              }
-                            </div>
-
-                            <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
-                              <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
-                                <span className="font-bold text-sm">
-                                {member.nom} {member.prenom}
-                                </span>
+                    <div>
+                      {/* Priests grid */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
+                      {
+                        members.map((member, index) => (
+                          <Card
+                            onClick={() => {
+                              setOpenModal(true)
+                              setSelectedMember(member)
+                            }}
+                            key={index}
+                            className="w-full border-none shadow-none cursor-pointer">
+                            <CardContent className="p-0 space-y-3">
+                              <div className="relative self-stretch w-full h-[250px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
+                                
+                                {
+                                  member.image ?
+                                  <Image
+                                    fill
+                                    priority
+                                    className="object-cover"
+                                    alt="Vector"
+                                    src={`${process.env.NEXT_PUBLIC_API_URL}/${member.image}` }
+                                  /> :
+                                  <Image
+                                    width={60}
+                                    height={60}
+                                    alt="Vector"
+                                    src="/vector.svg"
+                                  />
+                                }
                               </div>
-                              <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
-                              {member.unites.map((unite) => unite.intitule_fr || unite.intitule_en).join(', ')}
-                              </p>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
+
+                              <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
+                                <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
+                                  <span className="font-bold text-sm">
+                                  {member.nom} {member.prenom}
+                                  </span>
+                                </div>
+                                <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
+                                {member.unites.map((unite) => unite.intitule_fr || unite.intitule_en).join(', ')}
+                                </p>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))
+                      }
+                      </div>
+                      { 
+                        members.length === 0 &&
+                        <div className="w-full flex items-center justify-center h-[50vh]">
+                          {
+                            isFetching ?
+                            <LoadingSpinner /> :
+                            <p className="text-gray">Aucune donnée trouvée</p>
+                          }
+                        </div>
+                      }
                     </div>
                   </ScrollArea>
                 </TabsContent>
@@ -620,78 +724,104 @@ export const ClergPretres = (): JSX.Element => {
                   value="autres-groupes"
                   className="mt-6 p-0 border-none">
                   <ScrollArea className="w-full h-[calc(100vh-350px)] ">
-                    {/* Priests grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
-                    {members.map((member, index) => (
-                        <Card
-                          onClick={() => {
-                            setOpenModal(true)
-                            setSelectedMember(member)
-                          }}
-                          key={index}
-                          className="w-full border-none shadow-none cursor-pointer">
-                          <CardContent className="p-0 space-y-3">
-                            <div className="relative self-stretch w-full h-[250px] bg-[#f0f0f0] rounded-xl flex items-center justify-center">
-                              <Image
-                                width={60}
-                                height={60}
-                                alt="Vector"
-                                src={ member.image ? `${process.env.NEXT_PUBLIC_API_URL}/${member.image}` : "/vector.svg"}
-                              />
-                            </div>
-
-                            <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
-                              <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
-                                <span className="font-bold text-sm">
-                                {member.nom} {member.prenom}
-                                </span>
+                    <div>
+                      {/* Priests grid */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
+                      {
+                        members.map((member, index) => (
+                          <Card
+                            onClick={() => {
+                              setOpenModal(true)
+                              setSelectedMember(member)
+                            }}
+                            key={index}
+                            className="w-full border-none shadow-none cursor-pointer">
+                            <CardContent className="p-0 space-y-3">
+                              <div className="relative self-stretch w-full h-[250px] bg-[#f0f0f0] rounded-xl flex items-center justify-center">
+                                <Image
+                                  width={60}
+                                  height={60}
+                                  alt="Vector"
+                                  src={ member.image ? `${process.env.NEXT_PUBLIC_API_URL}/${member.image}` : "/vector.svg"}
+                                />
                               </div>
-                              <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
-                              {member.unites.map((unite) => unite.intitule_fr || unite.intitule_en).join(', ')}
-                              </p>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
+
+                              <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
+                                <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
+                                  <span className="font-bold text-sm">
+                                  {member.nom} {member.prenom}
+                                  </span>
+                                </div>
+                                <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
+                                {member.unites.map((unite) => unite.intitule_fr || unite.intitule_en).join(', ')}
+                                </p>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                      { 
+                        members.length === 0 &&
+                        <div className="w-full flex items-center justify-center h-[50vh]">
+                          {
+                            isFetching ?
+                            <LoadingSpinner /> :
+                            <p className="text-gray">Aucune donnée trouvée</p>
+                          }
+                        </div>
+                      }
                     </div>
                   </ScrollArea>
                 </TabsContent>
 
                 <TabsContent value="decedes" className="mt-6 p-0 border-none">
                   <ScrollArea className="w-full h-[calc(100vh-350px)] ">
-                    {/* Priests grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
-                    {members.map((member, index) => (
-                        <Card
-                          onClick={() => {
-                            setOpenModal(true)
-                            setSelectedMember(member)
-                          }}
-                          key={index}
-                          className="w-full border-none shadow-none cursor-pointer">
-                          <CardContent className="p-0 space-y-3">
-                            <div className="relative self-stretch w-full h-[250px] bg-[#f0f0f0] rounded-xl flex items-center justify-center">
-                              <Image
-                                width={60}
-                                height={60}
-                                alt="Vector"
-                                src={ member.image ? `${process.env.NEXT_PUBLIC_API_URL}/${member.image}` : "/vector.svg"}
-                              />
-                            </div>
-
-                            <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
-                              <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
-                                <span className="font-bold text-sm">
-                                {member.nom} {member.prenom}
-                                </span>
+                    <div>
+                      {/* Priests grid */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
+                      {   
+                        members.map((member, index) => (
+                          <Card
+                            onClick={() => {
+                              setOpenModal(true)
+                              setSelectedMember(member)
+                            }}
+                            key={index}
+                            className="w-full border-none shadow-none cursor-pointer">
+                            <CardContent className="p-0 space-y-3">
+                              <div className="relative self-stretch w-full h-[250px] bg-[#f0f0f0] rounded-xl flex items-center justify-center">
+                                <Image
+                                  width={60}
+                                  height={60}
+                                  alt="Vector"
+                                  src={ member.image ? `${process.env.NEXT_PUBLIC_API_URL}/${member.image}` : "/vector.svg"}
+                                />
                               </div>
-                              <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
-                              {member.unites.map((unite) => unite.intitule_fr || unite.intitule_en).join(', ')}
-                              </p>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
+
+                              <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
+                                <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
+                                  <span className="font-bold text-sm">
+                                  {member.nom} {member.prenom}
+                                  </span>
+                                </div>
+                                <p className="relative self-stretch font-body-3 text-gray text-xs tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
+                                {member.unites.map((unite) => unite.intitule_fr || unite.intitule_en).join(', ')}
+                                </p>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                      { 
+                        members.length === 0 &&
+                        <div className="w-full flex items-center justify-center h-[50vh]">
+                          {
+                            isFetching ?
+                            <LoadingSpinner /> :
+                            <p className="text-gray">Aucune donnée trouvée</p>
+                          }
+                        </div>
+                      }
                     </div>
                   </ScrollArea>
                 </TabsContent>
@@ -709,49 +839,63 @@ export const ClergPretres = (): JSX.Element => {
                 />
               </div>
               <ScrollArea className="w-full h-[calc(100vh-350px)] mt-6">
-                {/* Options grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
-                  {members.map((member, index) => (
-                    <Card
-                      onClick={() => {
-                        setOpenModal(true)
-                        setSelectedMember(member)
-                      }}
-                      key={index}
-                      className="w-full border-none shadow-none cursor-pointer">
-                      <CardContent className="p-0 space-y-3">
-                        <div className="relative self-stretch w-full h-[250px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
-                          {
-                            member.image ?
-                            <Image
-                              fill
-                              priority
-                              className="object-cover"
-                              alt="Image du membre 1"
-                              src={`${process.env.NEXT_PUBLIC_API_URL}/${member.image}` }
-                            /> :
-                            <Image
-                              width={60}
-                              height={60}
-                              alt="Image du membre"
-                              src="/vector.svg"
-                            />
-                          }
-                        </div>
+                <div>
+                  {/* Options grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-8">
+                    {
+                      members.map((member, index) => (
+                        <Card
+                          onClick={() => {
+                            setOpenModal(true)
+                            setSelectedMember(member)
+                          }}
+                          key={index}
+                          className="w-full border-none shadow-none cursor-pointer">
+                          <CardContent className="p-0 space-y-3">
+                            <div className="relative self-stretch w-full h-[250px] bg-[#f0f0f0] overflow-hidden rounded-xl flex items-center justify-center">
+                              {
+                                member.image ?
+                                <Image
+                                  fill
+                                  priority
+                                  className="object-cover"
+                                  alt="Image du membre 1"
+                                  src={`${process.env.NEXT_PUBLIC_API_URL}/${member.image}` }
+                                /> :
+                                <Image
+                                  width={60}
+                                  height={60}
+                                  alt="Image du membre"
+                                  src="/vector.svg"
+                                />
+                              }
+                            </div>
 
-                        <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
-                          <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
-                            <span className="font-bold text-lg">
-                              {member.nom} {member.prenom}
-                            </span>
-                          </div>
-                          <p className="relative self-stretch font-body-3 text-gray text-sm tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
-                            {member.unites.map((unite) => unite.intitule_fr || unite.intitule_en).join(', ')}
-                          </p>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+                            <div className="flex flex-col items-start relative self-stretch w-full flex-[0_0_auto] mt-3">
+                              <div className="relative self-stretch mt-[-1.00px] text-black text-base tracking-[0] leading-4">
+                                <span className="font-bold text-lg">
+                                  {member.nom} {member.prenom}
+                                </span>
+                              </div>
+                              <p className="relative self-stretch font-body-3 text-gray text-sm tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)] [font-style:var(--body-3-font-style)]">
+                                {member.unites.map((unite) => unite.intitule_fr || unite.intitule_en).join(', ')}
+                              </p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))
+                    }
+                  </div>
+                  { 
+                    members.length === 0 &&
+                    <div className="w-full flex items-center justify-center h-[50vh]">
+                      {
+                        isFetching ?
+                        <LoadingSpinner /> :
+                        <p className="text-gray">Aucune donnée trouvée</p>
+                      }
+                    </div>
+                  }
                 </div>
               </ScrollArea>
             </TabsContent>

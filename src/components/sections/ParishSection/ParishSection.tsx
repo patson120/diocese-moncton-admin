@@ -27,6 +27,7 @@ import { AddParishFormSection } from './AddParishFormSection';
 import { AddUnitePastoraleFormSection } from './AddUnitePastoraleFormSection';
 import { EditParishFormSection } from './EditParishFormSection';
 import { HTMLContent } from '@/components/shared/html-content';
+import { LoadingSpinner } from '../MapSection/loading-spinner';
 
 export default function ParishSection() {
     const router = useRouter()
@@ -50,6 +51,7 @@ export default function ParishSection() {
     const [newImages, setNewImages] = useState<ImageType[]>([]);
 
     const [isLoading, setIsLoading] = useState(false)
+    const [isFetching, setIsFetching] = useState(false)
 
     
     const searchParams = useSearchParams()
@@ -64,6 +66,7 @@ export default function ParishSection() {
     useEffect(() => {
         // Récupérer les unités paroitiales depuis l'api
         (async () => {
+            setIsFetching(true)
             const response: TypeParoisse[] = await apiClient.get(`/api/type_paroisses`)
             if (user?.role.sigle.includes("bulletin")){
                 const data = response.filter((item: any) => user?.unite_id === item.id)
@@ -72,6 +75,7 @@ export default function ParishSection() {
             else {
                 setUnitePastorales(response)
             }
+            setIsFetching(false)
         })()
     }, [])
 
@@ -87,6 +91,7 @@ export default function ParishSection() {
 
     useEffect(() => {
         const getParishes = async () => {
+            setIsFetching(true)
             const response: any = await apiClient.get(`/api/paroisses?paginate=20000&statut=${statut}&nom=${query}`)
             if (user?.role.sigle.includes("bulletin")){
                 const data = response.data.filter((item: any) => user?.paroisse_id.includes(item.id))
@@ -95,6 +100,7 @@ export default function ParishSection() {
             else {
                 setParishes(response.data)
             }
+            setIsFetching(false)
         }
         getParishes()
     }, [statut, query])
@@ -396,57 +402,81 @@ export default function ParishSection() {
                                     </div>
 
                                     <TabsContent value="paroisses-actives" className="mt-6">
-                                        {/* Parish grid */}
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                                            {parishes.map((parish, index) => (
-                                                <Card
-                                                    key={index}
-                                                    className="w-full border-none shadow-none cursor-pointer"
-                                                    onClick={() => {
-                                                        setOpenModal(true)
-                                                        setImages(parish.media!)
-                                                        setSelectedParish(parish)
-                                                    }}>
-                                                    <CardContent className="p-0 w-full h-full space-y-2 bg-[#F9F9F0] rounded-xl flex flex-col justify-between gap-[10px] px-5 py-6">
-                                                        <div className="">
-                                                            <div className='h-6 w-6 mb-2'>
-                                                                <Church className='h-5 w-5' />
+                                        <div>
+                                            {/* Parish grid */}
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                                {parishes.map((parish, index) => (
+                                                    <Card
+                                                        key={index}
+                                                        className="w-full border-none shadow-none cursor-pointer"
+                                                        onClick={() => {
+                                                            setOpenModal(true)
+                                                            setImages(parish.media!)
+                                                            setSelectedParish(parish)
+                                                        }}>
+                                                        <CardContent className="p-0 w-full h-full space-y-2 bg-[#F9F9F0] rounded-xl flex flex-col justify-between gap-[10px] px-5 py-6">
+                                                            <div className="">
+                                                                <div className='h-6 w-6 mb-2'>
+                                                                    <Church className='h-5 w-5' />
+                                                                </div>
+                                                                <div className='body-1 font-bold text-black line-clamp-2'>
+                                                                    <Text className='text-sm font-bold' labelFr={parish.nom} labelEn={parish.nom_en} />
+                                                                    {/* <h1 className='text-lg font-bold'>{parish.nom}</h1> */}
+                                                                </div>
+                                                                <div className='body-2 mt-2 line-clamp-2 text-[#575757]'>
+                                                                    <p className='text-sm'>{parish.adresse}</p>
+                                                                </div>
                                                             </div>
-                                                            <div className='body-1 font-bold text-black line-clamp-2'>
-                                                                <Text className='text-sm font-bold' labelFr={parish.nom} labelEn={parish.nom_en} />
-                                                                {/* <h1 className='text-lg font-bold'>{parish.nom}</h1> */}
-                                                            </div>
-                                                            <div className='body-2 mt-2 line-clamp-2 text-[#575757]'>
-                                                                <p className='text-sm'>{parish.adresse}</p>
-                                                            </div>
-                                                        </div>
-                                                    </CardContent>
-                                                </Card>
-                                            ))}
+                                                        </CardContent>
+                                                    </Card>
+                                                ))}
+                                            </div>
+                                            {
+                                                parishes.length === 0 &&
+                                                <div className="flex items-center justify-center h-[50vh]">
+                                                {
+                                                    isFetching ?
+                                                    <LoadingSpinner /> :
+                                                    <p className="text-gray">Aucune donnée trouvée</p>
+                                                }
+                                                </div>
+                                            }
                                         </div>
                                     </TabsContent>
 
                                     <TabsContent value="paroisses-fermees" className="mt-6">
-                                        {/* Priests grid */}
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                                            {parishes.map((parish, index) => (
-                                                <Card
-                                                    key={index}
-                                                    className="w-full border-none shadow-none cursor-pointer"
-                                                    onClick={() => {
-                                                        setOpenModal(true)
-                                                        setSelectedParish(parish)
-                                                    }}>
-                                                    <CardContent className="bg-[#F9F9F0] rounded-xl px-5 py-6">
-                                                        <div className='body-1 font-bold text-black line-clamp-2'>
-                                                            <Text className='text-sm font-bold' labelFr={parish.nom} labelEn={parish.nom_en} />
-                                                        </div>
-                                                        <div className='body-2 line-clamp-2 text-[#575757]'>
-                                                            <p className='text-gray'>Paroisse fermée</p>
-                                                        </div>
-                                                    </CardContent>
-                                                </Card>
-                                            ))}
+                                        <div>
+                                            {/* Priests grid */}
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                                {parishes.map((parish, index) => (
+                                                    <Card
+                                                        key={index}
+                                                        className="w-full border-none shadow-none cursor-pointer"
+                                                        onClick={() => {
+                                                            setOpenModal(true)
+                                                            setSelectedParish(parish)
+                                                        }}>
+                                                        <CardContent className="bg-[#F9F9F0] rounded-xl px-5 py-6">
+                                                            <div className='body-1 font-bold text-black line-clamp-2'>
+                                                                <Text className='text-sm font-bold' labelFr={parish.nom} labelEn={parish.nom_en} />
+                                                            </div>
+                                                            <div className='body-2 line-clamp-2 text-[#575757]'>
+                                                                <p className='text-gray'>Paroisse fermée</p>
+                                                            </div>
+                                                        </CardContent>
+                                                    </Card>
+                                                ))}
+                                            </div>
+                                            {
+                                                parishes.length === 0 &&
+                                                <div className="flex items-center justify-center h-[50vh]">
+                                                {
+                                                    isFetching ?
+                                                    <LoadingSpinner /> :
+                                                    <p className="text-gray">Aucune donnée trouvée</p>
+                                                }
+                                                </div>
+                                            }
                                         </div>
                                     </TabsContent>
                                 </Tabs>
@@ -464,19 +494,19 @@ export default function ParishSection() {
                                                     />
                                                     <SearchIcon className="absolute w-4 h-4 top-3 left-3 text-gray" />
                                                 </div>
-                                                <Button
+                                                {/* <Button
                                                     variant="outline"
                                                     className="h-11 flex items-center gap-2.5 border border-[#d9d9d9] rounded-lg">
                                                     <ListFilter className="w-5 h-5" />
                                                     <span className="font-body-3 text-noir-dashboard">
                                                         Trier par...
                                                     </span>
-                                                </Button>
-                                                <Button
+                                                </Button> */}
+                                                {/* <Button
                                                     variant="outline"
                                                     className="w-11 h-11 p-0 flex items-center justify-center border border-[#d9d9d9] rounded-lg">
                                                     <LayoutGridIcon className="w-5 h-5" />
-                                                </Button>
+                                                </Button> */}
                                             </div>
                                         </div>
                                         {/* Priests grid */}
@@ -497,6 +527,16 @@ export default function ParishSection() {
                                                 </Card>
                                             ))}
                                         </div>
+                                        {
+                                            unitePastorales.length === 0 &&
+                                            <div className="flex items-center justify-center h-[50vh]">
+                                            {
+                                                isFetching ?
+                                                <LoadingSpinner /> :
+                                                <p className="text-gray">Aucune donnée trouvée</p>
+                                            }
+                                            </div>
+                                        }
                                     </div>
                             </TabsContent>
                         </ScrollArea>

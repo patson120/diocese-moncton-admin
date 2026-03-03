@@ -2,6 +2,7 @@
 'use client'
 
 import { TypeParoisse } from "@/app/types";
+import { Editor } from "@/components/Editor/Editor";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -226,7 +227,7 @@ export default function AddMemberFormSection(){
           <span className="font-body-3 text-sm">Ajouter un membre</span>
         </Button>
       </DialogTrigger>
-      <DialogContent aria-describedby={undefined} className="w-[500px] md:w-[620px] max-h-[80vh] overflow-y-scroll p-0 rounded-2xl">
+      <DialogContent aria-describedby={undefined} className="min-w-[40%] md:w-[620px] max-h-[80vh] overflow-y-scroll p-0 rounded-2xl">
         <DialogHeader className="border-b border-neutral-200 p-4 rounded-t-2xl">
           <DialogTitle className="text-lg font-bold leading-7">
             Ajouter un membre
@@ -394,11 +395,9 @@ export default function AddMemberFormSection(){
                     <FormItem>
                       <FormLabel>Description(français)</FormLabel>
                       <FormControl>
-                        {/* Textarea */}
-                        <Textarea
+                        <Editor
                           {...field}
-                          placeholder="Une description du membre..."
-                          className="min-h-20"
+                          className='h-52'
                         />
                       </FormControl>
                       <FormMessage />
@@ -412,11 +411,9 @@ export default function AddMemberFormSection(){
                     <FormItem>
                       <FormLabel>Description(anglais)</FormLabel>
                       <FormControl>
-                        {/* Textarea */}
-                        <Textarea
+                        <Editor
                           {...field}
-                          placeholder="Une description du membre..."
-                          className="min-h-20"
+                          className='h-52'
                         />
                       </FormControl>
                       <FormMessage />

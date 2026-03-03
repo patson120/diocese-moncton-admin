@@ -7,7 +7,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/ui/loader";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
+import useRecaptcha from "@/hooks/useRecaptcha";
 import { apiClient } from "@/lib/axios";
 import { cn, handleImageUpload } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,8 +18,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 import { Member, TypeParoisse } from "../../../app/types";
-import useRecaptcha from "@/hooks/useRecaptcha";
-import ReCAPTCHA from "react-google-recaptcha";
+import { Editor } from "@/components/Editor/Editor";
 
 const fonctions = [
   {
@@ -226,7 +225,7 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
         Modifier
       </Button>
       </DialogTrigger>
-      <DialogContent aria-describedby={undefined} className="w-[500px] md:w-[620px] max-h-[80vh] overflow-y-scroll p-0 rounded-2xl">
+      <DialogContent aria-describedby={undefined} className="min-w-[40%] md:w-[620px] max-h-[80vh] overflow-y-scroll p-0 rounded-2xl">
         <DialogHeader className="border-b border-neutral-200 p-4 rounded-t-2xl">
           <DialogTitle className="text-lg font-bold leading-7">
             Mettre à jour le membre
@@ -394,11 +393,9 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
                     <FormItem>
                       <FormLabel>Description(français)</FormLabel>
                       <FormControl>
-                        {/* Textarea */}
-                        <Textarea
+                        <Editor
                           {...field}
-                          placeholder="Une description du membre..."
-                          className="min-h-20"
+                          className='h-52'
                         />
                       </FormControl>
                       <FormMessage />
@@ -412,11 +409,9 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
                     <FormItem>
                       <FormLabel>Description(anglais)</FormLabel>
                       <FormControl>
-                        {/* Textarea */}
-                        <Textarea
+                        <Editor
                           {...field}
-                          placeholder="Une description du membre..."
-                          className="min-h-20"
+                          className='h-52'
                         />
                       </FormControl>
                       <FormMessage />
