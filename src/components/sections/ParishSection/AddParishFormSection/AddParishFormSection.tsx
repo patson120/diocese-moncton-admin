@@ -290,8 +290,10 @@ export const AddParishFormSection = (): JSX.Element => {
   }, [horairesBureau])
 
   const fetchPriests = async () => {
-    // Récupération de la liste des prêtres enregistrés
-    const response: Member[] = await apiClient.get("/api/membres?categorie_id=20")
+    // Récupération de la liste des prêtres enregistrés qui sont actifs (etat=1) et qui ont la catégorie de prêtre (categorie_id=20)
+    const response: Member[] = await apiClient.get("/api/membres?categorie_id=20&etat=1")
+    // Classer les prêtres par ordre alphabétique de leur nom
+    response.sort((a, b) => a.nom.localeCompare(b.nom))
     setPriests(response)
   }
 
