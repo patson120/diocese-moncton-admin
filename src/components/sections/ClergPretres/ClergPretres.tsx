@@ -52,6 +52,8 @@ export const ClergPretres = (): JSX.Element => {
       if (query) params += `&nom=${query}`
       if (etat) params += `&etat=${etat}`
       const response: Member[] = await apiClient.get(`/api/membres${params}`)
+      // Classer les membres par ordre alphabétique de nom de famille
+      response.sort((a, b) => a.nom.localeCompare(b.nom))
       setMembers(response)
       setIsFetching(false)
     })()
