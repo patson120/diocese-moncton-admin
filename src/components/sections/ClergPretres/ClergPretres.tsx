@@ -51,6 +51,8 @@ export const ClergPretres = (): JSX.Element => {
       let params = `?categorie_id=${categoryId}`
       if (query) params += `&nom=${query}`
       if (etat) params += `&etat=${etat}`
+      if (categoryId === clergyTabs[1].id && etat === '') params += `&etat=1` // Par défaut, afficher les prêtres actifs
+
       const response: Member[] = await apiClient.get(`/api/membres${params}`)
       // Classer les membres par ordre alphabétique de nom de famille
       response.sort((a, b) => a.nom.localeCompare(b.nom))
