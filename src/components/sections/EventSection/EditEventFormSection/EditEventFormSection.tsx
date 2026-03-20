@@ -38,6 +38,8 @@ const defaultEvent = {
   description_en: '',
   heure_event: '',
   date_event: '',
+  date_fin: '',
+  date_desactivation: '',
   lieu: 'Moncton',
   gps: '48.8566;2.3522',
   contact: '',
@@ -57,9 +59,9 @@ const formSchemaTwo = z.object({
 
 const formSchemaThree = z.object({
   heure_event: z.string().min(1, {message: "L'heure est requise"}),
-  date_event: z.string().min(1, { message: "La date est requise" }),
-  date_fin: z.string().optional(),
-  date_desactivation: z.string().optional(),
+  date_event: z.date().min(1, { message: "La date est requise" }),
+  date_fin: z.date().optional(),
+  date_desactivation: z.date().optional(),
   image: z.instanceof(File).optional(),
 })
 
@@ -113,10 +115,9 @@ export const EditEventFormSection = ({ eventData, duplicated = false} : EditEven
     resolver: zodResolver(formSchemaThree),
     defaultValues: {
       heure_event: eventData.heure_event,
-      // date_event: (Number(eventData.date_event.split("-")[0]) + 1).toString() + eventData.date_event.slice(4, )  // eventData.date_event,
-      date_event: eventData.date_event,
-      date_fin: eventData.date_fin!,
-      date_desactivation: eventData.date_desactivation!,
+      date_event: new Date(`${eventData.date_event}T00:00:00`),
+      date_fin: new Date(`${eventData.date_fin}T00:00:00`),
+      date_desactivation: new Date(eventData.date_desactivation!),
     },
   });
 
@@ -219,10 +220,10 @@ export const EditEventFormSection = ({ eventData, duplicated = false} : EditEven
   const onSubmitThree = async (values: z.infer<typeof formSchemaThree>) => {
     setEvent(prev => (
       { ...prev,
-        date_event: formatDateToString(values.date_event) ?? '',
+        date_event: values.date_event.toISOString()!.slice(0, 10),
         heure_event: values.heure_event,
-        date_fin: formatDateToString(values.date_fin!) ?? '',
-        date_desactivation: formatDateToString(values.date_desactivation!) ?? '',
+        date_fin: values.date_fin!.toISOString()!.slice(0, 10),
+        date_desactivation: values.date_desactivation!.toISOString()!.slice(0, 10),
       }
     ))
     setStep(4)
@@ -235,14 +236,6 @@ export const EditEventFormSection = ({ eventData, duplicated = false} : EditEven
       }
     ))
     await handleUpdateEvent()
-  }
-
-  const formatDateToString = (date: string) => {
-    if (!date) return null
-    if (date.length === 10) return date
-    const newDate = new Date(date)
-    newDate?.setDate(newDate.getDate() + 1)
-    return newDate.toISOString().slice(0, 10)
   }
 
   const navigateToEnglishForm = () => {
@@ -463,9 +456,9 @@ export const EditEventFormSection = ({ eventData, duplicated = false} : EditEven
                             <PopoverContent className="w-auto p-0">
                               <Calendar
                                 mode="single"
-                                selected={new Date(formThree.watch("date_event"))}
+                                selected={formThree.watch("date_event")}
                                 onSelect={(date) => {
-                                  formThree.setValue("date_event", date?.toISOString()!)
+                                  formThree.setValue("date_event", date!)
                                 }}
                                 initialFocus
                               />
@@ -516,9 +509,9 @@ export const EditEventFormSection = ({ eventData, duplicated = false} : EditEven
                               <PopoverContent className="w-auto p-0">
                                 <Calendar
                                   mode="single"
-                                  selected={new Date(formThree.watch("date_fin")!)}
+                                  selected={formThree.watch("date_fin")!}
                                   onSelect={(date) => {
-                                    formThree.setValue("date_fin", date?.toISOString()!)
+                                    formThree.setValue("date_fin", date!)
                                   }}
                                   initialFocus
                                 />
@@ -552,9 +545,9 @@ export const EditEventFormSection = ({ eventData, duplicated = false} : EditEven
                               <PopoverContent className="w-auto p-0">
                                 <Calendar
                                   mode="single"
-                                  selected={new Date(formThree.watch("date_desactivation")!)}
+                                  selected={formThree.watch("date_desactivation")!}
                                   onSelect={(date) => {
-                                    formThree.setValue("date_desactivation", date?.toISOString()!)
+                                    formThree.setValue("date_desactivation", date!)
                                   }}
                                   initialFocus
                                 />
