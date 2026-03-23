@@ -297,7 +297,8 @@ export const ClergPretres = (): JSX.Element => {
                                   priority
                                   className="object-cover"
                                   alt="Vector"
-                                  src="/clerge-1.png"
+                                  // src="/clerge-1.png"
+                                  src={ member.image ? `${process.env.NEXT_PUBLIC_API_URL}/${member.image}` : "/vector.svg"}
                                 />
                               </div>
 
