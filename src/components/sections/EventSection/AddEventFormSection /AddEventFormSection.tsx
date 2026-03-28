@@ -216,7 +216,7 @@ export const AddEventFormSection = (): JSX.Element => {
         date_event: values.date_event?.toISOString().slice(0, 10) ?? '',
         heure_event: values.heure_event,
         date_fin: values.date_fin?.toISOString().slice(0, 10) ?? '',
-        date_desactivation: values.date_desactivation!.toISOString().slice(0, 10) ?? '',
+        date_desactivation: values.date_desactivation?.toISOString().slice(0, 10) ?? '',
       }
     ))
     setStep(4)
