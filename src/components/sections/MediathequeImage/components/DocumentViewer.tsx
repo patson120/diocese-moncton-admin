@@ -104,8 +104,7 @@ const FileCard: React.FC<{
         "cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] group relative",
         isSelected && "ring-2 ring-blue-500 shadow-md"
       )}
-      onClick={() => onSelect(file.id)}
-    >
+      onClick={() => onSelect(file.id)}>
       <CardContent className="p-3">
         <div className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg mb-3 overflow-hidden relative">
           {file.type === 'image' && file.thumbnail ? (

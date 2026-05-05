@@ -25,6 +25,13 @@ const MessageComp = ({ message, onClick }: { message: Message, onClick?: (e: any
                 <div className='body-2 line-clamp-2 text-[#575757]'>
                     <Text labelFr={message.message_fr} labelEn={message.message_en} />
                 </div>
+                {
+                    (message.ressource_en && message.ressource_fr) && 
+                    <div className="flex gap-1 text-[#777676] text-sm mt-3">
+                        Document :
+                        <Text className="line-clamp-6" labelEn={message.ressource_en?.titre_en!} labelFr={message.ressource_fr?.titre_fr!} />
+                    </div>
+                }
             </div>
             <p className='body-3 whitespace-nowrap text-gray text-sm'>
                 Publié le

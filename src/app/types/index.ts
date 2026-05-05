@@ -13,6 +13,8 @@ export type Message = {
     updated_at: string;
     message: string;
     archeveque: Archeveque;
+    ressource_fr: Ressource | null;
+    ressource_en: Ressource | null;
 }
 export type Archeveque = {
     id: number;
@@ -75,6 +77,10 @@ export type Paroisse = {
     bulletins: Bulletin[];
     type: TypeParoisse;
     horaireparoisses: Horaire[];
+    ressource_id_fr: string | null;
+    ressource_id_en: string | null;
+    ressource_fr: Ressource | null;
+    ressource_en: Ressource | null;
 }
 export type Bulletin = {
     id: number;

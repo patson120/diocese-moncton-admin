@@ -1,6 +1,7 @@
 "use client"
-import { Image } from '@/app/types'
+import { Image, Ressource } from '@/app/types'
 import { Editor } from '@/components/Editor/Editor'
+import { DocumentPopup } from '@/components/sections/DocumentPopup'
 import { GaleryPopup } from '@/components/sections/GaleryPopup'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -20,6 +21,8 @@ import { toast } from 'sonner'
 export default function CreateMessage() {
   const [section, setSection] = useState<'french' | 'english'>('french')
   const [selectedImage, setSelectedImage] = useState<Image | undefined>()
+  const [selectedDocumentFr, setSelectedDocumentFr] = useState<Ressource | undefined>()
+  const [selectedDocumentEn, setSelectedDocumentEn] = useState<Ressource | undefined>()
 
   const { canAddMessage } = useRole()
 
@@ -53,15 +56,19 @@ export default function CreateMessage() {
       toast.warning("Veuillez renseigner les contenus dans les deux langues")
       return;
     }
-    const response: any = await apiClient.post('/api/mot_archeve', {
+    const payload = {
       titre_fr: title.french,
       titre_en: title.english,
       message_fr: content.french,
       message_en: content.english,
       galerie_id: selectedImage?.id!,
+      type_contenu: selectedDocumentFr && selectedDocumentEn ? "document" : "text",
+      ressource_id_fr: selectedDocumentFr?.id! ?? null,
+      ressource_id_en: selectedDocumentEn?.id! ?? null,
       archeveque_id: 16,
       etat: 1,
-    })
+    }
+    const response: any = await apiClient.post('/api/mot_archeve', payload)
     if (response.titre_fr) {
       toast.success("Message enregistré avec succès !")
       setTitle({ french: '', english: '', })
@@ -90,15 +97,20 @@ export default function CreateMessage() {
       toast.warning("Veuillez renseigner les contenus dans les deux langues")
       return;
     }
-    const response: any = await apiClient.post('/api/mot_archeve', {
+    const payload = {
       titre_fr: title.french,
       titre_en: title.english,
       message_fr: content.french,
       message_en: content.english,
       galerie_id: selectedImage?.id!,
+      type_contenu: selectedDocumentFr && selectedDocumentEn ? "document" : "text",
+      ressource_id_fr: selectedDocumentFr?.id! ?? null,
+      ressource_id_en: selectedDocumentEn?.id! ?? null,
       archeveque_id: 16,
       etat: 0,
-    })
+    }
+    
+    const response: any = await apiClient.post('/api/mot_archeve', payload)
     if (response.titre_fr) {
       toast.success("Message enregistré avec succès !")
       setTitle({ french: '', english: '', })
@@ -113,17 +125,17 @@ export default function CreateMessage() {
   }
 
   const verifyContents = () => {
-    const val = title.french.trim() && title.english.trim() && content.french.trim() && content.english.trim() 
-    if (!val){
+    const val = title.french.trim() && title.english.trim() && content.french.trim() && content.english.trim()
+    if (!val) {
       setEmptyMessage(true)
     }
     else { saveAsDraft() }
   }
 
   useEffect(() => {
-    if (!canAddMessage()){ router.back()}
+    if (!canAddMessage()) { router.back() }
   }, [])
-  
+
 
   return (
     <div className="relative w-full h-screen bg-[#f0f0f4] overflow-x-hidden">
@@ -143,7 +155,7 @@ export default function CreateMessage() {
 
         {/* Action buttons */}
         <div className="flex items-center gap-3">
-          <Button onClick={verifyContents}  variant="ghost" className="h-10 px-3.5 py-0">
+          <Button onClick={verifyContents} variant="ghost" className="h-10 px-3.5 py-0">
             {
               isSavingAsDraft && <Loader className='w-5 h-5 mr-2' />
             }
@@ -229,9 +241,29 @@ export default function CreateMessage() {
                           </div>
                         </div>
                       </div>
+
+                      <div className="h-[120px] w-full mt-4 relative bg-[#f8f8f8] rounded-xl overflow-hidden border border-solid border-[#d9d9d9]">
+                        <div className="absolute inset-0 w-full h-full flex justify-center items-center">
+                          <div className='w-auto h-min flex flex-col'>
+                            <DocumentPopup setSelectedDocument={setSelectedDocumentFr} >
+                              <div className='flex flex-col items-center gap-2'>
+                                <Button
+                                  variant="ghost"
+                                  className="rounded-xl py-1 border border-gray">
+                                  <p className="text-gray">Insérer un document</p>
+                                </Button>
+                                {
+                                  selectedDocumentFr &&
+                                  <p className='text-sm text-gray'> <span >Document sélectionné :</span> {selectedDocumentFr?.titre_fr || selectedDocumentFr?.titre_en} </p>
+                                }
+                              </div>
+                            </DocumentPopup>
+                          </div>
+                        </div>
+                      </div>
                     </CardContent>
                   </Card>
-                  
+
                   <div className='w-full z-0 '>
                     <label htmlFor="titre" className='text-lg text-gray font-semibold mb-2'>Titre</label>
                     <Editor
@@ -279,6 +311,25 @@ export default function CreateMessage() {
                           </div>
                         </div>
                       </div>
+                      <div className="h-[120px] w-full mt-4 relative bg-[#f8f8f8] rounded-xl overflow-hidden border border-solid border-[#d9d9d9]">
+                        <div className="absolute inset-0 w-full h-full flex justify-center items-center">
+                          <div className='w-auto h-min flex flex-col'>
+                            <DocumentPopup setSelectedDocument={setSelectedDocumentEn} >
+                              <div className='flex flex-col items-center gap-2'>
+                                <Button
+                                  variant="ghost"
+                                  className="rounded-xl py-1 border border-gray">
+                                  <p className="text-gray">Insérer un document</p>
+                                </Button>
+                                {
+                                  selectedDocumentEn &&
+                                  <p className='text-sm text-gray'> <span >Document sélectionné :</span> {selectedDocumentEn?.titre_fr || selectedDocumentEn?.titre_en} </p>
+                                }
+                              </div>
+                            </DocumentPopup>
+                          </div>
+                        </div>
+                      </div>
                     </CardContent>
                   </Card>
                   <div className='w-full z-0 h-48 overflow-y-scroll'>
@@ -302,7 +353,7 @@ export default function CreateMessage() {
           </div>
         </div>
       </div>
-      
+
       {/* Floating action buttons */}
       <div className="flex flex-col w-[244px] items-start gap-2 fixed bottom-[62px] right-[38px]">
         <Card onClick={() => copyToClipboard(section == 'french' ? title.french : title.english)} className="shadow-[0px_4px_12px_#0000001a] rounded-lg cursor-pointer">

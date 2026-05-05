@@ -11,8 +11,7 @@ import { Card } from "@/components/ui/card";
 import Image from "next/image";
 import { Loader } from "@/components/ui/loader";
 import { Label } from "@radix-ui/react-label";
-import { Select, SelectContent, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { SelectItem } from "@radix-ui/react-select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 
 export const GaleryPopup = ({ children, setSelectedImage }: {

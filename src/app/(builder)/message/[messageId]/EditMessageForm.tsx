@@ -2,12 +2,14 @@
 "use client"
 
 import { Editor } from '@/components/Editor/Editor'
+import { DocumentPopup } from '@/components/sections/DocumentPopup'
 import { GaleryPopup } from '@/components/sections/GaleryPopup'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Loader } from '@/components/ui/loader'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import useRole from '@/hooks/use-role'
 import { apiClient } from '@/lib/axios'
 import { cn, copyToClipboard } from '@/lib/utils'
 import { TabsContent } from '@radix-ui/react-tabs'
@@ -15,12 +17,14 @@ import { ArrowLeft, CopyIcon, ExternalLinkIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { Image, Message } from '../../../types'
-import useRole from '@/hooks/use-role'
+import { Image, Message, Ressource } from '../../../types'
 
-export default function EditMessageForm({message}: { message: Message }) {
+export default function EditMessageForm({ message }: { message: Message }) {
   const [section, setSection] = useState<'french' | 'english'>('french');
   const [isLoading, setIsLoading] = useState(false)
+  const [selectedDocumentFr, setSelectedDocumentFr] = useState<Ressource | undefined>(message.ressource_fr || undefined)
+  const [selectedDocumentEn, setSelectedDocumentEn] = useState<Ressource | undefined>(message.ressource_en || undefined)
+
   const [selectedImage, setSelectedImage] = useState<Image | undefined>({
     id: 0,
     label: "",
@@ -59,32 +63,36 @@ export default function EditMessageForm({message}: { message: Message }) {
     }
 
     if (content.french.trim() == '' || content.english.trim() == '') {
-        toast.warning(<div className='p-3 bg-red-500 text-white rounded-md'>
-          Veuillez renseigner les contenus dans les deux langues
-        </div>)
+      toast.warning(<div className='p-3 bg-red-500 text-white rounded-md'>
+        Veuillez renseigner les contenus dans les deux langues
+      </div>)
       return;
     }
 
     setIsLoading(true)
-    let body: any = {
+    let payload = {
       titre_fr: title.french,
       titre_en: title.english,
       message_fr: content.french,
       message_en: content.english,
+      galerie_id: selectedImage?.id!,
+      type_contenu: selectedDocumentFr && selectedDocumentEn ? "document" : "text",
+      ressource_id_fr: selectedDocumentFr?.id! ?? null,
+      ressource_id_en: selectedDocumentEn?.id! ?? null, 
       archeveque_id: 16,
       etat: message.etat,
     }
-    if (selectedImage?.id){
-      body = { ...body, galerie_id: selectedImage?.id }
+    if (selectedImage?.id) {
+      payload = { ...payload, galerie_id: selectedImage?.id }
     }
-    const response: any = await apiClient.put(`/api/mot_archeve/${message.id}`, { ...body })
+    const response: any = await apiClient.put(`/api/mot_archeve/${message.id}`, { ...payload })
 
     if (response.titre_fr) {
       toast.success("Message modifié avec succès !")
       setTitle({ french: '', english: '', })
       setContent({ french: '', english: '', })
       setTimeout(() => {
-        router.replace("/contents") 
+        router.replace("/contents")
       }, 1500);
     }
     else {
@@ -93,11 +101,10 @@ export default function EditMessageForm({message}: { message: Message }) {
       </div>)
     }
     setIsLoading(false)
-
   }
 
   useEffect(() => {
-    if (!canAddMessage()) { router.back()}
+    if (!canAddMessage()) { router.back() }
   }, [message.id])
 
   return (
@@ -126,17 +133,17 @@ export default function EditMessageForm({message}: { message: Message }) {
 
           <Separator orientation="vertical" className="h-[34px]" />
 
-          <Button
+          {/* <Button
             variant="outline"
             className="h-10 px-3.5 py-0 border-[#d9d9d9] rounded-[7px]"
           >
             <span className="font-body-3 text-noir-dashboard whitespace-nowrap">
               Planifier
             </span>
-          </Button>
+          </Button> */}
 
           <Button onClick={handlePublish} className="h-10 px-3.5 py-0 bg-blue text-white rounded-[7px]">
-            { isLoading && <Loader className='h-5 w-5 mr-2' /> }
+            {isLoading && <Loader className='h-5 w-5 mr-2' />}
             <span className="font-body-3 whitespace-nowrap">
               Publier message
             </span>
@@ -201,6 +208,26 @@ export default function EditMessageForm({message}: { message: Message }) {
                           </div>
                         </div>
                       </div>
+
+                      <div className="h-[120px] w-full mt-4 relative bg-[#f8f8f8] rounded-xl overflow-hidden border border-solid border-[#d9d9d9]">
+                        <div className="absolute inset-0 w-full h-full flex justify-center items-center">
+                          <div className='w-auto h-min flex flex-col'>
+                            <DocumentPopup setSelectedDocument={setSelectedDocumentFr} >
+                              <div className='flex flex-col items-center gap-2'>
+                                <Button
+                                  variant="ghost"
+                                  className="rounded-xl py-1 border border-gray">
+                                  <p className="text-gray">Insérer un document</p>
+                                </Button>
+                                {
+                                  selectedDocumentFr &&
+                                  <p className='text-sm text-gray'> <span >Document sélectionné :</span> {selectedDocumentFr?.titre_fr || selectedDocumentFr?.titre_en} </p>
+                                }
+                              </div>
+                            </DocumentPopup>
+                          </div>
+                        </div>
+                      </div>
                     </CardContent>
                   </Card>
                   <div className='w-full z-0 '>
@@ -220,12 +247,12 @@ export default function EditMessageForm({message}: { message: Message }) {
                   </div>
                 </div>
               </TabsContent>
-              
+
               <TabsContent
                 value="english"
                 className="mt-6 p-0 border-none">
                 <div className="flex flex-col p-10 items-start gap-6">
-                <Card className="relative w-full bg-white rounded">
+                  <Card className="relative w-full bg-white rounded">
                     <CardContent className="w-full p-0">
                       {/* Image upload area */}
                       <div className="h-[250px] w-full relative bg-[#f8f8f8] rounded-xl overflow-hidden border border-solid border-[#d9d9d9]"
@@ -248,6 +275,25 @@ export default function EditMessageForm({message}: { message: Message }) {
                                 )}>Insérer une image de couverture</p>
                               </Button>
                             </GaleryPopup>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="h-[120px] w-full mt-4 relative bg-[#f8f8f8] rounded-xl overflow-hidden border border-solid border-[#d9d9d9]">
+                        <div className="absolute inset-0 w-full h-full flex justify-center items-center">
+                          <div className='w-auto h-min flex flex-col'>
+                            <DocumentPopup setSelectedDocument={setSelectedDocumentEn} >
+                              <div className='flex flex-col items-center gap-2'>
+                                <Button
+                                  variant="ghost"
+                                  className="rounded-xl py-1 border border-gray">
+                                  <p className="text-gray">Insérer un document</p>
+                                </Button>
+                                {
+                                  selectedDocumentEn &&
+                                  <p className='text-sm text-gray'> <span >Document sélectionné :</span> {selectedDocumentEn?.titre_fr || selectedDocumentEn?.titre_en} </p>
+                                }
+                              </div>
+                            </DocumentPopup>
                           </div>
                         </div>
                       </div>
@@ -314,7 +360,7 @@ export default function EditMessageForm({message}: { message: Message }) {
           </CardContent>
         </Card>
       </div>
-      
+
     </div>
   )
 }
