@@ -41,11 +41,13 @@ const fonctions = [
     "intitule_en": "Religious",
     "id": 22
   },
+  /* 
   {
     "intitule_fr": "Autre",
     "intitule_en": "Other",
     "id": 23
-  }
+  } 
+  */
 ]
 // Extraire les IDs ou noms pour validation
 const fonctionIds = fonctions.map((f) => `${f.id}`);
