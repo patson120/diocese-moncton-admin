@@ -28,8 +28,8 @@ export const ClergPretres = (): JSX.Element => {
   const clergyTabs = [
     { value: "archeveque", label: "Archevêque", active: false, id: '21' },
     { value: "pretres", label: "Prêtres", active: false, id: '20'  },
-    { value: "religieux", label: "Religieux", active: true, id: '22' },
     { value: "diacres", label: "Diacres", active: false, id: '19'  },
+    { value: "religieux", label: "Religieux", active: true, id: '22' },
     { value: "options", label: "Options", active: false, id: '23' },
   ];
 
