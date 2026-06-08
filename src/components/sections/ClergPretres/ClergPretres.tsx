@@ -634,7 +634,7 @@ export const ClergPretres = (): JSX.Element => {
                       onClick={() =>  setEtat('-1')}
                       className="h-8 px-2.5 py-2.5 rounded-none data-[state=active]:bg-white data-[state=active]:rounded-md data-[state=active]:shadow-none data-[state=active]:text-blue data-[state=active]:font-bold data-[state=inactive]:text-gray">
                       <span className="font-body-3 text-[length:var(--body-3-font-size)] tracking-[var(--body-3-letter-spacing)] leading-[var(--body-3-line-height)]">
-                        Décédés
+                        Communauté Sainte-Croix
                       </span>
                     </TabsTrigger>
                   </TabsList>
