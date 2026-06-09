@@ -116,7 +116,7 @@ export const EditEventFormSection = ({ eventData, duplicated = false} : EditEven
     defaultValues: {
       heure_event: eventData.heure_event,
       date_event: new Date(`${eventData.date_event}T00:00:00`),
-      date_fin: new Date(`${eventData.date_fin}T00:00:00`),
+      date_fin: eventData.date_fin ? new Date(`${eventData.date_fin}T00:00:00`) : undefined,
       date_desactivation: new Date(eventData.date_desactivation!),
     },
   });
@@ -222,7 +222,7 @@ export const EditEventFormSection = ({ eventData, duplicated = false} : EditEven
       { ...prev,
         date_event: values.date_event?.toISOString()?.slice(0, 10),
         heure_event: values.heure_event,
-        date_fin: values.date_fin!.toISOString()?.slice(0, 10),
+        date_fin: values.date_fin? values.date_fin!.toISOString()?.slice(0, 10): '',
         date_desactivation: values.date_desactivation!.toISOString()?.slice(0, 10),
       }
     ))
