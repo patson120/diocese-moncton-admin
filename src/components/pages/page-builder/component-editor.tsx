@@ -368,7 +368,7 @@ export function ComponentEditor({ component, onUpdate, onClose }: ComponentEdito
               <Textarea
                 id="description"
                 value={component.props.description || ''}
-                onChange={(e) => updateProps('description', e.target.value.trim() || null)}
+                onChange={(e) => updateProps('description', e.target.value || null)}
                 rows={3}
               />
             </div>
@@ -622,7 +622,7 @@ const ColumnComponent = ({keyString, component, updateProps}: {
         <Textarea
           id="description"
           value={component.props.description || ''}
-          onChange={(e) => updateProps('description', e.target.value.trim() || null)}
+          onChange={(e) => updateProps('description', e.target.value || null)}
           rows={3}
         />
       </div>

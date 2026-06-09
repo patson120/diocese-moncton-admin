@@ -160,7 +160,10 @@ function generateComponentHtml(component: Component): string {
             <div className="space-y-4">
                 <div>
                   ${ component.props.title && `<h2 className='heading-3 text-gray-900 my-2'>${ component.props.title }</h2>` }
-                  ${ component.props.description && `<p className="text-lg mt-4 mb-5 text-gray-600">${ component.props.description }</p>`}
+                  ${ component.props.description ? 
+                    `<p className="text-lg mt-4 mb-5 text-gray-600">${ component.props.description }</p>`
+                    : `<p className="mb-10"></p>`
+                  }
                 </div>
                 <div className='flex flex-row overflow-x-scroll v-scroll lg:overflow-x-hidden pb-8 lg:pb-0 space-x-4 lg:grid lg:gap-6 lg:grid-cols-2'>
                   ${features.map((feature: { title: string, description: string, src: string }) => `
@@ -194,7 +197,10 @@ function generateComponentHtml(component: Component): string {
           <section style="${marginClasses}" className="container max-margin py-10 md:py-20 space-y-4">
             <div>
               ${ component.props.title && `<h2 className='heading-3 text-gray-900 my-2'>${ component.props.title }</h2>` }
-              ${ component.props.description && `<p className="text-lg text-gray-600 mt-4 mb-5">${ component.props.description }</p>` }
+              ${ component.props.description ? 
+                `<p className="text-lg text-gray-600 mt-4 mb-5">${ component.props.description }</p>` 
+                : `<p className="mb-10"></p>`
+              }
             </div>
             <div className="flex flex-row items-start overflow-x-scroll v-scroll lg:overflow-x-hidden pb-8 lg:pb-0 space-x-4 lg:grid lg:gap-6 lg:grid-cols-3"> 
               ${features.map((feature: { title: string, description: string, src: string }) => `
