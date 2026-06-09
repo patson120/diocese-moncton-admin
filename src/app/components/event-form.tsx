@@ -102,8 +102,9 @@ export function EventForm({ onSubmit }: EventFormProps) {
                 mode="single"
                 selected={startDate}
                 onSelect={(date) => {
-                  setStartDate(date);
-                  setValue("startDate", date);
+                  const adjustedDate = new Date(date!.getTime() + 12 * 60 * 60 * 1000);
+                  setStartDate(adjustedDate);
+                  setValue("startDate", adjustedDate);
                 }}
                 initialFocus
               />
@@ -130,8 +131,9 @@ export function EventForm({ onSubmit }: EventFormProps) {
                 mode="single"
                 selected={endDate}
                 onSelect={(date) => {
-                  setEndDate(date);
-                  setValue("endDate", date);
+                  const adjustedDate = new Date(date!.getTime() + 12 * 60 * 60 * 1000);
+                  setEndDate(adjustedDate);
+                  setValue("endDate", adjustedDate);
                 }}
                 initialFocus
               />

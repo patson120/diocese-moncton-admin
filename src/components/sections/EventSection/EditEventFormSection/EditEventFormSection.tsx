@@ -115,9 +115,9 @@ export const EditEventFormSection = ({ eventData, duplicated = false} : EditEven
     resolver: zodResolver(formSchemaThree),
     defaultValues: {
       heure_event: eventData.heure_event,
-      date_event: new Date(`${eventData.date_event}T00:00:00`),
-      date_fin: eventData.date_fin ? new Date(`${eventData.date_fin}T00:00:00`) : undefined,
-      date_desactivation: new Date(eventData.date_desactivation!),
+      date_event: new Date(`${eventData.date_event}T12:00:00`),
+      date_fin: eventData.date_fin ? new Date(`${eventData.date_fin}T12:00:00`) : undefined,
+      date_desactivation: eventData.date_desactivation ? new Date(`${eventData.date_desactivation.split(" ")[0]}T12:00:00`) : undefined,
     },
   });
 
@@ -163,14 +163,18 @@ export const EditEventFormSection = ({ eventData, duplicated = false} : EditEven
           galerie_id: selectedImage?.id,
         })
       }else{
-        response= await apiClient.put(`/api/evenements/${eventData.id}`, {
+        const payload= {
           ...event,
           categorie_id: selectedCategory?.id,
           contact: formFour.getValues('contact'),
           gps: `${location?.lat};${location?.lng}`,
           lieu: `${location?.name};${location?.address}`,
           galerie_id: selectedImage ? `${selectedImage?.id}` : null
-        })
+        }
+        /* console.log(JSON.stringify(payload, null, 2));
+        setIsloading(false)
+        return */
+        response= await apiClient.put(`/api/evenements/${eventData.id}`, payload)
       }
 
       if (response.id) {
@@ -220,10 +224,10 @@ export const EditEventFormSection = ({ eventData, duplicated = false} : EditEven
   const onSubmitThree = async (values: z.infer<typeof formSchemaThree>) => {
     setEvent(prev => (
       { ...prev,
-        date_event: values.date_event?.toISOString()?.slice(0, 10),
+        date_event: values.date_event ? format(values.date_event, 'yyyy-MM-dd') : '',
         heure_event: values.heure_event,
-        date_fin: values.date_fin? values.date_fin!.toISOString()?.slice(0, 10): '',
-        date_desactivation: values.date_desactivation!.toISOString()?.slice(0, 10),
+        date_fin: values.date_fin ? format(values.date_fin, 'yyyy-MM-dd') : '',
+        date_desactivation: values.date_desactivation ? format(values.date_desactivation, 'yyyy-MM-dd') : '',
       }
     ))
     setStep(4)
@@ -450,7 +454,10 @@ export const EditEventFormSection = ({ eventData, duplicated = false} : EditEven
                                   !formThree.watch("date_event") && "text-muted-foreground"
                                 )}>
                                 <CalendarIcon className="mr-2 h-4 w-4" />
-                                {formThree.watch("date_event") ? format(formThree.watch("date_event"), "PPP", { locale: fr }) : "Date de début"}
+                                {(() => {
+                                    const d = formThree.watch("date_event");
+                                    return d instanceof Date && !isNaN(d.getTime()) ? format(d, "PPP", { locale: fr }) : "Date de début"
+                                  })()}
                               </Button>
                             </PopoverTrigger>
                             <PopoverContent className="w-auto p-0">
@@ -458,7 +465,8 @@ export const EditEventFormSection = ({ eventData, duplicated = false} : EditEven
                                 mode="single"
                                 selected={formThree.watch("date_event")}
                                 onSelect={(date) => {
-                                  formThree.setValue("date_event", date!)
+                                  const adjustedDate = new Date(date!.getTime() + 12 * 60 * 60 * 1000);
+                                  formThree.setValue("date_event", adjustedDate)
                                 }}
                                 initialFocus
                               />
@@ -503,7 +511,10 @@ export const EditEventFormSection = ({ eventData, duplicated = false} : EditEven
                                     !formThree.watch("date_fin") && "text-muted-foreground"
                                   )}>
                                   <CalendarIcon className="mr-2 h-4 w-4" />
-                                  {formThree.watch("date_fin") ? format(formThree.watch("date_fin")!, "PPP", { locale: fr }) : "Date de fin"}
+                                  {(() => {
+                                    const d = formThree.watch("date_fin");
+                                    return d instanceof Date && !isNaN(d.getTime()) ? format(d, "PPP", { locale: fr }) : "Date de fin"
+                                  })()}
                                 </Button>
                               </PopoverTrigger>
                               <PopoverContent className="w-auto p-0">
@@ -511,7 +522,8 @@ export const EditEventFormSection = ({ eventData, duplicated = false} : EditEven
                                   mode="single"
                                   selected={formThree.watch("date_fin")!}
                                   onSelect={(date) => {
-                                    formThree.setValue("date_fin", date!)
+                                    const adjustedDate = new Date(date!.getTime() + 12 * 60 * 60 * 1000);
+                                    formThree.setValue("date_fin", adjustedDate)
                                   }}
                                   initialFocus
                                 />
@@ -539,7 +551,10 @@ export const EditEventFormSection = ({ eventData, duplicated = false} : EditEven
                                     !new Date(formThree.watch("date_desactivation")!) && "text-muted-foreground"
                                   )}>
                                   <CalendarIcon className="mr-2 h-4 w-4" />
-                                  {formThree.watch("date_desactivation") ? format(formThree.watch("date_desactivation")!, "PPP", { locale: fr }) : "Désactiver le"}
+                                  {(() => {
+                                    const d = formThree.watch("date_desactivation");
+                                    return d instanceof Date && !isNaN(d.getTime()) ? format(d, "PPP", { locale: fr }) : "Désactiver le"
+                                  })()}
                                 </Button>
                               </PopoverTrigger>
                               <PopoverContent className="w-auto p-0">
@@ -547,7 +562,8 @@ export const EditEventFormSection = ({ eventData, duplicated = false} : EditEven
                                   mode="single"
                                   selected={formThree.watch("date_desactivation")!}
                                   onSelect={(date) => {
-                                    formThree.setValue("date_desactivation", date!)
+                                    const adjustedDate = new Date(date!.getTime() + 12 * 60 * 60 * 1000);
+                                    formThree.setValue("date_desactivation", adjustedDate)
                                   }}
                                   initialFocus
                                 />

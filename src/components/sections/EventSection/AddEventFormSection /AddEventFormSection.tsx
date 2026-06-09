@@ -163,8 +163,9 @@ export const AddEventFormSection = (): JSX.Element => {
         contact: formFour.getValues('contact'),
         gps: `${location?.lat};${location?.lng}`,
         lieu: `${location?.name};${location?.address}`,
-        galerie_id: selectedImage ? `${selectedImage?.id}` : null
+        galerie_id: selectedImage ? `${selectedImage?.id}` : null,
       }
+
       const response: any = await apiClient.post('/api/evenements', body)
       if (response.id) {
         toast.success("Evènement enregistré avec succès !")
@@ -213,10 +214,10 @@ export const AddEventFormSection = (): JSX.Element => {
   const onSubmitThree = async (values: z.infer<typeof formSchemaThree>) => {
     setEvent(prev => (
       { ...prev,
-        date_event: values.date_event?.toISOString().slice(0, 10) ?? '',
+        date_event: values.date_event ? format(values.date_event, 'yyyy-MM-dd') : '',
         heure_event: values.heure_event,
-        date_fin: values.date_fin?.toISOString().slice(0, 10) ?? '',
-        date_desactivation: values.date_desactivation?.toISOString().slice(0, 10) ?? '',
+        date_fin: values.date_fin ? format(values.date_fin, 'yyyy-MM-dd') : '',
+        date_desactivation: values.date_desactivation ? format(values.date_desactivation, 'yyyy-MM-dd') : '',
       }
     ))
     setStep(4)
@@ -468,7 +469,8 @@ export const AddEventFormSection = (): JSX.Element => {
                                   mode="single"
                                   selected={formThree.watch("date_event")}
                                   onSelect={(date) => {
-                                    formThree.setValue("date_event", date!)
+                                    const adjustedDate = new Date(date!.getTime() + 12 * 60 * 60 * 1000);
+                                    formThree.setValue("date_event", adjustedDate)
                                   }}
                                   initialFocus
                                 />
@@ -521,7 +523,8 @@ export const AddEventFormSection = (): JSX.Element => {
                                   mode="single"
                                   selected={formThree.watch("date_fin")}
                                   onSelect={(date) => {
-                                    formThree.setValue("date_fin", date!)
+                                    const adjustedDate = new Date(date!.getTime() + 12 * 60 * 60 * 1000);
+                                    formThree.setValue("date_fin", adjustedDate)
                                   }}
                                   initialFocus
                                 />
@@ -557,7 +560,8 @@ export const AddEventFormSection = (): JSX.Element => {
                                   mode="single"
                                   selected={formThree.watch("date_desactivation")}
                                   onSelect={(date) => {
-                                    formThree.setValue("date_desactivation", date!)
+                                    const adjustedDate = new Date(date!.getTime() + 12 * 60 * 60 * 1000);
+                                    formThree.setValue("date_desactivation", adjustedDate)
                                   }}
                                   initialFocus
                                 />
