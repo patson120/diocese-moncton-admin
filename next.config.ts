@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'diocese.wds-project.com',
+        hostname: 'diocese.acadieintelligent.ca',
       },
     ],
   },
