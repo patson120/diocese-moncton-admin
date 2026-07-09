@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { Label } from "@radix-ui/react-label";
-import { PlusIcon } from "lucide-react";
+import { Pen, PlusIcon } from "lucide-react";
 import Image from "next/image";
 import { JSX, useEffect, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -283,6 +283,16 @@ export const AddParishFormSection = (): JSX.Element => {
     }finally {
       setIsLoading(false)
     }
+  }
+
+  const editHoraire = (index: number) => {
+    formFive.setValue("jour", horaires[index].jour);
+    formFive.setValue("selectedHours", [ ...horaires[index].heures[0].split(";") ])
+  }
+
+  const deleteHoraire = (index: number) => {
+    // supprimer l'horaire à cet index
+    setHoraires(horaires.filter((_, i) =>  i != index))
   }
 
   useEffect(() => {
@@ -696,6 +706,8 @@ export const AddParishFormSection = (): JSX.Element => {
                         horaires.map((horaire, index) => (
                           <p key={index} className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
                             <span className="capitalize">{horaire.jour}</span>: <span className="font-semibold text-black ml-2">{horaire.heures.join(', ')}</span>
+                            <button onClick={() => editHoraire(index)} type="button" className="bg-black/5 rounded-full p-1 ml-2"><Pen className="w-4 h-4" /> </button>
+                            <button onClick={() => deleteHoraire(index)} type="button" className="bg-black/5 rounded-full ml-1"><span className="px-2 text-xl text-gray rotate-90 ">x</span> </button>
                           </p>
                         ))
                       }
