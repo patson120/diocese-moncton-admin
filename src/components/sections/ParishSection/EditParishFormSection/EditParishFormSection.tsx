@@ -13,6 +13,7 @@ import { Loader } from "@/components/ui/loader";
 import { MultiSelect, Option } from "@/components/ui/multi-select";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import useRecaptcha from "@/hooks/useRecaptcha";
 import { apiClient } from "@/lib/axios";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,8 +25,6 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 import { GaleryPopup } from "../../GaleryPopup";
-import useRecaptcha from "@/hooks/useRecaptcha";
-import ReCAPTCHA from "react-google-recaptcha";
 
 
 // Generate hours from 00:00 to 23:59 in 30-minute intervals
@@ -301,6 +300,11 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
   const editHoraire = (index: number) => {
     formFive.setValue("jour", horaires[index].jour);
     formFive.setValue("selectedHours", [ ...horaires[index].heures[0].split(";") ])
+  }
+
+  const deleteHoraire = (index: number) => {
+    // supprimer l'horaire à cet index
+    setHoraires(horaires.filter((_, i) =>  i != index))
   }
 
   useEffect(() => {
@@ -722,6 +726,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
                           <p key={index} className="flex text-blue-800 px-2 py-1 rounded-full">
                             <span className="capitalize">{horaire.jour}</span>: <span className="font-semibold text-black ml-2">{horaire.heures.join(', ')}</span>
                             <button onClick={() => editHoraire(index)} type="button" className="bg-black/5 rounded-full p-1 ml-2"><Pen className="w-4 h-4" /> </button>
+                            <button onClick={() => deleteHoraire(index)} type="button" className="bg-black/5 rounded-full ml-1"><span className="px-2 text-xl text-gray rotate-90 ">x</span> </button>
                           </p>
                         ))
                       }

@@ -1,5 +1,6 @@
 "use client"
 
+import { HTMLContent } from '@/components/shared/html-content';
 import Text from '@/components/shared/Text';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -13,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import useRole from '@/hooks/use-role';
 import { apiClient } from '@/lib/axios';
 import { formatDateToLocal } from '@/lib/utils';
-import { Church, LayoutGridIcon, ListFilter, MailIcon, MapPinIcon, MoreHorizontalIcon, PhoneIcon, PlusIcon, SaveAll, SearchIcon, Trash2Icon } from 'lucide-react';
+import { Church, MailIcon, MapPinIcon, MoreHorizontalIcon, PhoneIcon, PlusIcon, SaveAll, SearchIcon, Trash2Icon } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { ChangeEvent, useEffect, useState } from 'react';
@@ -21,13 +22,12 @@ import { toast } from 'sonner';
 import { useDebouncedCallback } from 'use-debounce';
 import { Image as ImageType, Paroisse, TypeParoisse } from '../../../app/types';
 import { GaleryPopup } from '../GaleryPopup';
+import { LoadingSpinner } from '../MapSection/loading-spinner';
 import { MapContainer } from '../MapSection/map-container';
 import { AddBulletinFormSection } from './AddBulletinFormSection';
 import { AddParishFormSection } from './AddParishFormSection';
 import { AddUnitePastoraleFormSection } from './AddUnitePastoraleFormSection';
 import { EditParishFormSection } from './EditParishFormSection';
-import { HTMLContent } from '@/components/shared/html-content';
-import { LoadingSpinner } from '../MapSection/loading-spinner';
 
 export default function ParishSection() {
     const router = useRouter()
