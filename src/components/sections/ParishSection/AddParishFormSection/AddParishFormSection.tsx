@@ -67,8 +67,8 @@ const formSchemaThree = z.object({
 })
 
 const formSchemaFour = z.object({
-  telephone: z.string().min(1, { message: "Téléphone requis" }),
-  email: z.string().email({ message: "Email requis"}),
+  telephone: z.string().optional(), // min(1, { message: "Téléphone requis" }),
+  email: z.string().optional() //email({ message: "Email requis"}),
 })
 
 const formSchemaFive = z.object({
@@ -234,8 +234,8 @@ export const AddParishFormSection = (): JSX.Element => {
     formdata.append("nom_en", formTwo.getValues("nom_en"))
     formdata.append("histoire", formOne.getValues("histoire_fr"))
     formdata.append("histoire_en", formTwo.getValues("histoire_en"))
-    formdata.append("telephone", formFour.getValues("telephone"))
-    formdata.append("email", formFour.getValues("email"))
+    formdata.append("telephone", formFour.getValues("telephone")!)
+    formdata.append("email", formFour.getValues("email")!)
     formdata.append("site_web", formSix.getValues("site_web")?? "")
     formdata.append("lien_youtube", formSix.getValues("lien_youtube") ?? "")
     formdata.append("horaires", horaires.map(item => `${item.jour}=${item.heures.join(";")}`).join(","))
