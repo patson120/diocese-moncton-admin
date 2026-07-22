@@ -94,7 +94,7 @@ export type Bulletin = {
     updated_at: string;
 }
 export type TypeParoisse = {
-    id: number;
+    id: number | null;
     intitule_fr: string;
     intitule_en: string;
     couleur: string;

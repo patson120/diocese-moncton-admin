@@ -242,7 +242,7 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
     
     setIsLoading(true)
     const formdata = new FormData()
-    formdata.append("type_paroisse_id", formThree.getValues("unite_pastorale"))
+    formdata.append("type_paroisse_id", formThree.getValues("unite_pastorale")!)
     formdata.append("nom", formOne.getValues("nom_fr"))
     formdata.append("nom_en", formTwo.getValues("nom_en"))
     formdata.append("histoire", formOne.getValues("histoire_fr"))
@@ -324,7 +324,20 @@ export const EditParishFormSection = ({ parish }: { parish: Paroisse }): JSX.Ele
       // Récupérer les unités paroitiales depuis l'api
       ( async () => {
           const response: TypeParoisse[] = await apiClient.get(`/api/type_paroisses`)
-          setUnitePastorales(response)
+          const result: TypeParoisse[] = [
+            {
+              id: null,
+              intitule_fr: "Aucun",
+              intitule_en: "Nothing",
+              couleur: "",
+              gps: "",
+              paroisses: [],
+              created_at: "",
+              updated_at: ""
+            },
+            ...response
+          ]
+          setUnitePastorales(result)
       })()
       fetchPriests()
     }
