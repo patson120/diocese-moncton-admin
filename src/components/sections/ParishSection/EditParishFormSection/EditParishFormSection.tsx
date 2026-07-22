@@ -57,7 +57,7 @@ const formSchemaTwo = z.object({
 const formSchemaThree = z.object({
   unite_pastorale: z.string().min(1, { message: "Unité pastorale requise" }),
   pretre_responsable: z.string().optional(),
-  horaire_bureau: z.string().min(1, { message: "Veuillez renseigner les horaires de bureau" }),
+  horaire_bureau: z.string().optional(), // min(1, { message: "Veuillez renseigner les horaires de bureau" }),
   langue: z.string().min(1, { message: "La langue principale est requise" }),
 })
 
