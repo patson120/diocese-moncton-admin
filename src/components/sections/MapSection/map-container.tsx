@@ -10,13 +10,15 @@ import { useEffect, useState } from "react";
 type MapContainerProps  ={
   showSearchBar?: boolean;
   location?: Location | null,
+  zoom?: number | null,
   setLocation?: (location: Location | null) => void
 }
 
 export function MapContainer({
   showSearchBar,
   location,
-  setLocation
+  setLocation,
+  zoom
 } : MapContainerProps) {
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(location!);
   const [recentSearches, setRecentSearches] = useState<Location[]>([]);
@@ -110,7 +112,7 @@ export function MapContainer({
       */}
 
       <div className="h-full w-full overflow-hidden relative">
-        <MapDisplay selectedLocation={selectedLocation} />
+        <MapDisplay selectedLocation={selectedLocation} zoom={zoom} />
         {
           showSearchBar && 
           <div className="absolute top-3 left-3 right-3 bg-white rounded-md">

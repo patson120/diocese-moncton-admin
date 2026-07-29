@@ -342,7 +342,6 @@ export default function ParishSection() {
                                 <AddUnitePastoraleFormSection />
                             }
                         </div>
-
                     </div>
                 </header>
 
@@ -515,7 +514,7 @@ export default function ParishSection() {
                                                 <Card
                                                     key={index}
                                                     className="w-full border-none shadow-none cursor-pointer"
-                                                    onClick={() => fetchUnitePastorale(unite.id)}>
+                                                    onClick={() => fetchUnitePastorale(unite.id!)}>
                                                     <CardContent className="bg-[#F9F9F0] rounded-xl px-5 py-6">
                                                         <div className='body-1 font-bold text-black line-clamp-2'>
                                                             <Text className='text-base font-bold' labelFr={unite.intitule_fr} labelEn={unite.intitule_en} />
@@ -819,6 +818,7 @@ export default function ParishSection() {
                                     <div className="h-[350px] rounded-[18px] overflow-hidden">
                                         {/** Map view */}
                                         <MapContainer 
+                                            zoom={8}
                                             showSearchBar={false}
                                             location= {selecteParish?.gps ?{
                                                 address: `${selecteParish?.adresse.split(";")[1]}`,
@@ -918,6 +918,7 @@ export default function ParishSection() {
                                 <div className='bg-[#F1F3F6] h-96 rounded-lg overflow-hidden'>
                                     <MapContainer 
                                         showSearchBar={false}
+                                        zoom={6}
                                         location={{
                                             address: `${unitePastorale?.intitule_fr}`,
                                             name: `${unitePastorale?.intitule_en}`,

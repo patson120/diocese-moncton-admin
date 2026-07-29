@@ -6,9 +6,10 @@ import { useEffect, useRef, useState } from "react";
 
 interface MapDisplayProps {
   selectedLocation: Location | null;
+  zoom?: number | null;
 }
 
-export function MapDisplay({ selectedLocation }: MapDisplayProps) {
+export function MapDisplay({ selectedLocation, zoom }: MapDisplayProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [marker, setMarker] = useState<google.maps.Marker | null>(null);
@@ -20,7 +21,7 @@ export function MapDisplay({ selectedLocation }: MapDisplayProps) {
       
       const newMap = new google.maps.Map(mapRef.current, {
         center: defaultCenter,
-        zoom: 10,
+        zoom: zoom ?? 10,
         mapTypeControl: false,
         streetViewControl: false,
         fullscreenControl: false,
@@ -58,7 +59,7 @@ export function MapDisplay({ selectedLocation }: MapDisplayProps) {
       map.panTo(position);
       
       // Set an appropriate zoom level
-      map.setZoom(15);
+      map.setZoom(zoom  ?? 15);
       
       // Create an info window
       const infoWindow = new google.maps.InfoWindow({
