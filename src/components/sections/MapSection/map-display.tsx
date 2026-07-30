@@ -29,7 +29,7 @@ export function MapDisplay({ selectedLocation, parishes, zoom }: MapDisplayProps
   useEffect(() => {
     if (mapRef.current && !map) {
       // Default center is Paris
-      const defaultCenter = { lat: 46.091091, lng: -64.781880 };
+      const defaultCenter = getDefaultCenter();
 
       const newMap = new google.maps.Map(mapRef.current, {
         center: defaultCenter,
@@ -98,8 +98,19 @@ export function MapDisplay({ selectedLocation, parishes, zoom }: MapDisplayProps
     };
   }, [map, parishes]);
 
+  const getDefaultCenter = () => {
+    if (parishes && parishes?.length > 0 ){
+      const pos = parseParishGps(parishes[0].gps)
+      if (pos) return pos
+      else return { lat: selectedLocation!.lat, lng: selectedLocation!.lng };
+    }
+    else if (selectedLocation) return { lat: selectedLocation!.lat, lng: selectedLocation!.lng };
+
+    else return { lat: 46.091091, lng: -64.781880 };
+  }
+
   useEffect(() => {
-    if (map && selectedLocation) {
+    if (map && selectedLocation && !parishes) {
       const position = { lat: selectedLocation.lat, lng: selectedLocation.lng };
 
       // Create or move marker
@@ -120,7 +131,7 @@ export function MapDisplay({ selectedLocation, parishes, zoom }: MapDisplayProps
       map.panTo(position);
 
       // Set an appropriate zoom level
-      map.setZoom(zoom  ?? 15);
+      map.setZoom(zoom ?? 15);
 
       // Create an info window
       const infoWindow = new google.maps.InfoWindow({

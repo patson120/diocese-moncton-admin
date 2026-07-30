@@ -818,15 +818,9 @@ export default function ParishSection() {
                                     <div className="h-[350px] rounded-[18px] overflow-hidden">
                                         {/** Map view */}
                                         <MapContainer 
-                                            zoom={8}
+                                            // zoom={30}
                                             showSearchBar={false}
-                                            location= {selecteParish?.gps ?{
-                                                address: `${selecteParish?.adresse.split(";")[1]}`,
-                                                name: `${selecteParish?.adresse.split(";")[0]}`,
-                                                lat: Number(selecteParish?.gps.split(";")[0]),
-                                                lng: Number(selecteParish?.gps.split(";")[1]),
-                                                placeId: (new Date()).getTime().toString()
-                                            } : null}
+                                            parishes={[selecteParish!]}
                                         />
                                     </div>
                                 </div>
@@ -920,13 +914,6 @@ export default function ParishSection() {
                                         showSearchBar={false}
                                         parishes={unitePastorale?.paroisses!}
                                         zoom={8}
-                                        location={{
-                                            address: `${unitePastorale?.intitule_fr}`,
-                                            name: `${unitePastorale?.intitule_en}`,
-                                            lat: unitePastorale?.gps ? Number(unitePastorale?.gps.split(";")[0]) : 46.091091,
-                                            lng: unitePastorale?.gps ? Number(unitePastorale?.gps.split(";")[1]) : -64.781880,
-                                            placeId: (new Date()).getTime().toString()
-                                        }}
                                     />
                                 </div>
                             </section>}
