@@ -1,6 +1,6 @@
 "use client";
 
-import { Location } from "@/app/types";
+import { Location, Paroisse } from "@/app/types";
 import { LoadingSpinner } from "@/components/sections/MapSection/loading-spinner";
 import { MapDisplay } from "@/components/sections/MapSection/map-display";
 import { SearchBar } from "@/components/sections/MapSection/search-bar";
@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 type MapContainerProps  ={
   showSearchBar?: boolean;
   location?: Location | null,
+  parishes?: Paroisse[] | null,
   zoom?: number | null,
   setLocation?: (location: Location | null) => void
 }
@@ -17,6 +18,7 @@ type MapContainerProps  ={
 export function MapContainer({
   showSearchBar,
   location,
+  parishes,
   setLocation,
   zoom
 } : MapContainerProps) {
@@ -112,7 +114,7 @@ export function MapContainer({
       */}
 
       <div className="h-full w-full overflow-hidden relative">
-        <MapDisplay selectedLocation={selectedLocation} zoom={zoom} />
+        <MapDisplay parishes={parishes!} selectedLocation={selectedLocation} zoom={zoom} />
         {
           showSearchBar && 
           <div className="absolute top-3 left-3 right-3 bg-white rounded-md">

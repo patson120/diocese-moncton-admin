@@ -1,15 +1,16 @@
 "use client";
 
-import { Location } from "@/app/types";
+import { Location, Paroisse } from "@/app/types";
 import { useEffect, useRef, useState } from "react";
 /// <reference types="@types/google.maps" />
 
 interface MapDisplayProps {
   selectedLocation: Location | null;
+  parishes?: Paroisse[];
   zoom?: number | null;
 }
 
-export function MapDisplay({ selectedLocation, zoom }: MapDisplayProps) {
+export function MapDisplay({ selectedLocation, parishes, zoom }: MapDisplayProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [marker, setMarker] = useState<google.maps.Marker | null>(null);

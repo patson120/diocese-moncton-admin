@@ -918,7 +918,8 @@ export default function ParishSection() {
                                 <div className='bg-[#F1F3F6] h-96 rounded-lg overflow-hidden'>
                                     <MapContainer 
                                         showSearchBar={false}
-                                        zoom={6}
+                                        parishes={unitePastorale?.paroisses!}
+                                        zoom={8}
                                         location={{
                                             address: `${unitePastorale?.intitule_fr}`,
                                             name: `${unitePastorale?.intitule_en}`,
