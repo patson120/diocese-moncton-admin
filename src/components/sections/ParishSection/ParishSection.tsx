@@ -818,7 +818,7 @@ export default function ParishSection() {
                                     <div className="h-[350px] rounded-[18px] overflow-hidden">
                                         {/** Map view */}
                                         <MapContainer 
-                                            // zoom={30}
+                                            zoom={10}
                                             showSearchBar={false}
                                             parishes={[selecteParish!]}
                                         />
@@ -910,11 +910,11 @@ export default function ParishSection() {
                                     Sur la carte
                                 </h2>
                                 <div className='bg-[#F1F3F6] h-96 rounded-lg overflow-hidden'>
-                                    <MapContainer 
+                                    {/* <MapContainer 
                                         showSearchBar={false}
                                         parishes={unitePastorale?.paroisses!}
                                         zoom={8}
-                                    />
+                                    /> */}
                                 </div>
                             </section>}
                         </div>

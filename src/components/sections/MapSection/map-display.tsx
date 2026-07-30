@@ -90,13 +90,16 @@ export function MapDisplay({ selectedLocation, parishes, zoom }: MapDisplayProps
 
     if (hasValid) {
       map.fitBounds(bounds);
+      if (zoom !== null && zoom !== undefined) {
+        map.setZoom(zoom);
+      }
     }
 
     return () => {
       parishMarkersRef.current.forEach((m) => m.setMap(null));
       parishMarkersRef.current = [];
     };
-  }, [map, parishes]);
+  }, [map, parishes, zoom]);
 
   const getDefaultCenter = () => {
     if (parishes && parishes?.length > 0 ){
