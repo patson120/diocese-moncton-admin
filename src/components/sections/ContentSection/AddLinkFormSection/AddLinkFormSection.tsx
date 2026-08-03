@@ -22,6 +22,8 @@ import * as z from "zod";
 const formSchema = z.object({
   intitule_fr: z.string().min(1, {message:"L'intitulé du lien français est requis"}),
   intitule_en: z.string().min(1, {message:"L'intitulé du lien anglais est requis"}),
+  description_fr: z.string().min(1, {message:"Une petite description française est requis"}),
+  description_en: z.string().min(1, {message:"Une petite description anglaise est requis"}),
   page: z.string().min(1, { message: "La page est requise"}),
   menu: z.string().min(1, {message: "Le menu associé requis"}),
   statut: z.enum(["actif", "inactif"]),
@@ -54,6 +56,8 @@ export const AddLinkFormSection = ({lien}: {lien?: Lien}): JSX.Element => {
     defaultValues: {
       intitule_fr: lien?.intitule_fr || "",
       intitule_en: lien?.intitule_en || "",
+      description_fr: lien?.intitule_fr || "",
+      description_en: lien?.intitule_en || "",
       page: `${lien?.pages_id}` ||  "",
       menu: `${lien?.menu_id}` || "",
       statut: lien?.statut ? (lien?.statut === 1 ? 'actif' : 'inactif') : 'actif',
@@ -66,6 +70,8 @@ export const AddLinkFormSection = ({lien}: {lien?: Lien}): JSX.Element => {
     const data = {
       intitule_fr: values.intitule_fr,
       intitule_en: values.intitule_en,
+      desciption_fr: values.description_fr,
+      desciption_: values.description_en,
       pages_id: values.page,
       menu_id: values.menu,
       statut: values.statut === 'actif' ? 1 : 0,

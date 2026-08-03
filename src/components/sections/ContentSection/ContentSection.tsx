@@ -2,37 +2,34 @@
 
 import { Lien, Page } from "@/app/types";
 import { componentRegistry, getComponentIcon } from "@/components/pages/lib/components/registry";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader } from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/ui/loader";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import useRole from "@/hooks/use-role";
 import { apiClient } from "@/lib/axios";
+import { formatDateToLocal } from "@/lib/utils";
+import { AlertDialogTitle } from "@radix-ui/react-alert-dialog";
 import {
   FileTextIcon,
-  LayoutGridIcon,
-  ListFilter,
   MoreVerticalIcon,
-  Pencil,
   PlusIcon,
   SearchIcon,
   Trash2
 } from "lucide-react";
 import Link from "next/link";
-import { ChangeEvent, JSX, useCallback, useEffect, useState } from "react";
-import { toast } from "sonner";
-import { AddLinkFormSection } from "./AddLinkFormSection";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { formatDateToLocal } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader } from "@/components/ui/alert-dialog";
-import { AlertDialogTitle } from "@radix-ui/react-alert-dialog";
-import { LoadingSpinner } from "../MapSection/loading-spinner";
-import { useDebouncedCallback } from "use-debounce";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { ChangeEvent, JSX, useEffect, useState } from "react";
+import { toast } from "sonner";
+import { useDebouncedCallback } from "use-debounce";
+import { LoadingSpinner } from "../MapSection/loading-spinner";
+import { AddLinkFormSection } from "./AddLinkFormSection";
 
 export const ContentSection = (): JSX.Element => {
 

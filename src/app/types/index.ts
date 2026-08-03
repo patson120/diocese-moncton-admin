@@ -251,6 +251,8 @@ export type Lien = {
     menu_id: number;
     intitule_fr: string;
     intitule_en: string | null;
+    description_fr: string | null;
+    description_en: string | null;
     statut: number;
     menu: Menu,
     lapage: Page[]
