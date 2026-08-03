@@ -8,6 +8,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Loader } from "@/components/ui/loader";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import useRole from "@/hooks/use-role";
 import { apiClient } from "@/lib/axios";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -56,8 +57,8 @@ export const AddLinkFormSection = ({lien}: {lien?: Lien}): JSX.Element => {
     defaultValues: {
       intitule_fr: lien?.intitule_fr || "",
       intitule_en: lien?.intitule_en || "",
-      description_fr: lien?.intitule_fr || "",
-      description_en: lien?.intitule_en || "",
+      description_fr: lien?.description_fr || "",
+      description_en: lien?.description_en || "",
       page: `${lien?.pages_id}` ||  "",
       menu: `${lien?.menu_id}` || "",
       statut: lien?.statut ? (lien?.statut === 1 ? 'actif' : 'inactif') : 'actif',
@@ -70,8 +71,8 @@ export const AddLinkFormSection = ({lien}: {lien?: Lien}): JSX.Element => {
     const data = {
       intitule_fr: values.intitule_fr,
       intitule_en: values.intitule_en,
-      desciption_fr: values.description_fr,
-      desciption_: values.description_en,
+      description_fr: values.description_fr,
+      description_en: values.description_en,
       pages_id: values.page,
       menu_id: values.menu,
       statut: values.statut === 'actif' ? 1 : 0,
@@ -129,95 +130,133 @@ export const AddLinkFormSection = ({lien}: {lien?: Lien}): JSX.Element => {
           </Button>
         }
       </DialogTrigger>
-      <DialogContent className="w-[500px] p-0 rounded-2xl">
-        <DialogHeader className="border-b border-neutral-200 p-4 rounded-t-2xl">
+      <DialogContent className="w-[600px] max-w-[95vw] max-h-[80vh] p-0 rounded-2xl flex flex-col gap-0">
+        <DialogHeader className="border-b border-neutral-200 p-4 rounded-t-2xl flex-shrink-0">
           <DialogTitle className="text-lg font-bold leading-7">
           { lien ? 'Modifier le lien': 'Créer un lien' }
           </DialogTitle>
         </DialogHeader>
 
-        <div className="flex flex-col w-full p-10 pt-6 space-y-4">
+        <div className="flex flex-col w-full p-10 pt-6 space-y-4 overflow-y-auto flex-1">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="intitule_fr"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Intitulé du lien (français) </FormLabel>
-                    <FormControl>
-                      <Input placeholder="Entrez l'intitulé du lien" {...field}
-                        className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="intitule_en"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Intitulé du lien (anglais) </FormLabel>
-                    <FormControl>
-                      <Input placeholder="Entrez l'intitulé du lien" {...field}
-                        className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-             
-              <FormField
-                control={form.control}
-                name="page"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Page liée</FormLabel>
-                      <Select 
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}>
-                        <SelectTrigger className="h-11 px-3 py-3.5 rounded-lg border border-neutral-200 text-[#454545]">
-                          <SelectValue placeholder="Sélectionnez une page" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          { 
-                            pages.map(page => (
-                              <SelectItem key={page.id} value={`${page.id}`} className="truncate">{page.titre_fr}/{page.titre_en}</SelectItem>
-                            ))
-                          }
-                        </SelectContent>
-                      </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="menu"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Menu lié</FormLabel>
-                      <Select 
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}>
-                        <SelectTrigger className="h-11 px-3 py-3.5 rounded-lg border border-neutral-200 text-[#454545]">
-                          <SelectValue placeholder="Sélectionnez un menu" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          { 
-                            menus.map(menu => (
-                              <SelectItem key={menu.id} value={`${menu.id}`}>{menu.intitule_fr}/{menu.intitule_en}</SelectItem>
-                            ))
-                          }
-                        </SelectContent>
-                      </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <form id="link-form" onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="intitule_fr"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Intitulé du lien (français) </FormLabel>
+                      <FormControl>
+                        <Input placeholder="Entrez l'intitulé du lien" {...field}
+                          className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="intitule_en"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Intitulé du lien (anglais) </FormLabel>
+                      <FormControl>
+                        <Input placeholder="Entrez l'intitulé du lien" {...field}
+                          className="h-12 px-3 py-3.5 rounded-lg border border-neutral-200"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="description_fr"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Description du lien (français) </FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Entrez la description du lien" {...field}
+                          className="min-h-24 px-3 py-3.5 rounded-lg border border-neutral-200"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="description_en"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Description du lien (anglais) </FormLabel>
+                      <FormControl>
+                        <Textarea placeholder="Entrez la description du lien" {...field}
+                          className="min-h-24 px-3 py-3.5 rounded-lg border border-neutral-200"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="page"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Page liée</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}>
+                          <SelectTrigger className="h-11 px-3 py-3.5 rounded-lg border border-neutral-200 text-[#454545]">
+                            <SelectValue placeholder="Sélectionnez une page" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {
+                              pages.map(page => (
+                                <SelectItem key={page.id} value={`${page.id}`} className="truncate">{page.titre_fr}/{page.titre_en}</SelectItem>
+                              ))
+                            }
+                          </SelectContent>
+                        </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="menu"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Menu lié</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}>
+                          <SelectTrigger className="h-11 px-3 py-3.5 rounded-lg border border-neutral-200 text-[#454545]">
+                            <SelectValue placeholder="Sélectionnez un menu" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {
+                              menus.map(menu => (
+                                <SelectItem key={menu.id} value={`${menu.id}`}>{menu.intitule_fr}/{menu.intitule_en}</SelectItem>
+                              ))
+                            }
+                          </SelectContent>
+                        </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
               <FormField
                 control={form.control}
                 name="statut"
@@ -242,15 +281,15 @@ export const AddLinkFormSection = ({lien}: {lien?: Lien}): JSX.Element => {
                 )}
               />
 
-              <DialogFooter>
-                <Button type="submit" className="w-full h-12 mt-8 bg-blue text-white rounded-lg">
-                  {isLoading && <Loader className="h-5 w-5 mr-2" />}
-                  { lien ? 'Mettre à jour le lien': 'Créer un lien' }
-                </Button>
-              </DialogFooter>
             </form>
           </Form>
         </div>
+        <DialogFooter className="p-4 border-t border-neutral-200 flex-shrink-0 rounded-b-2xl">
+          <Button type="submit" form="link-form" className="w-full h-12 bg-blue text-white rounded-lg">
+            {isLoading && <Loader className="h-5 w-5 mr-2" />}
+            { lien ? 'Mettre à jour le lien': 'Créer un lien' }
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
