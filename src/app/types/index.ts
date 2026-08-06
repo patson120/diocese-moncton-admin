@@ -148,6 +148,7 @@ export type Image = {
     created_at: string;
     updated_at: string;
 }
+
 export type Member = {
     id: number;
     categorie_id: number;
