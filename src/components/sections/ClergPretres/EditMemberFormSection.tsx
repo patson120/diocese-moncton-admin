@@ -1,6 +1,7 @@
 
 'use client'
 
+import { Editor } from "@/components/Editor/Editor";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -9,16 +10,16 @@ import { Loader } from "@/components/ui/loader";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import useRecaptcha from "@/hooks/useRecaptcha";
 import { apiClient } from "@/lib/axios";
-import { cn, handleImageUpload } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import Image from "next/image";
-import React, { JSX, useEffect, useState } from "react";
+import { JSX, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { Member, TypeParoisse } from "../../../app/types";
-import { Editor } from "@/components/Editor/Editor";
+import { Image as ImageType, Member, TypeParoisse } from "../../../app/types";
+import { GaleryPopup } from "../GaleryPopup";
 
 const fonctions = [
   {
@@ -67,6 +68,7 @@ const formSchemaTwo = z.object({
   description_fr: z.string().min(1, "La description en français est requise"),
   coordonnees: z.string().min(1, "Les coordonnées sont requises"),
   image: z.instanceof(File).optional(),
+  galerie_id: z.string().optional()
 });
 
 const defaultMember = {
@@ -83,8 +85,15 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
   const { captchaToken, handleRecaptchaChange, verifyRecaptchaToken } = useRecaptcha()  
 
   const [member, setMember] = useState(defaultMember);
-  const [fileImage, setFileImage] = useState<File | undefined>();
   const [unitePastorales, setUnitePastorales] = useState<TypeParoisse[]>([])
+  const [selectedImage, setSelectedImage] = useState<ImageType | undefined>({
+    id: -1,
+    titre: "",
+    label: "",
+    path: memberData.image ? `${process.env.NEXT_PUBLIC_API_URL}/${memberData.image}` : '',
+    path_en: memberData.image ? `${process.env.NEXT_PUBLIC_API_URL}/${memberData.image}` : '',
+    value: -1, comment: "", dossier_id: -1, created_at: "", updated_at: ""
+  });
 
   const formOne = useForm<z.infer<typeof formSchemaOne>>({
     resolver: zodResolver(formSchemaOne),
@@ -101,7 +110,7 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
       description_en: memberData.description_en,
       description_fr: memberData.description_fr,
       coordonnees: memberData.coordonnees,
-      image: fileImage!,
+      galerie_id: `${selectedImage!.id!}`,
     },
   });
 
@@ -112,27 +121,13 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
     { value: "-1", label: "Décédé" },
   ];
 
-  const [coverImage, setCoverImage] = useState(memberData.image ? `${process.env.NEXT_PUBLIC_API_URL}/${memberData.image}` : '')
   const [isLoading, setIsloading] = useState(false)
   const [step, setStep] = useState(1)
   const [status, setStatus] = useState(statusOptions.find((s) => s.value === `${memberData.etat}`)?.value || "1");
 
-  const handleCoverImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const imageUrl = await handleImageUpload(file);
-      setFileImage(file)
-      setCoverImage(imageUrl);
-    }
-  };
-
   const handleSubmitForm =  async (data: any) => {
     if (isLoading) return
     setIsloading(true)
-
-    // console.log(JSON.stringify(memberData, null, 2));
-    // console.log(memberData?.unites.length > 0 ? `${memberData?.unites[0]?.id}`: 'Yess');
-    
 
     const formdata = new FormData();
     formdata.append("categorie_id", `${data.poste}`);
@@ -141,10 +136,9 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
     formdata.append("poste", `${fonctions.find((f) => f.id === parseInt(data.poste))?.intitule_fr}`);
     formdata.append("coordonnees", `${data.coordonnees}`);
     formdata.append("etat", `${status}`);
-    if (fileImage){
-      formdata.append("image", fileImage!);
+    if (selectedImage){
+      formdata.append("galerie_id", `${selectedImage?.id!}`);
     }
-    
     if (data.etablissement && data.etablissement !== 'undefined'){
       formdata.append("etablissement_id", `${data.etablissement},`); 
     }
@@ -168,9 +162,7 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
       if (response.id ) {
         setStep(1)
         setMember(defaultMember)
-        setCoverImage('')
         toast.success('Membre modifié avec succès');
-        setFileImage(undefined)
         setTimeout(() => {
           window.location.reload()
         }, 1500);
@@ -205,11 +197,10 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
       coordonnees: values.coordonnees,
       description_fr: values.description_fr,
       description_en: values.description_en,
-      image: fileImage,
+      galerie_id: `${selectedImage?.id!}`,
     }
     setMember(newMember)
     await handleSubmitForm(newMember)
-    
   }
 
   useEffect(() => {
@@ -346,33 +337,32 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
           <div className="flex flex-col w-full p-10 pt-6 space-y-6">
             <Form {...formTwo}>
               <form onSubmit={formTwo.handleSubmit(onSubmitSecond)} className="space-y-4">
-                <div className="relative flex justify-start items-center gap-4">
-                  <Input accept="image/*" onChange={handleCoverImageChange} type="file" className="absolute opacity-0 h-full z-[2] cursor-pointer" />
-                  <div className="h-24 w-24 relative self-stretch overflow-hidden rounded-xl bg-[#f0f0f0] flex items-center justify-center">
-                    {
-                      coverImage ?
-                        <Image
-                          fill
-                          priority
-                          className="object-cover"
-                          alt="Vector"
-                          src={coverImage}
-                        /> :
-                        <Image
-                          width={40}
-                          height={40}
-                          alt="Vector"
-                          src="/vector.svg"
-                        />
-                    }
-                  </div>
-
-                  <div className="">
-                    <h3 className="font-bold">Insérer la photo du membre</h3>
-                    <p className="text-gray text-sm">cliquez dans la zone pour ajouter une photo</p>
-                  </div>
-
-                </div>
+                <GaleryPopup setSelectedImage={setSelectedImage} >
+                                  <div className="relative flex justify-start items-center gap-4 cursor-pointer">
+                                    <div className="h-24 w-24 relative self-stretch overflow-hidden rounded-xl bg-[#f0f0f0] flex items-center justify-center">
+                                      {
+                                        selectedImage ?
+                                          <Image
+                                            fill
+                                            priority
+                                            className="object-cover"
+                                            alt="Vector"
+                                            src={selectedImage.path}
+                                          /> :
+                                          <Image
+                                            width={40}
+                                            height={40}
+                                            alt="Vector"
+                                            src="/vector.svg"
+                                          />
+                                      }
+                                    </div>
+                                    <div className="">
+                                      <h3 className="font-bold">Insérer la photo du membre</h3>
+                                      <p className="text-gray text-sm">cliquez dans la zone pour ajouter une photo</p>
+                                    </div>
+                                  </div>
+                                </GaleryPopup>
                 <FormField
                   control={formTwo.control}
                   name="coordonnees"
