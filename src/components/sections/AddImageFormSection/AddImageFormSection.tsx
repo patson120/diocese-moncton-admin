@@ -71,21 +71,17 @@ export const AddImageFormSection = ({dossier_id}: {dossier_id?: string}): JSX.El
         setIsLoading(false);
         return;
       } */
-      let result: any;
-      for (let index = 0; index < files.length; index++) {
-        result = await handleAddSingleFile(files[index])
-      }
+
+      const results = await Promise.all(files.map(handleAddSingleFile));
+      const lastResult: any = results.at(-1);
       
-      if (result.id){
+      if (lastResult?.id){
         toast.success("Image enregistrée avec succès !")
         setFileImage(undefined)
         setCoverImage('');
-        setTimeout(() => {  
-          window.location.reload()
-        }, 1500);
+        setTimeout(() => window.location.reload(), 1500);
         setOpenModal(false)
       }
-     
     } 
     catch (error: any) {
       toast.error(
