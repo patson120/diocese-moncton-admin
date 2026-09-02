@@ -72,10 +72,15 @@ export const AddImageFormSection = ({dossier_id}: {dossier_id?: string}): JSX.El
         return;
       } */
 
-      const results = await Promise.all(files.map(handleAddSingleFile));
-      const lastResult: any = results.at(-1);
+      let index = 0
+      while (index < files.length) {
+        const result: any = await handleAddSingleFile(files[index])
+        if (result.id){
+          index += 1
+        }
+      }
       
-      if (lastResult?.id){
+      if (files.length == index){
         toast.success("Image enregistrée avec succès !")
         setFileImage(undefined)
         setCoverImage('');
