@@ -161,7 +161,6 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
         'Content-Type': 'multipart/form-data'
       });  
       if (response.id ) {
-        setStep(1)
         setMember(defaultMember)
         toast.success('Membre modifié avec succès');
         setTimeout(() => {

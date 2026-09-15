@@ -2,7 +2,7 @@
 export const BASE_URL = "https://diocese.wds-project.com/api"
 
 export const defaultTypeParoisse = {
-      id: null,
+      id: undefined,
       intitule_fr: "Aucune",
       intitule_en: "None",
       couleur: "",
