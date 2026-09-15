@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import * as z from "zod";
 import { Image as ImageType, Member, TypeParoisse } from "../../../app/types";
 import { GaleryPopup } from "../GaleryPopup";
+import { defaultTypeParoisse } from "@/lib/constantes";
 
 const fonctions = [
   {
@@ -136,11 +137,11 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
     formdata.append("poste", `${fonctions.find((f) => f.id === parseInt(data.poste))?.intitule_fr}`);
     formdata.append("coordonnees", `${data.coordonnees}`);
     formdata.append("etat", `${status}`);
-    if (selectedImage){
+    if (selectedImage?.id! > 0){
       formdata.append("galerie_id", `${selectedImage?.id!}`);
     }
     if (data.etablissement && data.etablissement !== 'undefined'){
-      formdata.append("etablissement_id", `${data.etablissement},`); 
+      formdata.append("etablissement_id", `${data.etablissement}`); 
     }
     formdata.append("description_fr", `${data.description_fr}`);
     formdata.append("description_en", `${data.description_en}`);
@@ -207,7 +208,7 @@ const EditMemberFormSection = ({memberData} : { memberData: Member}): JSX.Elemen
     // Récupérer les unités paroitiales depuis l'api
     (async () => {
         const response: TypeParoisse[] = await apiClient.get(`/api/type_paroisses`)
-        setUnitePastorales(response)
+        setUnitePastorales([defaultTypeParoisse, ...response])
     })()
   }, [])
 
